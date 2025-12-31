@@ -3327,11 +3327,18 @@ function testPage(pageId) {
     const userSelect = document.getElementById('test-user-select');
     const websiteUserId = userSelect ? userSelect.value : null;
 
+    // DEBUG: Log what we captured
+    console.log('DEBUG testPage: userSelect element:', userSelect);
+    console.log('DEBUG testPage: websiteUserId:', websiteUserId);
+
     // Prepare test data
     const testData = {};
     if (websiteUserId) {
         testData.website_user_id = websiteUserId;
     }
+
+    // DEBUG: Log what we're sending
+    console.log('DEBUG testPage: testData being sent:', testData);
 
     // Run test
     $.ajax({

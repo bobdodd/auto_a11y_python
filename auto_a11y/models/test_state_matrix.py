@@ -4,7 +4,7 @@ Test state matrix model for defining which script state combinations to test
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Dict, Optional, Set, Tuple
+from typing import List, Dict, Optional, Set
 from bson import ObjectId
 
 
@@ -99,159 +99,102 @@ class StateCombination:
 @dataclass
 class TestStateMatrix:
     """
-    Matrix defining which script state combinations should be tested
+    Defines which script state combinations to test for a page.
 
-    This is a 2D matrix where:
-    - Rows represent script states (e.g., "Cookie Before", "Cookie After")
-    - Columns represent script states (e.g., "Modal Before", "Modal After")
-    - Cells marked True indicate that combination should be tested
+    Each combination is a row specifying the state (before/after/none) for each script.
+    - "before": Test before script runs (script not executed)
+    - "after": Test after script runs (script executed)
+    - "none": Script not part of this test
 
-    Example for 2 scripts (Cookie, Modal):
-                    Cookie_Before  Cookie_After  Modal_Before  Modal_After
-    Cookie_Before        X              -             -            -
-    Cookie_After         -              X             X            X
-    Modal_Before         -              X             X            -
-    Modal_After          -              X             -            X
-
-    This creates 4 test states:
-    1. Cookie=Before, Modal=Before (initial state)
-    2. Cookie=After, Modal=Before
-    3. Cookie=After, Modal=After
-    4. Cookie=Before, Modal=After (modal without cookie dismissed)
+    Example for 2 scripts (Cookie, Dialog):
+    combinations = [
+        {"cookie_id": "before", "dialog_id": "before"},  # Initial state
+        {"cookie_id": "after", "dialog_id": "none"},     # Only cookie dismissed
+        {"cookie_id": "after", "dialog_id": "after"},    # Both executed
+    ]
     """
 
     page_id: str
     website_id: str
 
-    # Scripts included in this matrix
     scripts: List[ScriptStateDefinition] = field(default_factory=list)
 
-    # Matrix data: dict[row_state_id, dict[col_state_id, bool]]
-    # Example: {"cookie_before": {"modal_before": True, "modal_after": False}, ...}
+    combinations: List[Dict[str, str]] = field(default_factory=list)
+
     matrix: Dict[str, Dict[str, bool]] = field(default_factory=dict)
 
-    # Metadata
     created_date: datetime = field(default_factory=datetime.now)
     last_modified: datetime = field(default_factory=datetime.now)
     created_by: Optional[str] = None
 
-    # MongoDB ID
     _id: Optional[ObjectId] = None
 
     @property
     def id(self) -> str:
-        """Get matrix ID as string"""
         return str(self._id) if self._id else None
 
     def initialize_matrix(self):
-        """
-        Initialize matrix with default values
+        """Initialize with default sequential combinations"""
+        self.combinations = []
 
-        By default, we enable:
-        1. Initial state (all scripts "before")
-        2. Final state (all scripts "after")
-        3. Sequential execution states (execute scripts one by one)
-        """
-        # Get all state IDs
-        all_state_ids = []
-        for script in self.scripts:
-            all_state_ids.extend(script.get_state_ids())
+        if not self.scripts:
+            return
 
-        # Initialize empty matrix
-        self.matrix = {}
-        for row_state in all_state_ids:
-            self.matrix[row_state] = {}
-            for col_state in all_state_ids:
-                self.matrix[row_state][col_state] = False
-
-        # Enable default combinations
-        # 1. Initial state (all "before")
-        initial_states = [f"{script.script_id}_before" for script in self.scripts if script.test_before]
-        for state in initial_states:
-            if state in self.matrix:
-                self.matrix[state][state] = True
-
-        # 2. Sequential execution states
         scripts_sorted = sorted(self.scripts, key=lambda s: s.execution_order)
-        current_states = {script.script_id: "before" for script in scripts_sorted if script.test_before}
 
+        initial = {s.script_id: "before" for s in scripts_sorted}
+        self.combinations.append(initial.copy())
+
+        current = initial.copy()
         for script in scripts_sorted:
             if script.test_after:
-                # Mark this transition
-                current_states[script.script_id] = "after"
-
-                # Create state IDs for current combination
-                for row_script_id, row_state in current_states.items():
-                    row_state_id = f"{row_script_id}_{row_state}"
-                    if row_state_id in self.matrix:
-                        for col_script_id, col_state in current_states.items():
-                            col_state_id = f"{col_script_id}_{col_state}"
-                            if col_state_id in self.matrix[row_state_id]:
-                                self.matrix[row_state_id][col_state_id] = True
+                current[script.script_id] = "after"
+                self.combinations.append(current.copy())
 
     def get_enabled_combinations(self) -> List[StateCombination]:
-        """
-        Extract all enabled state combinations from the matrix
+        """Get all combinations as StateCombination objects"""
+        if self.combinations:
+            return [
+                StateCombination(script_states={k: v for k, v in combo.items() if v != "none"})
+                for combo in self.combinations
+            ]
 
-        Returns:
-            List of StateCombination objects representing unique test states
-        """
-        # Use a set to track unique combinations
-        seen_combinations: Set[str] = set()
-        combinations: List[StateCombination] = []
+        if self.matrix:
+            return self._extract_from_legacy_matrix()
 
-        # Scan matrix for enabled cells
-        for row_state_id, row_data in self.matrix.items():
-            for col_state_id, enabled in row_data.items():
-                if enabled:
-                    # Parse state IDs
-                    row_script_id, row_state = row_state_id.rsplit('_', 1)
-                    col_script_id, col_state = col_state_id.rsplit('_', 1)
+        return []
 
-                    # Create combination
-                    script_states = {
-                        row_script_id: row_state,
-                        col_script_id: col_state
-                    }
+    def _extract_from_legacy_matrix(self) -> List[StateCombination]:
+        """Extract combinations from old matrix format for backwards compatibility"""
+        seen: Set[str] = set()
+        results: List[StateCombination] = []
 
-                    # Generate combination ID for deduplication
-                    combo = StateCombination(script_states=script_states)
-                    combo_id = combo.get_state_id()
+        for row_id, row_data in self.matrix.items():
+            for col_id, enabled in row_data.items():
+                if not enabled:
+                    continue
 
-                    if combo_id not in seen_combinations:
-                        seen_combinations.add(combo_id)
-                        combinations.append(combo)
+                script_states = {}
+                for state_id in [row_id, col_id]:
+                    parts = state_id.rsplit('_', 1)
+                    if len(parts) == 2:
+                        script_id, state = parts
+                        script_states[script_id] = state
 
-        return combinations
+                combo = StateCombination(script_states=script_states)
+                combo_id = combo.get_state_id()
+                if combo_id not in seen:
+                    seen.add(combo_id)
+                    results.append(combo)
 
-    def set_combination_enabled(self, row_state_id: str, col_state_id: str, enabled: bool):
-        """Enable or disable a specific state combination"""
-        if row_state_id in self.matrix and col_state_id in self.matrix[row_state_id]:
-            self.matrix[row_state_id][col_state_id] = enabled
-            self.last_modified = datetime.now()
-
-    def is_combination_enabled(self, row_state_id: str, col_state_id: str) -> bool:
-        """Check if a combination is enabled"""
-        return self.matrix.get(row_state_id, {}).get(col_state_id, False)
-
-    def get_matrix_dimensions(self) -> Tuple[List[str], List[str]]:
-        """
-        Get row and column headers for the matrix
-
-        Returns:
-            Tuple of (row_headers, col_headers) as lists of state IDs
-        """
-        all_state_ids = []
-        for script in self.scripts:
-            all_state_ids.extend(script.get_state_ids())
-        return (all_state_ids, all_state_ids)
+        return results
 
     def to_dict(self) -> dict:
-        """Convert to dictionary for MongoDB"""
         data = {
             'page_id': self.page_id,
             'website_id': self.website_id,
             'scripts': [script.to_dict() for script in self.scripts],
+            'combinations': self.combinations,
             'matrix': self.matrix,
             'created_date': self.created_date,
             'last_modified': self.last_modified,
@@ -263,11 +206,11 @@ class TestStateMatrix:
 
     @classmethod
     def from_dict(cls, data: dict) -> 'TestStateMatrix':
-        """Create from MongoDB document"""
         return cls(
             page_id=data['page_id'],
             website_id=data['website_id'],
             scripts=[ScriptStateDefinition.from_dict(s) for s in data.get('scripts', [])],
+            combinations=data.get('combinations', []),
             matrix=data.get('matrix', {}),
             created_date=data.get('created_date', datetime.now()),
             last_modified=data.get('last_modified', datetime.now()),
@@ -276,5 +219,4 @@ class TestStateMatrix:
         )
 
     def update_timestamp(self):
-        """Update the last_modified timestamp"""
         self.last_modified = datetime.now()

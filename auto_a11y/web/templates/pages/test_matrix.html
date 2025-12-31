@@ -215,17 +215,16 @@
 
     <!-- Info Box -->
     <div class="info-box">
-        <h5><i class="bi bi-info-circle"></i> {{ _('About the Test Matrix') }}</h5>
+        <h5><i class="bi bi-info-circle"></i> {{ _('About Test Combinations') }}</h5>
         <p class="mb-2">
-            {{ _('The test matrix defines which combinations of script states should be tested. Each script can be in a "before" or "after" state:') }}
+            {{ _('Define which combinations of script states to test. Each row represents one test run with a specific combination of script states.') }}
         </p>
         <ul class="mb-2">
-            <li><strong>{{ _('Before') }}:</strong> {{ _('Script has not been executed (initial state)') }}</li>
+            <li><strong>{{ _('Before') }}:</strong> {{ _('Script has not been executed') }}</li>
             <li><strong>{{ _('After') }}:</strong> {{ _('Script has been executed') }}</li>
         </ul>
         <p class="mb-0">
-            <strong>{{ _('Click cells to enable/disable state combinations.') }}</strong>
-            {{ _('Testing %(enabled)s of %(total)s possible combinations.', enabled=enabled_count, total=total_possible) }}
+            {{ _('Testing %(enabled)s combinations.', enabled=enabled_count) }}
         </p>
     </div>
 
@@ -243,42 +242,32 @@
         <button type="button" class="btn btn-outline-secondary" onclick="applyPreset('none')">
             <i class="bi bi-x-circle"></i> {{ _('Clear All') }}
         </button>
+        <button type="button" class="btn btn-success" onclick="addCombination()">
+            <i class="bi bi-plus-circle"></i> {{ _('Add Combination') }}
+        </button>
     </div>
 
-    <!-- Matrix Grid -->
+    <!-- Combinations Table -->
     <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">{{ _('State Combination Matrix') }}</h5>
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">{{ _('Test Combinations') }}</h5>
+            <span class="badge bg-light text-dark"><span id="combinations-count-header">0</span> {{ _('combinations') }}</span>
         </div>
         <div class="card-body p-0">
-            <div class="matrix-container">
-                <table class="matrix-table" id="matrix-table">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="combinations-table">
                     <thead>
                         <tr>
-                            <th class="corner">{{ _('Row / Column') }}</th>
-                            {% for col_header in col_headers %}
-                            <th>{{ state_labels.get(col_header, col_header) }}</th>
+                            <th style="width: 50px;"></th>
+                            <th style="width: 60px;">#</th>
+                            {% for script_def in matrix.scripts %}
+                            <th>{{ script_def.script_name }}</th>
                             {% endfor %}
+                            <th style="width: 100px;">{{ _('Actions') }}</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {% for row_header in row_headers %}
-                        <tr>
-                            <th class="row-header">{{ state_labels.get(row_header, row_header) }}</th>
-                            {% for col_header in col_headers %}
-                            <td class="matrix-cell {% if matrix.is_combination_enabled(row_header, col_header) %}enabled{% else %}disabled{% endif %}"
-                                data-row="{{ row_header }}"
-                                data-col="{{ col_header }}"
-                                onclick="toggleCell(this)">
-                                {% if matrix.is_combination_enabled(row_header, col_header) %}
-                                <span class="check-icon">✓</span>
-                                {% else %}
-                                <span class="check-icon">&nbsp;</span>
-                                {% endif %}
-                            </td>
-                            {% endfor %}
-                        </tr>
-                        {% endfor %}
+                    <tbody id="combinations-tbody">
+                        <!-- Rows will be dynamically generated -->
                     </tbody>
                 </table>
             </div>

@@ -2,6 +2,7 @@
 Login automation for authenticated testing
 """
 
+import asyncio
 import logging
 from typing import Dict, Any, Optional
 from datetime import datetime
@@ -20,6 +21,75 @@ class LoginAutomation:
             database: Database connection
         """
         self.db = database
+
+    async def _find_element(self, page, selector: str):
+        """
+        Find element by CSS selector or XPath
+
+        Args:
+            page: Pyppeteer page object
+            selector: CSS selector or XPath (XPath must start with / or //)
+
+        Returns:
+            Element handle or None
+        """
+        if selector.startswith('/'):
+            elements = await page.xpath(selector)
+            return elements[0] if elements else None
+        else:
+            return await page.querySelector(selector)
+
+    async def _wait_for_selector(self, page, selector: str, options: dict = None):
+        """
+        Wait for element by CSS selector or XPath
+
+        Args:
+            page: Pyppeteer page object
+            selector: CSS selector or XPath (XPath must start with / or //)
+            options: Options dict with timeout, visible, etc.
+        """
+        opts = options or {}
+        if selector.startswith('/'):
+            await page.waitForXPath(selector, opts)
+        else:
+            await page.waitForSelector(selector, opts)
+
+    async def _type_into_element(self, page, selector: str, text: str, options: dict = None):
+        """
+        Type text into element by CSS selector or XPath
+
+        Args:
+            page: Pyppeteer page object
+            selector: CSS selector or XPath
+            text: Text to type
+            options: Options dict with delay, etc.
+        """
+        opts = options or {}
+        if selector.startswith('/'):
+            elements = await page.xpath(selector)
+            if elements:
+                await elements[0].type(text, opts)
+            else:
+                raise Exception(f"Element not found: {selector}")
+        else:
+            await page.type(selector, text, opts)
+
+    async def _click_element(self, page, selector: str):
+        """
+        Click element by CSS selector or XPath
+
+        Args:
+            page: Pyppeteer page object
+            selector: CSS selector or XPath
+        """
+        if selector.startswith('/'):
+            elements = await page.xpath(selector)
+            if elements:
+                await elements[0].click()
+            else:
+                raise Exception(f"Element not found: {selector}")
+        else:
+            await page.click(selector)
 
     async def perform_login(
         self,
@@ -115,41 +185,40 @@ class LoginAutomation:
 
             # Wait for login form to be visible
             logger.info(f"Waiting for username field: {config.username_field_selector}")
-            await browser_page.waitForSelector(
+            await self._wait_for_selector(
+                browser_page,
                 config.username_field_selector,
                 {'visible': True, 'timeout': timeout}
             )
 
             # Fill username
             logger.info(f"Entering username: {user.username}")
-            await browser_page.type(config.username_field_selector, user.username, {'delay': 50})
+            await self._type_into_element(browser_page, config.username_field_selector, user.username, {'delay': 50})
 
             # Fill password
             logger.info("Entering password")
-            await browser_page.type(config.password_field_selector, user.password, {'delay': 50})
+            await self._type_into_element(browser_page, config.password_field_selector, user.password, {'delay': 50})
 
             # Click submit button if specified
             if config.submit_button_selector:
                 logger.info(f"Clicking submit button: {config.submit_button_selector}")
-                await browser_page.click(config.submit_button_selector)
+                await self._click_element(browser_page, config.submit_button_selector)
             else:
                 # Try submitting the form by pressing Enter
                 logger.info("Pressing Enter to submit")
                 await browser_page.keyboard.press('Enter')
 
-            # Wait for navigation after login
-            try:
-                await browser_page.waitForNavigation({'timeout': timeout, 'waitUntil': 'networkidle2'})
-            except Exception as nav_error:
-                logger.warning(f"Navigation wait timed out, checking success indicator: {nav_error}")
+            # Wait briefly for any immediate response
+            await asyncio.sleep(0.5)
 
-            # Check for success indicator
+            # Check for success indicator if configured (primary check for AJAX logins)
             if config.success_indicator_selector:
                 logger.info(f"Checking for success indicator: {config.success_indicator_selector}")
                 try:
-                    await browser_page.waitForSelector(
+                    await self._wait_for_selector(
+                        browser_page,
                         config.success_indicator_selector,
-                        {'visible': True, 'timeout': 5000}
+                        {'visible': True, 'timeout': 10000}
                     )
                     logger.info("Login success indicator found")
                     return {'success': True, 'error': None}
@@ -158,9 +227,16 @@ class LoginAutomation:
                     logger.error(error_msg)
                     return {'success': False, 'error': error_msg}
             else:
-                # No success indicator - assume success if we got here
-                logger.info("No success indicator configured, assuming login successful")
-                return {'success': True, 'error': None}
+                # No success indicator - wait for navigation with shorter timeout
+                try:
+                    await browser_page.waitForNavigation({'timeout': 10000, 'waitUntil': 'networkidle2'})
+                    logger.info("Navigation completed, assuming login successful")
+                    return {'success': True, 'error': None}
+                except Exception as nav_error:
+                    logger.warning(f"Navigation wait timed out: {nav_error}")
+                    # Assume success since no success indicator was configured
+                    logger.info("No success indicator configured, assuming login successful")
+                    return {'success': True, 'error': None}
 
         except Exception as e:
             error_msg = f"Form login failed: {str(e)}"
@@ -244,11 +320,12 @@ class LoginAutomation:
             if login_config.logout_button_selector:
                 logger.info(f"Clicking logout button: {login_config.logout_button_selector}")
                 try:
-                    await browser_page.waitForSelector(
+                    await self._wait_for_selector(
+                        browser_page,
                         login_config.logout_button_selector,
                         {'visible': True, 'timeout': 5000}
                     )
-                    await browser_page.click(login_config.logout_button_selector)
+                    await self._click_element(browser_page, login_config.logout_button_selector)
 
                     # Wait for navigation if logout triggers redirect
                     try:
@@ -266,7 +343,8 @@ class LoginAutomation:
             if login_config.logout_success_indicator_selector:
                 logger.info(f"Checking for logout success indicator: {login_config.logout_success_indicator_selector}")
                 try:
-                    await browser_page.waitForSelector(
+                    await self._wait_for_selector(
+                        browser_page,
                         login_config.logout_success_indicator_selector,
                         {'visible': True, 'timeout': 5000}
                     )

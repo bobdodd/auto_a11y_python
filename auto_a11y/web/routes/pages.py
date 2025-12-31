@@ -314,8 +314,13 @@ def view_page(page_id):
     # Get test history
     test_history = current_app.db.get_test_results(page_id=page_id, limit=10)
 
-    # Get available test users for this website
+    # Get available test users for this website/project
+    # Fetch both website-specific users AND project-level users
     website_users = current_app.db.get_website_users(page.website_id, enabled_only=True)
+    project_users = current_app.db.get_project_users(project.id, enabled_only=True)
+    # Combine both lists (project users have priority as they can be used across websites)
+    all_users = list(project_users) + list(website_users)
+    website_users = all_users  # Use combined list for template
 
     # Touchpoint display names (translated)
     # Match actual touchpoint keys used in test results
@@ -659,14 +664,26 @@ def configure_test_matrix(page_id):
                 )
                 matrix.scripts.append(script_def)
 
-            # Parse matrix data from form (new format from v2 template)
+            # Parse combinations data from form (simple list format)
             combinations_data = request.form.get('combinations_data')
             if combinations_data:
                 import json
-                matrix.matrix = json.loads(combinations_data)
+                matrix.combinations = json.loads(combinations_data)
+                matrix.matrix = {}  # Clear legacy matrix format
             else:
-                # Initialize with defaults if no data provided
                 matrix.initialize_matrix()
+
+            # Parse script order from form
+            script_order_data = request.form.get('script_order')
+            if script_order_data:
+                import json
+                script_order = json.loads(script_order_data)
+                order_map = {item['script_id']: item['execution_order'] for item in script_order}
+                for script_def in matrix.scripts:
+                    if script_def.script_id in order_map:
+                        script_def.execution_order = order_map[script_def.script_id]
+                # Sort scripts by execution order
+                matrix.scripts.sort(key=lambda s: s.execution_order)
 
             # Save or update matrix
             if matrix._id:
@@ -707,20 +724,7 @@ def configure_test_matrix(page_id):
         if matrix.scripts:
             matrix.initialize_matrix()
 
-    # Get row and column headers
-    row_headers, col_headers = matrix.get_matrix_dimensions() if matrix.scripts else ([], [])
-
-    # Create mapping from state IDs to human-readable labels
-    state_labels = {}
-    for script_def in matrix.scripts:
-        for state_id in script_def.get_state_ids():
-            # state_id is like "script_id_before" or "script_id_after"
-            state = "Before" if state_id.endswith("_before") else "After"
-            state_labels[state_id] = f"{script_def.script_name} ({state})"
-
-    # Get enabled combinations count
     enabled_combinations = matrix.get_enabled_combinations() if matrix.scripts else []
-    total_possible = 2 ** len(matrix.scripts) if matrix.scripts else 0
 
     return render_template('pages/test_matrix_v2.html',
                          page=page,

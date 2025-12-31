@@ -44,6 +44,21 @@
     .state-select {
         width: 120px;
     }
+
+    .script-order-item {
+        cursor: grab;
+        font-size: 0.9rem;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .script-order-item:active {
+        cursor: grabbing;
+    }
+
+    .script-order-item.drag-over {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
 </style>
 {% endblock %}
 
@@ -113,9 +128,28 @@
             {{ _('Each row defines one test run. Select which state each script should be in for that test.') }}
         </p>
         <ul class="mb-0">
+            <li><strong>{{ _('None') }}:</strong> {{ _('Script not involved in this test') }}</li>
             <li><strong>{{ _('Before') }}:</strong> {{ _('Script not executed (initial state)') }}</li>
             <li><strong>{{ _('After') }}:</strong> {{ _('Script executed') }}</li>
         </ul>
+    </div>
+
+    <!-- Script Execution Order -->
+    <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0"><i class="bi bi-sort-numeric-down"></i> {{ _('Script Execution Order') }}</h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-3">{{ _('Drag to reorder scripts. Scripts execute from left to right.') }}</p>
+            <div id="script-order-list" class="d-flex flex-wrap gap-2">
+                {% for script in matrix.scripts %}
+                <div class="script-order-item badge bg-primary p-2" draggable="true" data-script-id="{{ script.script_id }}">
+                    <i class="bi bi-grip-vertical me-1"></i>
+                    <span class="script-order-num">{{ loop.index }}</span>. {{ script.script_name }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 
     <!-- Preset Buttons -->
@@ -167,6 +201,7 @@
     <!-- Save Form -->
     <form method="POST" id="matrix-form">
         <input type="hidden" name="combinations_data" id="combinations-data-input">
+        <input type="hidden" name="script_order" id="script-order-input">
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <button type="submit" class="btn btn-primary btn-lg">
@@ -197,46 +232,27 @@ const scriptsList = scripts.map(s => ({
 // Current combinations (array of objects)
 let combinations = [];
 
-// Load existing combinations from matrix
+// Load existing combinations (simple list format)
 function loadExistingCombinations() {
-    const matrixData = {{ matrix.matrix | tojson }};
-    const seen = new Set();
+    const existingCombinations = {{ matrix.combinations | tojson }};
 
-    // Extract unique combinations from matrix
-    for (const rowId in matrixData) {
-        for (const colId in matrixData[rowId]) {
-            if (matrixData[rowId][colId]) {
-                const combo = {};
-
-                // Parse row state
-                const rowParts = rowId.split('_');
-                const rowState = rowParts.pop();
-                const rowScriptId = rowParts.join('_');
-                combo[rowScriptId] = rowState;
-
-                // Parse col state
-                const colParts = colId.split('_');
-                const colState = colParts.pop();
-                const colScriptId = colParts.join('_');
-                combo[colScriptId] = colState;
-
-                const comboKey = JSON.stringify(combo);
-                if (!seen.has(comboKey)) {
-                    seen.add(comboKey);
-                    combinations.push(combo);
-                }
-            }
-        }
-    }
-
-    if (combinations.length === 0) {
-        // Add initial combination (all "before")
-        const initialCombo = {};
-        scriptsList.forEach(s => {
-            if (s.test_before) initialCombo[s.id] = 'before';
+    if (existingCombinations && existingCombinations.length > 0) {
+        combinations = existingCombinations.map(combo => {
+            const normalized = {};
+            scriptsList.forEach(s => {
+                normalized[s.id] = combo[s.id] || 'none';
+            });
+            return normalized;
         });
-        combinations.push(initialCombo);
+        return;
     }
+
+    // Fallback: default initial state
+    const initialCombo = {};
+    scriptsList.forEach(s => {
+        initialCombo[s.id] = s.test_before ? 'before' : 'none';
+    });
+    combinations.push(initialCombo);
 }
 
 // Render the table
@@ -267,6 +283,12 @@ function renderTable() {
             select.className = 'form-select form-select-sm state-select';
             select.dataset.scriptId = script.id;
 
+            // Add "None" option (always available)
+            const noneOpt = document.createElement('option');
+            noneOpt.value = 'none';
+            noneOpt.textContent = 'None';
+            select.appendChild(noneOpt);
+
             if (script.test_before) {
                 const beforeOpt = document.createElement('option');
                 beforeOpt.value = 'before';
@@ -281,7 +303,7 @@ function renderTable() {
                 select.appendChild(afterOpt);
             }
 
-            select.value = combo[script.id] || 'before';
+            select.value = combo[script.id] || 'none';
             select.addEventListener('change', () => {
                 combo[script.id] = select.value;
                 updateCount();
@@ -312,7 +334,7 @@ function renderTable() {
 function addCombination() {
     const newCombo = {};
     scriptsList.forEach(s => {
-        newCombo[s.id] = s.test_before ? 'before' : 'after';
+        newCombo[s.id] = 'none';
     });
     combinations.push(newCombo);
     renderTable();
@@ -390,7 +412,7 @@ function applyPreset(preset) {
         case 'clear':
             const clearCombo = {};
             scriptsList.forEach(s => {
-                clearCombo[s.id] = 'before';
+                clearCombo[s.id] = 'none';
             });
             combinations.push(clearCombo);
             break;
@@ -449,32 +471,83 @@ function initializeDragDrop() {
     });
 }
 
-// Form submission
+// Form submission - save combinations and script order
 document.getElementById('matrix-form').addEventListener('submit', function(e) {
-    // Convert to matrix format
-    const matrix = {};
-
-    combinations.forEach(combo => {
-        // Create all pairs of states in this combination
-        const states = Object.entries(combo);
-        states.forEach(([scriptId1, state1]) => {
-            states.forEach(([scriptId2, state2]) => {
-                const rowId = `${scriptId1}_${state1}`;
-                const colId = `${scriptId2}_${state2}`;
-
-                if (!matrix[rowId]) matrix[rowId] = {};
-                matrix[rowId][colId] = true;
-            });
+    document.getElementById('combinations-data-input').value = JSON.stringify(combinations);
+    
+    // Save script order
+    const scriptOrder = [];
+    document.querySelectorAll('#script-order-list .script-order-item').forEach((item, idx) => {
+        scriptOrder.push({
+            script_id: item.dataset.scriptId,
+            execution_order: idx
         });
     });
-
-    document.getElementById('combinations-data-input').value = JSON.stringify(matrix);
+    document.getElementById('script-order-input').value = JSON.stringify(scriptOrder);
 });
+
+// Script order drag and drop
+function initializeScriptOrderDragDrop() {
+    const container = document.getElementById('script-order-list');
+    const items = container.querySelectorAll('.script-order-item');
+    let draggedItem = null;
+
+    items.forEach(item => {
+        item.addEventListener('dragstart', function(e) {
+            draggedItem = this;
+            this.style.opacity = '0.5';
+        });
+
+        item.addEventListener('dragend', function(e) {
+            this.style.opacity = '';
+            items.forEach(i => i.classList.remove('drag-over'));
+        });
+
+        item.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            if (this !== draggedItem) {
+                this.classList.add('drag-over');
+            }
+        });
+
+        item.addEventListener('dragleave', function(e) {
+            this.classList.remove('drag-over');
+        });
+
+        item.addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (draggedItem !== this) {
+                const allItems = [...container.querySelectorAll('.script-order-item')];
+                const fromIndex = allItems.indexOf(draggedItem);
+                const toIndex = allItems.indexOf(this);
+
+                if (fromIndex < toIndex) {
+                    this.parentNode.insertBefore(draggedItem, this.nextSibling);
+                } else {
+                    this.parentNode.insertBefore(draggedItem, this);
+                }
+
+                // Update numbers
+                container.querySelectorAll('.script-order-item').forEach((item, idx) => {
+                    item.querySelector('.script-order-num').textContent = idx + 1;
+                });
+
+                // Update scriptsList order to match
+                const newOrder = [...container.querySelectorAll('.script-order-item')].map(i => i.dataset.scriptId);
+                scriptsList.sort((a, b) => newOrder.indexOf(a.id) - newOrder.indexOf(b.id));
+
+                // Re-render table with new column order
+                renderTable();
+            }
+        });
+    });
+}
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     loadExistingCombinations();
     renderTable();
+    initializeScriptOrderDragDrop();
 });
 </script>
 {% endblock %}

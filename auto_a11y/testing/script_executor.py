@@ -161,7 +161,7 @@ class ScriptExecutor:
         if selector.startswith('/'):
             # XPath selector - use page.waitForXPath
             try:
-                await page.waitForXPath(selector, timeout=timeout)
+                await page.waitForXPath(selector, {'timeout': timeout})
             except Exception as e:
                 raise ScriptExecutionError(
                     f"Timeout waiting for XPath: {selector}"
@@ -169,7 +169,7 @@ class ScriptExecutor:
         else:
             # CSS selector
             try:
-                await page.waitForSelector(selector, timeout=timeout)
+                await page.waitForSelector(selector, {'timeout': timeout})
             except Exception as e:
                 raise ScriptExecutionError(
                     f"Timeout waiting for selector: {selector}"
@@ -195,14 +195,23 @@ class ScriptExecutor:
         value = self._substitute_env_vars(step.value, env_vars) if step.value else None
 
         if action == ActionType.CLICK:
-            # Click element
+            # Wait for element then click
+            timeout_ms = step.timeout or 5000
+            try:
+                await self._wait_for_selector(page, step.selector, timeout_ms)
+            except Exception:
+                pass  # Continue to find_element
             element = await self._find_element(page, step.selector)
             if not element:
                 raise ScriptExecutionError(f"Element not found: {step.selector}")
             await element.click()
 
         elif action == ActionType.TYPE:
-            # Type into element
+            # Wait for element then type
+            try:
+                await self._wait_for_selector(page, step.selector, step.timeout or 5000)
+            except Exception:
+                pass
             element = await self._find_element(page, step.selector)
             if not element:
                 raise ScriptExecutionError(f"Element not found: {step.selector}")
@@ -299,7 +308,7 @@ class ScriptExecutor:
 
         # Check for failure selectors
         for failure_selector in validation.failure_selectors:
-            element = await page.querySelector(failure_selector)
+            element = await self._find_element(page, failure_selector)
             if element:
                 raise ScriptExecutionError(
                     f"Failure condition detected: found element {failure_selector}"
@@ -307,7 +316,7 @@ class ScriptExecutor:
 
         # Check for success selector
         if validation.success_selector:
-            element = await page.querySelector(validation.success_selector)
+            element = await self._find_element(page, validation.success_selector)
             if not element:
                 raise ScriptExecutionError(
                     f"Success condition not met: selector {validation.success_selector} not found"
@@ -419,20 +428,14 @@ class ScriptExecutor:
 
         # Clear cookies and/or localStorage if configured
         if script.clear_cookies_before or script.clear_local_storage_before:
-            logger.warning(f"DEBUG: Script '{script.name}' has clearing enabled (cookies: {script.clear_cookies_before}, localStorage: {script.clear_local_storage_before})")
             try:
                 # Get current URL before clearing
                 current_url = page.url
-                logger.warning(f"DEBUG: Current URL before clearing: {current_url}")
 
                 await self._clear_browser_state(page, script)
-                logger.warning(f"DEBUG: Browser state cleared successfully")
 
                 # Navigate to same URL again to apply the cleared state
-                # Using goto instead of reload is more reliable with context managers
-                logger.warning(f"DEBUG: Navigating to {current_url} after clearing browser state")
                 await page.goto(current_url, {'waitUntil': 'networkidle2', 'timeout': 30000})
-                logger.warning(f"DEBUG: Page navigation completed successfully")
             except Exception as e:
                 logger.error(f"Error during browser state clearing/navigation: {e}")
                 import traceback
@@ -477,13 +480,13 @@ class ScriptExecutor:
 
         Args:
             page: Pyppeteer page object
-            selector: CSS selector to check
+            selector: CSS selector or XPath to check
 
         Returns:
             True if selector found, False otherwise
         """
         try:
-            element = await page.querySelector(selector)
+            element = await self._find_element(page, selector)
             return element is not None
         except Exception as e:
             logger.debug(f"Error checking condition selector '{selector}': {e}")

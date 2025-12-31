@@ -56,10 +56,9 @@ def enrich_test_result_with_catalog(test_result):
                     '".', '"#', 'missing role=', 'missing aria-',
                     'px', ':1', 'alpha=', '°', '%'
                 ])
-                if not has_specific_title:
-                    violation.metadata['title'] = catalog_info.get('title', '') or catalog_info.get('description', '')
 
                 # Get descriptions with placeholders
+                title_template = catalog_info.get('title', '') or catalog_info.get('description', '')
                 what_template = catalog_info['description']
                 why_template = catalog_info['why_it_matters']
                 how_template = catalog_info['how_to_fix']
@@ -92,6 +91,9 @@ def enrich_test_result_with_catalog(test_result):
                 ])
                 
                 try:
+                    # Apply placeholder substitution to title as well
+                    if not has_specific_title:
+                        violation.metadata['title'] = title_template % placeholder_values
                     # Only overwrite 'what' if it doesn't have specific details already
                     if not has_specific_what:
                         violation.metadata['what'] = what_template % placeholder_values
@@ -100,6 +102,8 @@ def enrich_test_result_with_catalog(test_result):
                 except (KeyError, ValueError, TypeError) as e:
                     # If placeholder replacement fails, use templates as-is
                     logger.warning(f"Placeholder substitution failed for {error_code}: {e}, keys available: {list(placeholder_values.keys())}")
+                    if not has_specific_title:
+                        violation.metadata['title'] = title_template
                     if not has_specific_what:
                         violation.metadata['what'] = what_template
                     violation.metadata['why'] = why_template

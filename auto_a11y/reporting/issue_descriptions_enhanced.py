@@ -1710,11 +1710,21 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['2.1.2'],
             'remediation': "Provide at least one clear way to close modals (close button, escape key, cancel button)."
         },
+        'ErrModalNoHeading': {
+            'title': "Modal or dialog has no heading",
+            'what': "Modal or dialog has no heading to identify its purpose. Screen reader users will not know what this dialog is about when navigating by headings.",
+            'why': "Without a heading, users cannot quickly identify the purpose of the modal. Screen reader users often navigate by headings to understand page structure, and modals without headings appear as undifferentiated content.",
+            'what_generic': "Modal or dialog has no heading to identify its purpose",
+            'who': "Screen reader users who navigate by headings, users with cognitive disabilities who rely on clear labels to understand content purpose.",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.4.6', '4.1.2'],
+            'remediation': "Add an h2 heading (or h1 if this is the main content) at the top of the modal to clearly identify its purpose. The heading should describe what the modal is about (e.g., 'Cookie Consent', 'Login', 'Confirm Purchase'). Also add role=\"dialog\" or role=\"alertdialog\" with aria-labelledby pointing to the heading."
+        },
         'ErrModalMissingHeading': {
             'title': "Modal has h{foundLevel} heading but should use h2 or h1",
             'what': "Modal has h{foundLevel} heading (\"{headingText}\") but should use h2 (or h1) for proper document structure",
             'why': "Without proper heading structure, users don\'t know the purpose or context of the modal content. Modals should start with h1 or h2 headings to maintain document structure and provide clear context.",
-                    'what_generic': "Modal has incorrect heading level for proper document structure",
+            'what_generic': "Modal has incorrect heading level for proper document structure",
             'who': "Screen reader users who need to understand modal purpose and navigate by headings, users with cognitive disabilities who rely on clear document structure.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.4.6'],

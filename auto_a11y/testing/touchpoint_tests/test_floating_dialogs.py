@@ -507,7 +507,20 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                     const overlappingElements = checkContentOverlap(dialog);
                     
                     // Check heading structure - dialogs should have H2 headings
-                    if (!headingLevel || headingLevel !== 2) {
+                    if (!headingLevel) {
+                        // No heading at all
+                        results.errors.push({
+                            err: 'ErrModalNoHeading',
+                            type: 'err',
+                            cat: 'floating_dialogs',
+                            element: dialog.tagName,
+                            xpath: getFullXPath(dialog),
+                            html: dialog.outerHTML.substring(0, 200),
+                            description: 'Modal or dialog has no heading to identify its purpose'
+                        });
+                        results.elements_failed++;
+                    } else if (headingLevel !== 2 && headingLevel !== 1) {
+                        // Has heading but wrong level (not h1 or h2)
                         results.errors.push({
                             err: 'ErrModalMissingHeading',
                             type: 'err',
@@ -515,9 +528,9 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                             element: dialog.tagName,
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),
-                            description: `Dialog should have h2 heading, found: ${headingLevel ? 'h' + headingLevel : 'none'}`,
-                            foundLevel: headingLevel || 'none',
-                            headingText: headingText || '(no heading)'
+                            description: `Dialog has h${headingLevel} heading but should use h2 (or h1)`,
+                            foundLevel: headingLevel,
+                            headingText: headingText
                         });
                         results.elements_failed++;
                     } else {

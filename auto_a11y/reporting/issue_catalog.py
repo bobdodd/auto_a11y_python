@@ -2615,8 +2615,7 @@ class IssueCatalog:
             enhanced = get_detailed_issue_description(issue_id)
             if enhanced and enhanced.get('title') != f"Issue {issue_id} needs documentation":
                 # Convert enhanced format to catalog format
-                # Use what_generic for description (summary), what for detailed instance description
-                what_generic = enhanced.get('what_generic', '')
+                # description is the templated what (for instances), what_generic is for summaries
                 return {
                     "id": issue_id,
                     "type": "Error" if "Err" in issue_id else "Warning" if "Warn" in issue_id else "Info",
@@ -2624,14 +2623,15 @@ class IssueCatalog:
                     "wcag": enhanced.get('wcag', []),
                     "wcag_full": ", ".join(enhanced.get('wcag', [])) if enhanced.get('wcag') else "",
                     "category": "unknown",  # Enhanced descriptions don't have categories
-                    "description": what_generic if what_generic else enhanced.get('what', enhanced.get('title', '')),
+                    "description": enhanced.get('what', enhanced.get('title', '')),
+                    "description_generic": enhanced.get('what_generic', ''),
                     "why_it_matters": enhanced.get('why', ''),
                     "who_it_affects": enhanced.get('who', ''),
                     "how_to_fix": enhanced.get('remediation', enhanced.get('how', '')),
                     # Include enhanced metadata for template use
                     "title": enhanced.get('title', ''),
                     "what": enhanced.get('what', ''),
-                    "what_generic": what_generic,
+                    "what_generic": enhanced.get('what_generic', ''),
                     "why": enhanced.get('why', ''),
                     "who": enhanced.get('who', ''),
                     "full_remediation": enhanced.get('remediation', '')

@@ -302,14 +302,20 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                     ...Array.from(document.querySelectorAll('[aria-modal="true"]')),
                 ];
 
-                // Find heuristic-based dialogs (with filtering to avoid false positives)
+                // Find heuristic-based floating elements (dialogs, banners, notices, etc.)
                 const heuristicDialogs = Array.from(document.querySelectorAll('div'))
                     .filter(div => {
                         const style = window.getComputedStyle(div);
                         const classes = (div.className || '').toLowerCase();
+                        const id = (div.id || '').toLowerCase();
 
                         // Must have high z-index
                         if (style.zIndex === 'auto' || parseInt(style.zIndex) <= 100) {
+                            return false;
+                        }
+                        
+                        // Must be fixed or absolute positioned (floating)
+                        if (style.position !== 'fixed' && style.position !== 'absolute') {
                             return false;
                         }
 
@@ -326,10 +332,20 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                             }
                         }
 
-                        // Include only if class suggests it's a modal/dialog
-                        return classes.includes('modal') ||
-                               classes.includes('dialog') ||
-                               classes.includes('alert');
+                        // Include if class/id suggests it's a modal, dialog, banner, notice, etc.
+                        const includePatterns = [
+                            'modal', 'dialog', 'alert', 'banner', 'notice', 
+                            'cookie', 'consent', 'popup', 'lightbox', 'toast',
+                            'notification', 'snackbar', 'floating'
+                        ];
+                        
+                        for (const pattern of includePatterns) {
+                            if (classes.includes(pattern) || id.includes(pattern)) {
+                                return true;
+                            }
+                        }
+                        
+                        return false;
                     });
 
                 // Combine all candidates

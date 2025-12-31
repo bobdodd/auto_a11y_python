@@ -334,12 +334,25 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                 });
                 
                 // Check for modals without escape handlers
-                // Note: We can only detect inline handlers. Many frameworks (Bootstrap, etc.)
-                // add escape handlers via addEventListener which we cannot detect statically.
-                // We should NOT flag modals that likely have escape handling via:
-                // 1. Native <dialog> elements (browser handles Escape automatically)
-                // 2. Bootstrap modals (data-bs-dismiss, data-bs-keyboard attributes)
-                // 3. Common modal libraries that typically handle Escape by default
+                // Parse inline scripts to find keydown handlers that check for Escape key
+                let pageHasEscapeHandler = false;
+                const scripts = Array.from(document.querySelectorAll('script'));
+                scripts.forEach(script => {
+                    if (!script.src && script.textContent) {
+                        const code = script.textContent;
+                        // Check if script has keydown listener AND references Escape/Esc/27
+                        const hasKeydownListener = /addEventListener\s*\(\s*['"]keydown['"]/i.test(code) ||
+                                                   /onkeydown/i.test(code);
+                        const hasEscapeCheck = /['"]Escape['"]/i.test(code) ||
+                                              /\.key\s*===?\s*['"]Esc['"]/i.test(code) ||
+                                              /keyCode\s*===?\s*27/i.test(code) ||
+                                              /which\s*===?\s*27/i.test(code);
+                        if (hasKeydownListener && hasEscapeCheck) {
+                            pageHasEscapeHandler = true;
+                        }
+                    }
+                });
+
                 const modals = Array.from(document.querySelectorAll('dialog, [role="dialog"], [class*="modal"]'))
                     .filter(modal => {
                         // Exclude nested modal content containers - only check outermost modal
@@ -355,7 +368,6 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     }
                     
                     // Bootstrap modals handle Escape by default (data-bs-keyboard defaults to true)
-                    // Check for Bootstrap modal indicators
                     const isBootstrapModal = modal.classList.contains('modal') && 
                         (modal.hasAttribute('data-bs-backdrop') || 
                          modal.hasAttribute('data-bs-keyboard') ||
@@ -365,7 +377,6 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                          modal.querySelector('[data-dismiss="modal"]'));
                     
                     if (isBootstrapModal) {
-                        // Bootstrap handles Escape unless explicitly disabled
                         const keyboardDisabled = modal.getAttribute('data-bs-keyboard') === 'false' ||
                                                 modal.getAttribute('data-keyboard') === 'false';
                         if (!keyboardDisabled) {
@@ -373,35 +384,28 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         }
                     }
                     
-                    // Check for inline escape handler
+                    // Check for inline escape handler on the modal element itself
                     const onkeydown = modal.getAttribute('onkeydown');
                     const hasInlineEscapeHandler = onkeydown &&
                                            (onkeydown.includes('Escape') ||
                                             onkeydown.includes('Esc') ||
                                             onkeydown.includes('27'));
-                    
-                    // Check for common library patterns that typically handle Escape
-                    const hasDialogRole = modal.getAttribute('role') === 'dialog' || 
-                                         modal.getAttribute('role') === 'alertdialog';
-                    const hasAriaModal = modal.getAttribute('aria-modal') === 'true';
-                    const hasCloseButton = modal.querySelector('[aria-label*="close" i], [aria-label*="dismiss" i], .close, .btn-close, [data-dismiss], [data-bs-dismiss]');
-                    
-                    // If it has proper ARIA attributes and a close button, it's likely a well-implemented modal
-                    // that handles Escape via JavaScript event listeners we can't detect
-                    const likelyHasJSHandler = hasDialogRole && hasAriaModal && hasCloseButton;
 
-                    if (!hasInlineEscapeHandler && !likelyHasJSHandler) {
-                        results.errors.push({
-                            err: 'ErrModalWithoutEscape',
-                            type: 'err',
-                            cat: 'event_handlers',
-                            element: modal.tagName,
-                            xpath: getFullXPath(modal),
-                            html: modal.outerHTML.substring(0, 200),
-                            description: 'Modal element without keyboard escape handler'
-                        });
-                        results.elements_failed++;
+                    // Skip if page has escape handler in inline scripts or modal has inline handler
+                    if (hasInlineEscapeHandler || pageHasEscapeHandler) {
+                        return;
                     }
+
+                    results.errors.push({
+                        err: 'ErrModalWithoutEscape',
+                        type: 'err',
+                        cat: 'event_handlers',
+                        element: modal.tagName,
+                        xpath: getFullXPath(modal),
+                        html: modal.outerHTML.substring(0, 200),
+                        description: 'Modal element without keyboard escape handler'
+                    });
+                    results.elements_failed++;
                 });
                 
                 // Add check information for reporting

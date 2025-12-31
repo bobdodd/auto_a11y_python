@@ -334,31 +334,26 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                 });
                 
                 // Check for modals without escape handlers
-                // Parse inline scripts to find keydown handlers that check for Escape key
-                let pageHasEscapeHandler = false;
+                // Collect inline JS and external script URLs for analysis
+                let inlineJsCode = '';
+                const externalScriptUrls = [];
                 const scripts = Array.from(document.querySelectorAll('script'));
                 scripts.forEach(script => {
-                    if (!script.src && script.textContent) {
-                        // Strip comments before analyzing code
-                        let code = script.textContent;
-                        // Remove single-line comments (// ...)
-                        code = code.replace(/\/\/.*$/gm, '');
-                        // Remove multi-line comments (/* ... */)
-                        code = code.replace(/\/\*[\s\S]*?\*\//g, '');
-                        
-                        // Check if script has keydown listener AND references Escape/Esc/27
-                        const hasKeydownListener = /addEventListener\s*\(\s*['"]keydown['"]/i.test(code) ||
-                                                   /onkeydown/i.test(code);
-                        const hasEscapeCheck = /['"]Escape['"]/i.test(code) ||
-                                              /\.key\s*===?\s*['"]Esc['"]/i.test(code) ||
-                                              /keyCode\s*===?\s*27/i.test(code) ||
-                                              /which\s*===?\s*27/i.test(code);
-                        if (hasKeydownListener && hasEscapeCheck) {
-                            pageHasEscapeHandler = true;
-                        }
+                    if (script.src) {
+                        externalScriptUrls.push(script.src);
+                    } else if (script.textContent) {
+                        inlineJsCode += script.textContent + '\\n';
                     }
                 });
+                
+                // Store for Python to fetch external scripts and complete the check
+                results._inlineJsCode = inlineJsCode;
+                results._externalScriptUrls = externalScriptUrls;
+                
+                // Placeholder - will be recalculated in Python after fetching external scripts
+                let pageHasEscapeHandler = false;
 
+                // Collect modal info for Python to check after fetching external scripts
                 const modals = Array.from(document.querySelectorAll('dialog, [role="dialog"], [class*="modal"]'))
                     .filter(modal => {
                         // Exclude nested modal content containers - only check outermost modal
@@ -367,34 +362,18 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         return !hasModalAncestor;
                     });
 
-                modals.forEach(modal => {
-                    // Native <dialog> elements handle Escape automatically via the browser
-                    if (modal.tagName.toLowerCase() === 'dialog') {
-                        return; // Skip - browser handles Escape
-                    }
-                    
-                    // Check for inline escape handler on the modal element itself
+                results._modals = modals.map(modal => {
                     const onkeydown = modal.getAttribute('onkeydown');
                     const hasInlineEscapeHandler = onkeydown &&
                                            (onkeydown.includes('Escape') ||
                                             onkeydown.includes('Esc') ||
                                             onkeydown.includes('27'));
-
-                    // Skip if page has escape handler in inline scripts or modal has inline handler
-                    if (hasInlineEscapeHandler || pageHasEscapeHandler) {
-                        return;
-                    }
-
-                    results.errors.push({
-                        err: 'ErrModalWithoutEscape',
-                        type: 'err',
-                        cat: 'event_handlers',
-                        element: modal.tagName,
+                    return {
+                        tagName: modal.tagName,
                         xpath: getFullXPath(modal),
                         html: modal.outerHTML.substring(0, 200),
-                        description: 'Modal element without keyboard escape handler'
-                    });
-                    results.elements_failed++;
+                        hasInlineEscapeHandler: hasInlineEscapeHandler
+                    };
                 });
                 
                 // Add check information for reporting
@@ -463,6 +442,65 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                 return results;
             }
         ''')
+
+        # Fetch external scripts and check for escape handlers
+        import re
+        import aiohttp
+        
+        all_js_code = results.get('_inlineJsCode', '')
+        external_urls = results.get('_externalScriptUrls', [])
+        
+        # Fetch external scripts
+        async with aiohttp.ClientSession() as session:
+            for url in external_urls:
+                try:
+                    async with session.get(url, timeout=aiohttp.ClientTimeout(total=5)) as response:
+                        if response.status == 200:
+                            external_code = await response.text()
+                            all_js_code += external_code + '\n'
+                except Exception as e:
+                    logger.debug(f"Could not fetch external script {url}: {e}")
+        
+        # Strip comments from combined JS code
+        all_js_code = re.sub(r'//.*$', '', all_js_code, flags=re.MULTILINE)
+        all_js_code = re.sub(r'/\*[\s\S]*?\*/', '', all_js_code)
+        
+        # Check if JS has escape handler
+        has_keydown_listener = bool(re.search(r'addEventListener\s*\(\s*[\'"]keydown[\'"]', all_js_code, re.IGNORECASE)) or \
+                               bool(re.search(r'onkeydown', all_js_code, re.IGNORECASE))
+        has_escape_check = bool(re.search(r'[\'"]Escape[\'"]', all_js_code, re.IGNORECASE)) or \
+                          bool(re.search(r'\.key\s*===?\s*[\'"]Esc[\'"]', all_js_code, re.IGNORECASE)) or \
+                          bool(re.search(r'keyCode\s*===?\s*27', all_js_code)) or \
+                          bool(re.search(r'which\s*===?\s*27', all_js_code))
+        
+        page_has_escape_handler = has_keydown_listener and has_escape_check
+        
+        # Check modals for escape handler
+        modals = results.get('_modals', [])
+        for modal in modals:
+            # Skip native <dialog> elements - browser handles Escape
+            if modal['tagName'].lower() == 'dialog':
+                continue
+            
+            # Skip if modal has inline escape handler or page has escape handler in JS
+            if modal.get('hasInlineEscapeHandler') or page_has_escape_handler:
+                continue
+            
+            results['errors'].append({
+                'err': 'ErrModalWithoutEscape',
+                'type': 'err',
+                'cat': 'event_handlers',
+                'element': modal['tagName'],
+                'xpath': modal['xpath'],
+                'html': modal['html'],
+                'description': 'Modal element without keyboard escape handler'
+            })
+            results['elements_failed'] = results.get('elements_failed', 0) + 1
+        
+        # Clean up internal fields
+        results.pop('_inlineJsCode', None)
+        results.pop('_externalScriptUrls', None)
+        results.pop('_modals', None)
 
         # Additional check: Focus indicators for interactive elements (tabindex/event handlers)
         # Extract elements with tabindex or inline event handlers and check their focus styles

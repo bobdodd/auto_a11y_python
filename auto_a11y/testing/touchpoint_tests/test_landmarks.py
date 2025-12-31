@@ -276,22 +276,8 @@ async def test_landmarks(page) -> Dict[str, Any]:
                         results.elements_passed++;
                     }
 
-                    // Check for forms without labels
+                    // Check for regions without labels (forms are checked separately below)
                     elements.forEach(el => {
-                        if (role === 'form' && !el.name) {
-                            results.errors.push({
-                                err: 'ErrFormLandmarkMustHaveAccessibleName',
-                                type: 'err',
-                                cat: 'landmarks',
-                                element: el.tag,
-                                xpath: el.xpath,
-                                html: el.html,
-                                description: 'Form element lacks accessible name required to become a form landmark'
-                            });
-                            results.elements_failed++;
-                        }
-
-                        // Check for regions without labels
                         if (role === 'region' && !el.name) {
                             results.warnings.push({
                                 err: 'WarnUnlabelledRegion',

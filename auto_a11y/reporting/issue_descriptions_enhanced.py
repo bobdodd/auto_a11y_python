@@ -480,13 +480,14 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Limit alt text to 150 characters maximum for concise descriptions. For complex images requiring longer descriptions, use proper structured alternatives: use longdesc attribute or aria-describedby pointing to structured HTML content with headings, paragraphs, lists, and emphasis. Provide detailed descriptions in adjacent visible text content with proper semantic markup. Consider using figure/figcaption for images with captions. Never use alt text as a substitute for properly structured documentation - alt text should be brief, with complex details provided through accessible structured content."
         },
         'ErrAriaLabelMayNotBeFoundByVoiceControl': {
-            'title': "aria-label doesn\'t match visible text",
-            'what': "aria-label doesn\'t match visible text",
-            'why': "Voice control users can\'t activate element",
-            'who': "Voice control users",
+            'title': "Element's aria-label may not match what voice control users see",
+            'what': "Element's aria-label may not match what voice control users see",
+            'what_generic': "Element's aria-label may not be discoverable by voice control",
+            'why': "Voice control users speak visible text to activate elements. If aria-label differs significantly from visible text, they may be unable to activate this element.",
+            'who': "Voice control users who speak visible labels to interact with elements",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['2.5.3'],
-            'remediation': "Ensure aria-label includes visible text"
+            'remediation': "Ensure aria-label begins with or includes the visible text content of the element"
         },
         'WarnAutoStartTimers': {
             'title': "Timer detected starting automatically on page load - manual inspection required",

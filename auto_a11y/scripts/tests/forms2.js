@@ -251,23 +251,31 @@ function forms2Scrape() {
                 } else {
                     labelCheck.passed++;
                     
-                    // Check for voice control compatibility
-                    voiceControlCheck.total++;
-                    const visibleText = field.value || field.textContent || '';
-                    if (visibleText && !ariaLabel.toLowerCase().includes(visibleText.toLowerCase().substring(0, 3))) {
-                        voiceControlCheck.failed++;
-                        errorList.push({
-                            url: window.location.href,
-                            type: 'warn',
-                            cat: 'form',
-                            err: 'ErrAriaLabelMayNotBeFoundByVoiceControl',
-                            ariaLabel: ariaLabel,
-                            visibleText: visibleText,
-                            xpath: fieldXpath,
-                            fpTempId: field.getAttribute('a11y-fpId')
-                        });
-                    } else {
-                        voiceControlCheck.passed++;
+                    // Check for voice control compatibility - only for elements users would activate by speaking
+                    // Skip container roles (menu, menubar, grid, etc.) as users don't speak to activate these
+                    const containerRoles = ['menu', 'menubar', 'grid', 'listbox', 'radiogroup', 'tablist', 'tree', 'treegrid', 'navigation'];
+                    const fieldRole = field.getAttribute('role');
+                    const isContainer = containerRoles.includes(fieldRole) || 
+                                       ['NAV', 'UL', 'OL', 'DL', 'TABLE'].includes(field.tagName);
+                    
+                    if (!isContainer) {
+                        voiceControlCheck.total++;
+                        const visibleText = field.value || field.textContent || '';
+                        if (visibleText && !ariaLabel.toLowerCase().includes(visibleText.toLowerCase().substring(0, 3))) {
+                            voiceControlCheck.failed++;
+                            errorList.push({
+                                url: window.location.href,
+                                type: 'warn',
+                                cat: 'form',
+                                err: 'ErrAriaLabelMayNotBeFoundByVoiceControl',
+                                ariaLabel: ariaLabel,
+                                visibleText: visibleText,
+                                xpath: fieldXpath,
+                                fpTempId: field.getAttribute('a11y-fpId')
+                            });
+                        } else {
+                            voiceControlCheck.passed++;
+                        }
                     }
                     
                     passList.push({

@@ -334,6 +334,12 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                 });
                 
                 // Check for modals without escape handlers
+                // Note: We can only detect inline handlers. Many frameworks (Bootstrap, etc.)
+                // add escape handlers via addEventListener which we cannot detect statically.
+                // We should NOT flag modals that likely have escape handling via:
+                // 1. Native <dialog> elements (browser handles Escape automatically)
+                // 2. Bootstrap modals (data-bs-dismiss, data-bs-keyboard attributes)
+                // 3. Common modal libraries that typically handle Escape by default
                 const modals = Array.from(document.querySelectorAll('dialog, [role="dialog"], [class*="modal"]'))
                     .filter(modal => {
                         // Exclude nested modal content containers - only check outermost modal
@@ -343,13 +349,48 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     });
 
                 modals.forEach(modal => {
+                    // Native <dialog> elements handle Escape automatically via the browser
+                    if (modal.tagName.toLowerCase() === 'dialog') {
+                        return; // Skip - browser handles Escape
+                    }
+                    
+                    // Bootstrap modals handle Escape by default (data-bs-keyboard defaults to true)
+                    // Check for Bootstrap modal indicators
+                    const isBootstrapModal = modal.classList.contains('modal') && 
+                        (modal.hasAttribute('data-bs-backdrop') || 
+                         modal.hasAttribute('data-bs-keyboard') ||
+                         modal.hasAttribute('data-backdrop') ||
+                         modal.hasAttribute('data-keyboard') ||
+                         modal.querySelector('[data-bs-dismiss="modal"]') ||
+                         modal.querySelector('[data-dismiss="modal"]'));
+                    
+                    if (isBootstrapModal) {
+                        // Bootstrap handles Escape unless explicitly disabled
+                        const keyboardDisabled = modal.getAttribute('data-bs-keyboard') === 'false' ||
+                                                modal.getAttribute('data-keyboard') === 'false';
+                        if (!keyboardDisabled) {
+                            return; // Skip - Bootstrap handles Escape
+                        }
+                    }
+                    
+                    // Check for inline escape handler
                     const onkeydown = modal.getAttribute('onkeydown');
-                    const hasEscapeHandler = onkeydown &&
+                    const hasInlineEscapeHandler = onkeydown &&
                                            (onkeydown.includes('Escape') ||
                                             onkeydown.includes('Esc') ||
                                             onkeydown.includes('27'));
+                    
+                    // Check for common library patterns that typically handle Escape
+                    const hasDialogRole = modal.getAttribute('role') === 'dialog' || 
+                                         modal.getAttribute('role') === 'alertdialog';
+                    const hasAriaModal = modal.getAttribute('aria-modal') === 'true';
+                    const hasCloseButton = modal.querySelector('[aria-label*="close" i], [aria-label*="dismiss" i], .close, .btn-close, [data-dismiss], [data-bs-dismiss]');
+                    
+                    // If it has proper ARIA attributes and a close button, it's likely a well-implemented modal
+                    // that handles Escape via JavaScript event listeners we can't detect
+                    const likelyHasJSHandler = hasDialogRole && hasAriaModal && hasCloseButton;
 
-                    if (!hasEscapeHandler) {
+                    if (!hasInlineEscapeHandler && !likelyHasJSHandler) {
                         results.errors.push({
                             err: 'ErrModalWithoutEscape',
                             type: 'err',

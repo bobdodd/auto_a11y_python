@@ -373,23 +373,6 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         return; // Skip - browser handles Escape
                     }
                     
-                    // Bootstrap modals handle Escape by default (data-bs-keyboard defaults to true)
-                    const isBootstrapModal = modal.classList.contains('modal') && 
-                        (modal.hasAttribute('data-bs-backdrop') || 
-                         modal.hasAttribute('data-bs-keyboard') ||
-                         modal.hasAttribute('data-backdrop') ||
-                         modal.hasAttribute('data-keyboard') ||
-                         modal.querySelector('[data-bs-dismiss="modal"]') ||
-                         modal.querySelector('[data-dismiss="modal"]'));
-                    
-                    if (isBootstrapModal) {
-                        const keyboardDisabled = modal.getAttribute('data-bs-keyboard') === 'false' ||
-                                                modal.getAttribute('data-keyboard') === 'false';
-                        if (!keyboardDisabled) {
-                            return; // Skip - Bootstrap handles Escape
-                        }
-                    }
-                    
                     // Check for inline escape handler on the modal element itself
                     const onkeydown = modal.getAttribute('onkeydown');
                     const hasInlineEscapeHandler = onkeydown &&

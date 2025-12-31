@@ -686,7 +686,7 @@
                             <span class="badge bg-{{ {'high': 'danger', 'serious': 'danger', 'critical': 'danger', 'medium': 'warning', 'moderate': 'warning', 'low': 'info', 'minor': 'info'}[impact_text|lower] or 'secondary' }} me-2 impact-badge" data-i18n="{{ impact_text|lower }}">
                                 {{ translations_en.get(impact_text|lower, impact_text|upper) if language == 'en' else translations_fr.get(impact_text|lower, impact_text|upper) }}
                             </span>
-                            <code class="me-2">{{ error_code }}</code>
+                            {% if show_error_codes %}<code class="me-2">{{ error_code }}</code>{% endif %}
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ first_violation.metadata.what_generic_en if first_violation.metadata and first_violation.metadata.what_generic_en else first_violation.description_en }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ first_violation.metadata.what_generic_fr if first_violation.metadata and first_violation.metadata.what_generic_fr else first_violation.description_fr }}</span>
                         </button>

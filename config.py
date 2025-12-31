@@ -60,6 +60,9 @@ class Config:
     PARALLEL_TESTS: int = int(os.getenv('PARALLEL_TESTS', 5))
     TEST_TIMEOUT: int = int(os.getenv('TEST_TIMEOUT', 60000))
     RUN_AI_ANALYSIS: bool = os.getenv('RUN_AI_ANALYSIS', 'True').lower() == 'true'
+    
+    # Developer mode - show error codes in reports (useful for debugging)
+    SHOW_ERROR_CODES: bool = os.getenv('SHOW_ERROR_CODES', 'False').lower() == 'true'
 
     # UI Pagination
     PAGES_PER_PAGE: int = int(os.getenv('PAGES_PER_PAGE', 100))

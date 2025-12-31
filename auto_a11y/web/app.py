@@ -77,10 +77,13 @@ def create_app(config):
 
     babel = Babel(app, locale_selector=get_locale)
 
-    # Make get_locale available to all templates
+    # Make get_locale and config available to all templates
     @app.context_processor
-    def inject_locale():
-        return dict(get_locale=get_locale)
+    def inject_globals():
+        return dict(
+            get_locale=get_locale,
+            show_error_codes=config.SHOW_ERROR_CODES
+        )
 
     # Initialize database connection
     app.db = Database(config.MONGODB_URI, config.DATABASE_NAME)

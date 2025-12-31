@@ -17,6 +17,7 @@ from flask_babel import force_locale, lazy_gettext, pgettext
 
 from auto_a11y.core.database import Database
 from auto_a11y.reporting.issue_catalog import IssueCatalog
+from config import config
 
 
 # WCAG 2.2 French translations
@@ -1542,7 +1543,8 @@ class StaticHTMLReportGenerator:
                     bootstrap_icons_css=bootstrap_icons_css,
                     bootstrap_js=bootstrap_js,
                     filters_js=filters_js,
-                    inline_mode=True
+                    inline_mode=True,
+                    show_error_codes=config.SHOW_ERROR_CODES
                 )
 
             filename = f'page_{str(index).zfill(3)}.html'
@@ -2207,7 +2209,8 @@ class StaticHTMLReportGenerator:
                 # Embedded assets for standalone HTML
                 bootstrap_css=embedded_assets['bootstrap_css'],
                 bootstrap_icons_css=embedded_assets['bootstrap_icons_css'],
-                bootstrap_js=embedded_assets['bootstrap_js']
+                bootstrap_js=embedded_assets['bootstrap_js'],
+                show_error_codes=config.SHOW_ERROR_CODES
             )
 
         # Write to file
@@ -2264,7 +2267,8 @@ class StaticHTMLReportGenerator:
                     # Embedded assets for standalone HTML
                     bootstrap_css=embedded_assets['bootstrap_css'],
                     bootstrap_icons_css=embedded_assets['bootstrap_icons_css'],
-                    bootstrap_js=embedded_assets['bootstrap_js']
+                    bootstrap_js=embedded_assets['bootstrap_js'],
+                    show_error_codes=config.SHOW_ERROR_CODES
                 )
 
             # Write to file
@@ -2733,7 +2737,8 @@ class StaticHTMLReportGenerator:
                 # Embedded assets for standalone HTML
                 bootstrap_css=embedded_assets['bootstrap_css'],
                 bootstrap_icons_css=embedded_assets['bootstrap_icons_css'],
-                bootstrap_js=embedded_assets['bootstrap_js']
+                bootstrap_js=embedded_assets['bootstrap_js'],
+                show_error_codes=config.SHOW_ERROR_CODES
             )
 
             # Write to file

@@ -895,7 +895,7 @@
                                             <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_violation.impact|lower] or 'secondary' }} me-2 impact-badge">
                                                 {{ first_violation.impact|upper }}
                                             </span>
-                                            <code class="me-2">{{ error_code }}</code>
+                                            {% if show_error_codes %}<code class="me-2">{{ error_code }}</code>{% endif %}
                                             {{ first_violation.metadata.what_generic if first_violation.metadata.what_generic else first_violation.description }}
                                         </button>
                                     </h2>
@@ -1052,7 +1052,7 @@
                                             </span>
                                         {% endif %}
                                     {% endif %}
-                                    <code class="me-2">{{ error_code }}</code>
+                                    {% if show_error_codes %}<code class="me-2">{{ error_code }}</code>{% endif %}
                                     {% if group_list|length > 1 %}
                                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ first_violation.metadata.what_generic_en if first_violation.metadata and first_violation.metadata.what_generic_en else (first_violation.metadata.what_en if first_violation.metadata and first_violation.metadata.what_en else error_code) }}</span>
                                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ first_violation.metadata.what_generic_fr if first_violation.metadata and first_violation.metadata.what_generic_fr else (first_violation.metadata.what_fr if first_violation.metadata and first_violation.metadata.what_fr else error_code) }}</span>
@@ -1189,7 +1189,7 @@
                                             </span>
                                         {% endif %}
                                     {% endif %}
-                                    <code class="me-2">{{ error_code }}</code>
+                                    {% if show_error_codes %}<code class="me-2">{{ error_code }}</code>{% endif %}
                                     {% if group_list|length > 1 %}
                                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ first_warning.metadata.what_generic_en if first_warning.metadata and first_warning.metadata.what_generic_en else (first_warning.metadata.what_en if first_warning.metadata and first_warning.metadata.what_en else error_code) }}</span>
                                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ first_warning.metadata.what_generic_fr if first_warning.metadata and first_warning.metadata.what_generic_fr else (first_warning.metadata.what_fr if first_warning.metadata and first_warning.metadata.what_fr else error_code) }}</span>

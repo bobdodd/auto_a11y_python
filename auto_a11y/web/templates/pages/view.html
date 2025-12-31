@@ -579,7 +579,7 @@
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_violation.impact.value|lower if first_violation.impact.value else first_violation.impact|lower] or 'secondary' }} me-2 impact-badge">
                                             {{ _(first_violation.impact.value|upper if first_violation.impact.value else first_violation.impact|upper) }}
                                         </span>
-                                        <code class="me-2">{{ error_code|error_code_only }}</code>
+                                        {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                                         {% if group_list|length > 1 %}
                                             {# For grouped issues, use generic description from catalog (never specific description from instance) #}
                                             {{ first_violation.metadata.what_generic if first_violation.metadata and first_violation.metadata.what_generic else (first_violation.metadata.what if first_violation.metadata and first_violation.metadata.what else error_code|error_code_only) }}
@@ -1329,7 +1329,7 @@
                                                 <i class="bi bi-person"></i> Guest
                                             </span>
                                         {% endif %}
-                                        <code class="me-2">{{ error_code|error_code_only }}</code>
+                                        {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                                         {% if 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
                                             Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}
                                         {% elif violation.metadata and violation.metadata.title %}
@@ -1697,7 +1697,7 @@
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[first_warning.impact.value|lower if first_warning.impact.value else first_warning.impact|lower] or 'secondary' }} me-2 impact-badge">
                                             {{ _(first_warning.impact.value|upper if first_warning.impact.value else first_warning.impact|upper) }}
                                         </span>
-                                        <code class="me-2">{{ error_code|error_code_only }}</code>
+                                        {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                                         {% if group_list|length > 1 %}
                                             {# For grouped warnings, use generic description from catalog (never specific description from instance) #}
                                             {{ first_warning.metadata.what_generic if first_warning.metadata and first_warning.metadata.what_generic else (first_warning.metadata.what if first_warning.metadata and first_warning.metadata.what else error_code|error_code_only) }}
@@ -1934,7 +1934,7 @@
                                             <i class="bi bi-robot"></i> AI
                                         </span>
                                         {% endif %}
-                                        <code class="me-2">{{ error_code|error_code_only }}</code>
+                                        {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                                         {% if warning.metadata and warning.metadata.title %}
                                             {{ warning.metadata.title }}
                                         {% elif warning.metadata and warning.metadata.what and warning.metadata.what != "Accessibility issue: " + warning.id.split('_')[1] %}
@@ -2217,7 +2217,7 @@
                                             {{ _(first_info.impact.value|upper if first_info.impact.value else first_info.impact|upper) }}
                                         </span>
                                         {% endif %}
-                                        <code class="me-2">{{ error_code|error_code_only }}</code>
+                                        {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                                         {# For grouped info items, use generic description from catalog (never specific description from instance) #}
                                         {{ first_info.metadata.what_generic if first_info.metadata and first_info.metadata.what_generic else (first_info.metadata.what if first_info.metadata and first_info.metadata.what else error_code|error_code_only) }}
                                     </button>
@@ -2379,7 +2379,7 @@
                                     <button class="accordion-button collapsed" type="button"
                                             data-bs-toggle="collapse"
                                             data-bs-target="#info-single-{{ info_counter.value }}">
-                            <code class="me-2">{{ error_code|error_code_only }}</code>
+                            {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                             {% if info.metadata and info.metadata.title %}
                                 {{ info.metadata.title }}
                             {% elif info.metadata and info.metadata.what and info.metadata.what != "Accessibility issue: " + info.id.split('_')[1] %}
@@ -2596,7 +2596,7 @@
                                             {{ _(first_discovery.impact.value|upper if first_discovery.impact.value else first_discovery.impact|upper) }}
                                         </span>
                                         {% endif %}
-                                        <code class="me-2">{{ error_code|error_code_only }}</code>
+                                        {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                                         {# For grouped discoveries, use generic description from catalog (never specific description from instance) #}
                                         {{ first_discovery.metadata.what_generic if first_discovery.metadata and first_discovery.metadata.what_generic else (first_discovery.metadata.what if first_discovery.metadata and first_discovery.metadata.what else error_code|error_code_only) }}
                                     </button>
@@ -2781,7 +2781,7 @@
                                     <button class="accordion-button collapsed" type="button"
                                             data-bs-toggle="collapse"
                                             data-bs-target="#disc-single-{{ disc_counter.value }}">
-                            <code class="me-2">{{ error_code|error_code_only }}</code>
+                            {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                             {% if 'DiscoFontFound' in discovery.id and discovery.metadata.fontName %}
                                 Font '{{ discovery.metadata.fontName }}' at {{ discovery.metadata.sizeCount }} size{{ 's' if discovery.metadata.sizeCount != 1 else '' }}: {{ discovery.metadata.fontSizes|join(', ') }}
                             {% elif discovery.metadata and discovery.metadata.title %}

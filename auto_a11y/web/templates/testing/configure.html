@@ -90,6 +90,22 @@
                             </div>
                         </div>
 
+                        <hr class="my-4">
+                        <h6><i class="bi bi-code-square"></i> {{ _('Developer Options') }}</h6>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="show_error_codes"
+                                           {% if config.show_error_codes %}checked{% endif %}>
+                                    <label class="form-check-label" for="show_error_codes">
+                                        {{ _('Show Error Codes') }}
+                                    </label>
+                                </div>
+                                <small class="text-muted">{{ _('Display internal error codes (e.g., ErrMissingAccessibleName) in reports') }}</small>
+                            </div>
+                        </div>
+
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-save"></i> {{ _('Save Configuration') }}
                         </button>
@@ -280,7 +296,8 @@ document.getElementById('testing-config-form').addEventListener('submit', functi
         viewport_width: parseInt(document.getElementById('viewport_width').value),
         viewport_height: parseInt(document.getElementById('viewport_height').value),
         pages_per_page: parseInt(document.getElementById('pages_per_page').value),
-        max_pages_per_page: parseInt(document.getElementById('max_pages_per_page').value)
+        max_pages_per_page: parseInt(document.getElementById('max_pages_per_page').value),
+        show_error_codes: document.getElementById('show_error_codes').checked
     };
     
     fetch('/testing/configure', {

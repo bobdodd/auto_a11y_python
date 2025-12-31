@@ -187,6 +187,8 @@ def configure_testing():
             current_app.app_config.PAGES_PER_PAGE = config['pages_per_page']
         if 'max_pages_per_page' in config:
             current_app.app_config.MAX_PAGES_PER_PAGE = config['max_pages_per_page']
+        if 'show_error_codes' in config:
+            current_app.app_config.SHOW_ERROR_CODES = config['show_error_codes']
 
         return jsonify({
             'success': True,
@@ -202,7 +204,8 @@ def configure_testing():
         'viewport_width': current_app.app_config.BROWSER_VIEWPORT_WIDTH,
         'viewport_height': current_app.app_config.BROWSER_VIEWPORT_HEIGHT,
         'pages_per_page': getattr(current_app.app_config, 'PAGES_PER_PAGE', 100),
-        'max_pages_per_page': getattr(current_app.app_config, 'MAX_PAGES_PER_PAGE', 500)
+        'max_pages_per_page': getattr(current_app.app_config, 'MAX_PAGES_PER_PAGE', 500),
+        'show_error_codes': getattr(current_app.app_config, 'SHOW_ERROR_CODES', False)
     }
 
     return render_template('testing/configure.html', config=current_config)

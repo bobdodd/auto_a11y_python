@@ -339,7 +339,13 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                 const scripts = Array.from(document.querySelectorAll('script'));
                 scripts.forEach(script => {
                     if (!script.src && script.textContent) {
-                        const code = script.textContent;
+                        // Strip comments before analyzing code
+                        let code = script.textContent;
+                        // Remove single-line comments (// ...)
+                        code = code.replace(/\/\/.*$/gm, '');
+                        // Remove multi-line comments (/* ... */)
+                        code = code.replace(/\/\*[\s\S]*?\*\//g, '');
+                        
                         // Check if script has keydown listener AND references Escape/Esc/27
                         const hasKeydownListener = /addEventListener\s*\(\s*['"]keydown['"]/i.test(code) ||
                                                    /onkeydown/i.test(code);

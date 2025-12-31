@@ -65,10 +65,10 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Add button role to headers, aria-expanded to indicate state, and aria-controls to link headers to panels"
         },
         'ErrCarouselWithoutARIA': {
-            'title': "Carousel/slider \"{element_text}\" lacks proper ARIA markup and controls",
-            'what': "Carousel/slider \"{element_text}\" lacks proper ARIA markup and controls",
-            'why': "Without proper ARIA and controls, users cannot understand or control the carousel\'s behavior",
-                    'what_generic': "Carousel or slider lacks proper ARIA markup and controls",
+            'title': "Carousel or slider lacks proper ARIA markup and controls",
+            'what': "Carousel or slider lacks proper ARIA markup and controls",
+            'what_generic': "Carousel or slider lacks proper ARIA markup and controls",
+            'why': "Without proper ARIA and controls, users cannot understand or control the carousel's behavior",
             'who': "Screen reader users, keyboard users, users with motor impairments",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.1.1', '4.1.2', '2.2.2'],

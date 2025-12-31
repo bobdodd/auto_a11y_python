@@ -96,7 +96,20 @@ async def test_aria(page) -> Dict[str, Any]:
                 let checksRun = 0;
 
                 // Test 1: ErrAriaLabelMayNotBeFoundByVoiceControl (existing test)
-                const elementsWithAriaLabel = allElements.filter(el => el.hasAttribute('aria-label'));
+                // Only applies to interactive elements users would activate by speaking
+                // Skip containers, landmarks, and structural elements
+                const containerTags = ['nav', 'ul', 'ol', 'dl', 'table', 'section', 'article', 'aside', 'header', 'footer', 'main', 'form', 'fieldset', 'figure'];
+                const containerRoles = ['menu', 'menubar', 'grid', 'listbox', 'radiogroup', 'tablist', 'tree', 'treegrid', 'navigation', 'region', 'complementary', 'contentinfo', 'banner', 'search', 'form'];
+                
+                const elementsWithAriaLabel = allElements.filter(el => {
+                    if (!el.hasAttribute('aria-label')) return false;
+                    const tag = el.tagName.toLowerCase();
+                    const role = el.getAttribute('role');
+                    // Skip container/landmark elements
+                    if (containerTags.includes(tag)) return false;
+                    if (role && containerRoles.includes(role)) return false;
+                    return true;
+                });
                 checksRun += elementsWithAriaLabel.length;
 
                 elementsWithAriaLabel.forEach(element => {

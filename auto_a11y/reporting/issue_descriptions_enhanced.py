@@ -68,11 +68,11 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'title': "Carousel or slider lacks proper ARIA markup and controls",
             'what': "Carousel or slider lacks proper ARIA markup and controls",
             'what_generic': "Carousel or slider lacks proper ARIA markup and controls",
-            'why': "Without proper ARIA and controls, users cannot understand or control the carousel's behavior",
-            'who': "Screen reader users, keyboard users, users with motor impairments",
+            'why': "Carousels present unique accessibility challenges: screen reader users need to understand the carousel structure, know which slide is current, and be notified of changes. Keyboard users need a way to pause auto-rotation and navigate between slides. Without proper ARIA markup, assistive technology users cannot perceive or operate the carousel.",
+            'who': "Screen reader users who cannot perceive carousel structure or slide changes, keyboard users who cannot control auto-rotating content, users with cognitive disabilities who need more time to read content",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.1.1', '4.1.2', '2.2.2'],
-            'remediation': "Add role=\"region\", aria-label, aria-live for updates, and accessible previous/next controls"
+            'remediation': "An accessible carousel should include: (1) role=\"region\" or role=\"group\" on the carousel container with an aria-label describing its purpose, (2) aria-roledescription=\"carousel\" to help users understand what they're interacting with, (3) each slide should have role=\"group\" with aria-roledescription=\"slide\" and aria-label indicating position (e.g., '1 of 5'), (4) Previous/Next buttons with clear accessible names, (5) aria-live=\"polite\" region to announce slide changes, (6) if auto-rotating: a pause/play button and the carousel should pause on hover/focus. Consider using the WAI-ARIA Authoring Practices carousel pattern."
         },
         'ErrClickableWithoutKeyboard': {
             'title': "Element with onclick handler is not keyboard accessible",

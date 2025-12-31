@@ -88,6 +88,11 @@ def enrich_test_result_with_catalog(test_result):
                     violation.metadata['why'] = why_template
                     violation.metadata['how'] = how_template
                 
+                # Debug: log metadata for ErrSmallText
+                if error_code == 'ErrSmallText':
+                    logger.warning(f"DEBUG ErrSmallText metadata keys: {list(violation.metadata.keys())}")
+                    logger.warning(f"DEBUG ErrSmallText has allInstances: {'allInstances' in violation.metadata}")
+                
                 violation.metadata['what_generic'] = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
                 violation.metadata['who'] = catalog_info['who_it_affects']
 

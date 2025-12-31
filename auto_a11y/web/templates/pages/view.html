@@ -1505,6 +1505,27 @@
                             </p>
                             {% endif %}
 
+                            {# Special case: ErrSmallText with allInstances but no html #}
+                            {% if 'ErrSmallText' in violation.id and violation.metadata and violation.metadata.get('allInstances') and not violation.html %}
+                            <div class="mt-3">
+                                <h6>{{ _('Affected Elements') }}</h6>
+                                <p class="mb-2">{{ violation.metadata.allInstances|length }} element(s) with text smaller than 16px:</p>
+                                {% for instance in violation.metadata.allInstances %}
+                                <div class="mb-3 border-start border-warning border-3 ps-3">
+                                    <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; - {{ _('Text size:') }} <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
+                                    <p class="mb-1 small">{{ _('Text preview:') }} "{{ instance.text|truncate(80) }}"</p>
+                                    <p class="mb-1 small text-muted">
+                                        {{ _('Location:') }} <code>{{ instance.xpath }}</code>
+                                        <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{ instance.xpath|e }}', this)" title="{{ _('Copy XPath to clipboard') }}" style="font-size: 0.875rem;">
+                                            <i class="bi bi-clipboard"></i>
+                                        </button>
+                                    </p>
+                                    <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+
                             {% if violation.html %}
                             <div class="mt-3">
                                 <h6>{{ _('Code Snippet') }}</h6>

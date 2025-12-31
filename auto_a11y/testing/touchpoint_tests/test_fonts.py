@@ -350,22 +350,26 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
 
                 // Create single grouped error for all small text instances
                 if (smallTextInstances.length > 0) {
+                    // Find smallest font size for the summary
+                    const smallestSize = Math.min(...smallTextInstances.map(i => parseFloat(i.fontSize)));
                     results.errors.push({
                         err: 'ErrSmallText',
                         type: 'err',
                         cat: 'fonts',
                         element: 'text',
-                        xpath: smallTextInstances[0].xpath,
-                        html: smallTextInstances[0].html,
-                        description: 'Element has text smaller than 16px',
-                        allInstances: smallTextInstances.map((inst, idx) => ({
-                            index: idx + 1,
-                            element: inst.element,
-                            xpath: inst.xpath,
-                            html: inst.html,
-                            fontSize: inst.fontSize,
-                            text: inst.text
-                        }))
+                        description: `${smallTextInstances.length} element(s) have text smaller than the recommended minimum of 16px (smallest: ${smallestSize}px)`,
+                        metadata: {
+                            fontSize: smallestSize,
+                            instanceCount: smallTextInstances.length,
+                            allInstances: smallTextInstances.map((inst, idx) => ({
+                                index: idx + 1,
+                                element: inst.element,
+                                xpath: inst.xpath,
+                                html: inst.html,
+                                fontSize: inst.fontSize,
+                                text: inst.text
+                            }))
+                        }
                     });
                 }
 

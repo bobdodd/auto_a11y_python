@@ -2287,13 +2287,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         },
         'ErrSmallText': {
             'title': "Text is too small - minimum 16px recommended",
-            'what': "Text size is {fontSize}px, which is below the recommended minimum of 16px for comfortable reading",
+            'what': "Text size is below the recommended minimum of 16px for comfortable reading. See the list of affected elements below.",
             'why': "Small text is difficult to read, especially for users with low vision or on mobile devices.",
-                    'what_generic': "Text size is below the recommended minimum for comfortable reading",
+            'what_generic': "Text size is below the recommended minimum of 16px for comfortable reading",
             'who': "Users with low vision, aging users, mobile device users, users with reading disabilities.",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['1.4.4'],
-            'remediation': "Increase font size to minimum 16px for body text (14px absolute minimum). Ensure text can be zoomed to 200% without loss of functionality. Current size: {fontSize}px."
+            'remediation': "Increase font size to minimum 16px for body text (14px absolute minimum). Ensure text can be zoomed to 200% without loss of functionality. Review each instance below and adjust font sizes accordingly."
         },
         'ErrSvgStaticWithoutRole': {
             'title': "Static inline SVG lacks role=\"img\", preventing assistive technologies from treating it as an image",

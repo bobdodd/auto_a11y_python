@@ -287,10 +287,15 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     const style = window.getComputedStyle(element);
                     const animationName = style.animationName || style.webkitAnimationName || '';
                     const transition = style.transition || style.webkitTransition || '';
+                    const transitionDuration = style.transitionDuration || '0s';
 
-                    // Check if animation-name is not 'none' or transition affects color/opacity/position
+                    // Check if animation-name is not 'none'
                     const hasAnim = animationName && animationName !== 'none';
-                    const hasColorTransition = transition && (
+                    
+                    // Check if transition affects color/opacity and has non-zero duration
+                    // Browser default 'all 0s ease 0s' should not be flagged as animation
+                    const hasNonZeroDuration = transitionDuration && !transitionDuration.match(/^0s(,\\s*0s)*$/);
+                    const hasColorTransition = hasNonZeroDuration && transition && (
                         transition.includes('color') ||
                         transition.includes('background') ||
                         transition.includes('opacity') ||

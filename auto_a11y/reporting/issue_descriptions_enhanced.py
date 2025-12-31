@@ -769,14 +769,14 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Use only one labeling method"
         },
         'ErrContentObscuring': {
-            'title': "Dialog/overlay obscures interactive content",
-            'what': "Dialog or overlay at {dialogXpath} obscures {obscuredCount} interactive element(s) at {breakpoint}px viewport width, preventing users from accessing them",
-            'why': "When content is covered by other elements, users cannot access or interact with it, creating complete barriers to functionality. The dialog is positioned over interactive elements that users need to access. This issue is viewport-specific and may only appear at certain screen sizes.",
-                    'what_generic': "Dialog or overlay obscures interactive elements, preventing users from accessing them",
-            'who': "All users at this viewport size, particularly keyboard users who cannot use mouse to work around layout issues, screen reader users who may not know content is obscured, mobile users with limited screen space.",
+            'title': "Non-modal floating element obscures interactive content",
+            'what': "A non-modal floating element obscures {obscuredCount} interactive element(s) at {breakpoint}px viewport width. Unlike modal dialogs (which trap focus and are expected to cover background content), this element does not prevent users from attempting to interact with the obscured content.",
+            'what_generic': "Non-modal floating element obscures interactive content that users may try to access",
+            'why': "This issue applies to floating elements that are NOT true modal dialogs. Modal dialogs (with aria-modal='true') are designed to temporarily take over the interface, trap focus within the dialog, and prevent background interaction - obscuring content is their intended behavior. However, non-modal floating elements (tooltips, popovers, sticky headers, floating action buttons, etc.) do NOT trap focus and users may attempt to interact with content behind them. When these elements cover interactive content, users can see the content but cannot click or tap on it, creating frustration and barriers. Note: Properly implemented modal dialogs are NOT flagged by this test because obscuring content is expected when the user has triggered a modal.",
+            'who': "All users at this viewport size, particularly: mouse/touch users who cannot click obscured elements, keyboard users who may tab to elements they cannot see, users with motor impairments who have difficulty with precise pointer control around floating elements.",
             'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.4.3', '2.1.2'],
-            'remediation': "Fix z-index and positioning issues to prevent the dialog from covering interactive content at the {breakpoint}px viewport width. Ensure modals and overlays don\'t cover content inappropriately. Use responsive CSS to adjust dialog positioning at different breakpoints. Consider repositioning the dialog, making it dismissible, or redesigning the layout for this screen size. Test that all content remains accessible when the dialog is visible across all responsive breakpoints."
+            'wcag': ['2.4.3', '2.1.2', '1.4.13'],
+            'remediation': "First, determine if this element should be a modal dialog: (1) If it requires user attention and should block background interaction, convert it to a proper modal with role='dialog', aria-modal='true', and focus trapping - then this error will no longer apply. (2) If it's a non-blocking floating element (tooltip, popover, sticky element), adjust its positioning to avoid covering interactive content. Use CSS to ensure proper z-index layering. For sticky headers/footers, ensure they don't cover content when scrolled. For tooltips/popovers, position them to avoid overlapping buttons and links. Test across viewport sizes as the issue may be breakpoint-specific."
         },
         'ErrContentinfoLandmarkMayNotBeChildOfAnotherLandmark': {
             'title': "Contentinfo landmark is nested inside another landmark",

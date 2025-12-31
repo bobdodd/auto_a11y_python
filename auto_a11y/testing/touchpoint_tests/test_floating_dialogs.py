@@ -425,7 +425,15 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                     }
                     
                     // Check for content obscuring
-                    if (overlappingElements.length > 0) {
+                    // Modal dialogs (aria-modal="true") are EXPECTED to obscure content - that's their purpose
+                    // They trap focus and prevent interaction with background content by design
+                    // Only flag non-modal floating elements that obscure content unexpectedly
+                    const isModal = dialog.getAttribute('aria-modal') === 'true' || 
+                                   dialog.tagName.toLowerCase() === 'dialog' ||
+                                   dialog.getAttribute('role') === 'alertdialog';
+                    
+                    if (overlappingElements.length > 0 && !isModal) {
+                        // This is a non-modal floating element obscuring content - problematic
                         results.errors.push({
                             err: 'ErrContentObscuring',
                             type: 'err',
@@ -433,7 +441,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                             element: dialog.tagName,
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),
-                            description: `Dialog obscures ${overlappingElements.length} interactive element(s) at ${breakpointWidth}px viewport`,
+                            description: `Non-modal floating element obscures ${overlappingElements.length} interactive element(s) at ${breakpointWidth}px viewport. Unlike modal dialogs, this element does not trap focus, so users may try to interact with obscured content.`,
                             metadata: {
                                 obscuredCount: overlappingElements.length,
                                 obscuredElements: overlappingElements,

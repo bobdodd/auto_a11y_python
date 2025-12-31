@@ -153,11 +153,33 @@ class ScriptInjector:
             True if successful
         """
         try:
+            already_injected = await page.evaluate('() => window.__a11y_scripts_injected === true')
+            if already_injected:
+                logger.debug("Scripts already injected, skipping re-injection")
+                return True
+            
+            import asyncio
             for script_path in self.SCRIPT_LOAD_ORDER:
                 full_path = self.SCRIPT_DIR / script_path
                 if full_path.exists():
+                    logger.debug(f"Injecting script: {script_path}")
                     await page.addScriptTag({'path': str(full_path)})
-                    # Script file injected
+                    # Verify connection after each script injection
+                    await asyncio.sleep(0.05)
+            
+            logger.warning("DEBUG inject_script_files: All scripts injected, setting flag")
+            await page.evaluate('() => { window.__a11y_scripts_injected = true; }')
+            
+            # Brief pause to let injected scripts initialize
+            await asyncio.sleep(0.2)
+            
+            # Verify page is still responsive
+            try:
+                await asyncio.wait_for(page.evaluate('() => true'), timeout=2.0)
+                logger.warning("DEBUG inject_script_files: Page connection verified after injection")
+            except Exception as verify_err:
+                logger.error(f"Page connection lost after script injection: {verify_err}")
+                return False
             
             return True
             

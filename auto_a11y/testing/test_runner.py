@@ -689,11 +689,26 @@ class TestRunner:
                     await self.script_injector.inject_script_files(browser_page)
                     logger.warning(f"DEBUG run_single_test: scripts injected")
 
+                    # Verify connection still alive after injection
+                    try:
+                        await asyncio.wait_for(
+                            browser_page.evaluate('() => true'),
+                            timeout=2.0
+                        )
+                        logger.warning(f"DEBUG run_single_test: connection verified after injection")
+                    except Exception as conn_err:
+                        logger.error(f"Connection lost after script injection: {conn_err}")
+                        raise
+
                     # Set WCAG level
+                    logger.warning(f"DEBUG run_single_test: setting WCAG level")
                     await browser_page.evaluate(f'window.WCAG_LEVEL = "{wcag_level}";')
+                    logger.warning(f"DEBUG run_single_test: WCAG level set")
 
                     # Store original viewport before running tests (some tests change it)
+                    logger.warning(f"DEBUG run_single_test: getting viewport")
                     original_viewport = await browser_page.evaluate('() => ({ width: window.innerWidth, height: window.innerHeight })')
+                    logger.warning(f"DEBUG run_single_test: viewport stored, about to run tests")
                     logger.debug(f"Stored original viewport: {original_viewport}")
 
                     # Run tests

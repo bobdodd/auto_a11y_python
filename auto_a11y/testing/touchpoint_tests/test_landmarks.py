@@ -451,20 +451,71 @@ async def test_landmarks(page) -> Dict[str, Any]:
                 );
                 
                 let contentOutsideLandmarks = 0;
+                const elementsOutsideLandmarks = new Map(); // Track unique immediate body children
+                
                 while (walker.nextNode()) {
                     contentOutsideLandmarks++;
+                    
+                    // Find the immediate child of body that contains this text node
+                    let current = walker.currentNode.parentElement;
+                    while (current && current.parentElement !== document.body) {
+                        current = current.parentElement;
+                    }
+                    
+                    if (current && current.parentElement === document.body) {
+                        // Track this immediate body child
+                        if (!elementsOutsideLandmarks.has(current)) {
+                            const tagName = current.tagName.toLowerCase();
+                            const id = current.id ? `#${current.id}` : '';
+                            const className = current.className ? `.${current.className.toString().split(' ').join('.')}` : '';
+                            
+                            // Get xpath for this element
+                            let xpath = '';
+                            let el = current;
+                            while (el && el !== document) {
+                                let idx = 1;
+                                for (let sib = el.previousElementSibling; sib; sib = sib.previousElementSibling) {
+                                    if (sib.tagName === el.tagName) idx++;
+                                }
+                                xpath = `/${el.tagName.toLowerCase()}[${idx}]${xpath}`;
+                                el = el.parentElement;
+                            }
+                            xpath = '/html' + xpath.substring(xpath.indexOf('/body'));
+                            
+                            // Get text preview (first 100 chars of text content)
+                            const textPreview = current.textContent.trim().substring(0, 100);
+                            
+                            // Get HTML preview (opening tag only)
+                            const htmlPreview = current.outerHTML.substring(0, Math.min(200, current.outerHTML.indexOf('>') + 1));
+                            
+                            elementsOutsideLandmarks.set(current, {
+                                element: tagName,
+                                selector: `${tagName}${id}${className}`.substring(0, 50),
+                                xpath: xpath,
+                                text: textPreview,
+                                html: htmlPreview
+                            });
+                        }
+                    }
                 }
                 
                 if (contentOutsideLandmarks > 0) {
+                    const instances = Array.from(elementsOutsideLandmarks.values()).map((inst, idx) => ({
+                        index: idx + 1,
+                        ...inst
+                    }));
+                    
                     results.errors.push({
                         err: 'ErrContentOutsideLandmarks',
                         type: 'err',
                         cat: 'landmarks',
                         element: 'body',
-                        xpath: '/html/body',
-                        html: bodyStart,
-                        description: `Content exists outside of landmark regions - ${contentOutsideLandmarks} text nodes found outside landmarks`,
-                        count: contentOutsideLandmarks
+                        description: `${instances.length} element(s) with content outside landmark regions`,
+                        metadata: {
+                            textNodeCount: contentOutsideLandmarks,
+                            elementCount: instances.length,
+                            allInstances: instances
+                        }
                     });
                     results.elements_failed++;
                 }

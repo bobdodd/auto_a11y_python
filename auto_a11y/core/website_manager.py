@@ -310,7 +310,8 @@ class WebsiteManager:
         take_screenshot: bool = True,
         run_ai_analysis: Optional[bool] = None,
         ai_api_key: Optional[str] = None,
-        website_user_id: Optional[str] = None
+        website_user_id: Optional[str] = None,
+        skip_completion: bool = False
     ) -> TestingJob:
         """
         Start testing for website pages
@@ -326,6 +327,7 @@ class WebsiteManager:
             run_ai_analysis: Whether to run AI analysis
             ai_api_key: API key for AI analysis
             website_user_id: Optional WebsiteUser ID for authenticated testing
+            skip_completion: If True, don't mark job as completed (for multi-user testing)
 
         Returns:
             Testing job
@@ -364,7 +366,8 @@ class WebsiteManager:
             self.browser_config,
             take_screenshot=take_screenshot,
             run_ai_analysis=run_ai_analysis,
-            ai_api_key=ai_api_key
+            ai_api_key=ai_api_key,
+            skip_completion=skip_completion
         )
         logger.info(f"Testing job.run completed for {job_id}")
         

@@ -51,25 +51,31 @@ class TestingJob:
         self.test_all = test_all
         self.website_user_id = website_user_id
         
-        # Create job in database
-        logger.info(f"Creating testing job {job_id} in database...")
+        # Create or get existing job in database
+        # For multi-user testing, the same job_id is reused for all users
+        logger.info(f"Creating/getting testing job {job_id} in database...")
         try:
-            self.job_doc = job_manager.create_job(
-                job_id=job_id,
-                job_type=JobType.TESTING,
-                website_id=website_id,
-                user_id=user_id,
-                session_id=session_id,
-                metadata={
-                    'page_ids': page_ids,
-                    'test_all': test_all,
-                    'total_pages': len(page_ids) if page_ids else 0,
-                    'website_user_id': website_user_id
-                }
-            )
-            logger.info(f"Successfully created testing job {job_id} in database for website {website_id}")
+            existing_job = job_manager.get_job(job_id)
+            if existing_job:
+                logger.info(f"Job {job_id} already exists, reusing for next user")
+                self.job_doc = existing_job
+            else:
+                self.job_doc = job_manager.create_job(
+                    job_id=job_id,
+                    job_type=JobType.TESTING,
+                    website_id=website_id,
+                    user_id=user_id,
+                    session_id=session_id,
+                    metadata={
+                        'page_ids': page_ids,
+                        'test_all': test_all,
+                        'total_pages': len(page_ids) if page_ids else 0,
+                        'website_user_id': website_user_id
+                    }
+                )
+                logger.info(f"Successfully created testing job {job_id} in database for website {website_id}")
         except Exception as e:
-            logger.error(f"Failed to create job {job_id} in database: {e}")
+            logger.error(f"Failed to create/get job {job_id} in database: {e}")
             raise
     
     def is_cancelled(self) -> bool:
@@ -103,8 +109,13 @@ class TestingJob:
             pages_failed: Number of pages that failed
             pages_skipped: Number of pages skipped
         """
+        # Get user label for progress message
+        user_label = self._get_user_label()
+        
         if not message:
             message = f"Tested {pages_tested}/{total_pages} pages"
+            if user_label:
+                message = f"[{user_label}] " + message
             if current_page:
                 message += f" - Current: {current_page}"
         
@@ -119,9 +130,22 @@ class TestingJob:
                 'pages_failed': pages_failed,
                 'pages_skipped': pages_skipped,
                 'total_pages': total_pages,
-                'current_page': current_page
+                'current_page': current_page,
+                'user_label': user_label
             }
         )
+    
+    def _get_user_label(self) -> str:
+        """Get display label for current user being tested"""
+        if not self.website_user_id:
+            return "Guest"
+        # Return just the user ID - the full name lookup would require DB access
+        # which we want to avoid in progress updates
+        return self._cached_user_label if hasattr(self, '_cached_user_label') else self.website_user_id
+    
+    def set_user_label(self, label: str):
+        """Set cached user label for progress messages"""
+        self._cached_user_label = label
     
     def set_running(self, total_pages: int):
         """
@@ -130,23 +154,29 @@ class TestingJob:
         Args:
             total_pages: Total number of pages to test
         """
+        user_label = self._get_user_label()
+        message = 'Testing started'
+        if user_label:
+            message = f'[{user_label}] {message}'
+        
         self.job_manager.update_job_status(
             job_id=self.job_id,
             status=JobStatus.RUNNING,
             progress={
                 'current': 0,
                 'total': total_pages,
-                'message': 'Testing started',
+                'message': message,
                 'details': {
                     'pages_tested': 0,
                     'pages_passed': 0,
                     'pages_failed': 0,
                     'pages_skipped': 0,
-                    'total_pages': total_pages
+                    'total_pages': total_pages,
+                    'user_label': user_label
                 }
             }
         )
-        logger.info(f"Testing job {self.job_id} marked as running with {total_pages} pages to test")
+        logger.info(f"Testing job {self.job_id} marked as running with {total_pages} pages to test for user: {user_label}")
     
     def set_completed(
         self,
@@ -238,7 +268,8 @@ class TestingJob:
         browser_config: Dict[str, Any],
         take_screenshot: bool = True,
         run_ai_analysis: Optional[bool] = None,
-        ai_api_key: Optional[str] = None
+        ai_api_key: Optional[str] = None,
+        skip_completion: bool = False
     ):
         """
         Run the testing job
@@ -249,6 +280,7 @@ class TestingJob:
             take_screenshot: Whether to take screenshots
             run_ai_analysis: Whether to run AI analysis
             ai_api_key: API key for AI analysis
+            skip_completion: If True, don't mark job as completed (for multi-user testing)
         """
         from auto_a11y.testing import TestRunner
         
@@ -259,6 +291,16 @@ class TestingJob:
             website = database.get_website(self.website_id)
             if not website:
                 raise ValueError(f"Website {self.website_id} not found")
+            
+            # Set user label for progress messages
+            if self.website_user_id:
+                user = database.get_project_user(self.website_user_id)
+                if user:
+                    self.set_user_label(user.name_display)
+                else:
+                    self.set_user_label(self.website_user_id)
+            else:
+                self.set_user_label("Guest")
             
             # Get pages to test
             if self.test_all:
@@ -301,11 +343,13 @@ class TestingJob:
                     return
                 
                 # Update progress BEFORE testing to show current page
+                user_label = self._get_user_label()
+                progress_msg = f"[{user_label}] Testing {i+1}/{len(testable_pages)}"
                 self.update_progress(
                     pages_tested=pages_tested,
                     total_pages=len(testable_pages),
                     current_page=page.url,
-                    message=f"Testing page {i+1}/{len(testable_pages)}: {page.url}",
+                    message=progress_msg,
                     pages_passed=pages_passed,
                     pages_failed=pages_failed,
                     pages_skipped=pages_skipped
@@ -382,6 +426,10 @@ class TestingJob:
             if self.is_cancelled():
                 logger.info(f"Testing job {self.job_id} was cancelled")
                 self.set_cancelled()
+            elif skip_completion:
+                # Don't mark as completed - more users to test
+                user_label = self._get_user_label()
+                logger.info(f"Testing job {self.job_id} finished for user {user_label}, skipping completion (more users pending)")
             else:
                 # Mark as completed
                 self.set_completed(pages_tested, pages_passed, pages_failed, pages_skipped)

@@ -205,6 +205,8 @@ class ScriptExecutor:
             if not element:
                 raise ScriptExecutionError(f"Element not found: {step.selector}")
             await element.click()
+            # Brief wait after click to let any triggered animations/JS settle
+            await asyncio.sleep(0.5)
 
         elif action == ActionType.TYPE:
             # Wait for element then type

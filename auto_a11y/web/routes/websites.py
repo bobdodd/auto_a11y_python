@@ -597,77 +597,96 @@ def test_all_pages(website_id):
         session_user_id = session.get('user_id') if session else None
         session_id_value = session.get('session_id') if session else None
 
-        # Submit a separate testing job for each selected user
-        job_ids = []
+        # Submit a SINGLE testing job that processes all users SEQUENTIALLY
+        # This prevents browser session corruption from concurrent user testing
         total_tests = len(website_user_ids) * len(testable_pages)
+        job_id = f'testing_{website_id}_{uuid.uuid4().hex[:8]}'
+        logger.info(f"Submitting testing job with ID: {job_id} for {len(website_user_ids)} user(s)")
 
-        for website_user_id in website_user_ids:
-            # Generate unique job ID for this user
-            job_id = f'testing_{website_id}_{uuid.uuid4().hex[:8]}'
-            logger.info(f"Submitting testing job with ID: {job_id} for user: {website_user_id or 'guest'}")
+        # Create a wrapper that handles the async execution properly
+        # Process all users sequentially within this single job
+        def testing_wrapper():
+            import asyncio
+            import nest_asyncio
+            nest_asyncio.apply()
 
-            # Create a wrapper that handles the async execution properly
-            def testing_wrapper(current_website_user_id=website_user_id, current_job_id=job_id):
-                import asyncio
-                import nest_asyncio
-                nest_asyncio.apply()
+            logger.info(f"Testing wrapper starting for website {website_id}, job_id: {job_id}, users: {len(website_user_ids)}")
 
-                logger.info(f"Testing wrapper starting for website {website_id}, job_id: {current_job_id}, user: {current_website_user_id or 'guest'}")
+            # Try to get the running loop, or create a new one
+            try:
+                loop = asyncio.get_running_loop()
+                logger.info("Using existing event loop")
+            except RuntimeError:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                logger.info("Created new event loop")
 
-                # Try to get the running loop, or create a new one
-                try:
-                    loop = asyncio.get_running_loop()
-                    logger.info("Using existing event loop")
-                except RuntimeError:
-                    loop = asyncio.new_event_loop()
-                    asyncio.set_event_loop(loop)
-                    logger.info("Created new event loop")
+            try:
+                # Get page IDs for testing
+                page_ids = [p.id for p in testable_pages]
+                last_result = None
+                num_users = len(website_user_ids)
 
-                try:
-                    # Get page IDs for testing
-                    page_ids = [p.id for p in testable_pages]
+                # Process each user SEQUENTIALLY to avoid browser session corruption
+                for idx, current_website_user_id in enumerate(website_user_ids):
+                    user_label = current_website_user_id or 'guest'
+                    logger.info(f"Testing user {idx + 1}/{num_users}: {user_label}")
 
                     # Convert empty string to None for guest testing
                     user_id_to_pass = current_website_user_id if current_website_user_id else None
 
-                    result = loop.run_until_complete(
-                        website_manager.test_website(
-                            website_id=website_id,
-                            page_ids=page_ids,
-                            job_id=current_job_id,
-                            user_id=session_user_id,
-                            session_id=session_id_value,
-                            test_all=False,  # We're providing specific page_ids
-                            take_screenshot=True,
-                            run_ai_analysis=None,
-                            ai_api_key=ai_key,
-                            website_user_id=user_id_to_pass
-                        )
-                    )
-                    logger.info(f"Testing wrapper completed, result job_id: {result.job_id if result else 'None'}")
-                    return result
-                except Exception as e:
-                    logger.error(f"Error in testing wrapper: {e}")
-                    raise
-                finally:
-                    # Don't close the loop immediately - let it complete tasks
-                    # Only close if we created a new loop
+                    # Always use the main job_id for UI tracking
+                    # We'll update progress messages to show which user is being tested
+                    current_job_id = job_id
+
+                    # For multi-user, we need to prevent the job from being marked complete
+                    # after the first user. We'll pass a flag to indicate more users remain.
+                    is_last_user = (idx == num_users - 1)
+
                     try:
-                        if not loop.is_running():
-                            loop.close()
-                            logger.info("Closed event loop")
-                    except:
-                        pass
+                        result = loop.run_until_complete(
+                            website_manager.test_website(
+                                website_id=website_id,
+                                page_ids=page_ids,
+                                job_id=current_job_id,
+                                user_id=session_user_id,
+                                session_id=session_id_value,
+                                test_all=False,
+                                take_screenshot=True,
+                                run_ai_analysis=None,
+                                ai_api_key=ai_key,
+                                website_user_id=user_id_to_pass,
+                                skip_completion=(not is_last_user)
+                            )
+                        )
+                        last_result = result
+                        logger.info(f"Completed testing for user: {user_label}")
+                    except Exception as user_error:
+                        logger.error(f"Error testing user {user_label}: {user_error}")
+                        # Continue with next user even if one fails
 
-            # Submit testing task
-            submitted_id = task_runner.submit_task(
-                func=testing_wrapper,
-                args=(),
-                task_id=job_id
-            )
+                logger.info(f"Testing wrapper completed for all {num_users} users")
+                return last_result
+            except Exception as e:
+                logger.error(f"Error in testing wrapper: {e}")
+                raise
+            finally:
+                try:
+                    if not loop.is_running():
+                        loop.close()
+                        logger.info("Closed event loop")
+                except:
+                    pass
 
-            job_ids.append(submitted_id)
-            logger.info(f"Testing job submitted successfully with ID: {submitted_id} for user: {website_user_id or 'guest'}")
+        # Submit single testing task for all users
+        submitted_id = task_runner.submit_task(
+            func=testing_wrapper,
+            args=(),
+            task_id=job_id
+        )
+
+        job_ids = [submitted_id]
+        logger.info(f"Testing job submitted successfully with ID: {submitted_id} for {len(website_user_ids)} user(s)")
 
         # Build response message
         user_count = len(website_user_ids)
@@ -787,13 +806,19 @@ def test_status(website_id):
     from auto_a11y.core.website_manager import WebsiteManager
     from auto_a11y.core.job_manager import JobType
     
+    logger.warning(f"DEBUG test_status called for website {website_id}")
+    
     # Get job_id from request args if provided
     job_id = request.args.get('job_id')
+    logger.warning(f"DEBUG test_status: job_id={job_id}")
     
     # Get fresh website data from database
     website = current_app.db.get_website(website_id)
     if not website:
+        logger.warning(f"DEBUG test_status: website not found!")
         return jsonify({'error': 'Website not found'}), 404
+    
+    logger.warning(f"DEBUG test_status: website found, job_id={job_id}")
     
     # If a specific job_id is provided, get its status
     if job_id:
@@ -804,6 +829,8 @@ def test_status(website_id):
             status = job_status.get('status', 'unknown')
             progress = job_status.get('progress', {})
             details = progress.get('details', {})
+            message = progress.get('message', '')
+            logger.warning(f"DEBUG test_status: job found, message='{message}'")
             
             return jsonify({
                 'status': status,
@@ -814,12 +841,13 @@ def test_status(website_id):
                 'pages_skipped': details.get('pages_skipped', 0),
                 'total_pages': details.get('total_pages', 0),
                 'current_page': details.get('current_page', ''),
-                'message': progress.get('message', ''),
+                'message': message,
                 'error': job_status.get('error'),
                 'all_complete': status in ['completed', 'failed', 'cancelled']
             })
     
     # Otherwise, get page-level status (for backward compatibility)
+    logger.warning(f"DEBUG test_status: using page-level status (no job_id)")
     pages = current_app.db.get_pages(website_id)
     
     # Count pages by status
@@ -841,6 +869,25 @@ def test_status(website_id):
     if website and website.last_tested:
         last_tested = website.last_tested.strftime('%Y-%m-%d %H:%M')
     
+    # Try to get user info from any active testing job for this website
+    message = f'Testing: {testing_pages}/{total_pages}'
+    logger.warning(f"DEBUG test_status: Looking for active jobs for {website_id}")
+    try:
+        website_manager = WebsiteManager(current_app.db, current_app.app_config.__dict__)
+        active_jobs = website_manager.job_manager.get_active_jobs(
+            website_id=website_id
+        )
+        logger.warning(f"DEBUG test_status: Found {len(active_jobs)} active jobs")
+        if active_jobs:
+            # Get message from first active job (includes user label)
+            job_progress = active_jobs[0].get('progress', {})
+            job_message = job_progress.get('message', '')
+            logger.warning(f"DEBUG test_status: job_message='{job_message}'")
+            if job_message:
+                message = job_message
+    except Exception as e:
+        logger.error(f"Could not get active job info: {e}")
+    
     return jsonify({
         'total_pages': total_pages,
         'tested_pages': tested_pages,
@@ -849,7 +896,7 @@ def test_status(website_id):
         'error_pages': error_pages,
         'all_complete': all_complete,
         'last_tested': last_tested,
-        'message': f'Testing: {tested_pages}/{total_pages} complete'
+        'message': message
     })
 
 

@@ -122,15 +122,23 @@ class TestRunner:
                 # Perform authentication if user specified
                 authenticated_user = None
                 if website_user_id:
+                    logger.warning(f"DEBUG: Testing page {page.url} with user_id: {website_user_id}")
                     user = self.db.get_project_user(website_user_id)
                     if user:
+                        logger.warning(f"DEBUG: Found user: {user.username} (id: {user.id})")
                         if not user.enabled:
                             logger.warning(f"User {user.username} is disabled, skipping authentication")
                         else:
                             # Check if already logged in as this user
                             if self._logged_in_user:
+                                logger.warning(f"DEBUG: Already have logged_in_user: {self._logged_in_user.username} (id: {self._logged_in_user.id})")
                                 if self._logged_in_user.id == user.id:
+                                    logger.warning(f"DEBUG: IDs match, reusing session")
                                     authenticated_user = self._logged_in_user
+                                else:
+                                    logger.warning(f"DEBUG: IDs don't match ({self._logged_in_user.id} != {user.id}), will re-authenticate")
+                            else:
+                                logger.warning(f"DEBUG: No logged_in_user set, will authenticate")
 
                             if not authenticated_user:
                                 logger.info(f"Authenticating as user: {user.username} (roles: {user.role_display})")
@@ -144,18 +152,6 @@ class TestRunner:
                                     logger.info(f"Successfully authenticated as {user.username} in {login_result['duration_ms']}ms")
                                     authenticated_user = user
                                     self._logged_in_user = user
-
-                                    # Navigate back to the original test page (login may have redirected)
-                                    current_url = browser_page.url
-                                    if current_url != page.url:
-                                        logger.info(f"Navigating back to test page: {page.url}")
-                                        await self.browser_manager.goto(
-                                            browser_page,
-                                            page.url,
-                                            wait_until=wait_strategy,
-                                            timeout=30000
-                                        )
-                                        await browser_page.waitForSelector('body', {'timeout': 5000})
                                 else:
                                     logger.error(f"Authentication failed: {login_result['error']}")
                                     # Continue with testing even if login fails, but record the failure
@@ -581,10 +577,16 @@ class TestRunner:
             if script.test_before_execution or script.test_after_execution
         ]
 
+        logger.warning(f"DEBUG: Found {len(scripts_to_execute)} scripts, filtering for multi-state")
+        for script in scripts_to_execute:
+            logger.warning(f"DEBUG: Script ID={script.id} '{script.name}' - test_before={script.test_before_execution}, test_after={script.test_after_execution}, clear_cookies={script.clear_cookies_before}, clear_localStorage={script.clear_local_storage_before}")
+
         if not multi_state_scripts:
             logger.info(f"No multi-state scripts configured for page {page.url}, using single-state testing")
             result = await self.test_page(page, take_screenshot, run_ai_analysis, ai_api_key)
             return [result]
+
+        logger.warning(f"DEBUG: Testing page {page.url} with {len(multi_state_scripts)} multi-state scripts")
 
         # Update page status
         page.status = PageStatus.TESTING
@@ -624,12 +626,7 @@ class TestRunner:
                 # Perform authentication if user specified
                 authenticated_user = None
                 if website_user_id:
-                    logger.info(f"Multi-state testing: website_user_id provided: {website_user_id}")
-                    user = self.db.get_project_user(website_user_id)
-                    if user:
-                        logger.info(f"Multi-state testing: Found user: {user.username} (enabled={user.enabled})")
-                    else:
-                        logger.warning(f"Multi-state testing: User not found for ID: {website_user_id}")
+                    user = self.db.get_website_user(website_user_id)
                     if user and user.enabled:
                         logger.info(f"Authenticating as user: {user.username} for multi-state testing")
                         login_result = await self.login_automation.perform_login(
@@ -648,6 +645,17 @@ class TestRunner:
                 # Create a test function that can be called multiple times
                 async def run_single_test(browser_page, page_id):
                     """Run accessibility tests and return TestResult"""
+                    # Verify browser connection before starting tests
+                    try:
+                        ready_state = await asyncio.wait_for(
+                            browser_page.evaluate('() => document.readyState'),
+                            timeout=5.0
+                        )
+                        logger.warning(f"DEBUG run_single_test: page readyState={ready_state}")
+                    except Exception as conn_err:
+                        logger.error(f"Browser connection lost at start of run_single_test: {conn_err}")
+                        raise
+
                     # Get project config
                     test_config = None
                     project_config = None
@@ -677,13 +685,31 @@ class TestRunner:
                     self.script_injector.project_config = project_config
 
                     # Inject test scripts
+                    logger.warning(f"DEBUG run_single_test: about to inject scripts")
                     await self.script_injector.inject_script_files(browser_page)
+                    logger.warning(f"DEBUG run_single_test: scripts injected")
 
                     # Set WCAG level
                     await browser_page.evaluate(f'window.WCAG_LEVEL = "{wcag_level}";')
 
+                    # Store original viewport before running tests (some tests change it)
+                    original_viewport = await browser_page.evaluate('() => ({ width: window.innerWidth, height: window.innerHeight })')
+                    logger.debug(f"Stored original viewport: {original_viewport}")
+
                     # Run tests
                     raw_results = await self.script_injector.run_all_tests(browser_page)
+
+                    # Restore original viewport after tests complete
+                    if original_viewport:
+                        try:
+                            await browser_page.setViewport({
+                                'width': original_viewport['width'],
+                                'height': original_viewport['height']
+                            })
+                            logger.debug(f"Restored viewport to original size: {original_viewport}")
+                            await asyncio.sleep(0.1)
+                        except Exception as e:
+                            logger.warning(f"Could not restore viewport: {e}")
 
                     # Take screenshot if requested
                     screenshot_path = None
@@ -703,40 +729,17 @@ class TestRunner:
 
                     return test_result
 
-                # Check if a test matrix exists for this page
-                test_matrix = self.db.get_test_state_matrix_by_page(page.id)
-
-                if test_matrix and test_matrix.matrix:
-                    # Use matrix-based testing
-                    logger.info(f"Using test matrix with {len(test_matrix.get_enabled_combinations())} combinations for page {page.id}")
-
-                    # Build scripts_by_id dict
-                    scripts_by_id = {script.id: script for script in multi_state_scripts}
-
-                    results = await self.multi_state_runner.test_page_with_matrix(
-                        page=browser_page,
-                        page_id=page.id,
-                        test_state_matrix=test_matrix,
-                        scripts_by_id=scripts_by_id,
-                        test_function=run_single_test,
-                        session_id=session_id,
-                        original_url=page.url
-                    )
-                else:
-                    # Use sequential multi-state testing (no matrix defined)
-                    logger.info(f"No test matrix found, using sequential multi-state testing for page {page.id}")
-                    results = await self.multi_state_runner.test_page_multi_state(
-                        page=browser_page,
-                        page_id=page.id,
-                        scripts=multi_state_scripts,
-                        test_function=run_single_test,
-                        session_id=session_id,
-                        original_url=page.url
-                    )
+                # Run multi-state testing
+                results = await self.multi_state_runner.test_page_multi_state(
+                    page=browser_page,
+                    page_id=page.id,
+                    scripts=multi_state_scripts,
+                    test_function=run_single_test,
+                    session_id=session_id
+                )
 
                 # Add authenticated user information to all results
                 if authenticated_user:
-                    logger.info(f"Adding authenticated user info to {len(results)} result(s): {authenticated_user.username}")
                     user_info = {
                         'user_id': authenticated_user.id,
                         'username': authenticated_user.username,
@@ -747,7 +750,6 @@ class TestRunner:
                     for result in results:
                         # Add to result metadata
                         result.metadata['authenticated_user'] = user_info
-                        logger.info(f"  Result {result.id}: Adding user info to {len(result.violations)} violations")
 
                         # Add to each violation's metadata
                         for violation in result.violations:
@@ -766,8 +768,6 @@ class TestRunner:
                             discovery.metadata['authenticated_user'] = user_info
 
                     logger.info(f"Multi-state tests completed as authenticated user: {authenticated_user.username}")
-                else:
-                    logger.warning(f"No authenticated user for multi-state testing - results will show as Guest")
 
                 # Save all results to database
                 for result in results:
@@ -800,21 +800,6 @@ class TestRunner:
 
         except Exception as e:
             logger.error(f"Error in multi-state testing for page {page.url}: {e}")
-
-            # Check if this is a browser connection error
-            error_str = str(e)
-            is_connection_error = any(msg in error_str for msg in [
-                'Target closed', 'Session closed', 'Connection', 'Protocol error'
-            ])
-
-            if is_connection_error:
-                logger.warning("Browser connection lost, attempting to restart browser...")
-                try:
-                    await self.browser_manager.stop()
-                except Exception as stop_err:
-                    logger.warning(f"Error stopping browser: {stop_err}")
-
-                self.browser_manager.browser = None
 
             # Update page status
             page.status = PageStatus.ERROR
@@ -880,30 +865,15 @@ class TestRunner:
             batch_results = await asyncio.gather(*tasks, return_exceptions=True)
 
             # Process results - test_page_multi_state returns List[TestResult]
-            browser_needs_restart = False
             for result_list in batch_results:
                 if isinstance(result_list, Exception):
-                    error_str = str(result_list)
                     logger.error(f"Test failed with exception: {result_list}")
-                    # Check if browser needs restart
-                    if any(msg in error_str for msg in ['Target closed', 'Session closed', 'Connection', 'Protocol error']):
-                        browser_needs_restart = True
                 elif isinstance(result_list, list):
                     # Flatten the list of results from multi-state testing
                     results.extend(result_list)
                 else:
                     # Single result (shouldn't happen with multi_state, but handle it)
                     results.append(result_list)
-
-            # Restart browser if needed before processing next batch
-            if browser_needs_restart:
-                logger.warning("Browser connection issues detected, restarting browser for next batch...")
-                try:
-                    await self.browser_manager.stop()
-                except Exception as stop_err:
-                    logger.warning(f"Error stopping browser: {stop_err}")
-                self.browser_manager.browser = None
-                # Will be restarted automatically on next test
             
             completed += len(batch)
             

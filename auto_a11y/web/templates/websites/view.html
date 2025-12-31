@@ -751,7 +751,9 @@ function checkWebsiteStatus() {
         // Update progress in UI
         const testBtn = document.getElementById('testAllBtn');
         if (testBtn && testingInProgress) {
-            testBtn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Testing: ${data.tested_pages}/${data.total_pages}`;
+            // Use message if available (includes user label), otherwise show basic count
+            const progressText = data.message || `Testing: ${data.tested_pages}/${data.total_pages}`;
+            testBtn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> ${progressText}`;
         }
         
         // Check each page status
@@ -1397,10 +1399,9 @@ function startTestingStatusPolling() {
             console.log('Testing status:', data);
             
             if (data.status === 'running') {
-                // Update button with progress
-                const tested = data.pages_tested || 0;
-                const total = data.total_pages || 0;
-                btn.html(`<span class="spinner-border spinner-border-sm"></span> {{ _("Testing") }}: ${tested}/${total}`);
+                // Update button with progress - use message if available (includes user label)
+                const progressText = data.message || `{{ _("Testing") }}: ${data.pages_tested || 0}/${data.total_pages || 0}`;
+                btn.html(`<span class="spinner-border spinner-border-sm"></span> ${progressText}`);
                 
                 // Update current page if available
                 if (data.current_page) {

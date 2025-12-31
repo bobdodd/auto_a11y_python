@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-11-22 20:09-0500\n"
+"POT-Creation-Date: 2025-12-31 17:44-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,29 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.17.0\n"
+
+#: auto_a11y/testing/result_processor.py:348
+#: auto_a11y/web/templates/pages/view.html:450
+#, python-format
+msgid "Accessibility checks for %(touchpoint)s"
+msgstr ""
+
+#: auto_a11y/web/routes/pages.py:649
+msgid "Page not found"
+msgstr ""
+
+#: auto_a11y/web/routes/pages.py:716
+msgid "Test matrix updated successfully"
+msgstr ""
+
+#: auto_a11y/web/routes/pages.py:719
+msgid "Test matrix created successfully"
+msgstr ""
+
+#: auto_a11y/web/routes/pages.py:725
+#, python-format
+msgid "Failed to save test matrix: %(error)s"
+msgstr ""
 
 #: auto_a11y/web/templates/404.html:3 auto_a11y/web/templates/404.html:10
 msgid "Page Not Found"
@@ -264,6 +287,8 @@ msgstr ""
 
 #: auto_a11y/web/templates/base.html:6 auto_a11y/web/templates/base.html:126
 #: auto_a11y/web/templates/index.html:3 auto_a11y/web/templates/index.html:11
+#: auto_a11y/web/templates/pages/test_matrix.html:3
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:3
 #: auto_a11y/web/templates/pages/view.html:6
 #: auto_a11y/web/templates/project_users/create.html:3
 #: auto_a11y/web/templates/project_users/list.html:3
@@ -287,17 +312,20 @@ msgstr ""
 #: auto_a11y/web/templates/base.html:41
 #: auto_a11y/web/templates/pages/edit.html:82
 #: auto_a11y/web/templates/pages/view.html:132
-#: auto_a11y/web/templates/pages/view.html:3122
+#: auto_a11y/web/templates/pages/view.html:3198
 #: auto_a11y/web/templates/projects/view.html:558
-#: auto_a11y/web/templates/websites/view.html:1139
-#: auto_a11y/web/templates/websites/view.html:1496
+#: auto_a11y/web/templates/websites/view.html:1048
+#: auto_a11y/web/templates/websites/view.html:1403
 msgid "Testing"
 msgstr ""
 
 #: auto_a11y/web/templates/base.html:46
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:55
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:105
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:184
 #: auto_a11y/web/templates/projects/view.html:255
 #: auto_a11y/web/templates/recordings/detail.html:3
-#: auto_a11y/web/templates/recordings/detail.html:12
+#: auto_a11y/web/templates/recordings/detail.html:14
 #: auto_a11y/web/templates/recordings/list.html:3
 msgid "Recordings"
 msgstr ""
@@ -322,6 +350,8 @@ msgid "Help"
 msgstr ""
 
 #: auto_a11y/web/templates/base.html:72
+#: auto_a11y/web/templates/testing/configure.html:3
+#: auto_a11y/web/templates/testing/configure.html:10
 msgid "Settings"
 msgstr ""
 
@@ -347,22 +377,24 @@ msgid "Tested Pages"
 msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:56
-#: auto_a11y/web/templates/recordings/detail.html:240
+#: auto_a11y/web/templates/recordings/detail.html:255
 msgid "Total Issues"
 msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:73
 #: auto_a11y/web/templates/pages/view.html:279
-#: auto_a11y/web/templates/pages/view.html:555
-#: auto_a11y/web/templates/pages/view.html:3029
+#: auto_a11y/web/templates/pages/view.html:558
+#: auto_a11y/web/templates/pages/view.html:3105
+#: auto_a11y/web/templates/pages/view.html:3543
 #: auto_a11y/web/templates/testing/dashboard.html:83
 msgid "Errors"
 msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:86
 #: auto_a11y/web/templates/pages/view.html:288
-#: auto_a11y/web/templates/pages/view.html:1673
-#: auto_a11y/web/templates/pages/view.html:3030
+#: auto_a11y/web/templates/pages/view.html:1749
+#: auto_a11y/web/templates/pages/view.html:3106
+#: auto_a11y/web/templates/pages/view.html:3544
 #: auto_a11y/web/templates/reports/dashboard.html:383
 #: auto_a11y/web/templates/testing/dashboard.html:84
 #: auto_a11y/web/templates/testing/result.html:59
@@ -372,13 +404,14 @@ msgid "Warnings"
 msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:99
-#: auto_a11y/web/templates/pages/view.html:2191
+#: auto_a11y/web/templates/pages/view.html:2267
 msgid "Info Notes"
 msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:112
 #: auto_a11y/web/templates/pages/view.html:306
-#: auto_a11y/web/templates/pages/view.html:3032
+#: auto_a11y/web/templates/pages/view.html:3108
+#: auto_a11y/web/templates/pages/view.html:3546
 #: auto_a11y/web/templates/testing/dashboard.html:86
 msgid "Discovery"
 msgstr ""
@@ -402,8 +435,8 @@ msgstr ""
 #: auto_a11y/web/templates/reports/dashboard.html:135
 #: auto_a11y/web/templates/reports/dashboard.html:312
 #: auto_a11y/web/templates/reports/dashboard.html:409
-#: auto_a11y/web/templates/reports/dashboard.html:1020
-#: auto_a11y/web/templates/reports/dashboard.html:1167
+#: auto_a11y/web/templates/reports/dashboard.html:1038
+#: auto_a11y/web/templates/reports/dashboard.html:1185
 msgid "Generate Report"
 msgstr ""
 
@@ -415,14 +448,15 @@ msgstr ""
 #: auto_a11y/web/templates/pages/edit.html:84
 #: auto_a11y/web/templates/pages/view.html:135
 #: auto_a11y/web/templates/pages/view.html:438
-#: auto_a11y/web/templates/pages/view.html:3123
+#: auto_a11y/web/templates/pages/view.html:3199
 #: auto_a11y/web/templates/projects/view.html:63
 #: auto_a11y/web/templates/websites/view.html:166
-#: auto_a11y/web/templates/websites/view.html:1516
+#: auto_a11y/web/templates/websites/view.html:1424
 msgid "Tested"
 msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:161
+#: auto_a11y/web/templates/pages/view.html:3540
 #: auto_a11y/web/templates/websites/view.html:287
 msgid "of"
 msgstr ""
@@ -432,6 +466,7 @@ msgid "pages tested"
 msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:169
+#: auto_a11y/web/templates/testing/configure.html:155
 msgid "System Status"
 msgstr ""
 
@@ -461,8 +496,9 @@ msgstr ""
 #: auto_a11y/web/templates/project_users/create.html:87
 #: auto_a11y/web/templates/project_users/edit.html:92
 #: auto_a11y/web/templates/project_users/list.html:96
-#: auto_a11y/web/templates/scripts/list.html:112
-#: auto_a11y/web/templates/scripts/list.html:208
+#: auto_a11y/web/templates/project_users/view.html:76
+#: auto_a11y/web/templates/scripts/list.html:123
+#: auto_a11y/web/templates/scripts/list.html:219
 #: auto_a11y/web/templates/scripts/view.html:58
 #: auto_a11y/web/templates/testing/result.html:220
 #: auto_a11y/web/templates/website_users/create.html:90
@@ -474,8 +510,9 @@ msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:183
 #: auto_a11y/web/templates/project_users/list.html:100
-#: auto_a11y/web/templates/scripts/list.html:116
-#: auto_a11y/web/templates/scripts/list.html:210
+#: auto_a11y/web/templates/project_users/view.html:78
+#: auto_a11y/web/templates/scripts/list.html:127
+#: auto_a11y/web/templates/scripts/list.html:221
 #: auto_a11y/web/templates/scripts/view.html:62
 #: auto_a11y/web/templates/testing/result.html:222
 #: auto_a11y/web/templates/website_users/list.html:103
@@ -540,7 +577,7 @@ msgid "(from automated scans) and"
 msgstr ""
 
 #: auto_a11y/web/templates/help.html:95 auto_a11y/web/templates/help.html:120
-#: auto_a11y/web/templates/recordings/detail.html:289
+#: auto_a11y/web/templates/recordings/detail.html:304
 msgid "Manual Testing Scores"
 msgstr ""
 
@@ -781,7 +818,7 @@ msgid "Below 90%%:"
 msgstr ""
 
 #: auto_a11y/web/templates/help.html:219
-#: auto_a11y/web/templates/reports/dashboard.html:993
+#: auto_a11y/web/templates/reports/dashboard.html:1011
 msgid "Level A"
 msgstr ""
 
@@ -822,7 +859,7 @@ msgid "4.5:1 contrast ratio"
 msgstr ""
 
 #: auto_a11y/web/templates/help.html:237
-#: auto_a11y/web/templates/reports/dashboard.html:995
+#: auto_a11y/web/templates/reports/dashboard.html:1013
 msgid "Level AAA"
 msgstr ""
 
@@ -1135,6 +1172,181 @@ msgstr ""
 msgid "Comprehensive testing against WCAG 2.1 Level A, AA, and AAA guidelines"
 msgstr ""
 
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:5
+msgid "Drupal Sync"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:9
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:18
+#: auto_a11y/web/templates/pages/view.html:3553
+#: auto_a11y/web/templates/projects/create.html:401
+#: auto_a11y/web/templates/projects/create.html:517
+#: auto_a11y/web/templates/projects/create.html:720
+#: auto_a11y/web/templates/projects/edit.html:456
+#: auto_a11y/web/templates/projects/edit.html:611
+#: auto_a11y/web/templates/testing/configure.html:158
+msgid "Loading..."
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:30
+msgid "Upload to Drupal"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:36
+msgid "Select Content to Upload"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:42
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:99
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:175
+#: auto_a11y/web/templates/projects/view.html:160
+#: auto_a11y/web/templates/recordings/detail.html:164
+#: auto_a11y/web/templates/recordings/upload.html:221
+msgid "Discovered Pages"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:67
+msgid "Uploading to Drupal..."
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:78
+msgid "Upload Log"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:91
+msgid "Upload Complete!"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:92
+msgid "Successfully uploaded"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:92
+msgid "items to Drupal."
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:111
+msgid "Some items failed:"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:117
+#: auto_a11y/web/templates/pages/view.html:3156
+#: auto_a11y/web/templates/pages/view.html:3165
+#: auto_a11y/web/templates/pages/view.html:3177
+#: auto_a11y/web/templates/projects/create.html:396
+#: auto_a11y/web/templates/projects/create.html:407
+#: auto_a11y/web/templates/projects/edit.html:451
+#: auto_a11y/web/templates/projects/edit.html:462
+#: auto_a11y/web/templates/recordings/detail.html:685
+#: auto_a11y/web/templates/recordings/detail.html:802
+#: auto_a11y/web/templates/websites/view.html:594
+msgid "Close"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:119
+msgid "Start Upload"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:148
+msgid "Error loading sync status:"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:158
+msgid "Drupal Integration Not Configured"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:159
+msgid "Configure Drupal connection in"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:159
+msgid "to enable sync."
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:167
+msgid "Audit:"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:179
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:188
+msgid "pending"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:193
+msgid "Last Sync"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:195
+#: auto_a11y/web/templates/pages/edit.html:96
+#: auto_a11y/web/templates/pages/view.html:170
+#: auto_a11y/web/templates/project_users/list.html:118
+#: auto_a11y/web/templates/projects/view.html:114
+#: auto_a11y/web/templates/website_users/list.html:121
+#: auto_a11y/web/templates/websites/view.html:410
+msgid "Never"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:203
+msgid "Synchronization Page"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:206
+msgid "Quick Upload"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:209
+msgid "Refresh"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:215
+msgid "Sync Issues"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:246
+msgid "Error loading content:"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:255
+msgid "No discovered pages found."
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:266
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:298
+#: auto_a11y/web/templates/projects/view.html:215
+msgid "Synced"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:267
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:299
+#: auto_a11y/web/templates/pages/view.html:394
+#: auto_a11y/web/templates/pages/view.html:440
+#: auto_a11y/web/templates/project_users/edit.html:224
+#: auto_a11y/web/templates/project_users/view.html:151
+#: auto_a11y/web/templates/projects/view.html:217
+#: auto_a11y/web/templates/projects/view.html:786
+#: auto_a11y/web/templates/recordings/detail.html:360
+#: auto_a11y/web/templates/website_users/edit.html:227
+#: auto_a11y/web/templates/websites/view.html:238
+msgid "Failed"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:287
+#: auto_a11y/web/templates/recordings/list.html:139
+msgid "No recordings found."
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:302
+msgid "Unknown duration"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:304
+msgid "issues"
+msgstr ""
+
+#: auto_a11y/web/templates/drupal_sync/sync_card.html:326
+msgid "Please select at least one item to upload."
+msgstr ""
+
 #: auto_a11y/web/templates/pages/edit.html:3
 #: auto_a11y/web/templates/pages/edit.html:19
 #: auto_a11y/web/templates/pages/view.html:97
@@ -1142,11 +1354,12 @@ msgstr ""
 #: auto_a11y/web/templates/project_participants/list.html:190
 #: auto_a11y/web/templates/project_users/edit.html:16
 #: auto_a11y/web/templates/project_users/list.html:128
+#: auto_a11y/web/templates/project_users/view.html:26
 #: auto_a11y/web/templates/projects/edit.html:3
 #: auto_a11y/web/templates/projects/list.html:72
 #: auto_a11y/web/templates/projects/view.html:33
-#: auto_a11y/web/templates/recordings/detail.html:20
-#: auto_a11y/web/templates/scripts/list.html:127
+#: auto_a11y/web/templates/recordings/detail.html:22
+#: auto_a11y/web/templates/scripts/list.html:138
 #: auto_a11y/web/templates/website_users/edit.html:19
 #: auto_a11y/web/templates/website_users/list.html:131
 #: auto_a11y/web/templates/websites/edit.html:3
@@ -1156,10 +1369,12 @@ msgid "Edit"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:17
+#: auto_a11y/web/templates/pages/test_matrix.html:169
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:77
 #: auto_a11y/web/templates/pages/view.html:65
 #: auto_a11y/web/templates/scripts/create.html:60
 #: auto_a11y/web/templates/scripts/create.html:63
-#: auto_a11y/web/templates/scripts/list.html:17
+#: auto_a11y/web/templates/scripts/list.html:18
 #: auto_a11y/web/templates/scripts/view.html:18
 #: auto_a11y/web/templates/testing/dashboard.html:80
 #: auto_a11y/web/templates/testing/dashboard.html:97
@@ -1191,7 +1406,7 @@ msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:44
 #: auto_a11y/web/templates/pages/view.html:148
-#: auto_a11y/web/templates/websites/view.html:570
+#: auto_a11y/web/templates/websites/view.html:537
 msgid "Priority"
 msgstr ""
 
@@ -1202,21 +1417,23 @@ msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:47
 #: auto_a11y/web/templates/pages/view.html:153
-#: auto_a11y/web/templates/recordings/list.html:96
-#: auto_a11y/web/templates/websites/view.html:573
+#: auto_a11y/web/templates/pages/view.html:3548
+#: auto_a11y/web/templates/recordings/list.html:109
+#: auto_a11y/web/templates/websites/view.html:540
 msgid "High"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:48
 #: auto_a11y/web/templates/pages/view.html:155
-#: auto_a11y/web/templates/websites/view.html:572
+#: auto_a11y/web/templates/websites/view.html:539
 msgid "Normal"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:49
 #: auto_a11y/web/templates/pages/view.html:157
-#: auto_a11y/web/templates/recordings/list.html:102
-#: auto_a11y/web/templates/websites/view.html:574
+#: auto_a11y/web/templates/pages/view.html:3550
+#: auto_a11y/web/templates/recordings/list.html:115
+#: auto_a11y/web/templates/websites/view.html:541
 msgid "Low"
 msgstr ""
 
@@ -1239,6 +1456,8 @@ msgid "Save Changes"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:63
+#: auto_a11y/web/templates/pages/test_matrix.html:334
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:211
 #: auto_a11y/web/templates/project_participants/create_supervisor.html:135
 #: auto_a11y/web/templates/project_participants/create_tester.html:144
 #: auto_a11y/web/templates/project_participants/edit_supervisor.html:139
@@ -1252,21 +1471,22 @@ msgstr ""
 #: auto_a11y/web/templates/projects/view.html:481
 #: auto_a11y/web/templates/projects/view.html:504
 #: auto_a11y/web/templates/projects/view.html:738
-#: auto_a11y/web/templates/recordings/detail.html:26
-#: auto_a11y/web/templates/recordings/upload.html:307
+#: auto_a11y/web/templates/recordings/detail.html:28
+#: auto_a11y/web/templates/recordings/upload.html:354
 #: auto_a11y/web/templates/reports/dashboard.html:407
-#: auto_a11y/web/templates/reports/dashboard.html:872
-#: auto_a11y/web/templates/reports/dashboard.html:939
-#: auto_a11y/web/templates/reports/dashboard.html:1018
-#: auto_a11y/web/templates/reports/dashboard.html:1165
-#: auto_a11y/web/templates/reports/dashboard.html:1329
+#: auto_a11y/web/templates/reports/dashboard.html:890
+#: auto_a11y/web/templates/reports/dashboard.html:957
+#: auto_a11y/web/templates/reports/dashboard.html:1036
+#: auto_a11y/web/templates/reports/dashboard.html:1183
+#: auto_a11y/web/templates/reports/dashboard.html:1347
 #: auto_a11y/web/templates/scripts/create.html:292
+#: auto_a11y/web/templates/testing/configure.html:181
 #: auto_a11y/web/templates/website_users/create.html:245
 #: auto_a11y/web/templates/website_users/edit.html:282
 #: auto_a11y/web/templates/websites/edit.html:99
-#: auto_a11y/web/templates/websites/view.html:544
-#: auto_a11y/web/templates/websites/view.html:579
-#: auto_a11y/web/templates/websites/view.html:635
+#: auto_a11y/web/templates/websites/view.html:511
+#: auto_a11y/web/templates/websites/view.html:546
+#: auto_a11y/web/templates/websites/view.html:569
 msgid "Cancel"
 msgstr ""
 
@@ -1275,19 +1495,20 @@ msgid "Page Information"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:77
-#: auto_a11y/web/templates/recordings/detail.html:608
+#: auto_a11y/web/templates/project_users/view.html:73
+#: auto_a11y/web/templates/recordings/detail.html:626
 msgid "Status:"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:80
 #: auto_a11y/web/templates/pages/view.html:123
-#: auto_a11y/web/templates/pages/view.html:3120
+#: auto_a11y/web/templates/pages/view.html:3196
 msgid "Discovered"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:86
 #: auto_a11y/web/templates/pages/view.html:137
-#: auto_a11y/web/templates/pages/view.html:3124
+#: auto_a11y/web/templates/pages/view.html:3200
 #: auto_a11y/web/templates/testing/dashboard.html:132
 #: auto_a11y/web/templates/websites/view.html:264
 msgid "Error"
@@ -1298,6 +1519,7 @@ msgid "Discovered:"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:93
+#: auto_a11y/web/templates/project_users/view.html:202
 #: auto_a11y/web/templates/reports/dashboard.html:279
 #: auto_a11y/web/templates/websites/view.html:246
 msgid "Unknown"
@@ -1307,22 +1529,233 @@ msgstr ""
 msgid "Last Tested:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/edit.html:96
-#: auto_a11y/web/templates/pages/view.html:170
-#: auto_a11y/web/templates/project_users/list.html:118
-#: auto_a11y/web/templates/projects/view.html:114
-#: auto_a11y/web/templates/website_users/list.html:121
-#: auto_a11y/web/templates/websites/view.html:410
-msgid "Never"
-msgstr ""
-
 #: auto_a11y/web/templates/pages/edit.html:98
 msgid "Violations:"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:103
-#: auto_a11y/web/templates/pages/view.html:543
+#: auto_a11y/web/templates/pages/view.html:546
 msgid "Warnings:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:3
+#: auto_a11y/web/templates/pages/test_matrix.html:181
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:3
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:89
+#: auto_a11y/web/templates/scripts/list.html:35
+msgid "Configure Test Matrix"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:172
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:80
+#: auto_a11y/web/templates/pages/view.html:100
+#: auto_a11y/web/templates/scripts/list.html:21
+#: auto_a11y/web/templates/scripts/view.html:21
+msgid "Scripts"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:174
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:82
+msgid "Test Matrix"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:187
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:95
+msgid "Back to Scripts"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:206
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:114
+msgid "No Testable Scripts"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:207
+msgid ""
+"This page has no enabled scripts with multi-state testing configured. "
+"Please create or enable scripts with \"Test Before\" or \"Test After\" "
+"options."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:210
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:118
+#: auto_a11y/web/templates/scripts/list.html:38
+#: auto_a11y/web/templates/scripts/list.html:42
+msgid "Create New Script"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:218
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:126
+msgid "About Test Combinations"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:220
+msgid ""
+"Define which combinations of script states to test. Each row represents "
+"one test run with a specific combination of script states."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:223
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:132
+#: auto_a11y/web/templates/scripts/list.html:212
+msgid "Before"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:223
+msgid "Script has not been executed"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:224
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:133
+#: auto_a11y/web/templates/scripts/list.html:214
+msgid "After"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:224
+msgid "Script has been executed"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:227
+#, python-format
+msgid "Testing %(enabled)s combinations."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:234
+msgid "Sequential Only (Default)"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:237
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:161
+msgid "Initial + Final"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:240
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:164
+msgid "All Combinations"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:243
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:167
+#: auto_a11y/web/templates/pages/view.html:3537
+#: auto_a11y/web/templates/websites/view.html:59
+#: auto_a11y/web/templates/websites/view.html:103
+msgid "Clear All"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:246
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:170
+msgid "Add Combination"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:253
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:177
+msgid "Test Combinations"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:254
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:178
+msgid "combinations"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:266
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:190
+#: auto_a11y/web/templates/pages/view.html:3111
+#: auto_a11y/web/templates/project_participants/list.html:67
+#: auto_a11y/web/templates/project_participants/list.html:154
+#: auto_a11y/web/templates/project_users/list.html:68
+#: auto_a11y/web/templates/project_users/view.html:173
+#: auto_a11y/web/templates/projects/view.html:99
+#: auto_a11y/web/templates/projects/view.html:176
+#: auto_a11y/web/templates/projects/view.html:273
+#: auto_a11y/web/templates/reports/dashboard.html:253
+#: auto_a11y/web/templates/scripts/list.html:85
+#: auto_a11y/web/templates/scripts/list.html:191
+#: auto_a11y/web/templates/scripts/view.html:183
+#: auto_a11y/web/templates/testing/dashboard.html:88
+#: auto_a11y/web/templates/website_users/list.html:71
+#: auto_a11y/web/templates/websites/view.html:350
+msgid "Actions"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:281
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:140
+msgid "Script Execution Order"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:285
+msgid "Scripts will be executed in this order when reaching the \"after\" state:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:289
+msgid "Drag to reorder"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:297
+msgid "Tests: Before & After"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:299
+msgid "Tests: Before only"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:301
+msgid "Tests: After only"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:309
+msgid "Move up"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:315
+msgid "Move down"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:331
+msgid "Save Matrix Configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix.html:338
+msgid "combinations enabled"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:115
+msgid "This page has no enabled scripts with multi-state testing configured."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:128
+msgid ""
+"Each row defines one test run. Select which state each script should be "
+"in for that test."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:131
+#: auto_a11y/web/templates/websites/view.html:633
+#: auto_a11y/web/templates/websites/view.html:674
+msgid "None"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:131
+msgid "Script not involved in this test"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:132
+msgid "Script not executed (initial state)"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:133
+msgid "Script executed"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:143
+msgid "Drag to reorder scripts. Scripts execute from left to right."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:158
+msgid "Sequential (Default)"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:208
+#: auto_a11y/web/templates/testing/configure.html:110
+msgid "Save Configuration"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:71
@@ -1330,7 +1763,7 @@ msgid "Untitled Page"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:81
-#: auto_a11y/web/templates/pages/view.html:3125
+#: auto_a11y/web/templates/pages/view.html:3201
 #: auto_a11y/web/templates/websites/view.html:420
 msgid "Cancel Test"
 msgstr ""
@@ -1340,16 +1773,10 @@ msgid "Test as guest (no login)"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:93
-#: auto_a11y/web/templates/pages/view.html:3126
+#: auto_a11y/web/templates/pages/view.html:3202
 #: auto_a11y/web/templates/testing/dashboard.html:59
 #: auto_a11y/web/templates/websites/view.html:425
 msgid "Run Test"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/view.html:100
-#: auto_a11y/web/templates/scripts/list.html:19
-#: auto_a11y/web/templates/scripts/view.html:21
-msgid "Scripts"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:110
@@ -1364,8 +1791,8 @@ msgstr ""
 #: auto_a11y/web/templates/project_users/list.html:66
 #: auto_a11y/web/templates/projects/edit.html:69
 #: auto_a11y/web/templates/projects/view.html:174
-#: auto_a11y/web/templates/scripts/list.html:73
-#: auto_a11y/web/templates/scripts/list.html:179
+#: auto_a11y/web/templates/scripts/list.html:84
+#: auto_a11y/web/templates/scripts/list.html:190
 #: auto_a11y/web/templates/scripts/view.html:54
 #: auto_a11y/web/templates/testing/dashboard.html:87
 #: auto_a11y/web/templates/website_users/list.html:69
@@ -1375,8 +1802,8 @@ msgid "Status"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:127
-#: auto_a11y/web/templates/pages/view.html:3121
-#: auto_a11y/web/templates/websites/view.html:1133
+#: auto_a11y/web/templates/pages/view.html:3197
+#: auto_a11y/web/templates/websites/view.html:1042
 msgid "Queued"
 msgstr ""
 
@@ -1393,8 +1820,8 @@ msgstr ""
 #: auto_a11y/web/templates/pages/view.html:183
 #: auto_a11y/web/templates/pages/view.html:250
 #: auto_a11y/web/templates/pages/view.html:399
-#: auto_a11y/web/templates/pages/view.html:467
-#: auto_a11y/web/templates/pages/view.html:502
+#: auto_a11y/web/templates/pages/view.html:470
+#: auto_a11y/web/templates/pages/view.html:505
 #: auto_a11y/web/templates/reports/dashboard.html:280
 #: auto_a11y/web/templates/scripts/view.html:208
 #: auto_a11y/web/templates/scripts/view.html:212
@@ -1402,7 +1829,7 @@ msgid "N/A"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:192
-#: auto_a11y/web/templates/pages/view.html:3079
+#: auto_a11y/web/templates/pages/view.html:3155
 msgid "Page Screenshot"
 msgstr ""
 
@@ -1462,7 +1889,8 @@ msgid "types found"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:297
-#: auto_a11y/web/templates/pages/view.html:3031
+#: auto_a11y/web/templates/pages/view.html:3107
+#: auto_a11y/web/templates/pages/view.html:3545
 #: auto_a11y/web/templates/testing/dashboard.html:85
 msgid "Info"
 msgstr ""
@@ -1486,32 +1914,21 @@ msgid "Get help about overall pass rate"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:377
-#: auto_a11y/web/templates/websites/view.html:1516
+#: auto_a11y/web/templates/websites/view.html:1424
 msgid "passed"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:382
-#: auto_a11y/web/templates/websites/view.html:1516
+#: auto_a11y/web/templates/websites/view.html:1424
 msgid "failed"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:390
 #: auto_a11y/web/templates/pages/view.html:439
-#: auto_a11y/web/templates/pages/view.html:3033
-#: auto_a11y/web/templates/recordings/detail.html:341
+#: auto_a11y/web/templates/pages/view.html:3109
+#: auto_a11y/web/templates/recordings/detail.html:356
 #: auto_a11y/web/templates/testing/result.html:67
 msgid "Passed"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/view.html:394
-#: auto_a11y/web/templates/pages/view.html:440
-#: auto_a11y/web/templates/project_users/edit.html:224
-#: auto_a11y/web/templates/projects/view.html:217
-#: auto_a11y/web/templates/projects/view.html:786
-#: auto_a11y/web/templates/recordings/detail.html:345
-#: auto_a11y/web/templates/website_users/edit.html:227
-#: auto_a11y/web/templates/websites/view.html:238
-msgid "Failed"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:401
@@ -1527,8 +1944,9 @@ msgid "Understanding the Numbers"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:414
+#, python-format
 msgid ""
-"95% pass rate (475/500 passed) might still mean critical issues exist. "
+"95%% pass rate (475/500 passed) might still mean critical issues exist. "
 "Those 25 failed checks could all be \"missing alt text\" affecting every "
 "image on the page."
 msgstr ""
@@ -1554,504 +1972,637 @@ msgstr ""
 msgid "Pass Rate"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:475
+#: auto_a11y/web/templates/pages/view.html:478
 msgid "Totals"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:484
+#: auto_a11y/web/templates/pages/view.html:487
 msgid "N/A checks"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:487
+#: auto_a11y/web/templates/pages/view.html:490
 msgid "skipped"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:518
+#: auto_a11y/web/templates/pages/view.html:521
 msgid "Latest Test Results"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:520
+#: auto_a11y/web/templates/pages/view.html:523
 #: auto_a11y/web/templates/testing/result.html:29
 msgid "Tested on"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:527
+#: auto_a11y/web/templates/pages/view.html:530
 msgid "Page States Tested"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:529
+#: auto_a11y/web/templates/pages/view.html:532
 msgid ""
 "This page was tested in multiple states. Select a state below to view its"
 " test results."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:531
+#: auto_a11y/web/templates/pages/view.html:534
 msgid "Page states"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:543
+#: auto_a11y/web/templates/pages/view.html:546
 msgid "Errors:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:613
+#: auto_a11y/web/templates/pages/view.html:615
+#: auto_a11y/web/templates/pages/view.html:810
+#: auto_a11y/web/templates/pages/view.html:1158
+#: auto_a11y/web/templates/pages/view.html:1578
 #: auto_a11y/web/templates/testing/result.html:159
 msgid "Breakpoint:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:613
+#: auto_a11y/web/templates/pages/view.html:615
+#: auto_a11y/web/templates/pages/view.html:810
+#: auto_a11y/web/templates/pages/view.html:1158
+#: auto_a11y/web/templates/pages/view.html:1578
 msgid "px width"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:629
-#: auto_a11y/web/templates/pages/view.html:972
-#: auto_a11y/web/templates/pages/view.html:1724
-#: auto_a11y/web/templates/pages/view.html:2233
-#: auto_a11y/web/templates/pages/view.html:2612
+#: auto_a11y/web/templates/pages/view.html:631
+#: auto_a11y/web/templates/pages/view.html:979
+#: auto_a11y/web/templates/pages/view.html:1515
+#: auto_a11y/web/templates/pages/view.html:1800
+#: auto_a11y/web/templates/pages/view.html:2309
+#: auto_a11y/web/templates/pages/view.html:2688
 msgid "Instance"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:639
-#: auto_a11y/web/templates/pages/view.html:982
-#: auto_a11y/web/templates/pages/view.html:3049
+#: auto_a11y/web/templates/pages/view.html:641
+#: auto_a11y/web/templates/pages/view.html:989
+#: auto_a11y/web/templates/pages/view.html:3125
 #: auto_a11y/web/templates/projects/view.html:394
 #: auto_a11y/web/templates/websites/view.html:30
 #: auto_a11y/web/templates/websites/view.html:41
 #: auto_a11y/web/templates/websites/view.html:74
 #: auto_a11y/web/templates/websites/view.html:85
-#: auto_a11y/web/templates/websites/view.html:506
-#: auto_a11y/web/templates/websites/view.html:603
-#: auto_a11y/web/templates/websites/view.html:703
-#: auto_a11y/web/templates/websites/view.html:744
+#: auto_a11y/web/templates/websites/view.html:637
+#: auto_a11y/web/templates/websites/view.html:678
 msgid "Guest"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:662
-#: auto_a11y/web/templates/pages/view.html:1005
-#: auto_a11y/web/templates/pages/view.html:1741
-#: auto_a11y/web/templates/pages/view.html:2250
+#: auto_a11y/web/templates/pages/view.html:664
+#: auto_a11y/web/templates/pages/view.html:1012
+#: auto_a11y/web/templates/pages/view.html:1817
+#: auto_a11y/web/templates/pages/view.html:2326
 msgid "About this issue:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:665
-#: auto_a11y/web/templates/pages/view.html:1008
-#: auto_a11y/web/templates/pages/view.html:1744
-#: auto_a11y/web/templates/pages/view.html:2253
+#: auto_a11y/web/templates/pages/view.html:667
+#: auto_a11y/web/templates/pages/view.html:1015
+#: auto_a11y/web/templates/pages/view.html:1820
+#: auto_a11y/web/templates/pages/view.html:2329
 msgid "What the issue is:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:674
-#: auto_a11y/web/templates/pages/view.html:1017
-#: auto_a11y/web/templates/pages/view.html:1749
-#: auto_a11y/web/templates/pages/view.html:2258
+#: auto_a11y/web/templates/pages/view.html:676
+#: auto_a11y/web/templates/pages/view.html:1024
+#: auto_a11y/web/templates/pages/view.html:1825
+#: auto_a11y/web/templates/pages/view.html:2334
 msgid "Why this is important:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:679
-#: auto_a11y/web/templates/pages/view.html:1022
-#: auto_a11y/web/templates/pages/view.html:1754
-#: auto_a11y/web/templates/pages/view.html:2263
+#: auto_a11y/web/templates/pages/view.html:681
+#: auto_a11y/web/templates/pages/view.html:1029
+#: auto_a11y/web/templates/pages/view.html:1830
+#: auto_a11y/web/templates/pages/view.html:2339
 msgid "Who it affects:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:684
-#: auto_a11y/web/templates/pages/view.html:1027
-#: auto_a11y/web/templates/pages/view.html:1759
-#: auto_a11y/web/templates/pages/view.html:2268
+#: auto_a11y/web/templates/pages/view.html:686
+#: auto_a11y/web/templates/pages/view.html:1034
+#: auto_a11y/web/templates/pages/view.html:1835
+#: auto_a11y/web/templates/pages/view.html:2344
 msgid "How to remediate:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:689
-#: auto_a11y/web/templates/pages/view.html:1032
-#: auto_a11y/web/templates/pages/view.html:1764
-#: auto_a11y/web/templates/pages/view.html:2273
-#: auto_a11y/web/templates/pages/view.html:2657
+#: auto_a11y/web/templates/pages/view.html:691
+#: auto_a11y/web/templates/pages/view.html:1039
+#: auto_a11y/web/templates/pages/view.html:1840
+#: auto_a11y/web/templates/pages/view.html:2349
+#: auto_a11y/web/templates/pages/view.html:2733
 msgid "Relevant test criteria:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:692
-#: auto_a11y/web/templates/pages/view.html:699
-#: auto_a11y/web/templates/pages/view.html:1035
+#: auto_a11y/web/templates/pages/view.html:694
+#: auto_a11y/web/templates/pages/view.html:701
 #: auto_a11y/web/templates/pages/view.html:1042
-#: auto_a11y/web/templates/pages/view.html:1384
-#: auto_a11y/web/templates/pages/view.html:1391
-#: auto_a11y/web/templates/pages/view.html:1767
-#: auto_a11y/web/templates/pages/view.html:1774
-#: auto_a11y/web/templates/pages/view.html:1983
-#: auto_a11y/web/templates/pages/view.html:1990
-#: auto_a11y/web/templates/pages/view.html:2276
-#: auto_a11y/web/templates/pages/view.html:2283
-#: auto_a11y/web/templates/pages/view.html:2428
-#: auto_a11y/web/templates/pages/view.html:2435
-#: auto_a11y/web/templates/pages/view.html:2660
-#: auto_a11y/web/templates/pages/view.html:2667
-#: auto_a11y/web/templates/pages/view.html:2832
-#: auto_a11y/web/templates/pages/view.html:2839
+#: auto_a11y/web/templates/pages/view.html:1049
+#: auto_a11y/web/templates/pages/view.html:1396
+#: auto_a11y/web/templates/pages/view.html:1403
+#: auto_a11y/web/templates/pages/view.html:1843
+#: auto_a11y/web/templates/pages/view.html:1850
+#: auto_a11y/web/templates/pages/view.html:2059
+#: auto_a11y/web/templates/pages/view.html:2066
+#: auto_a11y/web/templates/pages/view.html:2352
+#: auto_a11y/web/templates/pages/view.html:2359
+#: auto_a11y/web/templates/pages/view.html:2504
+#: auto_a11y/web/templates/pages/view.html:2511
+#: auto_a11y/web/templates/pages/view.html:2736
+#: auto_a11y/web/templates/pages/view.html:2743
+#: auto_a11y/web/templates/pages/view.html:2908
+#: auto_a11y/web/templates/pages/view.html:2915
 msgid "WCAG Success Criteria:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:714
-#: auto_a11y/web/templates/pages/view.html:1057
-#: auto_a11y/web/templates/pages/view.html:1789
+#: auto_a11y/web/templates/pages/view.html:716
+#: auto_a11y/web/templates/pages/view.html:1064
+#: auto_a11y/web/templates/pages/view.html:1865
 #: auto_a11y/web/templates/testing/result.html:149
 msgid "Rule:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:715
-#: auto_a11y/web/templates/pages/view.html:1058
-#: auto_a11y/web/templates/pages/view.html:1790
+#: auto_a11y/web/templates/pages/view.html:717
+#: auto_a11y/web/templates/pages/view.html:1065
+#: auto_a11y/web/templates/pages/view.html:1866
 #: auto_a11y/web/templates/testing/result.html:123
 msgid "Help:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:717
-#: auto_a11y/web/templates/pages/view.html:1060
-#: auto_a11y/web/templates/pages/view.html:1792
-#: auto_a11y/web/templates/recordings/detail.html:589
+#: auto_a11y/web/templates/pages/view.html:719
+#: auto_a11y/web/templates/pages/view.html:1067
+#: auto_a11y/web/templates/pages/view.html:1868
+#: auto_a11y/web/templates/recordings/detail.html:607
 msgid "How to fix:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:724
-#: auto_a11y/web/templates/pages/view.html:1067
-#: auto_a11y/web/templates/pages/view.html:2298
+#: auto_a11y/web/templates/pages/view.html:726
+#: auto_a11y/web/templates/pages/view.html:1074
+#: auto_a11y/web/templates/pages/view.html:2374
 msgid "Touchpoint:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:724
-#: auto_a11y/web/templates/pages/view.html:1067
-#: auto_a11y/web/templates/pages/view.html:2298
+#: auto_a11y/web/templates/pages/view.html:726
+#: auto_a11y/web/templates/pages/view.html:1074
+#: auto_a11y/web/templates/pages/view.html:2374
 msgid "General"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:725
-#: auto_a11y/web/templates/pages/view.html:1068
+#: auto_a11y/web/templates/pages/view.html:727
+#: auto_a11y/web/templates/pages/view.html:1075
 #: auto_a11y/web/templates/testing/result.html:146
 msgid "Impact:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:741
-#: auto_a11y/web/templates/pages/view.html:761
-#: auto_a11y/web/templates/pages/view.html:1084
-#: auto_a11y/web/templates/pages/view.html:1104
-#: auto_a11y/web/templates/pages/view.html:1816
-#: auto_a11y/web/templates/pages/view.html:1836
+#: auto_a11y/web/templates/pages/view.html:743
+#: auto_a11y/web/templates/pages/view.html:763
+#: auto_a11y/web/templates/pages/view.html:1091
+#: auto_a11y/web/templates/pages/view.html:1111
+#: auto_a11y/web/templates/pages/view.html:1892
+#: auto_a11y/web/templates/pages/view.html:1912
 msgid "More about"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:746
-#: auto_a11y/web/templates/pages/view.html:766
-#: auto_a11y/web/templates/pages/view.html:1089
-#: auto_a11y/web/templates/pages/view.html:1109
-#: auto_a11y/web/templates/pages/view.html:1821
-#: auto_a11y/web/templates/pages/view.html:1841
+#: auto_a11y/web/templates/pages/view.html:748
+#: auto_a11y/web/templates/pages/view.html:768
+#: auto_a11y/web/templates/pages/view.html:1096
+#: auto_a11y/web/templates/pages/view.html:1116
+#: auto_a11y/web/templates/pages/view.html:1897
+#: auto_a11y/web/templates/pages/view.html:1917
 msgid "Ways to meet"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:778
-#: auto_a11y/web/templates/pages/view.html:1121
+#: auto_a11y/web/templates/pages/view.html:780
+#: auto_a11y/web/templates/pages/view.html:820
+#: auto_a11y/web/templates/pages/view.html:1128
+#: auto_a11y/web/templates/pages/view.html:1168
+#: auto_a11y/web/templates/pages/view.html:1518
+#: auto_a11y/web/templates/pages/view.html:1539
 msgid "Location:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:779
-#: auto_a11y/web/templates/pages/view.html:1122
+#: auto_a11y/web/templates/pages/view.html:781
+#: auto_a11y/web/templates/pages/view.html:821
+#: auto_a11y/web/templates/pages/view.html:1129
+#: auto_a11y/web/templates/pages/view.html:1169
+#: auto_a11y/web/templates/pages/view.html:1519
+#: auto_a11y/web/templates/pages/view.html:1540
 msgid "Copy XPath to clipboard"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:787
-#: auto_a11y/web/templates/pages/view.html:1130
+#: auto_a11y/web/templates/pages/view.html:789
+#: auto_a11y/web/templates/pages/view.html:1137
 msgid "CSS State:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:799
-#: auto_a11y/web/templates/pages/view.html:1142
-#: auto_a11y/web/templates/pages/view.html:1498
-#: auto_a11y/web/templates/pages/view.html:1860
-#: auto_a11y/web/templates/pages/view.html:2069
-#: auto_a11y/web/templates/pages/view.html:2313
-#: auto_a11y/web/templates/pages/view.html:2461
-#: auto_a11y/web/templates/pages/view.html:2699
-#: auto_a11y/web/templates/pages/view.html:2868
+#: auto_a11y/web/templates/pages/view.html:801
+#: auto_a11y/web/templates/pages/view.html:1149
+#: auto_a11y/web/templates/pages/view.html:1569
+#: auto_a11y/web/templates/pages/view.html:1936
+#: auto_a11y/web/templates/pages/view.html:2145
+#: auto_a11y/web/templates/pages/view.html:2389
+#: auto_a11y/web/templates/pages/view.html:2537
+#: auto_a11y/web/templates/pages/view.html:2775
+#: auto_a11y/web/templates/pages/view.html:2944
 msgid "Code Snippet"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:929
-#: auto_a11y/web/templates/pages/view.html:1272
-#: auto_a11y/web/templates/pages/view.html:1899
-#: auto_a11y/web/templates/pages/view.html:2352
-#: auto_a11y/web/templates/pages/view.html:2499
-#: auto_a11y/web/templates/pages/view.html:2754
-msgid "Page Thumbnail (at time of test)"
+#: auto_a11y/web/templates/pages/view.html:813
+#: auto_a11y/web/templates/pages/view.html:1161
+#: auto_a11y/web/templates/pages/view.html:1581
+msgid "Obscuring element (dialog/overlay):"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:932
-#: auto_a11y/web/templates/pages/view.html:1275
-#: auto_a11y/web/templates/pages/view.html:1902
-#: auto_a11y/web/templates/pages/view.html:2355
-#: auto_a11y/web/templates/pages/view.html:2502
-#: auto_a11y/web/templates/pages/view.html:2757
-msgid "Thumbnail of"
+#: auto_a11y/web/templates/pages/view.html:815
+#: auto_a11y/web/templates/pages/view.html:1163
+#: auto_a11y/web/templates/pages/view.html:1583
+msgid "Interactive element(s) being obscured:"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:936
-#: auto_a11y/web/templates/pages/view.html:1279
-#: auto_a11y/web/templates/pages/view.html:1906
-#: auto_a11y/web/templates/pages/view.html:2359
-#: auto_a11y/web/templates/pages/view.html:2506
-#: auto_a11y/web/templates/pages/view.html:2761
-msgid "Thumbnail not available"
+#: auto_a11y/web/templates/pages/view.html:1284
+#: auto_a11y/web/templates/pages/view.html:1975
+#: auto_a11y/web/templates/pages/view.html:2428
+#: auto_a11y/web/templates/pages/view.html:2575
+#: auto_a11y/web/templates/pages/view.html:2830
+msgid "Page Thumbnail (at time of test)"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:938
-#: auto_a11y/web/templates/pages/view.html:1281
-#: auto_a11y/web/templates/pages/view.html:1908
-#: auto_a11y/web/templates/pages/view.html:2361
-#: auto_a11y/web/templates/pages/view.html:2508
-#: auto_a11y/web/templates/pages/view.html:2763
-msgid "Click to view full size"
+#: auto_a11y/web/templates/pages/view.html:939
+#: auto_a11y/web/templates/pages/view.html:1287
+#: auto_a11y/web/templates/pages/view.html:1978
+#: auto_a11y/web/templates/pages/view.html:2431
+#: auto_a11y/web/templates/pages/view.html:2578
+#: auto_a11y/web/templates/pages/view.html:2833
+msgid "Thumbnail of"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:943
-#: auto_a11y/web/templates/pages/view.html:1286
+#: auto_a11y/web/templates/pages/view.html:1291
+#: auto_a11y/web/templates/pages/view.html:1982
+#: auto_a11y/web/templates/pages/view.html:2435
+#: auto_a11y/web/templates/pages/view.html:2582
+#: auto_a11y/web/templates/pages/view.html:2837
+msgid "Thumbnail not available"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:945
+#: auto_a11y/web/templates/pages/view.html:1293
+#: auto_a11y/web/templates/pages/view.html:1984
+#: auto_a11y/web/templates/pages/view.html:2437
+#: auto_a11y/web/templates/pages/view.html:2584
+#: auto_a11y/web/templates/pages/view.html:2839
+msgid "Click to view full size"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:950
+#: auto_a11y/web/templates/pages/view.html:1298
 msgid "AI Detection Note:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:944
-#: auto_a11y/web/templates/pages/view.html:1287
+#: auto_a11y/web/templates/pages/view.html:951
+#: auto_a11y/web/templates/pages/view.html:1299
 msgid "This issue was detected through visual analysis."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:946
-#: auto_a11y/web/templates/pages/view.html:1289
+#: auto_a11y/web/templates/pages/view.html:953
+#: auto_a11y/web/templates/pages/view.html:1301
 msgid "Confidence:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2158
+#: auto_a11y/web/templates/pages/view.html:1511
+msgid "Affected Elements"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1515
+msgid "Text size:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1516
+msgid "Text preview:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1532
+msgid "Elements Outside Landmarks"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1536
+msgid "Element"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1537
+msgid "Content preview:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1553
+msgid "Missing Accessibility Attributes"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1554
+msgid "Map container"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1556
+msgid "containing"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1558
+msgid "is missing required ARIA attributes:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1560
+msgid "to identify this as a"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1560
+msgid "navigable region"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1560
+msgid "graphic/image"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1561
+msgid "to describe what the map shows (e.g., \"Office locations map\")"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:1563
+msgid ""
+"Without these attributes, screen readers cannot identify this as a map or"
+" describe its purpose to users."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:2234
 msgid "XPath:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2300
+#: auto_a11y/web/templates/pages/view.html:2376
 msgid "This is an informational note."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2570
+#: auto_a11y/web/templates/pages/view.html:2646
 msgid "Discovery Items"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2634
+#: auto_a11y/web/templates/pages/view.html:2710
 msgid "About this discovery item:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2637
+#: auto_a11y/web/templates/pages/view.html:2713
 msgid "What was found:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2642
+#: auto_a11y/web/templates/pages/view.html:2718
 msgid "Why manual review is needed:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2647
+#: auto_a11y/web/templates/pages/view.html:2723
 msgid "Who could be affected:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2652
+#: auto_a11y/web/templates/pages/view.html:2728
 msgid "What to check manually:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2684
+#: auto_a11y/web/templates/pages/view.html:2760
 msgid "This item requires manual inspection."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3002
+#: auto_a11y/web/templates/pages/view.html:3078
 #: auto_a11y/web/templates/testing/result.html:208
 msgid "View Screenshot"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3012
+#: auto_a11y/web/templates/pages/view.html:3088
 msgid ""
 "This page has not been tested yet. Click \"Run Test\" to start "
 "accessibility testing."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3020
+#: auto_a11y/web/templates/pages/view.html:3096
 msgid "Test History"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3027
+#: auto_a11y/web/templates/pages/view.html:3103
 #: auto_a11y/web/templates/projects/view.html:271
 #: auto_a11y/web/templates/websites/view.html:235
 msgid "Date"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3028
+#: auto_a11y/web/templates/pages/view.html:3104
 msgid "User"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3034
-#: auto_a11y/web/templates/recordings/detail.html:94
+#: auto_a11y/web/templates/pages/view.html:3110
+#: auto_a11y/web/templates/recordings/detail.html:97
 #: auto_a11y/web/templates/testing/dashboard.html:82
 #: auto_a11y/web/templates/testing/result.html:75
 #: auto_a11y/web/templates/websites/view.html:239
 msgid "Duration"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3035
-#: auto_a11y/web/templates/project_participants/list.html:67
-#: auto_a11y/web/templates/project_participants/list.html:154
-#: auto_a11y/web/templates/project_users/list.html:68
-#: auto_a11y/web/templates/projects/view.html:99
-#: auto_a11y/web/templates/projects/view.html:176
-#: auto_a11y/web/templates/projects/view.html:273
-#: auto_a11y/web/templates/reports/dashboard.html:253
-#: auto_a11y/web/templates/scripts/list.html:74
-#: auto_a11y/web/templates/scripts/list.html:180
-#: auto_a11y/web/templates/scripts/view.html:183
-#: auto_a11y/web/templates/testing/dashboard.html:88
-#: auto_a11y/web/templates/website_users/list.html:71
-#: auto_a11y/web/templates/websites/view.html:350
-msgid "Actions"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/view.html:3061
+#: auto_a11y/web/templates/pages/view.html:3137
 #: auto_a11y/web/templates/project_users/list.html:124
 #: auto_a11y/web/templates/projects/list.html:68
 #: auto_a11y/web/templates/projects/view.html:133
 #: auto_a11y/web/templates/projects/view.html:302
-#: auto_a11y/web/templates/scripts/list.html:123
-#: auto_a11y/web/templates/scripts/list.html:216
+#: auto_a11y/web/templates/scripts/list.html:134
+#: auto_a11y/web/templates/scripts/list.html:227
 #: auto_a11y/web/templates/testing/dashboard.html:140
 #: auto_a11y/web/templates/website_users/list.html:127
 msgid "View"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3080
-#: auto_a11y/web/templates/pages/view.html:3089
-#: auto_a11y/web/templates/pages/view.html:3101
-#: auto_a11y/web/templates/projects/create.html:396
-#: auto_a11y/web/templates/projects/create.html:407
-#: auto_a11y/web/templates/projects/edit.html:451
-#: auto_a11y/web/templates/projects/edit.html:462
-#: auto_a11y/web/templates/recordings/detail.html:667
-#: auto_a11y/web/templates/recordings/detail.html:784
-#: auto_a11y/web/templates/websites/view.html:660
-msgid "Close"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/view.html:3083
+#: auto_a11y/web/templates/pages/view.html:3159
 #: auto_a11y/web/templates/websites/view.html:344
-#: auto_a11y/web/templates/websites/view.html:650
-#: auto_a11y/web/templates/websites/view.html:654
-#: auto_a11y/web/templates/websites/view.html:671
+#: auto_a11y/web/templates/websites/view.html:584
+#: auto_a11y/web/templates/websites/view.html:588
+#: auto_a11y/web/templates/websites/view.html:605
 msgid "Screenshot"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3087
-#: auto_a11y/web/templates/websites/view.html:658
+#: auto_a11y/web/templates/pages/view.html:3163
+#: auto_a11y/web/templates/websites/view.html:592
 msgid "Open in New Tab"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3100
+#: auto_a11y/web/templates/pages/view.html:3176
 msgid "Running Test"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3105
+#: auto_a11y/web/templates/pages/view.html:3181
 #: auto_a11y/web/templates/projects/view.html:536
 #: auto_a11y/web/templates/projects/view.html:566
-#: auto_a11y/web/templates/websites/view.html:1623
-#: auto_a11y/web/templates/websites/view.html:1630
+#: auto_a11y/web/templates/websites/view.html:1531
+#: auto_a11y/web/templates/websites/view.html:1538
 msgid "Testing..."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3107
+#: auto_a11y/web/templates/pages/view.html:3183
 msgid "Running accessibility tests on this page..."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3108
+#: auto_a11y/web/templates/pages/view.html:3184
 msgid "This may take a moment."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3119
+#: auto_a11y/web/templates/pages/view.html:3195
 #: auto_a11y/web/templates/testing/result.html:205
 msgid "Screenshot:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3127
+#: auto_a11y/web/templates/pages/view.html:3203
 msgid "Test Complete"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3128
+#: auto_a11y/web/templates/pages/view.html:3204
 msgid "Refreshing page to show results..."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3129
-#: auto_a11y/web/templates/websites/view.html:1266
+#: auto_a11y/web/templates/pages/view.html:3205
+#: auto_a11y/web/templates/websites/view.html:1175
 msgid "Test Cancelled"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3130
+#: auto_a11y/web/templates/pages/view.html:3206
 msgid "The page test has been cancelled."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3131
-#: auto_a11y/web/templates/websites/view.html:1269
-#: auto_a11y/web/templates/websites/view.html:1276
+#: auto_a11y/web/templates/pages/view.html:3207
+#: auto_a11y/web/templates/websites/view.html:1178
+#: auto_a11y/web/templates/websites/view.html:1185
 msgid "Failed to cancel test"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3132
+#: auto_a11y/web/templates/pages/view.html:3208
 msgid "Failed to cancel test:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3133
+#: auto_a11y/web/templates/pages/view.html:3209
 #: auto_a11y/web/templates/project_participants/list.html:235
 #: auto_a11y/web/templates/project_participants/list.html:257
 #: auto_a11y/web/templates/project_users/list.html:189
 #: auto_a11y/web/templates/project_users/list.html:211
 #: auto_a11y/web/templates/projects/view.html:719
 #: auto_a11y/web/templates/projects/view.html:797
-#: auto_a11y/web/templates/recordings/detail.html:912
+#: auto_a11y/web/templates/recordings/detail.html:930
 #: auto_a11y/web/templates/reports/dashboard.html:519
-#: auto_a11y/web/templates/scripts/list.html:263
-#: auto_a11y/web/templates/scripts/list.html:286
+#: auto_a11y/web/templates/reports/dashboard.html:677
+#: auto_a11y/web/templates/scripts/list.html:274
+#: auto_a11y/web/templates/scripts/list.html:297
 #: auto_a11y/web/templates/scripts/view.html:245
 #: auto_a11y/web/templates/scripts/view.html:265
 #: auto_a11y/web/templates/website_users/list.html:192
 #: auto_a11y/web/templates/website_users/list.html:214
 #: auto_a11y/web/templates/website_users/view.html:211
-#: auto_a11y/web/templates/websites/view.html:1269
-#: auto_a11y/web/templates/websites/view.html:1306
-#: auto_a11y/web/templates/websites/view.html:1347
-#: auto_a11y/web/templates/websites/view.html:1441
-#: auto_a11y/web/templates/websites/view.html:1556
-#: auto_a11y/web/templates/websites/view.html:1624
+#: auto_a11y/web/templates/websites/view.html:1178
+#: auto_a11y/web/templates/websites/view.html:1215
+#: auto_a11y/web/templates/websites/view.html:1256
+#: auto_a11y/web/templates/websites/view.html:1350
+#: auto_a11y/web/templates/websites/view.html:1464
+#: auto_a11y/web/templates/websites/view.html:1532
 msgid "Unknown error"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3134
+#: auto_a11y/web/templates/pages/view.html:3210
 msgid "Test started"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3135
+#: auto_a11y/web/templates/pages/view.html:3211
 msgid "The accessibility test is running. The page will refresh when complete."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3136
+#: auto_a11y/web/templates/pages/view.html:3212
 msgid "Test failed:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3137
-#: auto_a11y/web/templates/websites/view.html:1220
-#: auto_a11y/web/templates/websites/view.html:1225
+#: auto_a11y/web/templates/pages/view.html:3213
+#: auto_a11y/web/templates/websites/view.html:1129
+#: auto_a11y/web/templates/websites/view.html:1134
 msgid "Failed to start test"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3138
+#: auto_a11y/web/templates/pages/view.html:3214
 msgid "Starting Test..."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3139
+#: auto_a11y/web/templates/pages/view.html:3215
 #: auto_a11y/web/templates/projects/view.html:700
-#: auto_a11y/web/templates/websites/view.html:1321
-#: auto_a11y/web/templates/websites/view.html:1598
+#: auto_a11y/web/templates/websites/view.html:1230
+#: auto_a11y/web/templates/websites/view.html:1506
 msgid "Cancelling..."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3536
+msgid "Filter Test Results"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3538
+msgid "Active Filters:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3539
+msgid "Showing:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3541
+msgid "items"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3542
+msgid "Issue Type"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3547
+msgid "Impact Level"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3549
+#: auto_a11y/web/templates/recordings/list.html:112
+msgid "Medium"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3551
+#: auto_a11y/web/templates/reports/dashboard.html:1335
+msgid "WCAG Criteria"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3552
+msgid "Touchpoint"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3554
+msgid "Affected User Groups"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3555
+msgid "Vision"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3556
+msgid "Hearing"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3557
+msgid "Motor"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3558
+msgid "Cognitive"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3559
+msgid "Seizure"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3560
+#: auto_a11y/web/templates/website_users/view.html:3
+msgid "Test User"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3561
+msgid "Quick Search"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3562
+msgid "Search in issue descriptions, IDs, or code..."
 msgstr ""
 
 #: auto_a11y/web/templates/project_participants/create_supervisor.html:3
@@ -2088,8 +2639,8 @@ msgstr ""
 #: auto_a11y/web/templates/project_participants/list.html:150
 #: auto_a11y/web/templates/project_users/list.html:62
 #: auto_a11y/web/templates/projects/view.html:94
-#: auto_a11y/web/templates/scripts/list.html:69
-#: auto_a11y/web/templates/scripts/list.html:176
+#: auto_a11y/web/templates/scripts/list.html:80
+#: auto_a11y/web/templates/scripts/list.html:187
 #: auto_a11y/web/templates/website_users/list.html:65
 msgid "Name"
 msgstr ""
@@ -2277,7 +2828,7 @@ msgstr ""
 
 #: auto_a11y/web/templates/project_participants/create_tester.html:46
 #: auto_a11y/web/templates/project_participants/edit_tester.html:47
-#: auto_a11y/web/templates/recordings/upload.html:141
+#: auto_a11y/web/templates/recordings/upload.html:188
 msgid "e.g., Jane Smith"
 msgstr ""
 
@@ -2461,7 +3012,7 @@ msgstr ""
 
 #: auto_a11y/web/templates/project_participants/list.html:22
 #, python-format
-msgid "Manage lived experience testers and test supervisors for %s"
+msgid "Manage lived experience testers and test supervisors for %(name)s"
 msgstr ""
 
 #: auto_a11y/web/templates/project_participants/list.html:40
@@ -2499,9 +3050,9 @@ msgstr ""
 #: auto_a11y/web/templates/project_participants/list.html:194
 #: auto_a11y/web/templates/project_users/list.html:136
 #: auto_a11y/web/templates/projects/view.html:36
-#: auto_a11y/web/templates/recordings/detail.html:31
+#: auto_a11y/web/templates/recordings/detail.html:33
 #: auto_a11y/web/templates/reports/dashboard.html:288
-#: auto_a11y/web/templates/scripts/list.html:135
+#: auto_a11y/web/templates/scripts/list.html:146
 #: auto_a11y/web/templates/website_users/list.html:139
 msgid "Delete"
 msgstr ""
@@ -2569,6 +3120,7 @@ msgstr ""
 #: auto_a11y/web/templates/project_users/list.html:13
 #: auto_a11y/web/templates/project_users/list.html:20
 #: auto_a11y/web/templates/project_users/list.html:53
+#: auto_a11y/web/templates/project_users/view.html:14
 #: auto_a11y/web/templates/projects/view.html:21
 #: auto_a11y/web/templates/website_users/create.html:17
 #: auto_a11y/web/templates/website_users/edit.html:17
@@ -2589,6 +3141,7 @@ msgstr ""
 
 #: auto_a11y/web/templates/project_users/create.html:41
 #: auto_a11y/web/templates/project_users/edit.html:41
+#: auto_a11y/web/templates/project_users/view.html:47
 #: auto_a11y/web/templates/website_users/create.html:44
 #: auto_a11y/web/templates/website_users/edit.html:44
 #: auto_a11y/web/templates/website_users/view.html:50
@@ -2678,8 +3231,8 @@ msgstr ""
 #: auto_a11y/web/templates/project_users/edit.html:82
 #: auto_a11y/web/templates/projects/create.html:98
 #: auto_a11y/web/templates/projects/edit.html:63
-#: auto_a11y/web/templates/recordings/detail.html:118
-#: auto_a11y/web/templates/recordings/upload.html:131
+#: auto_a11y/web/templates/recordings/detail.html:133
+#: auto_a11y/web/templates/recordings/upload.html:178
 #: auto_a11y/web/templates/scripts/create.html:99
 #: auto_a11y/web/templates/website_users/create.html:81
 #: auto_a11y/web/templates/website_users/edit.html:85
@@ -2707,6 +3260,7 @@ msgstr ""
 
 #: auto_a11y/web/templates/project_users/create.html:96
 #: auto_a11y/web/templates/project_users/edit.html:101
+#: auto_a11y/web/templates/project_users/view.html:88
 #: auto_a11y/web/templates/website_users/create.html:99
 #: auto_a11y/web/templates/website_users/edit.html:104
 #: auto_a11y/web/templates/website_users/view.html:93
@@ -2979,34 +3533,40 @@ msgid "Only enter a password if you want to change it"
 msgstr ""
 
 #: auto_a11y/web/templates/project_users/edit.html:212
+#: auto_a11y/web/templates/project_users/view.html:139
 #: auto_a11y/web/templates/website_users/edit.html:215
 #: auto_a11y/web/templates/website_users/view.html:148
 msgid "Usage History"
 msgstr ""
 
 #: auto_a11y/web/templates/project_users/edit.html:216
+#: auto_a11y/web/templates/project_users/view.html:143
 #: auto_a11y/web/templates/website_users/edit.html:219
 #: auto_a11y/web/templates/website_users/view.html:152
 msgid "Last Used:"
 msgstr ""
 
 #: auto_a11y/web/templates/project_users/edit.html:219
+#: auto_a11y/web/templates/project_users/view.html:146
 #: auto_a11y/web/templates/website_users/edit.html:222
 #: auto_a11y/web/templates/website_users/view.html:155
 msgid "Last Login Status:"
 msgstr ""
 
 #: auto_a11y/web/templates/project_users/edit.html:222
+#: auto_a11y/web/templates/project_users/view.html:149
 #: auto_a11y/web/templates/website_users/edit.html:225
 msgid "Success"
 msgstr ""
 
 #: auto_a11y/web/templates/project_users/edit.html:226
+#: auto_a11y/web/templates/project_users/view.html:153
 #: auto_a11y/web/templates/website_users/edit.html:229
 msgid "Not attempted yet"
 msgstr ""
 
 #: auto_a11y/web/templates/project_users/edit.html:231
+#: auto_a11y/web/templates/project_users/view.html:158
 #: auto_a11y/web/templates/website_users/edit.html:234
 msgid "Last Error:"
 msgstr ""
@@ -3027,7 +3587,7 @@ msgid "Leave the password field blank to keep the current password unchanged."
 msgstr ""
 
 #: auto_a11y/web/templates/project_users/list.html:8
-#: auto_a11y/web/templates/recordings/detail.html:10
+#: auto_a11y/web/templates/recordings/detail.html:12
 #: auto_a11y/web/templates/scripts/view.html:8
 msgid "breadcrumb"
 msgstr ""
@@ -3035,7 +3595,7 @@ msgstr ""
 #: auto_a11y/web/templates/project_users/list.html:22
 #: auto_a11y/web/templates/website_users/list.html:25
 #, python-format
-msgid "Manage authenticated test users for %s"
+msgid "Manage authenticated test users for %(name)s"
 msgstr ""
 
 #: auto_a11y/web/templates/project_users/list.html:45
@@ -3078,14 +3638,16 @@ msgid "Login OK"
 msgstr ""
 
 #: auto_a11y/web/templates/project_users/list.html:132
-#: auto_a11y/web/templates/scripts/list.html:131
+#: auto_a11y/web/templates/project_users/view.html:184
+#: auto_a11y/web/templates/scripts/list.html:142
 #: auto_a11y/web/templates/scripts/view.html:191
 #: auto_a11y/web/templates/website_users/list.html:135
 msgid "Disable"
 msgstr ""
 
 #: auto_a11y/web/templates/project_users/list.html:132
-#: auto_a11y/web/templates/scripts/list.html:131
+#: auto_a11y/web/templates/project_users/view.html:184
+#: auto_a11y/web/templates/scripts/list.html:142
 #: auto_a11y/web/templates/scripts/view.html:191
 #: auto_a11y/web/templates/website_users/list.html:135
 msgid "Enable"
@@ -3125,6 +3687,109 @@ msgstr ""
 
 #: auto_a11y/web/templates/project_users/list.html:215
 msgid "Error deleting user: "
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:51
+#: auto_a11y/web/templates/website_users/view.html:54
+msgid "Display Name:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:54
+#: auto_a11y/web/templates/website_users/view.html:57
+msgid "Username:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:57
+#: auto_a11y/web/templates/website_users/view.html:63
+msgid "Roles:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:64
+msgid "No roles assigned"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:69
+#: auto_a11y/web/templates/website_users/view.html:75
+msgid "Description:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:92
+msgid "Authentication Method:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:96
+#: auto_a11y/web/templates/website_users/view.html:105
+msgid "Login URL:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:99
+msgid "Username Field:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:102
+msgid "Password Field:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:105
+msgid "Submit Button:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:109
+#: auto_a11y/web/templates/website_users/view.html:130
+msgid "Success Indicator:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:114
+#: auto_a11y/web/templates/website_users/view.html:134
+msgid "Session Timeout:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:115
+#: auto_a11y/web/templates/website_users/view.html:135
+#, python-format
+msgid "%(minutes)s minutes"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:118
+msgid "Logout URL:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:123
+msgid "Logout Button:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:128
+msgid "Logout Success Indicator:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:178
+#: auto_a11y/web/templates/website_users/view.html:40
+#: auto_a11y/web/templates/website_users/view.html:183
+msgid "Edit User"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:191
+msgid "Are you sure you want to delete this user? This action cannot be undone."
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:193
+#: auto_a11y/web/templates/website_users/view.html:189
+msgid "Delete User"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:201
+#: auto_a11y/web/templates/projects/list.html:60
+#: auto_a11y/web/templates/scripts/view.html:207
+#: auto_a11y/web/templates/website_users/view.html:79
+msgid "Created:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:206
+msgid "Last Modified:"
+msgstr ""
+
+#: auto_a11y/web/templates/project_users/view.html:218
+msgid "Back to Test Users"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/create.html:3
@@ -3176,8 +3841,8 @@ msgstr ""
 
 #: auto_a11y/web/templates/projects/create.html:107
 #: auto_a11y/web/templates/reports/dashboard.html:352
-#: auto_a11y/web/templates/reports/dashboard.html:983
-#: auto_a11y/web/templates/reports/dashboard.html:1153
+#: auto_a11y/web/templates/reports/dashboard.html:1001
+#: auto_a11y/web/templates/reports/dashboard.html:1171
 #: auto_a11y/web/templates/scripts/create.html:63
 msgid "Website"
 msgstr ""
@@ -3245,6 +3910,9 @@ msgstr ""
 #: auto_a11y/web/templates/projects/create.html:960
 #: auto_a11y/web/templates/projects/create.html:969
 #: auto_a11y/web/templates/projects/edit.html:81
+#: auto_a11y/web/templates/projects/edit.html:717
+#: auto_a11y/web/templates/projects/edit.html:731
+#: auto_a11y/web/templates/projects/edit.html:738
 #: auto_a11y/web/templates/projects/edit.html:747
 msgid "Auto-match by project name"
 msgstr ""
@@ -3268,7 +3936,7 @@ msgstr ""
 
 #: auto_a11y/web/templates/projects/create.html:151
 #: auto_a11y/web/templates/projects/edit.html:92
-#: auto_a11y/web/templates/reports/dashboard.html:994
+#: auto_a11y/web/templates/reports/dashboard.html:1012
 msgid "Level AA (Recommended)"
 msgstr ""
 
@@ -3411,8 +4079,8 @@ msgstr ""
 #: auto_a11y/web/templates/projects/edit.html:140
 #: auto_a11y/web/templates/projects/edit.html:277
 #: auto_a11y/web/templates/projects/edit.html:364
-#: auto_a11y/web/templates/reports/dashboard.html:1014
-#: auto_a11y/web/templates/reports/dashboard.html:1161
+#: auto_a11y/web/templates/reports/dashboard.html:1032
+#: auto_a11y/web/templates/reports/dashboard.html:1179
 msgid "Note:"
 msgstr ""
 
@@ -3546,8 +4214,6 @@ msgstr ""
 #: auto_a11y/web/templates/projects/edit.html:420
 #: auto_a11y/web/templates/websites/view.html:58
 #: auto_a11y/web/templates/websites/view.html:102
-#: auto_a11y/web/templates/websites/view.html:523
-#: auto_a11y/web/templates/websites/view.html:620
 msgid "Select All"
 msgstr ""
 
@@ -3559,14 +4225,6 @@ msgstr ""
 #: auto_a11y/web/templates/projects/create.html:394
 #: auto_a11y/web/templates/projects/edit.html:449
 msgid "Test Details"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/create.html:401
-#: auto_a11y/web/templates/projects/create.html:517
-#: auto_a11y/web/templates/projects/create.html:720
-#: auto_a11y/web/templates/projects/edit.html:456
-#: auto_a11y/web/templates/projects/edit.html:611
-msgid "Loading..."
 msgstr ""
 
 #: auto_a11y/web/templates/projects/create.html:403
@@ -3614,21 +4272,25 @@ msgstr ""
 
 #: auto_a11y/web/templates/projects/create.html:584
 #: auto_a11y/web/templates/projects/create.html:783
+#: auto_a11y/web/templates/projects/edit.html:651
 msgid "What This Test Detects"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/create.html:590
 #: auto_a11y/web/templates/projects/create.html:789
+#: auto_a11y/web/templates/projects/edit.html:657
 msgid "Why It Matters"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/create.html:597
 #: auto_a11y/web/templates/projects/create.html:796
+#: auto_a11y/web/templates/projects/edit.html:664
 msgid "Who It Affects"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/create.html:604
 #: auto_a11y/web/templates/projects/create.html:803
+#: auto_a11y/web/templates/projects/edit.html:671
 msgid "How to Fix"
 msgstr ""
 
@@ -3706,8 +4368,9 @@ msgid "Refreshing..."
 msgstr ""
 
 #: auto_a11y/web/templates/projects/create.html:956
-#: auto_a11y/web/templates/scripts/list.html:263
-#: auto_a11y/web/templates/scripts/list.html:286
+#: auto_a11y/web/templates/projects/edit.html:734
+#: auto_a11y/web/templates/scripts/list.html:274
+#: auto_a11y/web/templates/scripts/list.html:297
 #: auto_a11y/web/templates/scripts/view.html:245
 #: auto_a11y/web/templates/scripts/view.html:265
 #: auto_a11y/web/templates/website_users/list.html:192
@@ -3717,6 +4380,7 @@ msgid "Error:"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/create.html:963
+#: auto_a11y/web/templates/projects/edit.html:741
 msgid "No Drupal audits found"
 msgstr ""
 
@@ -3882,6 +4546,10 @@ msgstr ""
 msgid "Update Project"
 msgstr ""
 
+#: auto_a11y/web/templates/projects/edit.html:643
+msgid "Impact"
+msgstr ""
+
 #: auto_a11y/web/templates/projects/list.html:18
 msgid "All"
 msgstr ""
@@ -3889,12 +4557,6 @@ msgstr ""
 #: auto_a11y/web/templates/projects/list.html:56
 #: auto_a11y/web/templates/projects/view.html:16
 msgid "No description"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/list.html:60
-#: auto_a11y/web/templates/scripts/view.html:207
-#: auto_a11y/web/templates/website_users/view.html:79
-msgid "Created:"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/list.html:61
@@ -3940,7 +4602,7 @@ msgstr ""
 #: auto_a11y/web/templates/projects/view.html:72
 #: auto_a11y/web/templates/projects/view.html:98
 #: auto_a11y/web/templates/projects/view.html:272
-#: auto_a11y/web/templates/recordings/list.html:93
+#: auto_a11y/web/templates/recordings/list.html:106
 msgid "Issues"
 msgstr ""
 
@@ -3978,12 +4640,6 @@ msgstr ""
 msgid "No websites added yet. Add a website to start testing."
 msgstr ""
 
-#: auto_a11y/web/templates/projects/view.html:160
-#: auto_a11y/web/templates/recordings/detail.html:149
-#: auto_a11y/web/templates/recordings/upload.html:174
-msgid "Discovered Pages"
-msgstr ""
-
 #: auto_a11y/web/templates/projects/view.html:170
 #: auto_a11y/web/templates/projects/view.html:268
 msgid "Title"
@@ -4019,10 +4675,6 @@ msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:209
 msgid "Manual"
-msgstr ""
-
-#: auto_a11y/web/templates/projects/view.html:215
-msgid "Synced"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:221
@@ -4101,15 +4753,12 @@ msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:389
 #: auto_a11y/web/templates/websites/view.html:34
-#: auto_a11y/web/templates/websites/view.html:501
 msgid "Select users for discovery:"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:394
 #: auto_a11y/web/templates/websites/view.html:41
 #: auto_a11y/web/templates/websites/view.html:85
-#: auto_a11y/web/templates/websites/view.html:506
-#: auto_a11y/web/templates/websites/view.html:603
 msgid "no login"
 msgstr ""
 
@@ -4122,9 +4771,7 @@ msgid "Manage test users"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:417
-#: auto_a11y/web/templates/recordings/upload.html:411
-#: auto_a11y/web/templates/websites/view.html:529
-#: auto_a11y/web/templates/websites/view.html:626
+#: auto_a11y/web/templates/recordings/upload.html:458
 msgid "Add test users"
 msgstr ""
 
@@ -4133,7 +4780,7 @@ msgid "to discover pages requiring authentication."
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:422
-#: auto_a11y/web/templates/websites/view.html:534
+#: auto_a11y/web/templates/websites/view.html:501
 msgid "Maximum Pages to Discover"
 msgstr ""
 
@@ -4152,7 +4799,7 @@ msgid ""
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:434
-#: auto_a11y/web/templates/websites/view.html:546
+#: auto_a11y/web/templates/websites/view.html:513
 msgid "Start Discovery"
 msgstr ""
 
@@ -4212,8 +4859,9 @@ msgstr ""
 #: auto_a11y/web/templates/projects/view.html:754
 #: auto_a11y/web/templates/projects/view.html:763
 #: auto_a11y/web/templates/projects/view.html:776
+#: auto_a11y/web/templates/testing/configure.html:339
 #: auto_a11y/web/templates/websites/view.html:267
-#: auto_a11y/web/templates/websites/view.html:1516
+#: auto_a11y/web/templates/websites/view.html:1424
 msgid "pages"
 msgstr ""
 
@@ -4222,12 +4870,11 @@ msgid "Discovery is already running for this website. Do you want to cancel it?"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:622
-#: auto_a11y/web/templates/websites/view.html:997
 msgid "Please select at least one user for discovery (or Guest)."
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:643
-#: auto_a11y/web/templates/websites/view.html:1102
+#: auto_a11y/web/templates/websites/view.html:1011
 msgid "Starting..."
 msgstr ""
 
@@ -4240,27 +4887,27 @@ msgid "max"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:666
-#: auto_a11y/web/templates/websites/view.html:1046
+#: auto_a11y/web/templates/websites/view.html:960
 msgid "Discovery Started"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:680
-#: auto_a11y/web/templates/websites/view.html:1056
+#: auto_a11y/web/templates/websites/view.html:970
 msgid "Failed to start discovery"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:688
-#: auto_a11y/web/templates/websites/view.html:1062
+#: auto_a11y/web/templates/websites/view.html:976
 msgid "Failed to start page discovery"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:695
-#: auto_a11y/web/templates/websites/view.html:1312
+#: auto_a11y/web/templates/websites/view.html:1221
 msgid "No discovery job to cancel"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:714
-#: auto_a11y/web/templates/websites/view.html:1339
+#: auto_a11y/web/templates/websites/view.html:1248
 msgid "Discovery Cancelled"
 msgstr ""
 
@@ -4269,8 +4916,8 @@ msgid "Failed to cancel discovery:"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:722
-#: auto_a11y/web/templates/websites/view.html:1347
-#: auto_a11y/web/templates/websites/view.html:1358
+#: auto_a11y/web/templates/websites/view.html:1256
+#: auto_a11y/web/templates/websites/view.html:1267
 msgid "Failed to cancel discovery"
 msgstr ""
 
@@ -4281,15 +4928,15 @@ msgstr ""
 #: auto_a11y/web/templates/projects/view.html:754
 #: auto_a11y/web/templates/projects/view.html:763
 #: auto_a11y/web/templates/projects/view.html:776
-#: auto_a11y/web/templates/websites/view.html:1397
-#: auto_a11y/web/templates/websites/view.html:1421
+#: auto_a11y/web/templates/websites/view.html:1306
+#: auto_a11y/web/templates/websites/view.html:1330
 msgid "Found"
 msgstr ""
 
 #: auto_a11y/web/templates/projects/view.html:776
-#: auto_a11y/web/templates/websites/view.html:932
-#: auto_a11y/web/templates/websites/view.html:1412
-#: auto_a11y/web/templates/websites/view.html:1421
+#: auto_a11y/web/templates/websites/view.html:851
+#: auto_a11y/web/templates/websites/view.html:1321
+#: auto_a11y/web/templates/websites/view.html:1330
 msgid "Discovery Complete"
 msgstr ""
 
@@ -4297,350 +4944,354 @@ msgstr ""
 msgid "Discovery failed:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:23
+#: auto_a11y/web/templates/recordings/detail.html:25
 msgid "Save"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:29
-#: auto_a11y/web/templates/recordings/list.html:113
+#: auto_a11y/web/templates/recordings/detail.html:31
+#: auto_a11y/web/templates/recordings/list.html:126
 msgid "Are you sure you want to delete this recording?"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:44
+#: auto_a11y/web/templates/recordings/detail.html:47
 msgid "Recording ID"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:50
+#: auto_a11y/web/templates/recordings/detail.html:53
 msgid "Auditor"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:63
+#: auto_a11y/web/templates/recordings/detail.html:66
 msgid "Tester"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:71
-#: auto_a11y/web/templates/recordings/upload.html:111
+#: auto_a11y/web/templates/recordings/detail.html:74
+#: auto_a11y/web/templates/recordings/upload.html:158
 msgid "Test Supervisor"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:80
+#: auto_a11y/web/templates/recordings/detail.html:83
 msgid "Test User Account"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:88
+#: auto_a11y/web/templates/recordings/detail.html:91
 msgid "Recording Date"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:99
+#: auto_a11y/web/templates/recordings/detail.html:102
 #: auto_a11y/web/templates/recordings/list.html:36
-#: auto_a11y/web/templates/recordings/upload.html:152
+#: auto_a11y/web/templates/recordings/upload.html:199
 msgid "Recording Type"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:106
+#: auto_a11y/web/templates/recordings/detail.html:109
+msgid "Available Languages"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/detail.html:121
 #: auto_a11y/web/templates/recordings/list.html:25
 #: auto_a11y/web/templates/reports/dashboard.html:250
 #: auto_a11y/web/templates/reports/dashboard.html:341
-#: auto_a11y/web/templates/reports/dashboard.html:972
-#: auto_a11y/web/templates/reports/dashboard.html:1142
-#: auto_a11y/web/templates/reports/dashboard.html:1281
+#: auto_a11y/web/templates/reports/dashboard.html:990
+#: auto_a11y/web/templates/reports/dashboard.html:1160
+#: auto_a11y/web/templates/reports/dashboard.html:1299
 msgid "Project"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:125
+#: auto_a11y/web/templates/recordings/detail.html:140
 msgid "Pages Covered"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:136
+#: auto_a11y/web/templates/recordings/detail.html:151
 msgid "No pages specified"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:142
-#: auto_a11y/web/templates/recordings/detail.html:143
+#: auto_a11y/web/templates/recordings/detail.html:157
+#: auto_a11y/web/templates/recordings/detail.html:158
 msgid "Enter one URL per line"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:168
+#: auto_a11y/web/templates/recordings/detail.html:183
 msgid "No discovered pages selected"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:175
-#: auto_a11y/web/templates/recordings/upload.html:385
+#: auto_a11y/web/templates/recordings/detail.html:190
+#: auto_a11y/web/templates/recordings/upload.html:432
 msgid "Loading discovered pages..."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:177
+#: auto_a11y/web/templates/recordings/detail.html:192
 msgid "Select discovered pages related to this recording"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:183
-#: auto_a11y/web/templates/recordings/upload.html:185
+#: auto_a11y/web/templates/recordings/detail.html:198
+#: auto_a11y/web/templates/recordings/upload.html:232
 msgid "Common Components"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:194
-#: auto_a11y/web/templates/recordings/upload.html:195
+#: auto_a11y/web/templates/recordings/detail.html:209
+#: auto_a11y/web/templates/recordings/upload.html:242
 msgid "App Screens / Views"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:205
-#: auto_a11y/web/templates/recordings/upload.html:205
+#: auto_a11y/web/templates/recordings/detail.html:220
+#: auto_a11y/web/templates/recordings/upload.html:252
 msgid "Device Sections"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:216
+#: auto_a11y/web/templates/recordings/detail.html:231
 msgid "Task Context"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:223
+#: auto_a11y/web/templates/recordings/detail.html:238
 msgid "Media File"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:237
+#: auto_a11y/web/templates/recordings/detail.html:252
 msgid "Issue Summary"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:245
+#: auto_a11y/web/templates/recordings/detail.html:260
 msgid "High Impact"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:258
+#: auto_a11y/web/templates/recordings/detail.html:273
 msgid "Medium Impact"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:271
+#: auto_a11y/web/templates/recordings/detail.html:286
 msgid "Low Impact"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:295
+#: auto_a11y/web/templates/recordings/detail.html:310
 msgid "Manual Accessibility Score"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:309
+#: auto_a11y/web/templates/recordings/detail.html:324
 msgid "Based on manually identified issue severity and impact"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:316
+#: auto_a11y/web/templates/recordings/detail.html:331
 msgid "Manual WCAG Compliance Score"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:330
+#: auto_a11y/web/templates/recordings/detail.html:345
 msgid "Level AA conformance based on manual testing scope"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:337
+#: auto_a11y/web/templates/recordings/detail.html:352
 msgid "Applicable"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:351
+#: auto_a11y/web/templates/recordings/detail.html:366
 msgid "View Criteria Details"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:359
+#: auto_a11y/web/templates/recordings/detail.html:374
 msgid ""
 "Manual compliance score requires testing scope to be defined during "
 "upload."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:377
+#: auto_a11y/web/templates/recordings/detail.html:393
 msgid "Key Takeaways"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:410
+#: auto_a11y/web/templates/recordings/detail.html:427
 msgid "User Painpoints"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:429
-#: auto_a11y/web/templates/recordings/detail.html:474
+#: auto_a11y/web/templates/recordings/detail.html:446
+#: auto_a11y/web/templates/recordings/detail.html:492
 msgid "User Quote:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:435
-#: auto_a11y/web/templates/recordings/detail.html:480
+#: auto_a11y/web/templates/recordings/detail.html:452
+#: auto_a11y/web/templates/recordings/detail.html:498
 msgid "Timecode"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:435
-#: auto_a11y/web/templates/recordings/detail.html:480
+#: auto_a11y/web/templates/recordings/detail.html:452
+#: auto_a11y/web/templates/recordings/detail.html:498
 msgid "s"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:440
+#: auto_a11y/web/templates/recordings/detail.html:457
 msgid "Start:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:441
+#: auto_a11y/web/templates/recordings/detail.html:458
 msgid "End:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:442
-#: auto_a11y/web/templates/recordings/detail.html:486
+#: auto_a11y/web/templates/recordings/detail.html:459
+#: auto_a11y/web/templates/recordings/detail.html:504
 #: auto_a11y/web/templates/testing/result.html:198
 msgid "Duration:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:462
+#: auto_a11y/web/templates/recordings/detail.html:480
 msgid "User Assertions"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:494
+#: auto_a11y/web/templates/recordings/detail.html:512
 msgid "Context:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:511
+#: auto_a11y/web/templates/recordings/detail.html:529
 msgid "Accessibility Issues"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:540
+#: auto_a11y/web/templates/recordings/detail.html:558
 msgid "timecode(s)"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:555
-#: auto_a11y/web/templates/recordings/upload.html:327
+#: auto_a11y/web/templates/recordings/detail.html:573
+#: auto_a11y/web/templates/recordings/upload.html:374
 msgid "Timecodes:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:568
+#: auto_a11y/web/templates/recordings/detail.html:586
 msgid "What:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:575
+#: auto_a11y/web/templates/recordings/detail.html:593
 msgid "Why:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:582
+#: auto_a11y/web/templates/recordings/detail.html:600
 msgid "Who is affected:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:596
+#: auto_a11y/web/templates/recordings/detail.html:614
 #: auto_a11y/web/templates/testing/result.html:153
 msgid "WCAG:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:600
-#: auto_a11y/web/templates/recordings/detail.html:721
-#: auto_a11y/web/templates/recordings/detail.html:757
+#: auto_a11y/web/templates/recordings/detail.html:618
+#: auto_a11y/web/templates/recordings/detail.html:739
+#: auto_a11y/web/templates/recordings/detail.html:775
 msgid "Level"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:611
+#: auto_a11y/web/templates/recordings/detail.html:629
 msgid "Open"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:612
+#: auto_a11y/web/templates/recordings/detail.html:630
 msgid "In Progress"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:613
+#: auto_a11y/web/templates/recordings/detail.html:631
 msgid "Resolved"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:614
+#: auto_a11y/web/templates/recordings/detail.html:632
 msgid "Verified"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:625
+#: auto_a11y/web/templates/recordings/detail.html:643
 msgid "No issues found in this recording."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:646
+#: auto_a11y/web/templates/recordings/detail.html:664
 msgid "Status updated successfully"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:648
+#: auto_a11y/web/templates/recordings/detail.html:666
 msgid "Failed to update status"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:653
+#: auto_a11y/web/templates/recordings/detail.html:671
 msgid "Error updating status"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:665
+#: auto_a11y/web/templates/recordings/detail.html:683
 msgid "WCAG Success Criteria Breakdown"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:672
+#: auto_a11y/web/templates/recordings/detail.html:690
 msgid "How Criteria Are Determined"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:674
+#: auto_a11y/web/templates/recordings/detail.html:692
 msgid "The compliance score is calculated based on WCAG 2.2 Level AA criteria"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:674
+#: auto_a11y/web/templates/recordings/detail.html:692
 msgid "total"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:675
+#: auto_a11y/web/templates/recordings/detail.html:693
 msgid ""
 "Criteria are excluded based on the testing scope selected during upload. "
 "Only criteria relevant to the tested content types remain applicable"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:675
+#: auto_a11y/web/templates/recordings/detail.html:693
 msgid "criteria"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:682
-#: auto_a11y/web/templates/recordings/upload.html:225
+#: auto_a11y/web/templates/recordings/detail.html:700
+#: auto_a11y/web/templates/recordings/upload.html:272
 msgid "Testing Scope"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:702
+#: auto_a11y/web/templates/recordings/detail.html:720
 msgid "Applicable Criteria"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:707
+#: auto_a11y/web/templates/recordings/detail.html:725
 msgid "Excluded Criteria"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:715
-#: auto_a11y/web/templates/recordings/detail.html:751
+#: auto_a11y/web/templates/recordings/detail.html:733
+#: auto_a11y/web/templates/recordings/detail.html:769
 msgid "These"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:715
+#: auto_a11y/web/templates/recordings/detail.html:733
 msgid ""
 "criteria are applicable based on your testing scope and are used to "
 "calculate the compliance score."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:720
-#: auto_a11y/web/templates/recordings/detail.html:756
+#: auto_a11y/web/templates/recordings/detail.html:738
+#: auto_a11y/web/templates/recordings/detail.html:774
 msgid "Number"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:722
-#: auto_a11y/web/templates/recordings/detail.html:758
+#: auto_a11y/web/templates/recordings/detail.html:740
+#: auto_a11y/web/templates/recordings/detail.html:776
 msgid "Success Criterion"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:751
+#: auto_a11y/web/templates/recordings/detail.html:769
 msgid ""
 "criteria were excluded because they relate only to content types that "
 "were not tested."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:786
+#: auto_a11y/web/templates/recordings/detail.html:804
 msgid "View WCAG Quick Reference"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:912
-#: auto_a11y/web/templates/recordings/detail.html:916
+#: auto_a11y/web/templates/recordings/detail.html:930
+#: auto_a11y/web/templates/recordings/detail.html:934
 msgid "Error saving recording:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:925
+#: auto_a11y/web/templates/recordings/detail.html:943
 msgid "No project associated with this recording."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:968
-#: auto_a11y/web/templates/recordings/upload.html:500
+#: auto_a11y/web/templates/recordings/detail.html:986
+#: auto_a11y/web/templates/recordings/upload.html:547
 msgid "No discovered pages found for this project."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/detail.html:973
-#: auto_a11y/web/templates/recordings/upload.html:506
+#: auto_a11y/web/templates/recordings/detail.html:991
+#: auto_a11y/web/templates/recordings/upload.html:553
 msgid "Error loading discovered pages."
 msgstr ""
 
@@ -4649,7 +5300,7 @@ msgid "Manual Audit Recordings"
 msgstr ""
 
 #: auto_a11y/web/templates/recordings/list.html:12
-#: auto_a11y/web/templates/recordings/upload.html:304
+#: auto_a11y/web/templates/recordings/upload.html:351
 msgid "Upload Recording"
 msgstr ""
 
@@ -4663,8 +5314,8 @@ msgstr ""
 #: auto_a11y/web/templates/recordings/list.html:27
 #: auto_a11y/web/templates/reports/dashboard.html:278
 #: auto_a11y/web/templates/reports/dashboard.html:343
-#: auto_a11y/web/templates/reports/dashboard.html:974
-#: auto_a11y/web/templates/reports/dashboard.html:1144
+#: auto_a11y/web/templates/reports/dashboard.html:992
+#: auto_a11y/web/templates/reports/dashboard.html:1162
 msgid "All Projects"
 msgstr ""
 
@@ -4673,52 +5324,44 @@ msgid "All Types"
 msgstr ""
 
 #: auto_a11y/web/templates/recordings/list.html:39
-#: auto_a11y/web/templates/recordings/upload.html:154
+#: auto_a11y/web/templates/recordings/upload.html:201
 msgid "Audit"
 msgstr ""
 
 #: auto_a11y/web/templates/recordings/list.html:40
-#: auto_a11y/web/templates/recordings/upload.html:155
+#: auto_a11y/web/templates/recordings/upload.html:202
 msgid "Lived Experience Website"
 msgstr ""
 
 #: auto_a11y/web/templates/recordings/list.html:41
-#: auto_a11y/web/templates/recordings/upload.html:156
+#: auto_a11y/web/templates/recordings/upload.html:203
 msgid "Lived Experience App"
 msgstr ""
 
 #: auto_a11y/web/templates/recordings/list.html:42
-#: auto_a11y/web/templates/recordings/upload.html:157
+#: auto_a11y/web/templates/recordings/upload.html:204
 msgid "Lived Experience Tangible Device"
 msgstr ""
 
 #: auto_a11y/web/templates/recordings/list.html:43
-#: auto_a11y/web/templates/recordings/upload.html:158
+#: auto_a11y/web/templates/recordings/upload.html:205
 msgid "Lived Experience Nav and Wayfinding"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/list.html:76
+#: auto_a11y/web/templates/recordings/list.html:89
 msgid "Test Account"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/list.html:99
-msgid "Medium"
-msgstr ""
-
-#: auto_a11y/web/templates/recordings/list.html:110
+#: auto_a11y/web/templates/recordings/list.html:123
 #: auto_a11y/web/templates/websites/view.html:415
 msgid "View Details"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/list.html:126
-msgid "No recordings found."
-msgstr ""
-
-#: auto_a11y/web/templates/recordings/list.html:127
+#: auto_a11y/web/templates/recordings/list.html:140
 msgid "Upload your first recording"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/list.html:127
+#: auto_a11y/web/templates/recordings/list.html:140
 msgid "to get started."
 msgstr ""
 
@@ -4737,347 +5380,383 @@ msgid ""
 msgstr ""
 
 #: auto_a11y/web/templates/recordings/upload.html:23
-msgid "Dictaphone JSON File *"
+msgid "Dictaphone JSON Files"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:27
-msgid ""
-"Select the JSON file exported from Dictaphone containing accessibility "
-"issues and timecodes."
+#: auto_a11y/web/templates/recordings/upload.html:26
+msgid "English Issues (EN) *"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:34
-msgid "Recording Content (Optional)"
+#: auto_a11y/web/templates/recordings/upload.html:30
+msgid "JSON file with accessibility issues in English."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:38
-msgid ""
-"Upload HTML or JSON files for key takeaways, user painpoints, and user "
-"assertions. Both formats are supported."
+#: auto_a11y/web/templates/recordings/upload.html:35
+msgid "French Issues (FR)"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:43
-msgid "Key Takeaways (HTML or JSON)"
+#: auto_a11y/web/templates/recordings/upload.html:39
+msgid "Optional: JSON file with accessibility issues in French."
 msgstr ""
 
 #: auto_a11y/web/templates/recordings/upload.html:47
-msgid ""
-"Numbered list of the most important accessibility issues found. Accepts "
-"HTML or JSON format."
+msgid "Recording Content (Optional)"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:53
-msgid "User Painpoints (HTML or JSON)"
+#: auto_a11y/web/templates/recordings/upload.html:51
+msgid ""
+"Upload HTML or JSON files for key takeaways, user painpoints, and user "
+"assertions. You can upload English and/or French versions."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:57
-msgid ""
-"User-focused description of difficulties experienced during testing. "
-"Accepts HTML or JSON format."
+#: auto_a11y/web/templates/recordings/upload.html:56
+msgid "English Content"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/upload.html:59
+msgid "Key Takeaways (EN)"
 msgstr ""
 
 #: auto_a11y/web/templates/recordings/upload.html:63
-msgid "User Assertions (HTML or JSON)"
+msgid "Numbered list of the most important accessibility issues found."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:67
-msgid ""
-"Direct quotes and observations from the tester with timecodes. Accepts "
-"HTML or JSON format."
+#: auto_a11y/web/templates/recordings/upload.html:68
+msgid "User Painpoints (EN)"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:75
-msgid "Project *"
+#: auto_a11y/web/templates/recordings/upload.html:72
+msgid "User-focused description of difficulties experienced during testing."
 msgstr ""
 
 #: auto_a11y/web/templates/recordings/upload.html:77
-msgid "Select a project..."
+msgid "User Assertions (EN)"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:83
-msgid "Which project should this recording be associated with?"
+#: auto_a11y/web/templates/recordings/upload.html:81
+msgid "Direct quotes and observations from the tester with timecodes."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:89
-msgid "Test User Account Used"
+#: auto_a11y/web/templates/recordings/upload.html:88
+msgid "French Content (Contenu français)"
 msgstr ""
 
 #: auto_a11y/web/templates/recordings/upload.html:91
-#: auto_a11y/web/templates/recordings/upload.html:382
+msgid "Key Takeaways (FR)"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/upload.html:95
+msgid "Liste numérotée des problèmes d'accessibilité les plus importants trouvés."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/upload.html:100
+msgid "User Painpoints (FR)"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/upload.html:104
+msgid "Description des difficultés rencontrées lors des tests."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/upload.html:109
+msgid "User Assertions (FR)"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/upload.html:113
+msgid "Citations directes et observations du testeur avec les codes temporels."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/upload.html:122
+msgid "Project *"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/upload.html:124
+msgid "Select a project..."
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/upload.html:130
+msgid "Which project should this recording be associated with?"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/upload.html:136
+msgid "Test User Account Used"
+msgstr ""
+
+#: auto_a11y/web/templates/recordings/upload.html:138
+#: auto_a11y/web/templates/recordings/upload.html:429
 msgid "Select a test user..."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:94
-#: auto_a11y/web/templates/recordings/upload.html:388
+#: auto_a11y/web/templates/recordings/upload.html:141
+#: auto_a11y/web/templates/recordings/upload.html:435
 msgid ""
 "Optional: Select the test account used during this audit. Choose a "
 "project first to see available test users."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:100
+#: auto_a11y/web/templates/recordings/upload.html:147
 msgid "Lived Experience Tester"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:102
-#: auto_a11y/web/templates/recordings/upload.html:383
+#: auto_a11y/web/templates/recordings/upload.html:149
+#: auto_a11y/web/templates/recordings/upload.html:430
 msgid "Select a tester..."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:105
-#: auto_a11y/web/templates/recordings/upload.html:389
+#: auto_a11y/web/templates/recordings/upload.html:152
+#: auto_a11y/web/templates/recordings/upload.html:436
 msgid ""
 "Select the lived experience tester who performed this test. Choose a "
 "project first to see available testers."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:113
-#: auto_a11y/web/templates/recordings/upload.html:384
+#: auto_a11y/web/templates/recordings/upload.html:160
+#: auto_a11y/web/templates/recordings/upload.html:431
 msgid "Select a supervisor..."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:116
-#: auto_a11y/web/templates/recordings/upload.html:390
+#: auto_a11y/web/templates/recordings/upload.html:163
+#: auto_a11y/web/templates/recordings/upload.html:437
 msgid ""
 "Select the supervisor who oversaw this test. Choose a project first to "
 "see available supervisors."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:122
+#: auto_a11y/web/templates/recordings/upload.html:169
 msgid "Recording Title"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:124
+#: auto_a11y/web/templates/recordings/upload.html:171
 msgid "e.g., Main Website Screen Reader Audit"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:126
+#: auto_a11y/web/templates/recordings/upload.html:173
 msgid "Optional: A descriptive title for this recording."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:133
+#: auto_a11y/web/templates/recordings/upload.html:180
 msgid "Brief description of what was tested and key findings..."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:139
+#: auto_a11y/web/templates/recordings/upload.html:186
 msgid "Auditor Name"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:144
+#: auto_a11y/web/templates/recordings/upload.html:191
 msgid "Auditor Role"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:146
+#: auto_a11y/web/templates/recordings/upload.html:193
 msgid "e.g., Screen Reader User, Expert Auditor"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:164
+#: auto_a11y/web/templates/recordings/upload.html:211
 msgid "Page URLs Covered"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:168
+#: auto_a11y/web/templates/recordings/upload.html:215
 msgid ""
 "Optional: Enter one URL per line for specific pages discussed in this "
 "recording."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:176
+#: auto_a11y/web/templates/recordings/upload.html:223
 msgid ""
 "Optional: Select discovered pages related to this recording. Choose a "
 "project first to see available pages."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:179
-#: auto_a11y/web/templates/recordings/upload.html:391
+#: auto_a11y/web/templates/recordings/upload.html:226
+#: auto_a11y/web/templates/recordings/upload.html:438
 msgid "Select a project to see discovered pages."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:189
+#: auto_a11y/web/templates/recordings/upload.html:236
 msgid ""
 "Optional: Enter one component name per line (e.g., header, nav, footer, "
 "modal, carousel)."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:199
+#: auto_a11y/web/templates/recordings/upload.html:246
 msgid "Optional: For app projects - enter one screen/view name per line."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:209
+#: auto_a11y/web/templates/recordings/upload.html:256
 msgid "Optional: For tangible devices - enter one section name per line."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:215
+#: auto_a11y/web/templates/recordings/upload.html:262
 msgid "Task Description"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:217
+#: auto_a11y/web/templates/recordings/upload.html:264
 msgid "Complete checkout process"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:219
+#: auto_a11y/web/templates/recordings/upload.html:266
 msgid ""
 "Optional: Describe the specific task being performed (e.g., \"Complete "
 "checkout\", \"Navigate to settings\")."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:227
+#: auto_a11y/web/templates/recordings/upload.html:274
 msgid ""
 "Select the content types covered in this recording to determine "
 "applicable WCAG criteria for compliance scoring."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:234
+#: auto_a11y/web/templates/recordings/upload.html:281
 msgid "Forms"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:240
+#: auto_a11y/web/templates/recordings/upload.html:287
 msgid "Video (prerecorded)"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:246
+#: auto_a11y/web/templates/recordings/upload.html:293
 msgid "Live Multimedia"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:252
+#: auto_a11y/web/templates/recordings/upload.html:299
 msgid "Multilingual Content"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:258
+#: auto_a11y/web/templates/recordings/upload.html:305
 msgid "Orientation Changes"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:266
+#: auto_a11y/web/templates/recordings/upload.html:313
 msgid "Zoom / Text Resize"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:272
+#: auto_a11y/web/templates/recordings/upload.html:319
 msgid "Timeouts / Re-authentication"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:278
+#: auto_a11y/web/templates/recordings/upload.html:325
 msgid "Motion Actuation"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:284
+#: auto_a11y/web/templates/recordings/upload.html:331
 msgid "Drag and Drop"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:293
+#: auto_a11y/web/templates/recordings/upload.html:340
 msgid "Media File Path"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:297
+#: auto_a11y/web/templates/recordings/upload.html:344
 msgid ""
 "Optional: Path or URL to the actual video/audio recording file for "
 "reference."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:318
+#: auto_a11y/web/templates/recordings/upload.html:365
 msgid "About Dictaphone Format"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:322
+#: auto_a11y/web/templates/recordings/upload.html:369
 msgid ""
 "Dictaphone generates accessibility findings from audio/video recordings "
 "of manual audits. The JSON format includes:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:325
+#: auto_a11y/web/templates/recordings/upload.html:372
 msgid "Recording ID:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:325
+#: auto_a11y/web/templates/recordings/upload.html:372
 msgid "Unique identifier"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:326
+#: auto_a11y/web/templates/recordings/upload.html:373
 msgid "Issues:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:326
+#: auto_a11y/web/templates/recordings/upload.html:373
 msgid "List of accessibility problems found"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:327
+#: auto_a11y/web/templates/recordings/upload.html:374
 msgid "Start/end times in the recording"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:328
+#: auto_a11y/web/templates/recordings/upload.html:375
 msgid "Impact Levels:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:328
+#: auto_a11y/web/templates/recordings/upload.html:375
 msgid "High, Medium, Low"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:329
+#: auto_a11y/web/templates/recordings/upload.html:376
 msgid "WCAG Criteria:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:329
+#: auto_a11y/web/templates/recordings/upload.html:376
 msgid "Relevant guidelines"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:330
+#: auto_a11y/web/templates/recordings/upload.html:377
 msgid "Detailed Descriptions:"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:330
+#: auto_a11y/web/templates/recordings/upload.html:377
 msgid "What, why, who, and how to fix"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:333
+#: auto_a11y/web/templates/recordings/upload.html:380
 msgid "Example JSON Structure"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:409
+#: auto_a11y/web/templates/recordings/upload.html:456
 msgid "Optional: Select which test account was used during this audit."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:409
+#: auto_a11y/web/templates/recordings/upload.html:456
 msgid "Manage project users"
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:411
+#: auto_a11y/web/templates/recordings/upload.html:458
 msgid "No test users configured for this project."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:416
+#: auto_a11y/web/templates/recordings/upload.html:463
 msgid "Optional: Select the test account used during this audit."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:437
+#: auto_a11y/web/templates/recordings/upload.html:484
 msgid "Select the lived experience tester who performed this test."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:439
+#: auto_a11y/web/templates/recordings/upload.html:486
 msgid ""
 "No lived experience testers configured for this project. Add testers in "
 "project settings."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:453
+#: auto_a11y/web/templates/recordings/upload.html:500
 msgid "Select the supervisor who oversaw this test."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:455
+#: auto_a11y/web/templates/recordings/upload.html:502
 msgid ""
 "No test supervisors configured for this project. Add supervisors in "
 "project settings."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:461
+#: auto_a11y/web/templates/recordings/upload.html:508
 msgid "Error loading testers."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:462
+#: auto_a11y/web/templates/recordings/upload.html:509
 msgid "Error loading supervisors."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:498
+#: auto_a11y/web/templates/recordings/upload.html:545
 msgid "Optional: Select discovered pages related to this recording."
 msgstr ""
 
-#: auto_a11y/web/templates/recordings/upload.html:501
+#: auto_a11y/web/templates/recordings/upload.html:548
 msgid "Optional: No discovered pages available for this project."
 msgstr ""
 
@@ -5101,8 +5780,8 @@ msgid "Discover content requiring manual inspection"
 msgstr ""
 
 #: auto_a11y/web/templates/reports/dashboard.html:153
-#: auto_a11y/web/templates/reports/dashboard.html:887
-#: auto_a11y/web/templates/reports/dashboard.html:941
+#: auto_a11y/web/templates/reports/dashboard.html:905
+#: auto_a11y/web/templates/reports/dashboard.html:959
 msgid "Generate Discovery Report"
 msgstr ""
 
@@ -5144,7 +5823,7 @@ msgid ""
 msgstr ""
 
 #: auto_a11y/web/templates/reports/dashboard.html:211
-#: auto_a11y/web/templates/reports/dashboard.html:1123
+#: auto_a11y/web/templates/reports/dashboard.html:1141
 msgid "Generate Deduplicated Report"
 msgstr ""
 
@@ -5157,8 +5836,8 @@ msgid "Manual accessibility audit findings from recorded testing sessions"
 msgstr ""
 
 #: auto_a11y/web/templates/reports/dashboard.html:229
-#: auto_a11y/web/templates/reports/dashboard.html:1263
-#: auto_a11y/web/templates/reports/dashboard.html:1331
+#: auto_a11y/web/templates/reports/dashboard.html:1281
+#: auto_a11y/web/templates/reports/dashboard.html:1349
 msgid "Generate Recordings Report"
 msgstr ""
 
@@ -5198,7 +5877,7 @@ msgid "PDF Report"
 msgstr ""
 
 #: auto_a11y/web/templates/reports/dashboard.html:330
-#: auto_a11y/web/templates/reports/dashboard.html:1297
+#: auto_a11y/web/templates/reports/dashboard.html:1315
 msgid "Excel Spreadsheet"
 msgstr ""
 
@@ -5211,8 +5890,9 @@ msgid "HTML Report"
 msgstr ""
 
 #: auto_a11y/web/templates/reports/dashboard.html:354
-#: auto_a11y/web/templates/reports/dashboard.html:985
-#: auto_a11y/web/templates/reports/dashboard.html:1155
+#: auto_a11y/web/templates/reports/dashboard.html:475
+#: auto_a11y/web/templates/reports/dashboard.html:1003
+#: auto_a11y/web/templates/reports/dashboard.html:1173
 msgid "Select a project first..."
 msgstr ""
 
@@ -5221,7 +5901,7 @@ msgid "Date Range"
 msgstr ""
 
 #: auto_a11y/web/templates/reports/dashboard.html:373
-#: auto_a11y/web/templates/reports/dashboard.html:1301
+#: auto_a11y/web/templates/reports/dashboard.html:1319
 msgid "Include in Report"
 msgstr ""
 
@@ -5238,18 +5918,52 @@ msgid "Screenshots (increases file size)"
 msgstr ""
 
 #: auto_a11y/web/templates/reports/dashboard.html:401
-#: auto_a11y/web/templates/reports/dashboard.html:1305
+#: auto_a11y/web/templates/reports/dashboard.html:1323
 msgid "Executive Summary"
 msgstr ""
 
+#: auto_a11y/web/templates/reports/dashboard.html:449
+#: auto_a11y/web/templates/reports/dashboard.html:617
+#: auto_a11y/web/templates/reports/dashboard.html:783
+#: auto_a11y/web/templates/reports/dashboard.html:1058
+#: auto_a11y/web/templates/reports/dashboard.html:1205
+msgid "Loading websites..."
+msgstr ""
+
+#: auto_a11y/web/templates/reports/dashboard.html:455
+#: auto_a11y/web/templates/reports/dashboard.html:1064
+#: auto_a11y/web/templates/reports/dashboard.html:1211
+msgid "All Websites"
+msgstr ""
+
+#: auto_a11y/web/templates/reports/dashboard.html:466
+#: auto_a11y/web/templates/reports/dashboard.html:634
+#: auto_a11y/web/templates/reports/dashboard.html:800
+msgid "No websites in this project"
+msgstr ""
+
+#: auto_a11y/web/templates/reports/dashboard.html:471
+#: auto_a11y/web/templates/reports/dashboard.html:639
+#: auto_a11y/web/templates/reports/dashboard.html:805
+msgid "Error loading websites"
+msgstr ""
+
+#: auto_a11y/web/templates/reports/dashboard.html:501
+#: auto_a11y/web/templates/reports/dashboard.html:655
+#: auto_a11y/web/templates/reports/dashboard.html:1381
+msgid "Generating..."
+msgstr ""
+
 #: auto_a11y/web/templates/reports/dashboard.html:519
+#: auto_a11y/web/templates/reports/dashboard.html:677
 msgid "Failed to generate report: "
 msgstr ""
 
 #: auto_a11y/web/templates/reports/dashboard.html:523
-#: auto_a11y/web/templates/reports/dashboard.html:1110
-#: auto_a11y/web/templates/reports/dashboard.html:1250
-#: auto_a11y/web/templates/reports/dashboard.html:1388
+#: auto_a11y/web/templates/reports/dashboard.html:681
+#: auto_a11y/web/templates/reports/dashboard.html:1128
+#: auto_a11y/web/templates/reports/dashboard.html:1268
+#: auto_a11y/web/templates/reports/dashboard.html:1406
 msgid "Error generating report: "
 msgstr ""
 
@@ -5261,261 +5975,266 @@ msgstr ""
 msgid "Failed to delete report"
 msgstr ""
 
+#: auto_a11y/web/templates/reports/dashboard.html:574
+#: auto_a11y/web/templates/reports/dashboard.html:873
+#: auto_a11y/web/templates/reports/dashboard.html:944
+msgid "First select a project..."
+msgstr ""
+
+#: auto_a11y/web/templates/reports/dashboard.html:595
+#: auto_a11y/web/templates/reports/dashboard.html:761
+#: auto_a11y/web/templates/reports/dashboard.html:866
+#: auto_a11y/web/templates/reports/dashboard.html:937
+#: auto_a11y/web/templates/reports/dashboard.html:1301
+msgid "Choose a project..."
+msgstr ""
+
+#: auto_a11y/web/templates/reports/dashboard.html:605
+#: auto_a11y/web/templates/reports/dashboard.html:771
+msgid "No projects available"
+msgstr ""
+
+#: auto_a11y/web/templates/reports/dashboard.html:611
+#: auto_a11y/web/templates/reports/dashboard.html:777
+msgid "Error loading projects"
+msgstr ""
+
+#: auto_a11y/web/templates/reports/dashboard.html:623
+#: auto_a11y/web/templates/reports/dashboard.html:789
+msgid "Choose a website..."
+msgstr ""
+
 #: auto_a11y/web/templates/reports/dashboard.html:648
 msgid "Please select a project and website"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:695
-#: auto_a11y/web/templates/reports/dashboard.html:921
+#: auto_a11y/web/templates/reports/dashboard.html:713
+#: auto_a11y/web/templates/reports/dashboard.html:939
 msgid "Select a project first"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:701
+#: auto_a11y/web/templates/reports/dashboard.html:719
 msgid "All websites in the project will be included"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:797
-#: auto_a11y/web/templates/reports/dashboard.html:1350
+#: auto_a11y/web/templates/reports/dashboard.html:815
+#: auto_a11y/web/templates/reports/dashboard.html:1368
 msgid "Please select a project"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:805
+#: auto_a11y/web/templates/reports/dashboard.html:823
 msgid "Please select a website"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:840
+#: auto_a11y/web/templates/reports/dashboard.html:858
 msgid "Generate Site Structure Report"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:846
-#: auto_a11y/web/templates/reports/dashboard.html:917
+#: auto_a11y/web/templates/reports/dashboard.html:864
+#: auto_a11y/web/templates/reports/dashboard.html:935
 msgid "Select Project"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:848
-#: auto_a11y/web/templates/reports/dashboard.html:919
-#: auto_a11y/web/templates/reports/dashboard.html:1283
-msgid "Choose a project..."
-msgstr ""
-
-#: auto_a11y/web/templates/reports/dashboard.html:850
+#: auto_a11y/web/templates/reports/dashboard.html:868
 msgid "Select the project containing the website"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:853
-#: auto_a11y/web/templates/reports/dashboard.html:924
+#: auto_a11y/web/templates/reports/dashboard.html:871
+#: auto_a11y/web/templates/reports/dashboard.html:942
 msgid "Select Website"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:855
-#: auto_a11y/web/templates/reports/dashboard.html:926
-msgid "First select a project..."
-msgstr ""
-
-#: auto_a11y/web/templates/reports/dashboard.html:857
+#: auto_a11y/web/templates/reports/dashboard.html:875
 msgid "Select the website to analyze its structure"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:860
-#: auto_a11y/web/templates/reports/dashboard.html:931
-#: auto_a11y/web/templates/reports/dashboard.html:1293
+#: auto_a11y/web/templates/reports/dashboard.html:878
+#: auto_a11y/web/templates/reports/dashboard.html:949
+#: auto_a11y/web/templates/reports/dashboard.html:1311
 msgid "Export Format"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:862
+#: auto_a11y/web/templates/reports/dashboard.html:880
 msgid "HTML (Interactive)"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:863
+#: auto_a11y/web/templates/reports/dashboard.html:881
 msgid "JSON (Data)"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:864
+#: auto_a11y/web/templates/reports/dashboard.html:882
 msgid "CSV (Spreadsheet)"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:868
+#: auto_a11y/web/templates/reports/dashboard.html:886
 msgid ""
 "This report will generate a hierarchical tree view of all pages in the "
 "selected website, organized by URL structure."
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:874
+#: auto_a11y/web/templates/reports/dashboard.html:892
 msgid "Generate Structure Report"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:893
+#: auto_a11y/web/templates/reports/dashboard.html:911
 msgid ""
 "This report discovers pages with content requiring manual accessibility "
 "inspection, including:"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:895
+#: auto_a11y/web/templates/reports/dashboard.html:913
 msgid "Discovery issues (content requiring human judgment)"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:896
+#: auto_a11y/web/templates/reports/dashboard.html:914
 msgid "Informational notices"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:897
+#: auto_a11y/web/templates/reports/dashboard.html:915
 msgid "Accessible name issues (forms, links, buttons)"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:898
+#: auto_a11y/web/templates/reports/dashboard.html:916
 msgid "Elements with poor or missing labels"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:902
+#: auto_a11y/web/templates/reports/dashboard.html:920
 #: auto_a11y/web/templates/scripts/view.html:68
 msgid "Scope"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:906
+#: auto_a11y/web/templates/reports/dashboard.html:924
 msgid "Single Website"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:912
+#: auto_a11y/web/templates/reports/dashboard.html:930
 msgid "Entire Project"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:928
+#: auto_a11y/web/templates/reports/dashboard.html:946
 msgid "Select the specific website to analyze"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:933
-#: auto_a11y/web/templates/reports/dashboard.html:1295
+#: auto_a11y/web/templates/reports/dashboard.html:951
+#: auto_a11y/web/templates/reports/dashboard.html:1313
 msgid "HTML (Recommended)"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:934
-#: auto_a11y/web/templates/reports/dashboard.html:1296
+#: auto_a11y/web/templates/reports/dashboard.html:952
+#: auto_a11y/web/templates/reports/dashboard.html:1314
 msgid "PDF"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:954
+#: auto_a11y/web/templates/reports/dashboard.html:972
 msgid "Generate Offline Report (Static HTML)"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:960
+#: auto_a11y/web/templates/reports/dashboard.html:978
 msgid "This report generates a complete offline website with:"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:962
+#: auto_a11y/web/templates/reports/dashboard.html:980
 msgid "Index page with all tested pages"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:963
+#: auto_a11y/web/templates/reports/dashboard.html:981
 msgid "Summary page with statistics and charts"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:964
+#: auto_a11y/web/templates/reports/dashboard.html:982
 msgid "Individual page detail reports with full issue accordions"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:965
+#: auto_a11y/web/templates/reports/dashboard.html:983
 msgid "Client-side filters and search"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:966
-#: auto_a11y/web/templates/reports/dashboard.html:1136
+#: auto_a11y/web/templates/reports/dashboard.html:984
+#: auto_a11y/web/templates/reports/dashboard.html:1154
 msgid "All CSS, JS, and images (ZIP download)"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:991
+#: auto_a11y/web/templates/reports/dashboard.html:1009
 msgid "WCAG Level"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:999
+#: auto_a11y/web/templates/reports/dashboard.html:1017
+#: venv/lib/python3.13/site-packages/click/core.py:1140
 msgid "Options"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1003
+#: auto_a11y/web/templates/reports/dashboard.html:1021
 msgid "Include Screenshots"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1009
+#: auto_a11y/web/templates/reports/dashboard.html:1027
 msgid "Include Discovery Items"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1014
-#: auto_a11y/web/templates/reports/dashboard.html:1161
+#: auto_a11y/web/templates/reports/dashboard.html:1032
+#: auto_a11y/web/templates/reports/dashboard.html:1179
 msgid ""
 "Large reports may take several minutes to generate. The report will "
 "appear in the list below when complete."
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1040
-#: auto_a11y/web/templates/reports/dashboard.html:1187
-msgid "Loading websites..."
-msgstr ""
-
-#: auto_a11y/web/templates/reports/dashboard.html:1046
-#: auto_a11y/web/templates/reports/dashboard.html:1193
-msgid "All Websites"
-msgstr ""
-
-#: auto_a11y/web/templates/reports/dashboard.html:1129
+#: auto_a11y/web/templates/reports/dashboard.html:1147
 msgid "This report generates a single-page offline HTML report with:"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1131
+#: auto_a11y/web/templates/reports/dashboard.html:1149
 msgid "Issues deduplicated and grouped by common components"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1132
+#: auto_a11y/web/templates/reports/dashboard.html:1150
 msgid "Common components table (navigation, headers, footers, forms, etc.)"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1133
+#: auto_a11y/web/templates/reports/dashboard.html:1151
 msgid "Statistics dashboard with violation, warning, and info counts"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1134
+#: auto_a11y/web/templates/reports/dashboard.html:1152
 msgid "Client-side filters by component, type, and impact"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1135
+#: auto_a11y/web/templates/reports/dashboard.html:1153
 msgid "Test user information for authenticated testing"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1269
+#: auto_a11y/web/templates/reports/dashboard.html:1287
 msgid "This report includes manual accessibility findings from:"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1271
+#: auto_a11y/web/templates/reports/dashboard.html:1289
 msgid "Accessibility audit recordings"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1272
+#: auto_a11y/web/templates/reports/dashboard.html:1290
 msgid "Lived experience testing sessions"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1273
+#: auto_a11y/web/templates/reports/dashboard.html:1291
 msgid "All issues organized by touchpoint and impact"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1274
+#: auto_a11y/web/templates/reports/dashboard.html:1292
 msgid "Key takeaways and user painpoints"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1275
+#: auto_a11y/web/templates/reports/dashboard.html:1293
 msgid "WCAG criteria mappings and remediation guidance"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1288
+#: auto_a11y/web/templates/reports/dashboard.html:1306
 msgid "All recordings from this project will be included"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1311
+#: auto_a11y/web/templates/reports/dashboard.html:1329
 msgid "Timecodes"
 msgstr ""
 
-#: auto_a11y/web/templates/reports/dashboard.html:1317
-msgid "WCAG Criteria"
-msgstr ""
-
-#: auto_a11y/web/templates/reports/dashboard.html:1323
+#: auto_a11y/web/templates/reports/dashboard.html:1341
 msgid "Group Issues by Touchpoint"
 msgstr ""
 
@@ -5525,12 +6244,12 @@ msgstr ""
 
 #: auto_a11y/web/templates/scripts/create.html:63
 #, python-format
-msgid "Create %s Script"
+msgid "Create %(type)s Script"
 msgstr ""
 
 #: auto_a11y/web/templates/scripts/create.html:70
 #, python-format
-msgid "Create %s Setup Script"
+msgid "Create %(level)s Setup Script"
 msgstr ""
 
 #: auto_a11y/web/templates/scripts/create.html:70
@@ -5899,122 +6618,118 @@ msgid "Edit Page Setup Script"
 msgstr ""
 
 #: auto_a11y/web/templates/scripts/list.html:3
-#: auto_a11y/web/templates/scripts/list.html:26
+#: auto_a11y/web/templates/websites/view.html:122
+msgid "Setup Scripts"
+msgstr ""
+
+#: auto_a11y/web/templates/scripts/list.html:28
 msgid "Page Setup Scripts"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:32
-msgid "Create New Script"
+#: auto_a11y/web/templates/scripts/list.html:28
+msgid "Website Setup Scripts"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:51
+#: auto_a11y/web/templates/scripts/list.html:62
 msgid "Multi-State Testing:"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:52
+#: auto_a11y/web/templates/scripts/list.html:63
 msgid ""
 "Scripts with \"Test Before\" enabled will create multiple test results - "
 "one before the script runs and one after. This is perfect for testing "
 "cookie banners, modals, and other interactive elements."
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:59
+#: auto_a11y/web/templates/scripts/list.html:70
 msgid "Page-Specific Scripts"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:70
-#: auto_a11y/web/templates/scripts/list.html:177
+#: auto_a11y/web/templates/scripts/list.html:81
+#: auto_a11y/web/templates/scripts/list.html:188
 msgid "Steps"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:71
-#: auto_a11y/web/templates/scripts/list.html:178
+#: auto_a11y/web/templates/scripts/list.html:82
+#: auto_a11y/web/templates/scripts/list.html:189
 msgid "Multi-State"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:72
+#: auto_a11y/web/templates/scripts/list.html:83
 msgid "Trigger"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:87
+#: auto_a11y/web/templates/scripts/list.html:98
 #, python-format
 msgid "%(count)s steps"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:91
+#: auto_a11y/web/templates/scripts/list.html:102
 msgid "Tests both before and after script"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:92
+#: auto_a11y/web/templates/scripts/list.html:103
 msgid "Before & After"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:95
+#: auto_a11y/web/templates/scripts/list.html:106
 msgid "Tests before script only"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:96
+#: auto_a11y/web/templates/scripts/list.html:107
 msgid "Before Only"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:99
+#: auto_a11y/web/templates/scripts/list.html:110
 msgid "Tests after script only"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:100
+#: auto_a11y/web/templates/scripts/list.html:111
 msgid "After Only"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:103
+#: auto_a11y/web/templates/scripts/list.html:114
 msgid "No Testing"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:148
+#: auto_a11y/web/templates/scripts/list.html:159
 msgid "No page-specific scripts yet"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:150
+#: auto_a11y/web/templates/scripts/list.html:161
 msgid "Create Your First Script"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:162
+#: auto_a11y/web/templates/scripts/list.html:173
 msgid "Website-Wide Scripts"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:169
+#: auto_a11y/web/templates/scripts/list.html:180
 msgid ""
 "These scripts run on ALL pages of this website. They are typically used "
 "for common elements like cookie banners or login prompts."
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:198
+#: auto_a11y/web/templates/scripts/list.html:209
 msgid "Both"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:201
-msgid "Before"
-msgstr ""
-
-#: auto_a11y/web/templates/scripts/list.html:203
-msgid "After"
-msgstr ""
-
-#: auto_a11y/web/templates/scripts/list.html:236
+#: auto_a11y/web/templates/scripts/list.html:247
 #: auto_a11y/web/templates/scripts/view.html:229
 msgid "Toggle this script (enable/disable)?"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:268
+#: auto_a11y/web/templates/scripts/list.html:279
 #: auto_a11y/web/templates/scripts/view.html:250
 msgid "Error toggling script:"
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:273
+#: auto_a11y/web/templates/scripts/list.html:284
 #: auto_a11y/web/templates/scripts/view.html:255
 msgid "Are you sure you want to delete this script? This action cannot be undone."
 msgstr ""
 
-#: auto_a11y/web/templates/scripts/list.html:290
+#: auto_a11y/web/templates/scripts/list.html:301
 msgid "Error deleting script:"
 msgstr ""
 
@@ -6086,6 +6801,240 @@ msgstr ""
 
 #: auto_a11y/web/templates/scripts/view.html:215
 msgid "Script ID:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:20
+msgid "Testing Configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:26
+msgid "Parallel Tests"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:29
+msgid "Number of tests to run in parallel"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:32
+msgid "Test Timeout (seconds)"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:35
+msgid "Maximum time per page test"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:45
+msgid "Enable AI Analysis"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:48
+msgid "Use Claude AI for visual accessibility analysis"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:55
+msgid "Headless Browser"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:58
+msgid "Run browser in headless mode"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:64
+msgid "Viewport Width"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:69
+msgid "Viewport Height"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:76
+msgid "UI Pagination Settings"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:80
+msgid "Pages Per Page"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:83
+msgid "Default number of pages shown per view"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:86
+msgid "Maximum Pages Per Page"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:89
+msgid "Maximum allowed per page (for ?per_page parameter)"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:94
+msgid "Developer Options"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:102
+msgid "Show Error Codes"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:105
+msgid "Display internal error codes (e.g., ErrMissingAccessibleName) in reports"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:121
+msgid "System Maintenance"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:125
+msgid "Warning:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:125
+msgid "These actions cannot be undone."
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:129
+msgid "Clear Outstanding Jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:130
+msgid ""
+"Reset all running and pending scrapes and tests. Use this if the system "
+"appears stuck."
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:132
+msgid "Clear All Jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:137
+#: auto_a11y/web/templates/testing/configure.html:140
+msgid "Clear Stale Jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:138
+msgid "Remove jobs that have been running for more than 24 hours."
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:145
+#: auto_a11y/web/templates/testing/configure.html:148
+msgid "Clean Page Data"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:146
+msgid ""
+"Reset violation counts for pages that haven't been tested yet. Fixes data"
+" inconsistencies."
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:160
+msgid "Loading job statistics..."
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:174
+msgid "Confirm Action"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:182
+msgid "Confirm"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:205
+msgid "Running:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:205
+#: auto_a11y/web/templates/testing/configure.html:206
+#: auto_a11y/web/templates/testing/configure.html:207
+#: auto_a11y/web/templates/testing/configure.html:208
+#: auto_a11y/web/templates/testing/configure.html:209
+#: auto_a11y/web/templates/testing/configure.html:238
+msgid "jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:206
+msgid "Pending:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:207
+msgid "Cancelling:"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:208
+msgid "Completed (24h):"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:209
+msgid "Failed (24h):"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:215
+msgid "Failed to load statistics"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:223
+msgid ""
+"This will clear ALL running and pending jobs. This action cannot be "
+"undone. Are you sure?"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:238
+#: auto_a11y/web/templates/testing/configure.html:272
+msgid "Successfully cleared"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:241
+msgid "Failed to clear jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:246
+msgid "An error occurred while clearing jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:257
+msgid ""
+"This will clear all jobs that have been running for more than 24 hours. "
+"Are you sure?"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:272
+msgid "stale jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:275
+msgid "Failed to clear stale jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:280
+msgid "An error occurred while clearing stale jobs"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:313
+msgid "Configuration saved successfully"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:315
+msgid "Failed to save configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:320
+msgid "An error occurred while saving configuration"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:326
+msgid ""
+"This will reset violation counts for all pages that haven't been tested "
+"yet. Continue?"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:339
+msgid "Successfully cleaned"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:341
+msgid "Failed to clean page data"
+msgstr ""
+
+#: auto_a11y/web/templates/testing/configure.html:346
+msgid "An error occurred while cleaning page data"
 msgstr ""
 
 #: auto_a11y/web/templates/testing/dashboard.html:3
@@ -6271,41 +7220,12 @@ msgstr ""
 msgid "Error deleting user:"
 msgstr ""
 
-#: auto_a11y/web/templates/website_users/view.html:3
-msgid "Test User"
-msgstr ""
-
-#: auto_a11y/web/templates/website_users/view.html:40
-#: auto_a11y/web/templates/website_users/view.html:183
-msgid "Edit User"
-msgstr ""
-
-#: auto_a11y/web/templates/website_users/view.html:54
-msgid "Display Name:"
-msgstr ""
-
-#: auto_a11y/web/templates/website_users/view.html:57
-msgid "Username:"
-msgstr ""
-
 #: auto_a11y/web/templates/website_users/view.html:60
 msgid "Password:"
 msgstr ""
 
-#: auto_a11y/web/templates/website_users/view.html:63
-msgid "Roles:"
-msgstr ""
-
-#: auto_a11y/web/templates/website_users/view.html:75
-msgid "Description:"
-msgstr ""
-
 #: auto_a11y/web/templates/website_users/view.html:97
 msgid "Auth Method:"
-msgstr ""
-
-#: auto_a11y/web/templates/website_users/view.html:105
-msgid "Login URL:"
 msgstr ""
 
 #: auto_a11y/web/templates/website_users/view.html:115
@@ -6318,19 +7238,6 @@ msgstr ""
 
 #: auto_a11y/web/templates/website_users/view.html:125
 msgid "Submit Selector:"
-msgstr ""
-
-#: auto_a11y/web/templates/website_users/view.html:130
-msgid "Success Indicator:"
-msgstr ""
-
-#: auto_a11y/web/templates/website_users/view.html:134
-msgid "Session Timeout:"
-msgstr ""
-
-#: auto_a11y/web/templates/website_users/view.html:135
-#, python-format
-msgid "%s minutes"
 msgstr ""
 
 #: auto_a11y/web/templates/website_users/view.html:159
@@ -6347,10 +7254,6 @@ msgstr ""
 
 #: auto_a11y/web/templates/website_users/view.html:186
 msgid "Back to List"
-msgstr ""
-
-#: auto_a11y/web/templates/website_users/view.html:189
-msgid "Delete User"
 msgstr ""
 
 #: auto_a11y/web/templates/websites/edit.html:19
@@ -6413,19 +7316,12 @@ msgstr ""
 msgid "Discovery Users"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:59
-#: auto_a11y/web/templates/websites/view.html:103
-#: auto_a11y/web/templates/websites/view.html:524
-#: auto_a11y/web/templates/websites/view.html:621
-msgid "Clear All"
-msgstr ""
-
 #: auto_a11y/web/templates/websites/view.html:65
-#: auto_a11y/web/templates/websites/view.html:1054
-#: auto_a11y/web/templates/websites/view.html:1060
-#: auto_a11y/web/templates/websites/view.html:1331
-#: auto_a11y/web/templates/websites/view.html:1447
-#: auto_a11y/web/templates/websites/view.html:1472
+#: auto_a11y/web/templates/websites/view.html:968
+#: auto_a11y/web/templates/websites/view.html:974
+#: auto_a11y/web/templates/websites/view.html:1240
+#: auto_a11y/web/templates/websites/view.html:1356
+#: auto_a11y/web/templates/websites/view.html:1381
 msgid "Discover Pages"
 msgstr ""
 
@@ -6438,12 +7334,12 @@ msgid "Select users to test:"
 msgstr ""
 
 #: auto_a11y/web/templates/websites/view.html:109
-#: auto_a11y/web/templates/websites/view.html:895
-#: auto_a11y/web/templates/websites/view.html:1147
-#: auto_a11y/web/templates/websites/view.html:1153
-#: auto_a11y/web/templates/websites/view.html:1541
-#: auto_a11y/web/templates/websites/view.html:1560
-#: auto_a11y/web/templates/websites/view.html:1608
+#: auto_a11y/web/templates/websites/view.html:814
+#: auto_a11y/web/templates/websites/view.html:1056
+#: auto_a11y/web/templates/websites/view.html:1062
+#: auto_a11y/web/templates/websites/view.html:1449
+#: auto_a11y/web/templates/websites/view.html:1468
+#: auto_a11y/web/templates/websites/view.html:1516
 msgid "Test All Pages"
 msgstr ""
 
@@ -6458,10 +7354,6 @@ msgstr ""
 
 #: auto_a11y/web/templates/websites/view.html:119
 msgid "Documents"
-msgstr ""
-
-#: auto_a11y/web/templates/websites/view.html:122
-msgid "Setup Scripts"
 msgstr ""
 
 #: auto_a11y/web/templates/websites/view.html:193
@@ -6501,7 +7393,7 @@ msgid "Showing"
 msgstr ""
 
 #: auto_a11y/web/templates/websites/view.html:291
-#: auto_a11y/web/templates/websites/view.html:580
+#: auto_a11y/web/templates/websites/view.html:547
 msgid "Add Page"
 msgstr ""
 
@@ -6544,220 +7436,669 @@ msgid ""
 "automatically."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:528
-msgid "No test users configured. Discovery will run as guest."
-msgstr ""
-
-#: auto_a11y/web/templates/websites/view.html:536
+#: auto_a11y/web/templates/websites/view.html:503
 msgid "Leave empty for unlimited discovery"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:537
+#: auto_a11y/web/templates/websites/view.html:504
 msgid ""
 "Limit the number of pages to discover. Default is unlimited (up to 1 "
 "million pages)."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:540
+#: auto_a11y/web/templates/websites/view.html:507
 msgid ""
 "Discovery will crawl your website starting from the home page, following "
 "links to find all accessible pages."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:559
+#: auto_a11y/web/templates/websites/view.html:526
 msgid "Add Page Manually"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:565
+#: auto_a11y/web/templates/websites/view.html:532
 msgid "Page URL"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:592
+#: auto_a11y/web/templates/websites/view.html:559
 msgid "Test All Pages Options"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:598
-msgid "Select users for testing:"
-msgstr ""
-
-#: auto_a11y/web/templates/websites/view.html:625
-msgid "No test users configured. Testing will run as guest."
-msgstr ""
-
-#: auto_a11y/web/templates/websites/view.html:631
+#: auto_a11y/web/templates/websites/view.html:565
 msgid ""
-"This will run accessibility tests on all pages with the selected user(s)."
-" Testing multiple users will increase the total test time."
+"This will run accessibility tests on all pages with the selected test "
+"user(s). Testing multiple users will increase the total test time."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:637
+#: auto_a11y/web/templates/websites/view.html:571
 msgid "Start Testing"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:699
-#: auto_a11y/web/templates/websites/view.html:740
-msgid "None"
-msgstr ""
-
-#: auto_a11y/web/templates/websites/view.html:709
-#: auto_a11y/web/templates/websites/view.html:750
+#: auto_a11y/web/templates/websites/view.html:643
+#: auto_a11y/web/templates/websites/view.html:684
 msgid "users"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:873
-#: auto_a11y/web/templates/websites/view.html:1507
-#: auto_a11y/web/templates/websites/view.html:1517
+#: auto_a11y/web/templates/websites/view.html:792
+#: auto_a11y/web/templates/websites/view.html:1415
+#: auto_a11y/web/templates/websites/view.html:1425
 msgid "Testing Complete"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:873
+#: auto_a11y/web/templates/websites/view.html:792
 msgid "All pages have been tested. Refreshing..."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:932
+#: auto_a11y/web/templates/websites/view.html:851
 msgid "The discovery process has finished."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:959
+#: auto_a11y/web/templates/websites/view.html:878
 msgid "Are you sure you want to abort the discovery process?"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:968
+#: auto_a11y/web/templates/websites/view.html:887
 msgid "Discovery is already running. Do you want to cancel it?"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1012
+#: auto_a11y/web/templates/websites/view.html:911
+msgid ""
+"Please select at least one user for discovery using the Discovery Users "
+"dropdown."
+msgstr ""
+
+#: auto_a11y/web/templates/websites/view.html:926
 msgid "Starting discovery..."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1087
-msgid "Please select at least one test user (or Guest) to continue."
+#: auto_a11y/web/templates/websites/view.html:996
+msgid "Please select at least one test user using the Test Users dropdown."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1133
+#: auto_a11y/web/templates/websites/view.html:1042
 msgid "Testing Started"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1133
+#: auto_a11y/web/templates/websites/view.html:1042
 msgid "pages for testing"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1146
+#: auto_a11y/web/templates/websites/view.html:1055
 msgid "Failed to queue tests"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1152
+#: auto_a11y/web/templates/websites/view.html:1061
 msgid "Failed to start testing"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1159
+#: auto_a11y/web/templates/websites/view.html:1068
 msgid "Are you sure you want to cancel the testing process?"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1175
+#: auto_a11y/web/templates/websites/view.html:1084
 msgid "Failed to add page"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1210
+#: auto_a11y/web/templates/websites/view.html:1119
 msgid "Test Started"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1210
+#: auto_a11y/web/templates/websites/view.html:1119
 msgid "Page queued for testing"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1266
+#: auto_a11y/web/templates/websites/view.html:1175
 msgid "Page test has been cancelled"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1285
+#: auto_a11y/web/templates/websites/view.html:1194
 msgid "Are you sure you want to delete this page?"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1285
+#: auto_a11y/web/templates/websites/view.html:1194
 msgid "This will also delete all test results for this page."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1297
+#: auto_a11y/web/templates/websites/view.html:1206
 msgid "Page Deleted"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1297
+#: auto_a11y/web/templates/websites/view.html:1206
 msgid "Page has been deleted successfully"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1306
+#: auto_a11y/web/templates/websites/view.html:1215
 msgid "Failed to delete page"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1346
-#: auto_a11y/web/templates/websites/view.html:1353
-#: auto_a11y/web/templates/websites/view.html:1385
+#: auto_a11y/web/templates/websites/view.html:1255
+#: auto_a11y/web/templates/websites/view.html:1262
+#: auto_a11y/web/templates/websites/view.html:1294
 msgid "Discovery Running..."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1397
+#: auto_a11y/web/templates/websites/view.html:1306
 msgid "pages..."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1421
+#: auto_a11y/web/templates/websites/view.html:1330
 msgid "pages. Refreshing..."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1433
+#: auto_a11y/web/templates/websites/view.html:1342
 msgid "Discovery Failed"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1441
+#: auto_a11y/web/templates/websites/view.html:1350
 msgid "Discovery failed"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1500
+#: auto_a11y/web/templates/websites/view.html:1408
 msgid "Currently testing"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1527
-#: auto_a11y/web/templates/websites/view.html:1536
-#: auto_a11y/web/templates/websites/view.html:1616
+#: auto_a11y/web/templates/websites/view.html:1435
+#: auto_a11y/web/templates/websites/view.html:1444
+#: auto_a11y/web/templates/websites/view.html:1524
 msgid "Testing Cancelled"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1536
+#: auto_a11y/web/templates/websites/view.html:1444
 msgid "Testing was cancelled"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1548
+#: auto_a11y/web/templates/websites/view.html:1456
 msgid "Testing Failed"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1556
+#: auto_a11y/web/templates/websites/view.html:1464
 msgid "Testing failed"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1589
+#: auto_a11y/web/templates/websites/view.html:1497
 msgid "No testing job to cancel"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1624
-#: auto_a11y/web/templates/websites/view.html:1632
+#: auto_a11y/web/templates/websites/view.html:1532
+#: auto_a11y/web/templates/websites/view.html:1540
 msgid "Failed to cancel testing"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1654
-#: auto_a11y/web/templates/websites/view.html:1675
+#: auto_a11y/web/templates/websites/view.html:1562
+#: auto_a11y/web/templates/websites/view.html:1583
 msgid "Report Generation"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1654
+#: auto_a11y/web/templates/websites/view.html:1562
 msgid "Generating site structure report in"
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1654
-#: auto_a11y/web/templates/websites/view.html:1675
+#: auto_a11y/web/templates/websites/view.html:1562
+#: auto_a11y/web/templates/websites/view.html:1583
 msgid "format..."
 msgstr ""
 
-#: auto_a11y/web/templates/websites/view.html:1675
+#: auto_a11y/web/templates/websites/view.html:1583
 msgid "Generating accessibility report in"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:319
+msgid "usage: "
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:827
+msgid ".__call__() not defined"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1122
+#, python-format
+msgid "unknown parser %r (choices: %s)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1163
+#, python-format
+msgid "argument \"-\" with mode %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1174
+#, python-format
+msgid "can't open '%s': %s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1371
+#, python-format
+msgid "cannot merge actions - two groups are named %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1409
+msgid "'required' is an invalid argument for positionals"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1429
+#, python-format
+msgid "invalid option string %r: must start with a character %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1450
+#, python-format
+msgid "dest= is required for options like %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1467
+#, python-format
+msgid "invalid conflict_resolution value: %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1485
+#, python-format
+msgid "conflicting option string(s): %s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1548
+msgid "mutually exclusive arguments must be optional"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1618
+msgid "positional arguments"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1619
+msgid "optional arguments"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1637
+msgid "show this help message and exit"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1643
+msgid "show program's version number and exit"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1675
+msgid "cannot have multiple subparser arguments"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1727
+#, python-format
+msgid "unrecognized arguments: %s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1821
+#, python-format
+msgid "not allowed with argument %s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1867
+#: venv/lib/python3.13/site-packages/argparse.py:1881
+#, python-format
+msgid "ignored explicit argument %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1971
+msgid "too few arguments"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:1978
+#, python-format
+msgid "argument %s is required"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2003
+#, python-format
+msgid "one of the arguments %s is required"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2049
+msgid "expected one argument"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2050
+msgid "expected at most one argument"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2051
+msgid "expected at least one argument"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2053
+#, python-format
+msgid "expected %s argument(s)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2110
+#, python-format
+msgid "ambiguous option: %s could match %s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2172
+#, python-format
+msgid "unexpected option string: %s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2273
+#, python-format
+msgid "%r is not callable"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2289
+#, python-format
+msgid "invalid %s value: %r"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2299
+#, python-format
+msgid "invalid choice: %r (choose from %s)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/argparse.py:2392
+#, python-format
+msgid "%s: error: %s\n"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/_termui_impl.py:600
+#, python-brace-format
+msgid "{editor}: Editing failed"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/_termui_impl.py:604
+#, python-brace-format
+msgid "{editor}: Editing failed: {e}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1084
+#: venv/lib/python3.13/site-packages/click/core.py:1121
+#, python-brace-format
+msgid "{text} {deprecated_message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1202
+#, python-brace-format
+msgid "Got unexpected extra argument ({args})"
+msgid_plural "Got unexpected extra arguments ({args})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1221
+#, python-brace-format
+msgid "DeprecationWarning: The command {name!r} is deprecated.{extra_message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1405
+msgid "Aborted!"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1779
+msgid "Commands"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1810
+msgid "Missing command."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:1888
+#, python-brace-format
+msgid "No such command {name!r}."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2303
+msgid "Value must be an iterable."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2324
+#, python-brace-format
+msgid "Takes {nargs} values but 1 was given."
+msgid_plural "Takes {nargs} values but {len} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2404
+#, python-brace-format
+msgid ""
+"DeprecationWarning: The {param_type} {name!r} is "
+"deprecated.{extra_message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2807
+#, python-brace-format
+msgid "env var: {var}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2810
+#, python-brace-format
+msgid "default: {default}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2814
+msgid "required"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/core.py:2870
+msgid "(dynamic)"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/decorators.py:465
+#, python-format
+msgid "%(prog)s, version %(version)s"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/decorators.py:522
+msgid "Show the version and exit."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/decorators.py:548
+msgid "Show this message and exit."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:50
+#: venv/lib/python3.13/site-packages/click/exceptions.py:89
+#, python-brace-format
+msgid "Error: {message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:81
+#, python-brace-format
+msgid "Try '{command} {option}' for help."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:130
+#, python-brace-format
+msgid "Invalid value: {message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:132
+#, python-brace-format
+msgid "Invalid value for {param_hint}: {message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:190
+msgid "Missing argument"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:192
+msgid "Missing option"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:194
+msgid "Missing parameter"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:196
+#, python-brace-format
+msgid "Missing {param_type}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:203
+#, python-brace-format
+msgid "Missing parameter: {param_name}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:223
+#, python-brace-format
+msgid "No such option: {name}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:235
+#, python-brace-format
+msgid "Did you mean {possibility}?"
+msgid_plural "(Possible options: {possibilities})"
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:282
+msgid "unknown error"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/exceptions.py:289
+#, python-brace-format
+msgid "Could not open file {filename!r}: {message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/formatting.py:156
+msgid "Usage:"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/parser.py:200
+#, python-brace-format
+msgid "Argument {name!r} takes {nargs} values."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/parser.py:383
+#, python-brace-format
+msgid "Option {name!r} does not take a value."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/parser.py:444
+#, python-brace-format
+msgid "Option {name!r} requires an argument."
+msgid_plural "Option {name!r} requires {nargs} arguments."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/click/shell_completion.py:326
+msgid "Shell completion is not supported for Bash versions older than 4.4."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/shell_completion.py:333
+msgid "Couldn't detect Bash version, shell completion is not supported."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/termui.py:162
+msgid "Repeat for confirmation"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/termui.py:178
+msgid "Error: The value you entered was invalid."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/termui.py:180
+#, python-brace-format
+msgid "Error: {e.message}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/termui.py:191
+msgid "Error: The two entered values do not match."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/termui.py:247
+msgid "Error: invalid input"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/termui.py:866
+msgid "Press any key to continue..."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:332
+#, python-brace-format
+msgid ""
+"Choose from:\n"
+"\t{choices}"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:369
+#, python-brace-format
+msgid "{value!r} is not {choice}."
+msgid_plural "{value!r} is not one of {choices}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:460
+#, python-brace-format
+msgid "{value!r} does not match the format {format}."
+msgid_plural "{value!r} does not match the formats {formats}."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:482
+#, python-brace-format
+msgid "{value!r} is not a valid {number_type}."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:538
+#, python-brace-format
+msgid "{value} is not in the range {range}."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:679
+#, python-brace-format
+msgid "{value!r} is not a valid boolean."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:703
+#, python-brace-format
+msgid "{value!r} is not a valid UUID."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:893
+msgid "file"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:895
+msgid "directory"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:897
+msgid "path"
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:944
+#, python-brace-format
+msgid "{name} {filename!r} does not exist."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:953
+#, python-brace-format
+msgid "{name} {filename!r} is a file."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:961
+#, python-brace-format
+msgid "{name} {filename!r} is a directory."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:970
+#, python-brace-format
+msgid "{name} {filename!r} is not readable."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:979
+#, python-brace-format
+msgid "{name} {filename!r} is not writable."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:988
+#, python-brace-format
+msgid "{name} {filename!r} is not executable."
+msgstr ""
+
+#: venv/lib/python3.13/site-packages/click/types.py:1055
+#, python-brace-format
+msgid "{len_type} values are required, but {len_value} was given."
+msgid_plural "{len_type} values are required, but {len_value} were given."
+msgstr[0] ""
+msgstr[1] ""
+
+#: venv/lib/python3.13/site-packages/mypy/main.py:423
+#, python-format
+msgid "%(prog)s: error: %(message)s\n"
 msgstr ""
 

@@ -407,17 +407,36 @@ async def test_maps(page) -> Dict[str, Any]:
                 const mapDivs = Array.from(document.querySelectorAll('div[class*="map"], div[id*="map"]'))
                     .filter(div => {
                         const classAndId = (div.className + ' ' + (div.id || '')).toLowerCase();
-                        return (classAndId.includes('map') || classAndId.includes('leaflet') ||
-                                classAndId.includes('mapbox') || classAndId.includes('google')) &&
-                               !classAndId.includes('sitemap') &&
-                               !classAndId.includes('heatmap') &&
-                               !classAndId.includes('list') &&
-                               !classAndId.includes('menu') &&
-                               !classAndId.includes('nav') &&
-                               !classAndId.includes('description') &&
-                               !classAndId.includes('legend') &&
-                               !classAndId.includes('info') &&
-                               div.offsetHeight > 0; // Visible
+                        
+                        // Exclude common non-map patterns
+                        const excludePatterns = [
+                            'sitemap', 'heatmap', 'roadmap', 'mindmap',
+                            'list', 'menu', 'nav', 'description', 'legend', 'info',
+                            'controls', 'control', 'toolbar', 'buttons', 'overlay',
+                            'tooltip', 'popup', 'marker', 'pin', 'icon', 'wrapper'
+                        ];
+                        
+                        const isExcluded = excludePatterns.some(pattern => classAndId.includes(pattern));
+                        if (isExcluded) return false;
+                        
+                        // Must have map-related class/id
+                        const hasMapPattern = classAndId.includes('map') || classAndId.includes('leaflet') ||
+                                              classAndId.includes('mapbox') || classAndId.includes('google');
+                        if (!hasMapPattern) return false;
+                        
+                        // Must be visible
+                        if (div.offsetHeight === 0) return false;
+                        
+                        // Additional check: should be a container, not a child control
+                        // A map container typically has significant size or contains an iframe/canvas
+                        const hasMapContent = div.querySelector('iframe, canvas, svg') !== null;
+                        const isLargeEnough = div.offsetHeight >= 100 && div.offsetWidth >= 100;
+                        
+                        // If it's nested inside another map div, skip it (it's probably a control)
+                        const parentMapDiv = div.parentElement?.closest('div[class*="map"], div[id*="map"]');
+                        if (parentMapDiv) return false;
+                        
+                        return hasMapContent || isLargeEnough;
                     });
 
                 // Find SVG maps
@@ -678,17 +697,45 @@ async def test_maps(page) -> Dict[str, Any]:
 
                         // Only flag if it has NONE of the key accessibility attributes
                         if (!hasRole && !hasAriaLabel && !hasAriaLabelledby && !hasTitle) {
+                            // Build a descriptive element identifier
+                            const elemId = element.id ? `#${element.id}` : '';
+                            const elemClass = element.className ? `.${element.className.toString().split(' ').slice(0, 2).join('.')}` : '';
+                            const elemIdentifier = elemId || elemClass || 'div';
+                            
+                            // Check what's inside to provide context
+                            const hasIframe = element.querySelector('iframe') !== null;
+                            const hasCanvas = element.querySelector('canvas') !== null;
+                            const hasButtons = element.querySelectorAll('button').length;
+                            const hasSvg = element.querySelector('svg') !== null;
+                            
+                            // Build content description
+                            let contentDesc = [];
+                            if (hasIframe) contentDesc.push('embedded iframe');
+                            if (hasCanvas) contentDesc.push('canvas element');
+                            if (hasButtons > 0) contentDesc.push(`${hasButtons} button(s)`);
+                            if (hasSvg) contentDesc.push('SVG graphics');
+                            const contentStr = contentDesc.length > 0 ? ` containing ${contentDesc.join(', ')}` : '';
+                            
+                            // Determine what attributes would be expected based on interactivity
+                            let roleNeeded = isInteractive ? 'role="region"' : 'role="img"';
+                            
+                            // Pass structured metadata - let Python/template handle translation
                             results.errors.push({
                                 err: 'ErrDivMapMissingAttributes',
                                 type: 'err',
                                 cat: 'maps',
                                 element: 'div',
                                 xpath: xpath,
-                                html: element.outerHTML.substring(0, 200),
-                                description: 'Div-based map has no ARIA attributes (role, aria-label, aria-labelledby, or title)',
+                                html: element.outerHTML.substring(0, 300),
                                 wcag: '1.1.1',
                                 provider: provider,
-                                remediation: 'Add role="region" or role="img" with aria-label describing the map, or provide aria-labelledby referencing a heading'
+                                metadata: {
+                                    isInteractive: isInteractive,
+                                    elementId: elemIdentifier,
+                                    containedContent: contentDesc,
+                                    suggestedRole: roleNeeded,
+                                    needsAriaLabel: true
+                                }
                             });
                             hasViolation = true;
                             results.elements_failed++;

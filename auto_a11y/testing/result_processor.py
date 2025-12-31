@@ -476,13 +476,17 @@ class ResultProcessor:
                 # Check if description contains specific measured/detected values
                 # that should be preserved (not replaced with generic description)
                 use_original_as_title = any(pattern in original_desc for pattern in [
-                    '(', 'px', ':1', 'alpha=', '°', '%'  # Patterns indicating measured values
+                    '(', 'px', ':1', 'alpha=', '°', '%',  # Patterns indicating measured values
+                    '"#', '".', 'containing',  # Element identifiers and content descriptions
+                    ' element(s)', 'lacks accessibility'  # Specific findings
                 ])
 
                 # Flatten nested metadata from test results
                 nested_metadata = violation_data.get('metadata', {}) or {}
+                # Check if test provided a separate short title
+                test_title = violation_data.get('title', '')
                 metadata = {
-                    'title': original_desc if use_original_as_title else enhanced_desc.get('title', ''),
+                    'title': test_title if test_title else (original_desc if use_original_as_title else enhanced_desc.get('title', '')),
                     'what': original_desc if use_original_as_title else enhanced_desc.get('what', ''),
                     'what_generic': generic_what,  # Properly generic description (catalog's what_generic or what without placeholders)
                     'why': enhanced_desc.get('why', ''),

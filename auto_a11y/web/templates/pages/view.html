@@ -1547,6 +1547,23 @@
                             </div>
                             {% endif %}
 
+                            {# Special case: ErrDivMapMissingAttributes with structured metadata #}
+                            {% if 'ErrDivMapMissingAttributes' in violation.id and violation.metadata and violation.metadata.get('elementId') %}
+                            <div class="mt-3">
+                                <h6>{{ _('Missing Accessibility Attributes') }}</h6>
+                                <p class="mb-2">{{ _('Map container') }} <code>{{ violation.metadata.elementId }}</code>
+                                {% if violation.metadata.containedContent %}
+                                    {{ _('containing') }} {{ violation.metadata.containedContent|join(', ') }}
+                                {% endif %}
+                                {{ _('is missing required ARIA attributes:') }}</p>
+                                <ul class="mb-3">
+                                    <li><code>{{ violation.metadata.suggestedRole }}</code> - {{ _('to identify this as a') }} {% if violation.metadata.isInteractive %}{{ _('navigable region') }}{% else %}{{ _('graphic/image') }}{% endif %}</li>
+                                    <li><code>aria-label</code> - {{ _('to describe what the map shows (e.g., "Office locations map")') }}</li>
+                                </ul>
+                                <p class="text-muted small">{{ _('Without these attributes, screen readers cannot identify this as a map or describe its purpose to users.') }}</p>
+                            </div>
+                            {% endif %}
+
                             {% if violation.html %}
                             <div class="mt-3">
                                 <h6>{{ _('Code Snippet') }}</h6>

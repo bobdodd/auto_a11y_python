@@ -49,8 +49,15 @@ def enrich_test_result_with_catalog(test_result):
             
             # Only update if we got meaningful enriched data
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
-                # Add enriched metadata
-                violation.metadata['title'] = catalog_info.get('title', '') or catalog_info.get('description', '')
+                # Add enriched metadata - but preserve title if it has specific details
+                # (test may provide a short title for accordion and full description for details)
+                existing_title = violation.metadata.get('title', '')
+                has_specific_title = existing_title and any(pattern in existing_title for pattern in [
+                    '".', '"#', 'missing role=', 'missing aria-',
+                    'px', ':1', 'alpha=', '°', '%'
+                ])
+                if not has_specific_title:
+                    violation.metadata['title'] = catalog_info.get('title', '') or catalog_info.get('description', '')
 
                 # Get descriptions with placeholders
                 what_template = catalog_info['description']
@@ -77,14 +84,24 @@ def enrich_test_result_with_catalog(test_result):
                     placeholder_values['fontSize'] = str(violation.metadata.get('fontSize', ''))
 
                 # Replace placeholders in templates
+                # But preserve 'what' if it already has specific details (contains identifying patterns)
+                existing_what = violation.metadata.get('what', '')
+                has_specific_what = any(pattern in existing_what for pattern in [
+                    '".', '"#', 'containing', ' element(s)', 'lacks accessibility',
+                    'px', ':1', 'alpha=', '°', '%'
+                ])
+                
                 try:
-                    violation.metadata['what'] = what_template % placeholder_values
+                    # Only overwrite 'what' if it doesn't have specific details already
+                    if not has_specific_what:
+                        violation.metadata['what'] = what_template % placeholder_values
                     violation.metadata['why'] = why_template % placeholder_values
                     violation.metadata['how'] = how_template % placeholder_values
                 except (KeyError, ValueError, TypeError) as e:
                     # If placeholder replacement fails, use templates as-is
                     logger.warning(f"Placeholder substitution failed for {error_code}: {e}, keys available: {list(placeholder_values.keys())}")
-                    violation.metadata['what'] = what_template
+                    if not has_specific_what:
+                        violation.metadata['what'] = what_template
                     violation.metadata['why'] = why_template
                     violation.metadata['how'] = how_template
                 

@@ -1557,13 +1557,13 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Move main outside of other landmarks"
         },
         'ErrMapAriaHidden': {
-            'title': "Map element hidden from assistive technologies with aria-hidden",
-            'what': "Map element hidden from assistive technologies with aria-hidden",
-            'why': "Hiding maps completely removes access to important geographic or spatial information for screen reader users.",
-            'who': "Blind and low vision users who need text alternatives for map information.",
+            'title': "Interactive map hidden with aria-hidden creates silent focus trap",
+            'what': "Interactive map with aria-hidden=\"true\" contains focusable elements that keyboard users can reach but screen reader users cannot perceive - creating a 'silent focus trap'.",
+            'why': "When aria-hidden=\"true\" is applied to a container with interactive elements (buttons, links, form controls), keyboard focus can still move to those elements. Screen reader users will experience focus moving to elements they cannot perceive or interact with meaningfully. This also hides any geographic or location information the map provides.",
+            'who': "Screen reader users who will encounter focusable elements they cannot perceive; keyboard-only users who may get stuck in controls they cannot understand; all users who lose access to the map's information.",
             'impact': ImpactScale.HIGH.value,
-            'wcag': ['4.1.2'],
-            'remediation': "Remove aria-hidden from maps, provide appropriate text alternatives and accessible controls instead."
+            'wcag': ['1.3.1', '4.1.2'],
+            'remediation': "Remove aria-hidden=\"true\" from the map container. If the map must be hidden from screen readers, also add tabindex=\"-1\" to all interactive elements inside, or provide the map information in an accessible alternative format nearby."
         },
         'ErrMapMissingTitle': {
             'title': "Map iframe missing title attribute",

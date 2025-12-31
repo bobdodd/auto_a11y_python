@@ -1564,6 +1564,21 @@
                             </div>
                             {% endif %}
 
+                            {# Special case: ErrMapAriaHidden with interactive element counts #}
+                            {% if 'ErrMapAriaHidden' in violation.id and violation.metadata and violation.metadata.get('interactiveCount') %}
+                            <div class="mt-3">
+                                <h6>{{ _('Silent Focus Trap Details') }}</h6>
+                                <p class="mb-2">{{ _('This map container has') }} <code>aria-hidden="true"</code> {{ _('but contains') }} <strong>{{ violation.metadata.interactiveCount }}</strong> {{ _('focusable element(s) that keyboard users can still reach:') }}</p>
+                                <ul class="mb-3">
+                                    {% if violation.metadata.buttonCount > 0 %}<li>{{ violation.metadata.buttonCount }} {{ _('button(s)') }}</li>{% endif %}
+                                    {% if violation.metadata.linkCount > 0 %}<li>{{ violation.metadata.linkCount }} {{ _('link(s)') }}</li>{% endif %}
+                                    {% if violation.metadata.inputCount > 0 %}<li>{{ violation.metadata.inputCount }} {{ _('form input(s)') }}</li>{% endif %}
+                                    {% if violation.metadata.focusableCount > 0 %}<li>{{ violation.metadata.focusableCount }} {{ _('other focusable element(s)') }}</li>{% endif %}
+                                </ul>
+                                <p class="text-muted small">{{ _('Screen reader users navigating by keyboard will have focus move to these elements but hear nothing, creating confusion about where they are on the page.') }}</p>
+                            </div>
+                            {% endif %}
+
                             {% if violation.html %}
                             <div class="mt-3">
                                 <h6>{{ _('Code Snippet') }}</h6>

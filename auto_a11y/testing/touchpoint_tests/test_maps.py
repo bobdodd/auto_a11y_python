@@ -542,6 +542,13 @@ async def test_maps(page) -> Dict[str, Any]:
 
                     // Test 1: ErrMapAriaHidden - Interactive map with aria-hidden="true"
                     if (isInteractive && ariaHidden === 'true') {
+                        // Count interactive elements inside
+                        const buttons = element.querySelectorAll('button').length;
+                        const links = element.querySelectorAll('a[href]').length;
+                        const inputs = element.querySelectorAll('input, select, textarea').length;
+                        const focusable = element.querySelectorAll('[tabindex="0"], [tabindex]:not([tabindex="-1"])').length;
+                        const totalInteractive = buttons + links + inputs + focusable;
+                        
                         results.errors.push({
                             err: 'ErrMapAriaHidden',
                             type: 'err',
@@ -549,11 +556,17 @@ async def test_maps(page) -> Dict[str, Any]:
                             element: type,
                             xpath: xpath,
                             html: element.outerHTML.substring(0, 200),
-                            description: 'Interactive map has aria-hidden="true" which hides focusable controls from screen readers (silent focus trap)',
                             wcag: '1.3.1',
                             provider: provider,
                             mapType: type,
-                            isInteractive: true
+                            isInteractive: true,
+                            metadata: {
+                                interactiveCount: totalInteractive,
+                                buttonCount: buttons,
+                                linkCount: links,
+                                inputCount: inputs,
+                                focusableCount: focusable
+                            }
                         });
                         hasViolation = true;
                         results.elements_failed++;

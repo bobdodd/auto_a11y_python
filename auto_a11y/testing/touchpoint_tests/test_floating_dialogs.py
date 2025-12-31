@@ -191,15 +191,21 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                 }
                 
                 // Get heading level of dialog
-                function getHeadingLevel(dialog) {
+                function getHeadingInfo(dialog) {
                     const heading = dialog.querySelector('h1, h2, h3, h4, h5, h6');
                     if (heading) {
-                        return parseInt(heading.tagName.substring(1));
+                        return {
+                            level: parseInt(heading.tagName.substring(1)),
+                            text: heading.textContent.trim().substring(0, 100)
+                        };
                     }
                     
                     const ariaLevel = dialog.querySelector('[role="heading"]');
                     if (ariaLevel) {
-                        return parseInt(ariaLevel.getAttribute('aria-level') || '1');
+                        return {
+                            level: parseInt(ariaLevel.getAttribute('aria-level') || '1'),
+                            text: ariaLevel.textContent.trim().substring(0, 100)
+                        };
                     }
                     
                     return null;
@@ -494,7 +500,9 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                 
                 // Test each dialog
                 visibleDialogs.forEach(dialog => {
-                    const headingLevel = getHeadingLevel(dialog);
+                    const headingInfo = getHeadingInfo(dialog);
+                    const headingLevel = headingInfo ? headingInfo.level : null;
+                    const headingText = headingInfo ? headingInfo.text : '';
                     const hasClose = hasCloseButton(dialog);
                     const overlappingElements = checkContentOverlap(dialog);
                     
@@ -508,7 +516,8 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),
                             description: `Dialog should have h2 heading, found: ${headingLevel ? 'h' + headingLevel : 'none'}`,
-                            currentLevel: headingLevel
+                            foundLevel: headingLevel || 'none',
+                            headingText: headingText || '(no heading)'
                         });
                         results.elements_failed++;
                     } else {

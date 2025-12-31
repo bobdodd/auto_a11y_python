@@ -337,8 +337,8 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                 // Collect inline JS and external script URLs for analysis
                 let inlineJsCode = '';
                 const externalScriptUrls = [];
-                const scripts = Array.from(document.querySelectorAll('script'));
-                scripts.forEach(script => {
+                const allScripts = Array.from(document.querySelectorAll('script'));
+                allScripts.forEach(script => {
                     if (script.src) {
                         externalScriptUrls.push(script.src);
                     } else if (script.textContent) {

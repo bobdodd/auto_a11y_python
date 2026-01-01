@@ -1,0 +1,305 @@
+{% extends "static_report/base.html" %}
+
+{% block title %}
+<span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['recordings_report'] }}</span>
+<span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['recordings_report'] }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="mb-4">
+        <h1 class="display-4">
+            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                {{ t['recordings_report'] }}: {{ project.name }}
+            </span>
+            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                {{ translations_fr['recordings_report'] }} : {{ project.name }}
+            </span>
+        </h1>
+        <p class="text-muted">
+            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                {{ t['generated'] }}: {{ report_date }}
+            </span>
+            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                {{ translations_fr['generated'] }} : {{ report_date }}
+            </span>
+        </p>
+    </div>
+
+    {% if include_summary %}
+    <!-- Summary Statistics -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['executive_summary'] }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['executive_summary'] }}</span>
+            </h2>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <!-- Total Recordings -->
+        <div class="col-md-3">
+            <div class="stat-card bg-primary text-white">
+                <div class="stat-value">{{ stats.total_recordings }}</div>
+                <div class="stat-label">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['total_recordings'] }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['total_recordings'] }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Issues -->
+        <div class="col-md-3">
+            <div class="stat-card bg-info text-white">
+                <div class="stat-value">{{ stats.total_issues }}</div>
+                <div class="stat-label">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['total_issues'] }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['total_issues'] }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- High Impact Issues -->
+        <div class="col-md-2">
+            <div class="stat-card bg-danger text-white">
+                <div class="stat-value">{{ stats.high_impact }}</div>
+                <div class="stat-label">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['high'] }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['high'] }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medium Impact Issues -->
+        <div class="col-md-2">
+            <div class="stat-card bg-warning">
+                <div class="stat-value">{{ stats.medium_impact }}</div>
+                <div class="stat-label">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['medium'] }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['medium'] }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Impact Issues -->
+        <div class="col-md-2">
+            <div class="stat-card bg-secondary text-white">
+                <div class="stat-value">{{ stats.low_impact }}</div>
+                <div class="stat-label">
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['low'] }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['low'] }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Recordings List -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['recordings'] }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['recordings'] }}</span>
+            </h2>
+        </div>
+    </div>
+
+    {% for recording in recordings %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3 class="mb-0">{{ recording.recording_id }}: {{ recording.title }}</h3>
+            {% if recording.description %}
+            <p class="text-muted mb-0 mt-2">{{ recording.description }}</p>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <!-- Recording Metadata -->
+            <div class="row mb-3">
+                {% if recording.auditor_name %}
+                <div class="col-md-6">
+                    <strong>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['auditor'] }}:</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['auditor'] }} :</span>
+                    </strong>
+                    {{ recording.auditor_name }}
+                </div>
+                {% endif %}
+                {% if recording.auditor_role %}
+                <div class="col-md-6">
+                    <strong>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['role'] }}:</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['role'] }} :</span>
+                    </strong>
+                    {{ recording.auditor_role }}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Key Takeaways -->
+            {% set takeaways = recording.get_key_takeaways(language) %}
+            {% if takeaways %}
+            <div class="mb-4">
+                <h4>
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['key_takeaways'] }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['key_takeaways'] }}</span>
+                </h4>
+                <ol>
+                    {% for takeaway in takeaways %}
+                    <li>{{ takeaway.takeaway }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+            {% endif %}
+
+            <!-- User Painpoints -->
+            {% set painpoints = recording.get_user_painpoints(language) %}
+            {% if painpoints %}
+            <div class="mb-4">
+                <h4>
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['user_painpoints'] }}</span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['user_painpoints'] }}</span>
+                </h4>
+                {% for painpoint in painpoints %}
+                <div class="border-start border-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}.get(painpoint.impact|lower, 'secondary') }} border-4 ps-3 mb-3">
+                    <h5>
+                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}.get(painpoint.impact|lower, 'secondary') }}">
+                            {{ painpoint.impact|upper }}
+                        </span>
+                        {{ painpoint.title }}
+                    </h5>
+                    {% if painpoint.user_quote %}
+                    <p class="fst-italic">"{{ painpoint.user_quote }}"</p>
+                    {% endif %}
+                    {% if include_timecodes and painpoint.timecodes %}
+                    <p class="small text-muted">
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['timecodes'] }}:</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['timecodes'] }} :</span>
+                        {% for tc in painpoint.timecodes %}
+                        {{ tc.start }} - {{ tc.end }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Issues for this recording -->
+            {% set recording_issues = issues_by_recording.get(recording.recording_id, []) %}
+            {% if recording_issues %}
+            <div class="mb-3">
+                <h4>
+                    <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">
+                        {{ t['accessibility_issues'] }} ({{ recording_issues|length }})
+                    </span>
+                    <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
+                        {{ translations_fr['accessibility_issues'] }} ({{ recording_issues|length }})
+                    </span>
+                </h4>
+
+                {% for issue in recording_issues %}
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h5>
+                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}[issue.impact.value] }}">
+                                {{ issue.impact.value|upper }}
+                            </span>
+                            {{ issue.title }}
+                        </h5>
+
+                        {% if issue.description %}
+                        <p>{{ issue.description }}</p>
+                        {% endif %}
+
+                        {% if issue.touchpoint %}
+                        <p class="small">
+                            <strong>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['touchpoint'] }}:</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['touchpoint'] }} :</span>
+                            </strong>
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get(issue.touchpoint, issue.touchpoint) }}</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(issue.touchpoint, issue.touchpoint) }}</span>
+                        </p>
+                        {% endif %}
+
+                        {% if include_timecodes and issue.timecodes %}
+                        <p class="small text-muted">
+                            <strong>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['timecodes'] }}:</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['timecodes'] }} :</span>
+                            </strong>
+                            {% for tc in issue.timecodes %}
+                            {{ tc.start }} - {{ tc.end }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+
+                        {% if include_wcag and issue.wcag_criteria %}
+                        <p class="small">
+                            <strong>
+                                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['wcag_criteria'] }}:</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['wcag_criteria'] }} :</span>
+                            </strong>
+                            {% for criteria in issue.wcag_criteria %}
+                            {{ criteria.criterion_id }}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if group_by_touchpoint and issues_by_touchpoint %}
+    <!-- Issues Grouped by Touchpoint -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2>
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['issues_by_touchpoint'] }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['issues_by_touchpoint'] }}</span>
+            </h2>
+        </div>
+    </div>
+
+    {% for touchpoint, touchpoint_issues in issues_by_touchpoint.items()|sort %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <h3>
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get(touchpoint, touchpoint) }}</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint, touchpoint) }}</span>
+                <span class="badge bg-secondary">{{ touchpoint_issues|length }}</span>
+            </h3>
+        </div>
+        <div class="card-body">
+            {% for issue in touchpoint_issues %}
+            <div class="mb-3 pb-3 {% if not loop.last %}border-bottom{% endif %}">
+                <h5>
+                    <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}[issue.impact.value] }}">
+                        {{ issue.impact.value|upper }}
+                    </span>
+                    {{ issue.title }}
+                </h5>
+                {% if issue.description %}
+                <p>{{ issue.description }}</p>
+                {% endif %}
+                <p class="small text-muted">
+                    <strong>
+                        <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['recording'] }}:</span>
+                        <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['recording'] }} :</span>
+                    </strong>
+                    {{ issue.recording_id }}
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

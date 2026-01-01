@@ -215,7 +215,7 @@ class BrowserManager:
         url: str,
         wait_until: str = 'networkidle2',
         timeout: Optional[int] = None,
-        capture_css: bool = True
+        capture_css: bool = False
     ) -> Optional[page.Response]:
         """
         Navigate to URL with error handling

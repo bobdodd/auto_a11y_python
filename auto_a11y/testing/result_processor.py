@@ -544,16 +544,14 @@ class ResultProcessor:
                         **nested_metadata
                     }
             
-            # Map category to touchpoint
-            old_category = violation_data.get('cat', source_test)
-            
-            # First try to map by error code
+            # Get touchpoint - cat field now contains touchpoint ID directly (after Phase 1 cleanup)
+            # Error code mapping takes precedence for precision
             touchpoint_id = TouchpointMapper.get_touchpoint_for_error_code(error_code)
-            if not touchpoint_id:
-                # Fall back to category mapping
-                touchpoint_id = TouchpointMapper.get_touchpoint_for_category(old_category)
-            
-            touchpoint_value = touchpoint_id.value if touchpoint_id else old_category
+            if touchpoint_id:
+                touchpoint_value = touchpoint_id.value
+            else:
+                # Use cat value directly - it's now a touchpoint ID
+                touchpoint_value = violation_data.get('cat', source_test)
             
             # Create violation
             violation = Violation(

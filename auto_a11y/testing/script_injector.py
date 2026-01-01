@@ -15,49 +15,16 @@ class ScriptInjector:
     # Script directory
     SCRIPT_DIR = Path(__file__).parent.parent / 'scripts'
     
-    # Load order is important - dependencies first
+    # Utility scripts needed by Python tests that use page.evaluate()
     SCRIPT_LOAD_ORDER = [
-        # Dependencies must be loaded first
         'tests/accessibleName.js',  # Required by many tests
         'tests/ariaRoles.js',       # ARIA role definitions
         'tests/colorContrast.js',   # Color contrast calculations
         'tests/xpath.js',           # XPath utilities
-        'tests/a11yCodes.js',       # Error code definitions
-        'tests/passTracking.js',    # Pass tracking helpers
-        
-        # Test scripts
-        # NOTE: Most legacy JS tests are disabled - replaced by Python touchpoint tests
-        # 'tests/headings.js',  # REMOVED: Replaced by test_headings.py
-        # 'tests/images.js',  # REMOVED: Replaced by test_images.py (also handles SVG)
-        # 'tests/forms2.js',  # REMOVED: Replaced by test_forms.py
-        # 'tests/landmarks.js',  # REMOVED: Replaced by test_landmarks.py
-        # 'tests/color.js',  # REMOVED: Replaced by test_colors.py
-        # 'tests/focus.js',  # REMOVED: Replaced by test_focus_management.py
-        # 'tests/tabindex.js',  # REMOVED: Replaced by test_tabindex.py
-        # 'tests/titleAttr.js',  # REMOVED: Replaced by test_title_attribute.py
-        # 'tests/fonts.js',  # REMOVED: Replaced by test_fonts.py
-        # 'tests/svg.js',  # REMOVED: Replaced by test_images.py
-        # 'tests/language.js',  # REMOVED: Replaced by test_language.py
-        # 'tests/pageTitle.js',  # REMOVED: Replaced by test_page.py
-        'tests/pdf.js'  # KEPT: Specialized PDF handling
     ]
     
-    # Map test names to their function names
-    TEST_FUNCTIONS = {
-        # 'headings': 'headingsScrape',  # REMOVED: Replaced by test_headings.py
-        # 'images': 'imagesScrape',  # REMOVED: Replaced by test_images.py
-        # 'forms2': 'forms2Scrape',  # REMOVED: Replaced by test_forms.py
-        # 'landmarks': 'landmarksScrape',  # REMOVED: Replaced by test_landmarks.py
-        # 'color': 'colorScrape',  # REMOVED: Replaced by test_colors.py
-        # 'focus': 'focusScrape',  # REMOVED: Replaced by test_focus_management.py
-        # 'tabindex': 'tabindexScrape',  # REMOVED: Replaced by test_tabindex.py
-        # 'titleAttr': 'titleAttrScrape',  # REMOVED: Replaced by test_title_attribute.py
-        # 'fonts': 'fontsScrape',  # REMOVED: Replaced by test_fonts.py
-        # 'svg': 'svgScrape',  # REMOVED: Replaced by test_images.py
-        # 'language': 'languageScrape',  # REMOVED: Replaced by test_language.py
-        # 'pageTitle': 'pageTitleScrape',  # REMOVED: Replaced by test_page.py
-        'pdf': 'pdfScrape'
-    }
+    # No JavaScript tests remain - all replaced by Python touchpoint tests
+    TEST_FUNCTIONS = {}
     
     def __init__(self, test_config=None):
         """Initialize script injector
@@ -129,11 +96,8 @@ class ScriptInjector:
             # Add helper function to check if scripts are loaded
             await page.evaluateOnNewDocument('''
                 window.a11yTestsLoaded = true;
-                window.a11yTestFunctions = {
-                    // Most legacy tests removed - replaced by Python touchpoint tests
-                    pageTitle: typeof pageTitleScrape !== 'undefined',
-                    pdf: typeof pdfScrape !== 'undefined'
-                };
+                window.a11yTestFunctions = {};
+                // All legacy JS tests removed - replaced by Python touchpoint tests
             ''')
             
             return True

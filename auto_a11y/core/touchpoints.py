@@ -377,7 +377,8 @@ class TouchpointMapper:
         'ErrMultipleH1': TouchpointID.HEADINGS,
         'ErrSkippedHeadingLevel': TouchpointID.HEADINGS,
         'ErrNoH1': TouchpointID.HEADINGS,
-        'ErrModalMissingHeading': TouchpointID.DIALOGS,  # Modal-specific heading issue
+        'ErrModalNoHeading': TouchpointID.DIALOGS,  # Modal has no heading at all
+        'ErrModalMissingHeading': TouchpointID.DIALOGS,  # Modal has wrong heading level (h3-h6)
         'WarnHeadingInsideDisplayNone': TouchpointID.HEADINGS,
         'WarnHeadingOver60CharsLong': TouchpointID.HEADINGS,
         'WarnVisualHierarchy': TouchpointID.HEADINGS,

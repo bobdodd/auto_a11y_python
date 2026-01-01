@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrModalNoHeading - Correct Examples with Headings</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrModalNoHeading_002_correct_with_headings",
+        "issueId": "ErrModalNoHeading",
+        "description": "Modal dialogs with proper headings - should pass",
+        "expectedViolationCount": 0,
+        "expectedPasses": 3
+    }
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 300px;
+            max-width: 500px;
+            z-index: 1001;
+        }
+        .cookie-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            z-index: 999;
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 4px;
+            z-index: 998;
+        }
+        button { padding: 8px 16px; margin: 5px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; border: none; }
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>ErrModalNoHeading Test - Correct Examples</h1>
+        <p>This page contains modal dialogs with proper headings.</p>
+    </main>
+
+    <!-- Correct 1: Cookie consent with h2 heading -->
+    <div class="cookie-banner" 
+         role="dialog" 
+         aria-modal="true"
+         aria-labelledby="cookie-heading"
+         data-pass-id="ErrModalNoHeading">
+        <h2 id="cookie-heading">Cookie Consent</h2>
+        <p>We use cookies to improve your experience. By continuing to browse, you accept our use of cookies.</p>
+        <button class="btn-primary">Accept</button>
+        <button>Learn More</button>
+    </div>
+
+    <!-- Correct 2: Modal dialog with h2 heading -->
+    <div class="modal-backdrop">
+        <div class="modal" 
+             role="dialog" 
+             aria-modal="true"
+             aria-labelledby="confirm-heading"
+             data-pass-id="ErrModalNoHeading">
+            <h2 id="confirm-heading">Confirm Deletion</h2>
+            <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+            <button class="btn-primary">Delete</button>
+            <button>Cancel</button>
+        </div>
+    </div>
+
+    <!-- Correct 3: Alert dialog with visually hidden h2 -->
+    <div class="toast" 
+         role="alertdialog"
+         aria-modal="true"
+         aria-labelledby="success-heading"
+         data-pass-id="ErrModalNoHeading">
+        <h2 id="success-heading" class="visually-hidden">Success Notification</h2>
+        <p>Your changes have been saved successfully.</p>
+        <button aria-label="Close notification">X</button>
+    </div>
+</body>
+</html>

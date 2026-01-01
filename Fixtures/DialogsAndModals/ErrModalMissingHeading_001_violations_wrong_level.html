@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ErrModalMissingHeading - Wrong Heading Levels</title>
+    <script type="application/json" id="test-metadata">
+    {
+        "id": "ErrModalMissingHeading_001_violations_wrong_level",
+        "issueId": "ErrModalMissingHeading",
+        "description": "Modal dialogs with headings at wrong levels (h3-h6 instead of h1/h2)",
+        "expectedViolationCount": 3,
+        "expectedPasses": 0
+    }
+    </script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 300px;
+            max-width: 500px;
+            z-index: 1001;
+        }
+        .side-modal {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            padding: 20px;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 20px;
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            z-index: 999;
+        }
+        button { padding: 8px 16px; margin: 5px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; border: none; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>ErrModalMissingHeading Test - Wrong Heading Levels</h1>
+        <p>This page contains modal dialogs with headings at incorrect levels.</p>
+    </main>
+
+    <!-- Violation 1: Modal with h3 heading (should be h2) -->
+    <div class="modal-backdrop">
+        <div class="modal" 
+             role="dialog" 
+             aria-modal="true"
+             aria-labelledby="modal-h3"
+             data-violation-id="ErrModalMissingHeading">
+            <h3 id="modal-h3">Edit Profile</h3>
+            <p>Update your profile information below.</p>
+            <input type="text" placeholder="Name">
+            <button class="btn-primary">Save</button>
+            <button>Cancel</button>
+        </div>
+    </div>
+
+    <!-- Violation 2: Side panel with h4 heading -->
+    <div class="side-modal" 
+         role="dialog" 
+         aria-modal="true"
+         aria-labelledby="panel-h4"
+         data-violation-id="ErrModalMissingHeading">
+        <h4 id="panel-h4">Filter Options</h4>
+        <p>Select your filter criteria.</p>
+        <label><input type="checkbox"> Option 1</label>
+        <label><input type="checkbox"> Option 2</label>
+        <button class="btn-primary">Apply</button>
+    </div>
+
+    <!-- Violation 3: Bottom sheet with h5 heading -->
+    <div class="bottom-sheet" 
+         role="dialog" 
+         aria-modal="true"
+         aria-labelledby="sheet-h5"
+         data-violation-id="ErrModalMissingHeading">
+        <h5 id="sheet-h5">Share This Item</h5>
+        <p>Choose how to share.</p>
+        <button>Copy Link</button>
+        <button>Email</button>
+        <button>Twitter</button>
+    </div>
+</body>
+</html>

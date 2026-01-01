@@ -10,7 +10,6 @@ TOUCHPOINT_TEST_MAPPING = {
         'ErrEmptyHeading', 
         'ErrHeadingEmpty',
         'ErrHeadingOrder',
-        'ErrModalMissingHeading',
         'ErrMultipleH1',
         'ErrNoH1',
         'ErrSkippedHeadingLevel',
@@ -179,6 +178,7 @@ TOUCHPOINT_TEST_MAPPING = {
     'dialogs': [
         'ErrMissingCloseButton',
         'ErrModalMissingClose',
+        'ErrModalNoHeading',
         'ErrModalMissingHeading',
         'ErrModalWithoutEscape',
         'WarnMissingAriaLabelledby',

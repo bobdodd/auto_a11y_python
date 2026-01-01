@@ -15,11 +15,18 @@ WCAG Success Criteria:
 - 2.4.11 Focus Appearance (Level AAA)
 """
 
+import asyncio
+import logging
+import re
+from typing import Dict, Any, Optional
+
+logger = logging.getLogger(__name__)
+
 TEST_DOCUMENTATION = {
     "testName": "Link Focus Indicators",
     "touchpoint": "links",
     "description": "Tests for proper link focus indicators ensuring keyboard users can see which link has focus. Checks for missing focus indicators, color-only changes, insufficient contrast, and proper handling of text vs image links including underline as valid text link indicator.",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "wcagCriteria": ["2.4.7", "1.4.1", "1.4.11", "2.4.11"],
     "tests": [
         {
@@ -32,9 +39,176 @@ TEST_DOCUMENTATION = {
     ]
 }
 
-async def test_links(page):
+
+def parse_color(color_str: str) -> Dict[str, float]:
+    """Parse CSS color string to RGBA dict"""
+    if not color_str or color_str == 'transparent':
+        return {'r': 0, 'g': 0, 'b': 0, 'a': 0}
+
+    rgba_match = re.match(r'rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)', color_str)
+    if rgba_match:
+        return {
+            'r': int(rgba_match.group(1)),
+            'g': int(rgba_match.group(2)),
+            'b': int(rgba_match.group(3)),
+            'a': float(rgba_match.group(4)) if rgba_match.group(4) else 1.0
+        }
+
+    hex_match = re.match(r'^#([0-9a-f]{6})$', color_str, re.IGNORECASE)
+    if hex_match:
+        hex_val = hex_match.group(1)
+        return {
+            'r': int(hex_val[0:2], 16),
+            'g': int(hex_val[2:4], 16),
+            'b': int(hex_val[4:6], 16),
+            'a': 1.0
+        }
+
+    return {'r': 0, 'g': 0, 'b': 0, 'a': 1.0}
+
+
+def get_luminance(color: Dict[str, float]) -> float:
+    """Calculate relative luminance"""
+    r_srgb = color['r'] / 255.0
+    g_srgb = color['g'] / 255.0
+    b_srgb = color['b'] / 255.0
+
+    r = r_srgb / 12.92 if r_srgb <= 0.03928 else ((r_srgb + 0.055) / 1.055) ** 2.4
+    g = g_srgb / 12.92 if g_srgb <= 0.03928 else ((g_srgb + 0.055) / 1.055) ** 2.4
+    b = b_srgb / 12.92 if b_srgb <= 0.03928 else ((b_srgb + 0.055) / 1.055) ** 2.4
+
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def get_contrast_ratio(color1: Dict[str, float], color2: Dict[str, float]) -> float:
+    """Calculate contrast ratio between two colors"""
+    lum1 = get_luminance(color1)
+    lum2 = get_luminance(color2)
+    lighter = max(lum1, lum2)
+    darker = min(lum1, lum2)
+    return (lighter + 0.05) / (darker + 0.05)
+
+
+def parse_px(value_str: str, font_size: float = 16, root_font_size: float = 16) -> float:
+    """Parse CSS pixel values, return float or 0"""
+    if not value_str:
+        return 0.0
+    if value_str == '0' or value_str == 'none':
+        return 0.0
+
+    value_str = str(value_str).strip()
+
+    if 'px' in value_str:
+        try:
+            return float(value_str.replace('px', '').strip())
+        except:
+            return 0.0
+
+    if 'em' in value_str and 'rem' not in value_str:
+        try:
+            em_value = float(value_str.replace('em', '').strip())
+            return em_value * font_size
+        except:
+            return 0.0
+
+    if 'rem' in value_str:
+        try:
+            rem_value = float(value_str.replace('rem', '').strip())
+            return rem_value * root_font_size
+        except:
+            return 0.0
+
+    if value_str == 'thin':
+        return 1.0
+    if value_str == 'medium':
+        return 3.0
+    if value_str == 'thick':
+        return 5.0
+
+    try:
+        return float(value_str)
+    except:
+        return 0.0
+
+
+def has_gradient_background(bg_str: str) -> bool:
+    """Check if background contains a gradient"""
+    if not bg_str:
+        return False
+    return 'gradient' in bg_str.lower()
+
+
+def merge_focus_styles(link_data: Dict, css_focus_rules: Optional[Dict]) -> Dict:
+    """
+    Merge pre-captured CSS focus rules into link data.
+    
+    Args:
+        link_data: Link data from page.evaluate()
+        css_focus_rules: Pre-captured focus rules from CSSFocusCapture
+        
+    Returns:
+        Updated link_data with focus styles populated
+    """
+    if not css_focus_rules or 'rules' not in css_focus_rules:
+        return link_data
+    
+    rules = css_focus_rules.get('rules', {})
+    
+    element_id = link_data.get('elementId', '')
+    class_name = link_data.get('className', '')
+    
+    selectors_to_check = ['a', '*']
+    
+    if element_id:
+        selectors_to_check.extend([f'#{element_id}', f'a#{element_id}'])
+    
+    if class_name:
+        for cls in class_name.split():
+            if cls:
+                selectors_to_check.extend([f'.{cls}', f'a.{cls}'])
+    
+    for selector in selectors_to_check:
+        if selector in rules:
+            props = rules[selector]
+            
+            if 'outline-style' in props and link_data.get('focusOutlineStyle') is None:
+                link_data['focusOutlineStyle'] = props['outline-style']
+            if 'outline-width' in props and link_data.get('focusOutlineWidth') is None:
+                link_data['focusOutlineWidth'] = props['outline-width']
+            if 'outline-color' in props and link_data.get('focusOutlineColor') is None:
+                link_data['focusOutlineColor'] = props['outline-color']
+            if 'outline-offset' in props and link_data.get('focusOutlineOffset') is None:
+                link_data['focusOutlineOffset'] = props['outline-offset']
+            if 'outline' in props:
+                outline_val = props['outline']
+                if outline_val == 'none' or outline_val == '0':
+                    if link_data.get('focusOutlineStyle') is None:
+                        link_data['focusOutlineStyle'] = 'none'
+                        link_data['focusOutlineWidth'] = '0px'
+            if 'text-decoration' in props and link_data.get('focusTextDecoration') is None:
+                link_data['focusTextDecoration'] = props['text-decoration']
+            if 'text-decoration-line' in props and link_data.get('focusTextDecorationLine') is None:
+                link_data['focusTextDecorationLine'] = props['text-decoration-line']
+            if 'color' in props and link_data.get('focusColor') is None:
+                link_data['focusColor'] = props['color']
+            if 'background-color' in props and link_data.get('focusBackgroundColor') is None:
+                link_data['focusBackgroundColor'] = props['background-color']
+            if 'border-color' in props and link_data.get('focusBorderColor') is None:
+                link_data['focusBorderColor'] = props['border-color']
+            if 'border-width' in props and link_data.get('focusBorderWidth') is None:
+                link_data['focusBorderWidth'] = props['border-width']
+            if 'box-shadow' in props and link_data.get('focusBoxShadow') is None:
+                link_data['focusBoxShadow'] = props['box-shadow']
+    
+    return link_data
+
+
+async def test_links(page) -> Dict[str, Any]:
     """
     Test links for visible focus indicators
+    
+    Uses pre-captured CSS focus rules when available (from CSSFocusCapture)
+    to avoid expensive runtime stylesheet iteration.
 
     Args:
         page: Pyppeteer page object
@@ -43,10 +217,6 @@ async def test_links(page):
         dict: Test results with errors, warnings, and passes
     """
 
-    import asyncio
-    import logging
-    logger = logging.getLogger(__name__)
-    
     results = {
         'errors': [],
         'warnings': [],
@@ -56,12 +226,18 @@ async def test_links(page):
         'elements_failed': 0
     }
 
-    # Extract link data from page with timeout protection
+    from auto_a11y.testing.css_focus_capture import get_css_capture_for_page
+    css_capture = get_css_capture_for_page(page)
+    css_focus_rules = css_capture.to_dict() if css_capture else None
+    
+    if css_focus_rules:
+        logger.debug(f"Using pre-captured CSS focus rules: {css_focus_rules.get('stylesheet_count', 0)} stylesheets, "
+                    f"{len(css_focus_rules.get('selectors', []))} selectors")
+
     try:
         link_data = await asyncio.wait_for(
             page.evaluate('''
-        () => {
-            // Helper to get XPath
+        (cssRules) => {
             function getXPath(element) {
                 if (element.id !== '') {
                     return '//' + element.tagName.toLowerCase() + '[@id="' + element.id + '"]';
@@ -85,10 +261,8 @@ async def test_links(page):
                 return '';
             }
 
-            // Get all links
             const allLinks = Array.from(document.querySelectorAll('a[href]'));
 
-            // Filter out invisible links
             const visibleLinks = allLinks.filter(link => {
                 const style = window.getComputedStyle(link);
                 return style.display !== 'none' && style.visibility !== 'hidden';
@@ -97,15 +271,12 @@ async def test_links(page):
             return visibleLinks.map(link => {
                 const normalStyle = window.getComputedStyle(link);
 
-                // Get font size for em/rem calculations
                 const fontSize = parseFloat(normalStyle.fontSize) || 16;
                 const rootFontSize = parseFloat(window.getComputedStyle(document.documentElement).fontSize) || 16;
 
-                // Determine if this is an image link
                 const hasImage = link.querySelector('img') !== null;
                 const hasOnlyImage = hasImage && link.textContent.trim() === '';
 
-                // Get background for contrast calculations
                 let bgElement = link.parentElement;
                 let backgroundColor = normalStyle.backgroundColor;
                 let backgroundImage = normalStyle.backgroundImage;
@@ -121,7 +292,8 @@ async def test_links(page):
 
                 const fullBackground = normalStyle.background;
 
-                // Try to get focus styles by checking stylesheets
+                // Focus styles will be populated from pre-captured CSS (in Python)
+                // Only do minimal stylesheet check if no pre-captured rules available
                 let focusOutlineStyle = null;
                 let focusOutlineWidth = null;
                 let focusOutlineColor = null;
@@ -134,67 +306,43 @@ async def test_links(page):
                 let focusBorderWidth = null;
                 let focusBoxShadow = null;
 
-                // Check stylesheets for :focus rules (with limits to prevent timeout)
-                const sheets = Array.from(document.styleSheets).slice(0, 20); // Limit to first 20 stylesheets
-                let rulesChecked = 0;
-                const maxRules = 500; // Limit total rules checked per link
-                sheetLoop:
-                for (const sheet of sheets) {
-                    if (rulesChecked >= maxRules) break;
-                    try {
-                        const rules = Array.from(sheet.cssRules || sheet.rules || []).slice(0, 100);
-                        for (const rule of rules) {
-                            rulesChecked++;
-                            if (rulesChecked >= maxRules) break sheetLoop;
-                            if (rule.selectorText && rule.selectorText.includes(':focus')) {
-                                const selector = rule.selectorText.replace(':focus', '');
-                                try {
-                                    if (link.matches(selector)) {
-                                        if (rule.style.outlineStyle !== undefined && rule.style.outlineStyle !== '') {
-                                            focusOutlineStyle = rule.style.outlineStyle;
-                                        }
-                                        if (rule.style.outlineWidth !== undefined && rule.style.outlineWidth !== '') {
-                                            focusOutlineWidth = rule.style.outlineWidth;
-                                        }
-                                        if (rule.style.outlineColor !== undefined && rule.style.outlineColor !== '') {
-                                            focusOutlineColor = rule.style.outlineColor;
-                                        }
-                                        if (rule.style.outlineOffset !== undefined && rule.style.outlineOffset !== '') {
-                                            focusOutlineOffset = rule.style.outlineOffset;
-                                        }
-                                        if (rule.style.outline !== undefined && rule.style.outline !== '') {
-                                            const outlineValue = rule.style.outline;
-                                            if (outlineValue === 'none' || outlineValue === '0') {
+                // If no pre-captured CSS rules, do a quick check (limited)
+                if (!cssRules || !cssRules.rules) {
+                    const sheets = Array.from(document.styleSheets).slice(0, 5);
+                    let rulesChecked = 0;
+                    sheetLoop:
+                    for (const sheet of sheets) {
+                        if (rulesChecked >= 100) break;
+                        try {
+                            const rules = Array.from(sheet.cssRules || sheet.rules || []).slice(0, 50);
+                            for (const rule of rules) {
+                                rulesChecked++;
+                                if (rulesChecked >= 100) break sheetLoop;
+                                if (rule.selectorText && rule.selectorText.includes(':focus')) {
+                                    const selector = rule.selectorText.replace(/:focus(-visible|-within)?/g, '');
+                                    try {
+                                        if (link.matches(selector)) {
+                                            if (rule.style.outlineStyle) focusOutlineStyle = rule.style.outlineStyle;
+                                            if (rule.style.outlineWidth) focusOutlineWidth = rule.style.outlineWidth;
+                                            if (rule.style.outlineColor) focusOutlineColor = rule.style.outlineColor;
+                                            if (rule.style.outlineOffset) focusOutlineOffset = rule.style.outlineOffset;
+                                            if (rule.style.outline === 'none' || rule.style.outline === '0') {
                                                 focusOutlineStyle = 'none';
                                                 focusOutlineWidth = '0px';
                                             }
+                                            if (rule.style.textDecoration) focusTextDecoration = rule.style.textDecoration;
+                                            if (rule.style.textDecorationLine) focusTextDecorationLine = rule.style.textDecorationLine;
+                                            if (rule.style.color) focusColor = rule.style.color;
+                                            if (rule.style.backgroundColor) focusBackgroundColor = rule.style.backgroundColor;
+                                            if (rule.style.borderColor) focusBorderColor = rule.style.borderColor;
+                                            if (rule.style.borderWidth) focusBorderWidth = rule.style.borderWidth;
+                                            if (rule.style.boxShadow) focusBoxShadow = rule.style.boxShadow;
                                         }
-                                        if (rule.style.textDecoration !== undefined && rule.style.textDecoration !== '') {
-                                            focusTextDecoration = rule.style.textDecoration;
-                                        }
-                                        if (rule.style.textDecorationLine !== undefined && rule.style.textDecorationLine !== '') {
-                                            focusTextDecorationLine = rule.style.textDecorationLine;
-                                        }
-                                        if (rule.style.color !== undefined && rule.style.color !== '') {
-                                            focusColor = rule.style.color;
-                                        }
-                                        if (rule.style.backgroundColor !== undefined && rule.style.backgroundColor !== '') {
-                                            focusBackgroundColor = rule.style.backgroundColor;
-                                        }
-                                        if (rule.style.borderColor !== undefined && rule.style.borderColor !== '') {
-                                            focusBorderColor = rule.style.borderColor;
-                                        }
-                                        if (rule.style.borderWidth !== undefined && rule.style.borderWidth !== '') {
-                                            focusBorderWidth = rule.style.borderWidth;
-                                        }
-                                        if (rule.style.boxShadow !== undefined && rule.style.boxShadow !== '') {
-                                            focusBoxShadow = rule.style.boxShadow;
-                                        }
-                                    }
-                                } catch (e) {}
+                                    } catch (e) {}
+                                }
                             }
-                        }
-                    } catch (e) {}
+                        } catch (e) {}
+                    }
                 }
 
                 return {
@@ -230,14 +378,12 @@ async def test_links(page):
                     target: link.getAttribute('target') || '',
                     ariaLabel: link.getAttribute('aria-label') || '',
                     title: link.getAttribute('title') || '',
-                    // Button-styling detection
                     padding: normalStyle.padding,
                     border: normalStyle.border,
                     borderRadius: normalStyle.borderRadius,
                     borderStyle: normalStyle.borderStyle,
                     display: normalStyle.display,
                     cursor: normalStyle.cursor,
-                    // Event handler detection
                     hasOnKeyDown: !!link.onkeydown || link.hasAttribute('onkeydown'),
                     hasOnKeyPress: !!link.onkeypress || link.hasAttribute('onkeypress'),
                     hasOnKeyUp: !!link.onkeyup || link.hasAttribute('onkeyup'),
@@ -249,11 +395,11 @@ async def test_links(page):
                 };
             });
         }
-    '''),
-            timeout=30.0  # 30 second timeout for link data extraction
+    ''', css_focus_rules),
+            timeout=15.0
         )
     except asyncio.TimeoutError:
-        logger.warning("Link data extraction timed out - page may have too many links or stylesheets")
+        logger.warning("Link data extraction timed out")
         return results
     except Exception as e:
         logger.error(f"Error extracting link data: {e}")
@@ -262,20 +408,21 @@ async def test_links(page):
     if not link_data:
         return results
 
+    if css_focus_rules:
+        link_data = [merge_focus_styles(link, css_focus_rules) for link in link_data]
+
     results['elements_tested'] = len(link_data)
 
-    # Get page source/scripts to detect addEventListener for Space key handlers
     try:
         page_scripts = await asyncio.wait_for(
             page.evaluate('''
                 () => {
                     const scripts = [];
-                    // Get inline scripts (limit to prevent memory issues)
                     const scriptElements = document.querySelectorAll('script');
-                    const maxScripts = 50;
+                    const maxScripts = 30;
                     let count = 0;
                     scriptElements.forEach(script => {
-                        if (count < maxScripts && script.textContent && script.textContent.length < 50000) {
+                        if (count < maxScripts && script.textContent && script.textContent.length < 30000) {
                             scripts.push(script.textContent);
                             count++;
                         }
@@ -283,28 +430,21 @@ async def test_links(page):
                     return scripts.join('\\n');
                 }
             '''),
-            timeout=10.0
+            timeout=5.0
         )
     except (asyncio.TimeoutError, Exception) as e:
-        logger.warning(f"Could not extract page scripts: {e}")
+        logger.debug(f"Could not extract page scripts: {e}")
         page_scripts = ""
 
-    # Helper function to check if element has Space key handler
-    def has_space_key_handler(link):
-        """Check if link has a Space key (keyCode 32 or key ' ') handler"""
-        import re
-
-        # Check inline event attributes
+    def has_space_key_handler(link: Dict) -> bool:
+        """Check if link has a Space key handler"""
         on_keydown = link.get('onKeyDownAttr', '')
         on_keypress = link.get('onKeyPressAttr', '')
         on_keyup = link.get('onKeyUpAttr', '')
 
-        # Check for Space key code (32) or key value (' ')
         space_patterns = [
             r'keyCode\s*===?\s*32',
-            r'keyCode\s*==\s*32',
             r'which\s*===?\s*32',
-            r'key\s*===?\s*["\']\\s["\']',
             r'key\s*===?\s*["\'] ["\']',
             r'charCode\s*===?\s*32'
         ]
@@ -315,161 +455,30 @@ async def test_links(page):
                     if re.search(pattern, attr, re.IGNORECASE):
                         return True
 
-        # Check for addEventListener in page scripts
         if page_scripts and link.get('elementId'):
-            # Look for addEventListener on this element's ID
             element_id = link.get('elementId')
-            # Patterns: document.getElementById('id').addEventListener('keydown', ...)
-            # or $('#id').on('keydown', ...) or element.addEventListener
             patterns = [
-                rf'getElementById\(["\']?{re.escape(element_id)}["\']?\)\.addEventListener\s*\(\s*["\']key(down|press|up)["\']',
-                rf'#{re.escape(element_id)}.*\.on\s*\(\s*["\']key(down|press|up)["\']'
+                rf'getElementById\(["\']?{re.escape(element_id)}["\']?\)\.addEventListener\s*\(\s*["\']key',
+                rf'#{re.escape(element_id)}.*\.on\s*\(\s*["\']key'
             ]
-
             for pattern in patterns:
-                if re.search(pattern, page_scripts, re.IGNORECASE):
-                    # Found a key handler, now check if it handles Space
-                    # Extract the handler function (rough heuristic)
-                    match = re.search(pattern, page_scripts, re.IGNORECASE)
-                    if match:
-                        # Get next 200 characters after the match to check for space handling
-                        start_pos = match.end()
-                        handler_snippet = page_scripts[start_pos:start_pos + 200]
-                        for space_pattern in space_patterns:
-                            if re.search(space_pattern, handler_snippet, re.IGNORECASE):
-                                return True
-
-        # Check for className-based event handlers
-        if page_scripts and link.get('className'):
-            class_names = link.get('className', '').split()
-            for class_name in class_names:
-                if class_name:
-                    patterns = [
-                        rf'\.{re.escape(class_name)}.*\.addEventListener\s*\(\s*["\']key(down|press|up)["\']',
-                        rf'\.{re.escape(class_name)}.*\.on\s*\(\s*["\']key(down|press|up)["\']',
-                        rf'querySelector.*\.{re.escape(class_name)}.*addEventListener'
-                    ]
-
-                    for pattern in patterns:
-                        if re.search(pattern, page_scripts, re.IGNORECASE):
-                            match = re.search(pattern, page_scripts, re.IGNORECASE)
-                            if match:
-                                start_pos = match.end()
-                                handler_snippet = page_scripts[start_pos:start_pos + 200]
-                                for space_pattern in space_patterns:
-                                    if re.search(space_pattern, handler_snippet, re.IGNORECASE):
-                                        return True
+                match = re.search(pattern, page_scripts, re.IGNORECASE)
+                if match:
+                    handler_snippet = page_scripts[match.end():match.end() + 150]
+                    for space_pattern in space_patterns:
+                        if re.search(space_pattern, handler_snippet, re.IGNORECASE):
+                            return True
 
         return False
 
-    # Helper function to parse colors
-    def parse_color(color_str):
-        if not color_str or color_str == 'transparent':
-            return {'r': 0, 'g': 0, 'b': 0, 'a': 0}
-
-        # Handle rgba format
-        import re
-        rgba_match = re.match(r'rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)', color_str)
-        if rgba_match:
-            return {
-                'r': int(rgba_match.group(1)),
-                'g': int(rgba_match.group(2)),
-                'b': int(rgba_match.group(3)),
-                'a': float(rgba_match.group(4)) if rgba_match.group(4) else 1.0
-            }
-
-        # Handle hex format
-        hex_match = re.match(r'^#([0-9a-f]{6})$', color_str, re.IGNORECASE)
-        if hex_match:
-            hex_val = hex_match.group(1)
-            return {
-                'r': int(hex_val[0:2], 16),
-                'g': int(hex_val[2:4], 16),
-                'b': int(hex_val[4:6], 16),
-                'a': 1.0
-            }
-
-        return {'r': 0, 'g': 0, 'b': 0, 'a': 1.0}
-
-    def get_luminance(color):
-        r_srgb = color['r'] / 255.0
-        g_srgb = color['g'] / 255.0
-        b_srgb = color['b'] / 255.0
-
-        r = r_srgb / 12.92 if r_srgb <= 0.03928 else ((r_srgb + 0.055) / 1.055) ** 2.4
-        g = g_srgb / 12.92 if g_srgb <= 0.03928 else ((g_srgb + 0.055) / 1.055) ** 2.4
-        b = b_srgb / 12.92 if b_srgb <= 0.03928 else ((b_srgb + 0.055) / 1.055) ** 2.4
-
-        return 0.2126 * r + 0.7152 * g + 0.0722 * b
-
-    def get_contrast_ratio(color1, color2):
-        lum1 = get_luminance(color1)
-        lum2 = get_luminance(color2)
-        lighter = max(lum1, lum2)
-        darker = min(lum1, lum2)
-        return (lighter + 0.05) / (darker + 0.05)
-
-    # Helper function to parse px values (including em/rem)
-    def parse_px(value_str, font_size=16, root_font_size=16):
-        """Parse CSS pixel values, return float or 0"""
-        if not value_str:
-            return 0.0
-        if value_str == '0' or value_str == 'none':
-            return 0.0
-
-        value_str = str(value_str).strip()
-
-        if 'px' in value_str:
-            try:
-                return float(value_str.replace('px', '').strip())
-            except:
-                return 0.0
-
-        if 'em' in value_str and 'rem' not in value_str:
-            try:
-                em_value = float(value_str.replace('em', '').strip())
-                return em_value * font_size
-            except:
-                return 0.0
-
-        if 'rem' in value_str:
-            try:
-                rem_value = float(value_str.replace('rem', '').strip())
-                return rem_value * root_font_size
-            except:
-                return 0.0
-
-        if value_str == 'thin':
-            return 1.0
-        if value_str == 'medium':
-            return 3.0
-        if value_str == 'thick':
-            return 5.0
-
-        try:
-            return float(value_str)
-        except:
-            return 0.0
-
-    # Helper to detect gradient backgrounds
-    def has_gradient_background(bg_str):
-        if not bg_str:
-            return False
-        return 'gradient' in bg_str.lower()
-
-    # Helper to detect underline on focus
-    def has_underline_on_focus(link):
+    def has_underline_on_focus(link: Dict) -> bool:
         """Check if link has underline on focus"""
-        # Check text-decoration or text-decoration-line
         text_dec = link.get('focusTextDecoration', '')
         text_dec_line = link.get('focusTextDecorationLine', '')
 
-        # Check if focus explicitly sets text-decoration
         if text_dec:
-            # If focus state explicitly sets decoration, check if it includes underline
             if 'underline' in text_dec.lower():
                 return True
-            # If focus explicitly sets 'none', there's no underline even if normal has it
             if 'none' in text_dec.lower():
                 return False
 
@@ -479,8 +488,6 @@ async def test_links(page):
             if 'none' in text_dec_line.lower():
                 return False
 
-        # If focus state doesn't explicitly set decoration, check normal state
-        # (links often have underline by default which persists on focus)
         normal_dec = link.get('normalTextDecoration', '')
         normal_dec_line = link.get('normalTextDecorationLine', '')
 
@@ -491,26 +498,21 @@ async def test_links(page):
 
         return False
 
-    # Test each link for focus indicators
     for link in link_data:
         tag = link['tagName'].lower()
         error_code = None
         violation_reason = None
 
-        # Get font sizes for em/rem calculations
         font_size = link.get('fontSize', 16)
         root_font_size = link.get('rootFontSize', 16)
 
-        # Check for target="_blank" without warning (independent check)
         target = link.get('target', '').lower()
         if target == '_blank':
-            # Check if link text, aria-label, or title mentions "new window" or "new tab"
             link_text = link.get('text', '').lower()
             aria_label = link.get('ariaLabel', '').lower()
             title = link.get('title', '').lower()
             combined_text = f"{link_text} {aria_label} {title}"
 
-            # Check for warning indicators (be specific to avoid false positives)
             new_window_indicators = [
                 'new window', 'new tab',
                 'opens in a new window', 'opens in a new tab',
@@ -529,85 +531,69 @@ async def test_links(page):
                     'element': tag,
                     'xpath': link['xpath'],
                     'html': link['html'],
-                    'description': f'Link opens in new window (target="_blank") without warning users in link text, aria-label, or title',
+                    'description': 'Link opens in new window (target="_blank") without warning users in link text, aria-label, or title',
                     'text': link.get('text', '')
                 })
 
-        # Check for gradient backgrounds
         link_background = link.get('fullBackground', '') or link.get('normalBackgroundColor', '')
         link_bg_image = link.get('backgroundImage', '')
         has_gradient = has_gradient_background(link_background) or has_gradient_background(link_bg_image)
 
-        # Determine if link is image-only
         is_image_link = link.get('hasOnlyImage', False)
 
-        # Check if this link has custom focus styles
         has_custom_focus = (
-            link['focusOutlineStyle'] is not None or
-            link['focusOutlineWidth'] is not None or
-            link['focusOutlineColor'] is not None or
-            link['focusTextDecoration'] is not None or
-            link['focusColor'] is not None or
-            link['focusBackgroundColor'] is not None or
-            link['focusBorderColor'] is not None or
-            link['focusBoxShadow'] is not None
+            link.get('focusOutlineStyle') is not None or
+            link.get('focusOutlineWidth') is not None or
+            link.get('focusOutlineColor') is not None or
+            link.get('focusTextDecoration') is not None or
+            link.get('focusColor') is not None or
+            link.get('focusBackgroundColor') is not None or
+            link.get('focusBorderColor') is not None or
+            link.get('focusBoxShadow') is not None
         )
 
-        # Check for underline
         has_underline = has_underline_on_focus(link)
 
-        # Warning: Browser default focus (no custom styles)
         if not has_custom_focus:
             error_code = 'WarnLinkDefaultFocus'
             violation_reason = 'Link uses browser default focus styles which may not meet 3:1 contrast on all backgrounds'
 
-        # IMAGE LINKS - Different requirements
         elif is_image_link:
-            # Image links must have outline, border, or box-shadow
-            has_outline = link['focusOutlineStyle'] and link['focusOutlineStyle'] != 'none'
-            has_border = link['focusBorderColor'] or link['focusBorderWidth']
-            has_box_shadow = link['focusBoxShadow'] and link['focusBoxShadow'] != 'none'
+            has_outline = link.get('focusOutlineStyle') and link.get('focusOutlineStyle') != 'none'
+            has_border = link.get('focusBorderColor') or link.get('focusBorderWidth')
+            has_box_shadow = link.get('focusBoxShadow') and link.get('focusBoxShadow') != 'none'
 
             if not (has_outline or has_border or has_box_shadow):
                 error_code = 'ErrLinkImageNoFocusIndicator'
                 violation_reason = 'Image link has no visible focus indicator (must have outline, border, or box-shadow)'
 
-        # TEXT LINKS - Check outline:none
-        elif link['focusOutlineStyle'] == 'none':
-            # If outline is none, must have underline or box-shadow
-            has_box_shadow = link['focusBoxShadow'] and link['focusBoxShadow'] != 'none'
+        elif link.get('focusOutlineStyle') == 'none':
+            has_box_shadow = link.get('focusBoxShadow') and link.get('focusBoxShadow') != 'none'
 
             if has_underline or has_box_shadow:
-                # OK - has alternative focus indicator
                 pass
             else:
-                # Check if only color change
                 has_color_change = (
-                    link['focusColor'] and
-                    link['focusColor'] != link['normalColor']
-                ) or link['focusBackgroundColor']
+                    link.get('focusColor') and
+                    link.get('focusColor') != link.get('normalColor')
+                ) or link.get('focusBackgroundColor')
 
                 if has_color_change:
                     error_code = 'ErrLinkColorChangeOnly'
                     violation_reason = 'Link has outline:none with only color change (violates WCAG 1.4.1 Use of Color - must have underline or outline)'
-                # else: no error - link has outline:none but this is caught by WarnLinkDefaultFocus if no custom styles
 
-        # TEXT LINKS - If outline is present, check its properties
-        elif link['focusOutlineColor'] and link['focusOutlineWidth']:
-            outline_width = parse_px(link['focusOutlineWidth'], font_size, root_font_size)
+        elif link.get('focusOutlineColor') and link.get('focusOutlineWidth'):
+            outline_width = parse_px(link.get('focusOutlineWidth'), font_size, root_font_size)
             outline_offset = parse_px(link.get('focusOutlineOffset', '0px'), font_size, root_font_size)
 
-            # PRIORITY 1: Check outline width (ERROR - must be >= 2px if no underline)
             if outline_width > 0 and outline_width < 2.0 and not has_underline:
                 error_code = 'ErrLinkOutlineWidthInsufficient'
                 violation_reason = f'Link focus outline is too thin ({outline_width:.2f}px, needs ≥2px) and has no underline'
 
-            # PRIORITY 2: Check contrast (ERROR - more critical than offset warning)
             elif not has_gradient:
-                outline_color = parse_color(link['focusOutlineColor'])
-                bg_color = parse_color(link['backgroundColor'])
+                outline_color = parse_color(link.get('focusOutlineColor'))
+                bg_color = parse_color(link.get('backgroundColor'))
 
-                # Check if outline is semi-transparent (< 50% opacity)
                 if outline_color['a'] < 0.5:
                     error_code = 'WarnLinkTransparentOutline'
                     violation_reason = f'Link focus outline is semi-transparent (alpha={outline_color["a"]:.2f}) which may not provide sufficient visibility'
@@ -616,17 +602,14 @@ async def test_links(page):
                     if contrast < 3.0:
                         error_code = 'ErrLinkFocusContrastFail'
                         violation_reason = f'Link focus outline has insufficient contrast ({contrast:.2f}:1, needs ≥3:1 per WCAG 1.4.11)'
-                    # PRIORITY 3: If contrast is OK, check offset (WARNING)
                     elif has_underline and outline_offset > 1.0:
                         error_code = 'WarnLinkOutlineOffsetTooLarge'
                         violation_reason = f'Link has underline and outline-offset > 1px ({outline_offset:.2f}px) - creates confusing gap between underline and outline'
 
-            # PRIORITY 4: Gradient background (cannot verify contrast automatically)
             elif has_gradient:
                 error_code = 'WarnLinkFocusGradientBackground'
                 violation_reason = 'Link has gradient background - focus outline contrast cannot be automatically verified'
 
-        # If we found a violation or warning
         if error_code:
             result_type = 'warn' if error_code.startswith('Warn') else 'err'
             result_list = results['warnings'] if result_type == 'warn' else results['errors']
@@ -639,36 +622,29 @@ async def test_links(page):
                 'xpath': link['xpath'],
                 'html': link['html'],
                 'description': violation_reason,
-                'text': link['text']
+                'text': link.get('text', '')
             })
             results['elements_failed'] += 1
         else:
             results['elements_passed'] += 1
 
-        # Check for button-like styling (independent check - separate from focus indicators)
         looks_like_button = False
         button_indicators = []
 
-        # Check for button-like characteristics
         padding = link.get('padding', '')
         border_radius = link.get('borderRadius', '0px')
         background_color = link.get('normalBackgroundColor', '')
         display = link.get('display', 'inline')
         cursor = link.get('cursor', 'auto')
 
-        # Parse padding values
         has_substantial_padding = False
         if padding and padding != '0px':
-            # Check if any padding value is >= 8px
-            import re
             px_values = re.findall(r'(\d+(?:\.\d+)?)px', padding)
             if any(float(val) >= 8 for val in px_values):
                 has_substantial_padding = True
                 button_indicators.append('substantial padding')
 
-        # Check for border-radius (rounded corners typical of buttons)
         if border_radius and border_radius != '0px':
-            # Parse border-radius
             try:
                 radius_val = float(border_radius.replace('px', '').strip())
                 if radius_val >= 3:
@@ -676,33 +652,25 @@ async def test_links(page):
             except:
                 pass
 
-        # Check for solid background color (not transparent/default)
         has_solid_background = False
         if background_color and background_color not in ['transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'initial']:
-            # Parse to see if it's not fully transparent
             bg_parsed = parse_color(background_color)
-            if bg_parsed['a'] > 0.5:  # More than 50% opaque
+            if bg_parsed['a'] > 0.5:
                 has_solid_background = True
                 button_indicators.append('solid background color')
 
-        # Check for block/inline-block display
         if display in ['block', 'inline-block', 'flex', 'inline-flex']:
             button_indicators.append('block-level display')
 
-        # Check for pointer cursor
         if cursor == 'pointer':
             button_indicators.append('pointer cursor')
 
-        # Determine if link looks like a button
-        # Heuristic: Has solid background + padding, OR has multiple button indicators
         if (has_solid_background and has_substantial_padding) or len(button_indicators) >= 3:
             looks_like_button = True
 
         if looks_like_button:
-            # Check for Space key handler
             has_space_handler = has_space_key_handler(link)
 
-            # Always warn about semantic mismatch (link styled as button)
             results['warnings'].append({
                 'err': 'WarnLinkLooksLikeButton',
                 'type': 'warn',
@@ -711,10 +679,9 @@ async def test_links(page):
                 'xpath': link['xpath'],
                 'html': link['html'],
                 'description': f'Link is styled to look like a button ({", ".join(button_indicators)}) but uses anchor element - consider using <button> for actions or keeping link styling for navigation',
-                'text': link['text']
+                'text': link.get('text', '')
             })
 
-            # Also raise error if missing Space key handler
             if not has_space_handler:
                 results['errors'].append({
                     'err': 'ErrLinkButtonMissingSpaceHandler',
@@ -724,7 +691,7 @@ async def test_links(page):
                     'xpath': link['xpath'],
                     'html': link['html'],
                     'description': f'Link is styled as a button ({", ".join(button_indicators)}) but lacks Space key handler - keyboard users expect Space to activate button-like elements',
-                    'text': link['text']
+                    'text': link.get('text', '')
                 })
 
     return results

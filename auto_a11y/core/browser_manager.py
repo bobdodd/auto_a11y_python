@@ -214,7 +214,8 @@ class BrowserManager:
         page: page.Page, 
         url: str,
         wait_until: str = 'networkidle2',
-        timeout: Optional[int] = None
+        timeout: Optional[int] = None,
+        capture_css: bool = True
     ) -> Optional[page.Response]:
         """
         Navigate to URL with error handling
@@ -224,6 +225,7 @@ class BrowserManager:
             url: URL to navigate to
             wait_until: Wait condition
             timeout: Navigation timeout
+            capture_css: Whether to capture CSS focus rules during navigation
             
         Returns:
             Response object or None if failed
@@ -233,15 +235,48 @@ class BrowserManager:
             'timeout': timeout or self.config.get('timeout', 60000)
         }
         
+        css_capture = None
+        if capture_css:
+            try:
+                from auto_a11y.testing.css_focus_capture import (
+                    CSSFocusCapture, set_css_capture_for_page, clear_css_capture_for_page
+                )
+                clear_css_capture_for_page(page)
+                css_capture = CSSFocusCapture()
+                await css_capture.start_capture(page)
+                set_css_capture_for_page(page, css_capture)
+            except Exception as e:
+                logger.debug(f"CSS capture setup failed: {e}")
+                css_capture = None
+        
         try:
             response = await page.goto(url, options)
             logger.debug(f"Navigated to: {url}")
+            
+            if css_capture:
+                try:
+                    await css_capture.stop_capture()
+                    await css_capture.capture_inline_styles(page)
+                    logger.debug(f"CSS capture complete: {len(css_capture.cache.focus_rules)} focus rules captured")
+                except Exception as e:
+                    logger.debug(f"CSS capture finalization failed: {e}")
+            
             return response
         except TimeoutError:
             logger.warning(f"Navigation timeout for: {url}")
+            if css_capture:
+                try:
+                    await css_capture.stop_capture()
+                except:
+                    pass
             return None
         except Exception as e:
             logger.error(f"Navigation error for {url}: {e}")
+            if css_capture:
+                try:
+                    await css_capture.stop_capture()
+                except:
+                    pass
             return None
     
     async def take_screenshot(

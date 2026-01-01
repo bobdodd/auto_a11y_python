@@ -150,8 +150,15 @@ async def test_title_attribute(page) -> Dict[str, Any]:
         results['elements_tested'] = len(title_data['elementsWithTitle']) + len(title_data['allIframes'])
 
         # Test 1: Check iframes for missing title attributes (ErrIframeWithNoTitleAttr)
+        # Skip map iframes - they are reported by ErrMapMissingTitle instead
+        map_patterns = ['google.com/maps', 'bing.com/maps', 'openstreetmap', 'mapbox',
+                        'maps.apple.com', 'here.com', 'yandex', 'baidu.com/map']
+        
         for iframe in title_data['allIframes']:
-            if not iframe['hasTitle']:
+            src = (iframe.get('src') or '').lower()
+            is_map_iframe = any(pattern in src for pattern in map_patterns)
+            
+            if not iframe['hasTitle'] and not is_map_iframe:
                 results['errors'].append({
                     'err': 'ErrIframeWithNoTitleAttr',
                     'type': 'err',

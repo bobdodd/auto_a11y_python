@@ -48,7 +48,6 @@ class Touchpoint:
     id: TouchpointID
     name: str
     description: str
-    js_tests: List[str]  # JavaScript test files that belong to this touchpoint
     ai_tests: List[str]  # AI analysis types that belong to this touchpoint
     wcag_criteria: List[str]  # Related WCAG success criteria
     
@@ -58,7 +57,6 @@ class Touchpoint:
             'id': self.id.value,
             'name': self.name,
             'description': self.description,
-            'js_tests': self.js_tests,
             'ai_tests': self.ai_tests,
             'wcag_criteria': self.wcag_criteria
         }
@@ -70,7 +68,7 @@ TOUCHPOINTS = {
         id=TouchpointID.ACCESSIBLE_NAMES,
         name="Accessible Names",
         description="Ensures all interactive elements have appropriate accessible names for assistive technology",
-        js_tests=["accessibleName.js", "ariaRoles.js"],
+        
         ai_tests=["accessible_name_visual"],
         wcag_criteria=["4.1.2", "2.4.4", "1.1.1", "3.3.2"]
     ),
@@ -79,7 +77,6 @@ TOUCHPOINTS = {
         id=TouchpointID.ANIMATION,
         name="Animation",
         description="Detects and evaluates animations, auto-playing content, and motion that may cause issues",
-        js_tests=[],  # No direct JS tests for animation
         ai_tests=["animation_detection", "auto_play_content", "parallax_scrolling"],
         wcag_criteria=["2.2.2", "2.3.1", "2.3.3"]
     ),
@@ -88,7 +85,7 @@ TOUCHPOINTS = {
         id=TouchpointID.BUTTONS,
         name="Buttons",
         description="Evaluates button focus indicators and keyboard accessibility",
-        js_tests=["buttons.js"],
+        
         ai_tests=[],
         wcag_criteria=["2.4.7"]
     ),
@@ -97,7 +94,7 @@ TOUCHPOINTS = {
         id=TouchpointID.COLORS,
         name="Colors and Contrast",
         description="Verifies text and UI components meet WCAG color contrast requirements and ensures color is not the only means of conveying information",
-        js_tests=["colorContrast.js", "color.js"],
+        
         ai_tests=["contrast_visual_check", "color_only_information"],
         wcag_criteria=["1.4.1", "1.4.3", "1.4.6", "1.4.11"]
     ),
@@ -106,7 +103,6 @@ TOUCHPOINTS = {
         id=TouchpointID.DIALOGS,
         name="Dialogs",
         description="Evaluates modal dialogs, pop-ups, and overlay accessibility",
-        js_tests=[],  # Will be detected through ARIA roles
         ai_tests=["modal_accessibility", "dialog_focus_trap"],
         wcag_criteria=["2.1.2", "2.4.3", "1.3.1"]
     ),
@@ -115,7 +111,7 @@ TOUCHPOINTS = {
         id=TouchpointID.ELECTRONIC_DOCUMENTS,
         name="Electronic Documents",
         description="Checks accessibility of PDFs, Word docs, and other downloadable documents",
-        js_tests=["pdf.js"],
+        
         ai_tests=["document_accessibility"],
         wcag_criteria=["1.1.1", "1.3.1", "2.4.2"]
     ),
@@ -124,7 +120,6 @@ TOUCHPOINTS = {
         id=TouchpointID.EVENT_HANDLING,
         name="Event Handling",
         description="Verifies keyboard and mouse event handling for interactive elements",
-        js_tests=[],  # Covered by focus and forms tests
         ai_tests=["event_handler_detection"],
         wcag_criteria=["2.1.1", "2.1.3", "2.5.1"]
     ),
@@ -133,7 +128,6 @@ TOUCHPOINTS = {
         id=TouchpointID.FLOATING_CONTENT,
         name="Floating Content",
         description="Evaluates sticky headers, floating buttons, and fixed position elements",
-        js_tests=[],  # No direct JS test
         ai_tests=["floating_element_detection", "sticky_content_analysis"],
         wcag_criteria=["2.4.1", "1.4.10", "2.5.5"]
     ),
@@ -142,7 +136,7 @@ TOUCHPOINTS = {
         id=TouchpointID.FOCUS_MANAGEMENT,
         name="Focus Management",
         description="Ensures proper focus indicators, tab order, and keyboard navigation",
-        js_tests=["focus.js", "tabindex.js"],
+        
         ai_tests=["focus_order_visual", "focus_indicator_visibility"],
         wcag_criteria=["2.4.3", "2.4.7", "2.1.1", "2.1.2"]
     ),
@@ -151,7 +145,7 @@ TOUCHPOINTS = {
         id=TouchpointID.FONTS,
         name="Fonts",
         description="Evaluates font readability, size, and icon fonts accessibility",
-        js_tests=["fonts.js"],
+        
         ai_tests=["font_readability", "icon_font_detection"],
         wcag_criteria=["1.4.4", "1.4.12"]
     ),
@@ -160,7 +154,7 @@ TOUCHPOINTS = {
         id=TouchpointID.STYLES,
         name="Inline Styles",
         description="Evaluates inline style attributes for proper separation of presentation from content",
-        js_tests=[],
+        
         ai_tests=[],
         wcag_criteria=["1.4.3", "1.4.8", "1.4.12"]
     ),
@@ -169,7 +163,7 @@ TOUCHPOINTS = {
         id=TouchpointID.FORMS,
         name="Forms",
         description="Comprehensive form accessibility including labels, errors, and validation",
-        js_tests=["forms2.js", "forms_enhanced.js"],
+        
         ai_tests=["form_visual_labels", "error_identification"],
         wcag_criteria=["3.3.1", "3.3.2", "3.3.3", "3.3.4", "1.3.1", "4.1.2"]
     ),
@@ -178,7 +172,7 @@ TOUCHPOINTS = {
         id=TouchpointID.HEADINGS,
         name="Headings",
         description="Validates heading hierarchy, structure, and visual headings",
-        js_tests=["headings.js"],
+        
         ai_tests=["visual_heading_detection", "heading_hierarchy"],
         wcag_criteria=["1.3.1", "2.4.6"]
     ),
@@ -187,7 +181,7 @@ TOUCHPOINTS = {
         id=TouchpointID.IMAGES,
         name="Images",
         description="Checks image alt text, decorative images, and complex graphics",
-        js_tests=["images.js", "svg.js"],
+        
         ai_tests=["image_text_detection", "complex_image_analysis"],
         wcag_criteria=["1.1.1", "1.4.5", "1.4.9"]
     ),
@@ -196,7 +190,7 @@ TOUCHPOINTS = {
         id=TouchpointID.LANDMARKS,
         name="Landmarks",
         description="Evaluates ARIA landmarks and page regions",
-        js_tests=["landmarks.js"],
+        
         ai_tests=["landmark_visual_mapping"],
         wcag_criteria=["1.3.1", "2.4.1", "4.1.2"]
     ),
@@ -205,7 +199,7 @@ TOUCHPOINTS = {
         id=TouchpointID.LANGUAGE,
         name="Language",
         description="Verifies language declarations and changes",
-        js_tests=["language.js"],
+        
         ai_tests=["language_change_detection"],
         wcag_criteria=["3.1.1", "3.1.2"]
     ),
@@ -214,7 +208,6 @@ TOUCHPOINTS = {
         id=TouchpointID.LISTS,
         name="Lists",
         description="Validates list structure and semantics",
-        js_tests=[],  # Will add list.js
         ai_tests=["visual_list_detection"],
         wcag_criteria=["1.3.1"]
     ),
@@ -223,7 +216,6 @@ TOUCHPOINTS = {
         id=TouchpointID.MAPS,
         name="Maps",
         description="Evaluates interactive maps and geographic content accessibility",
-        js_tests=[],  # No direct JS test
         ai_tests=["map_accessibility", "map_alternative_text"],
         wcag_criteria=["1.1.1", "2.1.1", "1.4.1"]
     ),
@@ -232,7 +224,7 @@ TOUCHPOINTS = {
         id=TouchpointID.PAGE,
         name="Page",
         description="Validates page-level structure including page title element and document metadata",
-        js_tests=["pageTitle.js"],
+        
         ai_tests=[],
         wcag_criteria=["2.4.2"]
     ),
@@ -241,7 +233,6 @@ TOUCHPOINTS = {
         id=TouchpointID.READ_MORE_LINKS,
         name="Read More Links",
         description="Identifies and evaluates ambiguous link text",
-        js_tests=[],  # Covered in accessible names
         ai_tests=["ambiguous_link_detection"],
         wcag_criteria=["2.4.4", "2.4.9"]
     ),
@@ -250,7 +241,7 @@ TOUCHPOINTS = {
         id=TouchpointID.LINKS,
         name="Links",
         description="Evaluates link accessibility including focus indicators, descriptive text, keyboard support, and document links",
-        js_tests=["links.js"],
+        
         ai_tests=[],
         wcag_criteria=["2.4.4", "2.4.9", "3.1.2", "3.2.4"]
     ),
@@ -259,7 +250,7 @@ TOUCHPOINTS = {
         id=TouchpointID.NAVIGATION,
         name="Navigation",
         description="Evaluates navigation menus, landmarks, and accessible names for navigation elements",
-        js_tests=["navigation.js"],
+        
         ai_tests=[],
         wcag_criteria=["2.4.1", "4.1.2"]
     ),
@@ -268,7 +259,7 @@ TOUCHPOINTS = {
         id=TouchpointID.TABINDEX,
         name="Tabindex",
         description="Validates tabindex usage and keyboard navigation order",
-        js_tests=["tabindex.js"],
+        
         ai_tests=["tab_order_visual"],
         wcag_criteria=["2.4.3", "2.1.1"]
     ),
@@ -277,7 +268,7 @@ TOUCHPOINTS = {
         id=TouchpointID.TITLE_ATTRIBUTES,
         name="Title Attributes",
         description="Evaluates proper use of HTML title attributes for tooltips and supplementary information",
-        js_tests=["titleAttr.js"],
+        
         ai_tests=[],
         wcag_criteria=["3.3.2"]
     ),
@@ -286,7 +277,6 @@ TOUCHPOINTS = {
         id=TouchpointID.TABLES,
         name="Tables",
         description="Validates data table structure, headers, and relationships",
-        js_tests=[],  # Will add tables.js
         ai_tests=["table_structure_analysis", "table_header_detection"],
         wcag_criteria=["1.3.1", "1.3.2"]
     ),
@@ -295,7 +285,6 @@ TOUCHPOINTS = {
         id=TouchpointID.TIMERS,
         name="Timers",
         description="Detects and evaluates time limits and session timeouts",
-        js_tests=[],  # No direct JS test
         ai_tests=["timer_detection", "timeout_warning"],
         wcag_criteria=["2.2.1", "2.2.3", "2.2.6"]
     ),
@@ -304,7 +293,6 @@ TOUCHPOINTS = {
         id=TouchpointID.VIDEOS,
         name="Videos",
         description="Checks video accessibility including captions, controls, and audio descriptions",
-        js_tests=[],  # Will add video.js
         ai_tests=["video_caption_detection", "video_control_accessibility"],
         wcag_criteria=["1.2.1", "1.2.2", "1.2.3", "1.2.5", "1.4.2"]
     )
@@ -313,60 +301,6 @@ TOUCHPOINTS = {
 
 class TouchpointMapper:
     """Maps test results to touchpoints"""
-    
-    # Mapping from old categories to new touchpoints
-    CATEGORY_TO_TOUCHPOINT = {
-        # Old category -> New touchpoint
-        'heading': TouchpointID.HEADINGS,
-        'headings': TouchpointID.HEADINGS,
-        'image': TouchpointID.IMAGES,
-        'images': TouchpointID.IMAGES,
-        'form': TouchpointID.FORMS,
-        'forms': TouchpointID.FORMS,
-        'landmark': TouchpointID.LANDMARKS,
-        'landmarks': TouchpointID.LANDMARKS,
-        'color': TouchpointID.COLORS,
-        'colors': TouchpointID.COLORS,
-        'color_use': TouchpointID.COLORS,
-        'contrast': TouchpointID.COLORS,
-        'color_contrast': TouchpointID.COLORS,
-        'colorcontrast': TouchpointID.COLORS,
-        'colorsandcontrast': TouchpointID.COLORS,
-        'focus': TouchpointID.FOCUS_MANAGEMENT,
-        'focus_management': TouchpointID.FOCUS_MANAGEMENT,
-        'language': TouchpointID.LANGUAGE,
-        'lang': TouchpointID.LANGUAGE,
-        'button': TouchpointID.FORMS,  # Buttons are part of forms
-        'buttons': TouchpointID.FORMS,
-        'link': TouchpointID.LINKS,
-        'links': TouchpointID.LINKS,
-        'page': TouchpointID.PAGE,
-        'title': TouchpointID.TITLE_ATTRIBUTES,
-        'title_attribute': TouchpointID.TITLE_ATTRIBUTES,
-        'title_attributes': TouchpointID.TITLE_ATTRIBUTES,
-        'titleattr': TouchpointID.TITLE_ATTRIBUTES,
-        'tabindex': TouchpointID.TABINDEX,
-        'aria': TouchpointID.ACCESSIBLE_NAMES,  # ARIA is about accessible names
-        'svg': TouchpointID.IMAGES,
-        'pdf': TouchpointID.ELECTRONIC_DOCUMENTS,
-        'font': TouchpointID.FONTS,
-        'fonts': TouchpointID.FONTS,
-        'javascript': TouchpointID.EVENT_HANDLING,
-        'event_handling': TouchpointID.EVENT_HANDLING,
-        'event_handlers': TouchpointID.EVENT_HANDLING,
-        'style': TouchpointID.STYLES,
-        'styles': TouchpointID.STYLES,
-        'navigation': TouchpointID.NAVIGATION,
-        'modal': TouchpointID.DIALOGS,
-        'dialog': TouchpointID.DIALOGS,
-        'animation': TouchpointID.ANIMATION,
-        'timer': TouchpointID.TIMERS,
-        'video': TouchpointID.VIDEOS,
-        'table': TouchpointID.TABLES,
-        'list': TouchpointID.LISTS,
-        'map': TouchpointID.MAPS,
-        'other': TouchpointID.ACCESSIBLE_NAMES,  # Default fallback
-    }
     
     # Mapping from error codes to touchpoints
     ERROR_CODE_TO_TOUCHPOINT = {
@@ -662,30 +596,6 @@ class TouchpointMapper:
     }
     
     @classmethod
-    def get_touchpoint_for_category(cls, category: str) -> TouchpointID:
-        """
-        Get touchpoint ID for a given category
-
-        Args:
-            category: Old category name
-
-        Returns:
-            TouchpointID for the category
-
-        Raises:
-            ValueError: If category is not mapped to a touchpoint
-        """
-        category_lower = category.lower() if category else 'other'
-        touchpoint = cls.CATEGORY_TO_TOUCHPOINT.get(category_lower)
-        if touchpoint is None:
-            raise ValueError(
-                f"Category '{category}' is not mapped to a touchpoint. "
-                f"Add mapping in TouchpointManager.CATEGORY_TO_TOUCHPOINT. "
-                f"Available categories: {list(cls.CATEGORY_TO_TOUCHPOINT.keys())}"
-            )
-        return touchpoint
-    
-    @classmethod
     def get_touchpoint_for_error_code(cls, error_code: str) -> Optional[TouchpointID]:
         """
         Get touchpoint ID for a specific error code
@@ -715,7 +625,7 @@ class TouchpointMapper:
         )
     
     @classmethod
-    def map_violation_to_touchpoint(cls, violation: Dict[str, Any]) -> TouchpointID:
+    def map_violation_to_touchpoint(cls, violation: Dict[str, Any]) -> Optional[TouchpointID]:
         """
         Map a violation to its appropriate touchpoint
         
@@ -723,17 +633,12 @@ class TouchpointMapper:
             violation: Violation dictionary
             
         Returns:
-            TouchpointID for the violation
+            TouchpointID for the violation, or None if not mapped
         """
-        # First try to map by error code if available
+        # Map by error code
         if 'id' in violation:
-            touchpoint = cls.get_touchpoint_for_error_code(violation['id'])
-            if touchpoint:
-                return touchpoint
-        
-        # Fall back to category mapping
-        category = violation.get('category', 'other')
-        return cls.get_touchpoint_for_category(category)
+            return cls.get_touchpoint_for_error_code(violation['id'])
+        return None
     
     @classmethod
     def map_ai_finding_to_touchpoint(cls, ai_finding: Dict[str, Any]) -> TouchpointID:
@@ -771,23 +676,6 @@ def get_all_touchpoints() -> List[Touchpoint]:
         List of all touchpoint instances
     """
     return list(TOUCHPOINTS.values())
-
-
-def get_touchpoints_for_js_test(js_test_file: str) -> List[TouchpointID]:
-    """
-    Get touchpoints that include a specific JavaScript test
-    
-    Args:
-        js_test_file: JavaScript test filename
-        
-    Returns:
-        List of TouchpointIDs that include this test
-    """
-    touchpoints = []
-    for touchpoint_id, touchpoint in TOUCHPOINTS.items():
-        if js_test_file in touchpoint.js_tests:
-            touchpoints.append(touchpoint_id)
-    return touchpoints
 
 
 def get_touchpoints_for_ai_test(ai_test_type: str) -> List[TouchpointID]:

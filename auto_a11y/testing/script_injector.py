@@ -38,7 +38,7 @@ class ScriptInjector:
         # 'tests/fonts.js',  # REMOVED: Replaced by test_fonts.py
         # 'tests/svg.js',  # REMOVED: Replaced by test_images.py
         # 'tests/language.js',  # REMOVED: Replaced by test_language.py
-        'tests/pageTitle.js',  # KEPT: No Python equivalent yet
+        # 'tests/pageTitle.js',  # REMOVED: Replaced by test_page.py
         'tests/pdf.js'  # KEPT: Specialized PDF handling
     ]
     
@@ -55,7 +55,7 @@ class ScriptInjector:
         # 'fonts': 'fontsScrape',  # REMOVED: Replaced by test_fonts.py
         # 'svg': 'svgScrape',  # REMOVED: Replaced by test_images.py
         # 'language': 'languageScrape',  # REMOVED: Replaced by test_language.py
-        'pageTitle': 'pageTitleScrape',
+        # 'pageTitle': 'pageTitleScrape',  # REMOVED: Replaced by test_page.py
         'pdf': 'pdfScrape'
     }
     

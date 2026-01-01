@@ -322,20 +322,32 @@ class ScriptInjector:
                             results[touchpoint_id] = result
                             
                         except Exception as e:
-                            # Don't log stack trace for known session closure errors
                             error_msg = str(e)
-                            if 'Session closed' in error_msg or 'Protocol Error' in error_msg:
-                                logger.error(f"Error in {touchpoint_id}: {error_msg}")
+                            is_connection_error = any(x in error_msg for x in [
+                                'Session closed', 'Protocol Error', 'Target closed',
+                                'Connection closed', 'Page crashed'
+                            ])
+                            
+                            if is_connection_error:
+                                logger.error(f"Browser connection lost during {touchpoint_id}: {error_msg}")
+                                results[touchpoint_id] = {
+                                    'test_name': touchpoint_id,
+                                    'error': str(e),
+                                    'errors': [],
+                                    'warnings': [],
+                                    'passes': []
+                                }
+                                logger.warning("Stopping test execution due to browser connection loss")
+                                break  # Stop testing - browser is gone
                             else:
                                 logger.error(f"Python touchpoint test {touchpoint_id} failed: {e}", exc_info=True)
-
-                            results[touchpoint_id] = {
-                                'test_name': touchpoint_id,
-                                'error': str(e),
-                                'errors': [],
-                                'warnings': [],
-                                'passes': []
-                            }
+                                results[touchpoint_id] = {
+                                    'test_name': touchpoint_id,
+                                    'error': str(e),
+                                    'errors': [],
+                                    'warnings': [],
+                                    'passes': []
+                                }
                     else:
                         logger.debug(f"Skipping disabled touchpoint: {touchpoint_id}")
                     

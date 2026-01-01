@@ -43,6 +43,10 @@ async def test_links(page):
         dict: Test results with errors, warnings, and passes
     """
 
+    import asyncio
+    import logging
+    logger = logging.getLogger(__name__)
+    
     results = {
         'errors': [],
         'warnings': [],
@@ -52,8 +56,10 @@ async def test_links(page):
         'elements_failed': 0
     }
 
-    # Extract link data from page
-    link_data = await page.evaluate('''
+    # Extract link data from page with timeout protection
+    try:
+        link_data = await asyncio.wait_for(
+            page.evaluate('''
         () => {
             // Helper to get XPath
             function getXPath(element) {
@@ -128,12 +134,18 @@ async def test_links(page):
                 let focusBorderWidth = null;
                 let focusBoxShadow = null;
 
-                // Check all stylesheets for :focus rules
-                const sheets = Array.from(document.styleSheets);
+                // Check stylesheets for :focus rules (with limits to prevent timeout)
+                const sheets = Array.from(document.styleSheets).slice(0, 20); // Limit to first 20 stylesheets
+                let rulesChecked = 0;
+                const maxRules = 500; // Limit total rules checked per link
+                sheetLoop:
                 for (const sheet of sheets) {
+                    if (rulesChecked >= maxRules) break;
                     try {
-                        const rules = Array.from(sheet.cssRules || sheet.rules || []);
+                        const rules = Array.from(sheet.cssRules || sheet.rules || []).slice(0, 100);
                         for (const rule of rules) {
+                            rulesChecked++;
+                            if (rulesChecked >= maxRules) break sheetLoop;
                             if (rule.selectorText && rule.selectorText.includes(':focus')) {
                                 const selector = rule.selectorText.replace(':focus', '');
                                 try {
@@ -237,7 +249,15 @@ async def test_links(page):
                 };
             });
         }
-    ''')
+    '''),
+            timeout=30.0  # 30 second timeout for link data extraction
+        )
+    except asyncio.TimeoutError:
+        logger.warning("Link data extraction timed out - page may have too many links or stylesheets")
+        return results
+    except Exception as e:
+        logger.error(f"Error extracting link data: {e}")
+        return results
 
     if not link_data:
         return results
@@ -245,18 +265,29 @@ async def test_links(page):
     results['elements_tested'] = len(link_data)
 
     # Get page source/scripts to detect addEventListener for Space key handlers
-    page_scripts = await page.evaluate('''
-        () => {
-            const scripts = [];
-            // Get inline scripts
-            document.querySelectorAll('script').forEach(script => {
-                if (script.textContent) {
-                    scripts.push(script.textContent);
+    try:
+        page_scripts = await asyncio.wait_for(
+            page.evaluate('''
+                () => {
+                    const scripts = [];
+                    // Get inline scripts (limit to prevent memory issues)
+                    const scriptElements = document.querySelectorAll('script');
+                    const maxScripts = 50;
+                    let count = 0;
+                    scriptElements.forEach(script => {
+                        if (count < maxScripts && script.textContent && script.textContent.length < 50000) {
+                            scripts.push(script.textContent);
+                            count++;
+                        }
+                    });
+                    return scripts.join('\\n');
                 }
-            });
-            return scripts.join('\\n');
-        }
-    ''')
+            '''),
+            timeout=10.0
+        )
+    except (asyncio.TimeoutError, Exception) as e:
+        logger.warning(f"Could not extract page scripts: {e}")
+        page_scripts = ""
 
     # Helper function to check if element has Space key handler
     def has_space_key_handler(link):

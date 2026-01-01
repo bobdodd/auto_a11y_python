@@ -195,17 +195,40 @@ class ScriptExecutor:
         value = self._substitute_env_vars(step.value, env_vars) if step.value else None
 
         if action == ActionType.CLICK:
-            # Wait for element then click
             timeout_ms = step.timeout or 5000
             try:
                 await self._wait_for_selector(page, step.selector, timeout_ms)
             except Exception:
-                pass  # Continue to find_element
-            element = await self._find_element(page, step.selector)
-            if not element:
-                raise ScriptExecutionError(f"Element not found: {step.selector}")
-            await element.click()
-            # Brief wait after click to let any triggered animations/JS settle
+                pass
+            
+            max_retries = 3
+            last_error = None
+            for attempt in range(max_retries):
+                try:
+                    await page.evaluate('() => document.readyState')
+                except Exception as conn_err:
+                    raise ScriptExecutionError(f"Browser connection lost before click: {conn_err}")
+                
+                element = await self._find_element(page, step.selector)
+                if not element:
+                    raise ScriptExecutionError(f"Element not found: {step.selector}")
+                
+                try:
+                    # Use JavaScript click instead of Pyppeteer click to avoid DevTools protocol issues
+                    await page.evaluate('(el) => el.click()', element)
+                    break
+                except Exception as click_err:
+                    last_error = click_err
+                    error_str = str(click_err).lower()
+                    if 'target closed' in error_str or 'session closed' in error_str:
+                        if attempt < max_retries - 1:
+                            logger.warning(f"Click failed (attempt {attempt + 1}), retrying: {click_err}")
+                            await asyncio.sleep(1.0)
+                            continue
+                    raise ScriptExecutionError(f"Click failed: {click_err}")
+            else:
+                raise ScriptExecutionError(f"Click failed after {max_retries} attempts: {last_error}")
+            
             await asyncio.sleep(0.5)
 
         elif action == ActionType.TYPE:

@@ -744,13 +744,15 @@ class TestRunner:
 
                     return test_result
 
-                # Run multi-state testing
+                # Run multi-state testing with fresh pages for stability
                 results = await self.multi_state_runner.test_page_multi_state(
                     page=browser_page,
                     page_id=page.id,
                     scripts=multi_state_scripts,
                     test_function=run_single_test,
-                    session_id=session_id
+                    session_id=session_id,
+                    browser_manager=self.browser_manager,
+                    page_url=page.url
                 )
 
                 # Add authenticated user information to all results

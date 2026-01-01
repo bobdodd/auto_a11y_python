@@ -45,19 +45,22 @@ class BrowserManager:
             '--disable-dev-shm-usage',
             '--disable-accelerated-2d-canvas',
             '--no-first-run',
-            # Removed --no-zygote and --single-process as they can cause connection issues
             '--disable-gpu',
             f'--window-size={self.config.get("viewport_width", 1920)},{self.config.get("viewport_height", 1080)}',
-            # Suppress SPDY/HTTP2 warnings
-            '--log-level=3',  # Only show fatal errors
+            '--log-level=3',
             '--silent',
             '--disable-logging',
             '--disable-extensions',
             '--disable-background-networking',
-            # Stealth mode arguments
-            '--disable-blink-features=AutomationControlled',  # Hide automation
-            '--exclude-switches=enable-automation',  # Hide automation flag
-            '--disable-infobars',  # Hide "Chrome is being controlled" banner
+            '--disable-blink-features=AutomationControlled',
+            '--exclude-switches=enable-automation',
+            '--disable-infobars',
+            # Stability improvements
+            '--disable-features=TranslateUI',
+            '--disable-ipc-flooding-protection',
+            '--disable-renderer-backgrounding',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-component-update',
         ]
 
         # Add headless=new mode if headless is requested (Chrome 109+)
@@ -208,6 +211,49 @@ class BrowserManager:
                             self.pages.remove(page)
                     except Exception as e:
                         logger.warning(f"Error closing page: {e}")
+
+    async def create_page(self):
+        """
+        Create a new page without context manager (caller must close it)
+        
+        Returns:
+            Page instance
+        """
+        if not self.browser:
+            await self.start()
+        
+        page = await self.browser.newPage()
+        await self._apply_stealth(page)
+        
+        await page.setViewport({
+            'width': self.config.get('viewport_width', 1920),
+            'height': self.config.get('viewport_height', 1080)
+        })
+        
+        user_agent = (
+            self.config.get('user_agent') or
+            self.config.get('USER_AGENT') or
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        )
+        await page.setUserAgent(user_agent)
+        page.setDefaultNavigationTimeout(self.config.get('timeout', 60000))
+        
+        self.pages.append(page)
+        return page
+
+    async def close_page(self, page):
+        """
+        Close a page created with create_page()
+        
+        Args:
+            page: Page instance to close
+        """
+        try:
+            await page.close()
+            if page in self.pages:
+                self.pages.remove(page)
+        except Exception as e:
+            logger.warning(f"Error closing page: {e}")
     
     async def goto(
         self, 

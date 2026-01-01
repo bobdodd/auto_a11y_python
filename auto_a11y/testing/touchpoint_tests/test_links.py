@@ -235,6 +235,12 @@ async def test_links(page) -> Dict[str, Any]:
                     f"{len(css_focus_rules.get('selectors', []))} selectors")
 
     try:
+        await asyncio.wait_for(page.evaluate('() => true'), timeout=2.0)
+    except Exception as conn_err:
+        logger.error(f"Browser connection lost before test_links: {conn_err}")
+        return results
+
+    try:
         link_data = await asyncio.wait_for(
             page.evaluate('''
         (cssRules) => {

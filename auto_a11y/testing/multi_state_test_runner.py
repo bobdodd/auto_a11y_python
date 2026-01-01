@@ -38,7 +38,9 @@ class MultiStateTestRunner:
         scripts: List[PageSetupScript],
         test_function,
         session_id: str,
-        environment_vars: Optional[Dict[str, str]] = None
+        environment_vars: Optional[Dict[str, str]] = None,
+        browser_manager=None,
+        page_url: Optional[str] = None
     ) -> List[TestResult]:
         """
         Test page across multiple states
@@ -49,7 +51,8 @@ class MultiStateTestRunner:
            - Execute script
            - Validate state
            - Test after execution (if test_after_execution=True)
-        3. Link all results together
+        3. Create fresh page after each state to prevent browser stability issues
+        4. Link all results together
 
         Args:
             page: Pyppeteer page object
@@ -58,6 +61,8 @@ class MultiStateTestRunner:
             test_function: Async function that runs accessibility tests
             session_id: Script execution session ID
             environment_vars: Environment variables for scripts
+            browser_manager: BrowserManager instance for creating fresh pages
+            page_url: URL to navigate to when creating fresh pages
 
         Returns:
             List of TestResult objects (one per state tested)
@@ -66,6 +71,12 @@ class MultiStateTestRunner:
         results = []
         state_sequence = 0
         scripts_executed_so_far = []
+        
+        # Track the current page - we'll create fresh pages for stability
+        # Keep reference to original page so we don't close it (it's managed by caller's context manager)
+        original_page = page
+        current_page = page
+        actual_page_url = page_url or page.url
 
         # Check if we need to test initial state (before any scripts)
         test_initial_state = any(script.test_before_execution for script in scripts)
@@ -86,7 +97,7 @@ class MultiStateTestRunner:
             )
 
             # Run accessibility tests
-            test_result = await test_function(page, page_id)
+            test_result = await test_function(current_page, page_id)
             logger.warning(f"DEBUG: Initial state tests complete, violations={len(test_result.violations)}")
 
             # Add state metadata
@@ -97,59 +108,102 @@ class MultiStateTestRunner:
 
             results.append(test_result)
             state_sequence += 1
+            
+            # Restart browser for next state if browser_manager available
+            if browser_manager:
+                logger.warning(f"DEBUG: Restarting browser after initial state test")
+                try:
+                    await browser_manager.stop()
+                    await asyncio.sleep(0.5)
+                    await browser_manager.start()
+                    await asyncio.sleep(0.5)
+                    
+                    new_page = await browser_manager.create_page()
+                    response = await new_page.goto(actual_page_url, {
+                        'waitUntil': 'networkidle2',
+                        'timeout': 30000
+                    })
+                    if response:
+                        logger.warning(f"DEBUG: Fresh browser navigation successful, status={response.status}")
+                        await asyncio.sleep(1.0)
+                        current_page = new_page
+                        original_page = new_page
+                        logger.warning(f"DEBUG: Switched to fresh browser")
+                    else:
+                        logger.warning(f"DEBUG: Fresh browser navigation returned None")
+                except Exception as e:
+                    logger.error(f"Failed to restart browser after initial state: {e}")
 
         # Execute scripts and test after each one
-        for script in scripts:
+        for script_idx, script in enumerate(scripts):
             logger.info(f"Processing script '{script.name}' (ID: {script.id})")
             logger.warning(f"DEBUG: Script ID={script.id} '{script.name}' clear settings - cookies={script.clear_cookies_before}, localStorage={script.clear_local_storage_before}")
 
+            try:
+                await asyncio.wait_for(current_page.evaluate('() => document.readyState'), timeout=5.0)
+                logger.warning(f"DEBUG: Page connection OK at start of script loop")
+            except Exception as conn_error:
+                logger.error(f"Browser connection lost before script '{script.name}': {conn_error}")
+                break
+
             # Clear cookies and/or localStorage if configured
+            # Restart browser to ensure clean state (no cookies/localStorage)
             if script.clear_cookies_before or script.clear_local_storage_before:
-                logger.warning(f"DEBUG: Entering clearing block")
-                try:
-                    # Get current URL before clearing
-                    current_url = page.url
-
-                    await self._clear_browser_state(page, script)
-
-                    # Navigate to same URL again to apply the cleared state
-                    # Using goto instead of reload is more reliable with context managers
-                    logger.info(f"Navigating to {current_url} after clearing browser state")
-                    await page.goto(current_url, {'waitUntil': 'networkidle2', 'timeout': 30000})
-                    logger.info(f"Page navigation completed successfully")
-
-                    # Wait for page to be fully interactive and cookie notice to appear
-                    # Increased wait time to ensure page is stable before script execution
-                    await asyncio.sleep(2.0)
-
-                    # Ensure body is present and interactive
-                    await page.waitForSelector('body', {'timeout': 5000})
-
-                    # If script has a selector (likely the cookie banner button), wait for it
-                    if script.steps and script.steps[0].selector:
-                        try:
-                            selector = script.steps[0].selector
-                            logger.warning(f"DEBUG: Waiting for script target selector: {selector}")
-
-                            # Check if XPath selector (starts with / or //)
-                            if selector.startswith('/'):
-                                await page.waitForXPath(selector, {'timeout': 5000})
-                            else:
-                                await page.waitForSelector(selector, {'timeout': 5000})
-
-                            logger.warning(f"DEBUG: Script target selector found and ready")
-                        except Exception as e:
-                            logger.warning(f"DEBUG: Could not find script target selector (will try anyway): {e}")
-                except Exception as e:
-                    logger.error(f"Error during browser state clearing/navigation: {e}")
-                    # Skip this script and continue with next one
-                    logger.warning(f"Skipping script '{script.name}' due to clearing/navigation failure")
+                logger.warning(f"DEBUG: Entering clearing block - restarting browser for clean state")
+                if browser_manager:
+                    try:
+                        await browser_manager.stop()
+                        await asyncio.sleep(0.5)
+                        await browser_manager.start()
+                        await asyncio.sleep(0.5)
+                        
+                        new_page = await browser_manager.create_page()
+                        response = await new_page.goto(actual_page_url, {
+                            'waitUntil': 'networkidle2',
+                            'timeout': 30000
+                        })
+                        
+                        if response:
+                            logger.warning(f"DEBUG: Fresh browser navigation complete, status={response.status}")
+                            await asyncio.sleep(1.0)
+                            current_page = new_page
+                            original_page = new_page
+                            logger.warning(f"DEBUG: Switched to fresh browser after clearing")
+                            
+                            # Wait for script target selector if defined
+                            if script.steps and script.steps[0].selector:
+                                try:
+                                    selector = script.steps[0].selector
+                                    logger.warning(f"DEBUG: Waiting for script target selector: {selector}")
+                                    if selector.startswith('/'):
+                                        await current_page.waitForXPath(selector, {'timeout': 5000})
+                                    else:
+                                        await current_page.waitForSelector(selector, {'timeout': 5000})
+                                    logger.warning(f"DEBUG: Script target selector found and ready")
+                                except Exception as e:
+                                    logger.warning(f"DEBUG: Could not find script target selector (will try anyway): {e}")
+                        else:
+                            logger.error(f"DEBUG: Fresh browser navigation failed")
+                            continue
+                    except Exception as e:
+                        logger.error(f"Error restarting browser: {e}")
+                        logger.warning(f"Skipping script '{script.name}' due to browser restart failure")
+                        continue
+                else:
+                    logger.warning(f"DEBUG: No browser_manager, skipping clear cookies (cannot restart browser)")
                     continue
+
+            # Final connection check before script execution
+            try:
+                await asyncio.wait_for(current_page.evaluate('() => true'), timeout=2.0)
+            except Exception as conn_err:
+                logger.error(f"Browser connection lost just before executing script '{script.name}': {conn_err}")
+                break
 
             # Execute script
             logger.warning(f"DEBUG: About to execute script '{script.name}'")
             script_result = await self.script_executor.execute_script(
-                page=page,
+                page=current_page,
                 script=script,
                 environment_vars=environment_vars
             )
@@ -162,7 +216,7 @@ class MultiStateTestRunner:
 
             # Verify page connection is still alive
             try:
-                await asyncio.wait_for(page.evaluate('() => document.readyState'), timeout=5.0)
+                await asyncio.wait_for(current_page.evaluate('() => document.readyState'), timeout=5.0)
                 logger.warning(f"DEBUG: Page connection verified")
             except Exception as conn_error:
                 logger.error(f"Browser connection lost after script execution: {conn_error}")
@@ -191,7 +245,7 @@ class MultiStateTestRunner:
             if script.expect_visible_after or script.expect_hidden_after:
                 logger.info(f"Validating page state after script '{script.name}'")
                 state_violations = await self.state_validator.validate_state(
-                    page=page,
+                    page=current_page,
                     expected_state=expected_state
                 )
 
@@ -205,15 +259,15 @@ class MultiStateTestRunner:
 
                 # Verify page connection before running tests
                 try:
-                    page_url = page.url
-                    logger.warning(f"DEBUG: Page URL before tests: {page_url}")
+                    current_url = current_page.url
+                    logger.warning(f"DEBUG: Page URL before tests: {current_url}")
                 except Exception as url_error:
                     logger.error(f"Cannot get page URL - connection lost: {url_error}")
                     break
 
                 # Run accessibility tests
                 try:
-                    test_result = await test_function(page, page_id)
+                    test_result = await test_function(current_page, page_id)
                     logger.warning(f"DEBUG: Post-script tests complete, violations={len(test_result.violations)}")
                 except Exception as test_error:
                     logger.error(f"Post-script test execution failed: {test_error}")
@@ -248,6 +302,8 @@ class MultiStateTestRunner:
 
                 results.append(test_result)
                 state_sequence += 1
+
+        # No cleanup needed - browser will be stopped by caller or reused
 
         # Link all results together
         result_ids = [result.id for result in results if result.id]

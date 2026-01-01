@@ -162,7 +162,7 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                 results['errors'].append({
                     'err': 'ErrIframeWithNoTitleAttr',
                     'type': 'err',
-                    'cat': 'title',
+                    'cat': 'title_attributes',
                     'element': 'iframe',
                     'xpath': iframe['xpath'],
                     'html': iframe['html'],
@@ -181,7 +181,7 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                 results['errors'].append({
                     'err': 'ErrEmptyTitleAttr',
                     'type': 'err',
-                    'cat': 'title',
+                    'cat': 'title_attributes',
                     'element': tag,
                     'xpath': element['xpath'],
                     'html': element['html'],
@@ -212,7 +212,7 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                     results['warnings'].append({
                         'err': 'WarnVagueTitleAttribute',
                         'type': 'warn',
-                        'cat': 'title',
+                        'cat': 'title_attributes',
                         'element': tag,
                         'xpath': element['xpath'],
                         'html': element['html'],
@@ -223,7 +223,7 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                     results['warnings'].append({
                         'err': 'WarnIframeTitleNotDescriptive',
                         'type': 'warn',
-                        'cat': 'title',
+                        'cat': 'title_attributes',
                         'element': tag,
                         'xpath': element['xpath'],
                         'html': element['html'],
@@ -240,7 +240,7 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                 results['errors'].append({
                     'err': 'ErrTitleAsOnlyLabel',
                     'type': 'err',
-                    'cat': 'title',
+                    'cat': 'title_attributes',
                     'element': tag,
                     'xpath': element['xpath'],
                     'html': element['html'],
@@ -273,7 +273,7 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                 results['errors'].append({
                     'err': 'ErrImproperTitleAttribute',
                     'type': 'err',
-                    'cat': 'title',
+                    'cat': 'title_attributes',
                     'element': tag,
                     'xpath': element['xpath'],
                     'html': element['html'],
@@ -333,7 +333,7 @@ async def test_title_attribute(page) -> Dict[str, Any]:
                 results['warnings'].append({
                     'err': 'WarnVagueTitleAttribute',
                     'type': 'warn',
-                    'cat': 'title',
+                    'cat': 'title_attributes',
                     'element': tag,
                     'xpath': element['xpath'],
                     'html': element['html'],
@@ -350,7 +350,7 @@ async def test_title_attribute(page) -> Dict[str, Any]:
             results['errors'].append({
                 'err': 'ErrTitleAttrFound',
                 'type': 'err',
-                'cat': 'title',
+                'cat': 'title_attributes',
                 'element': tag,
                 'xpath': element['xpath'],
                 'html': element['html'],

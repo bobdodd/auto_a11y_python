@@ -524,7 +524,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrModalMissingHeading',
                             type: 'err',
-                            cat: 'floating_dialogs',
+                            cat: 'floating_content',
                             element: dialog.tagName,
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),
@@ -542,7 +542,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrMissingCloseButton',
                             type: 'err',
-                            cat: 'floating_dialogs',
+                            cat: 'floating_content',
                             element: dialog.tagName,
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),
@@ -579,7 +579,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrContentObscuring',
                             type: 'err',
-                            cat: 'floating_dialogs',
+                            cat: 'floating_content',
                             element: dialog.tagName,
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),
@@ -605,7 +605,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnMissingAriaModal',
                             type: 'warn',
-                            cat: 'floating_dialogs',
+                            cat: 'floating_content',
                             element: dialog.tagName,
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),
@@ -617,7 +617,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnMissingAriaLabelledby',
                             type: 'warn',
-                            cat: 'floating_dialogs',
+                            cat: 'floating_content',
                             element: dialog.tagName,
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),

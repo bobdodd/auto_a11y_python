@@ -281,7 +281,7 @@ async def test_modals(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrModalMissingHeading',
                             type: 'err',
-                            cat: 'modals',
+                            cat: 'dialogs',
                             element: modal.tagName.toLowerCase(),
                             xpath: getFullXPath(modal),
                             html: modal.outerHTML.substring(0, 200),
@@ -309,7 +309,7 @@ async def test_modals(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrModalMissingClose',
                             type: 'err',
-                            cat: 'modals',
+                            cat: 'dialogs',
                             element: modal.tagName.toLowerCase(),
                             xpath: getFullXPath(modal),
                             html: modal.outerHTML.substring(0, 200),
@@ -325,7 +325,7 @@ async def test_modals(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnModalNoFocusableElements',
                             type: 'warn',
-                            cat: 'modals',
+                            cat: 'dialogs',
                             element: modal.tagName.toLowerCase(),
                             xpath: getFullXPath(modal),
                             html: modal.outerHTML.substring(0, 200),
@@ -341,7 +341,7 @@ async def test_modals(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnMissingAriaModal',
                             type: 'warn',
-                            cat: 'modals',
+                            cat: 'dialogs',
                             element: modal.tagName.toLowerCase(),
                             xpath: getFullXPath(modal),
                             html: modal.outerHTML.substring(0, 200),
@@ -353,7 +353,7 @@ async def test_modals(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnModalMissingAriaLabelledby',
                             type: 'warn',
-                            cat: 'modals',
+                            cat: 'dialogs',
                             element: modal.tagName.toLowerCase(),
                             xpath: getFullXPath(modal),
                             html: modal.outerHTML.substring(0, 200),

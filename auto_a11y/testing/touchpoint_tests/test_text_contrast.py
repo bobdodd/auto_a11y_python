@@ -716,7 +716,7 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     results['errors'].append({
                         'err': partial_error_code,
                         'type': 'err',
-                        'cat': 'color_contrast',
+                        'cat': 'colors',
                         'element': text_elem['tag'],
                         'xpath': text_elem['xpath'],
                         'html': text_elem['html'],
@@ -772,7 +772,7 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     results['warnings'].append({
                         'err': 'WarnTextContrastCannotCalculate',
                         'type': 'warn',
-                        'cat': 'color_contrast',
+                        'cat': 'colors',
                         'element': text_elem['tag'],
                         'xpath': text_elem['xpath'],
                         'html': text_elem['html'],
@@ -797,7 +797,7 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     results['errors'].append({
                         'err': error_code,
                         'type': 'err',
-                        'cat': 'color_contrast',
+                        'cat': 'colors',
                         'element': text_elem['tag'],
                         'xpath': text_elem['xpath'],
                         'html': text_elem['html'],
@@ -833,7 +833,7 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         results['errors'].append({
                             'err': error_code,
                             'type': 'err',
-                            'cat': 'color_contrast',
+                            'cat': 'colors',
                             'element': text_elem['tag'],
                             'xpath': text_elem['xpath'],
                             'html': text_elem['html'],

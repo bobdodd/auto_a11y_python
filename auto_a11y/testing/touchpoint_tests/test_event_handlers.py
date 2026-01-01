@@ -146,7 +146,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnNegativeTabindex',
                             type: 'warn',
-                            cat: 'event_handlers',
+                            cat: 'event_handling',
                             element: element.tagName,
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
@@ -160,7 +160,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnHighTabindex',
                             type: 'warn',
-                            cat: 'event_handlers',
+                            cat: 'event_handling',
                             element: element.tagName,
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
@@ -191,7 +191,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                                 (previousElement.textContent ? ` ("${previousElement.textContent.trim().substring(0, 30)}")` : '');
 
                             const sharedData = {
-                                cat: 'event_handlers',
+                                cat: 'event_handling',
                                 element: element.tagName.toLowerCase(),
                                 xpath: getFullXPath(element),
                                 html: element.outerHTML.substring(0, 200),
@@ -306,7 +306,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrMissingTabindex',
                             type: 'err',
-                            cat: 'event_handlers',
+                            cat: 'event_handling',
                             element: tagName,
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
@@ -323,7 +323,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrMouseOnlyHandler',
                             type: 'err',
-                            cat: 'event_handlers',
+                            cat: 'event_handling',
                             element: element.tagName,
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
@@ -405,7 +405,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     results.warnings.push({
                         err: 'DiscoFoundJS',
                         type: 'disco',
-                        cat: 'event_handlers',
+                        cat: 'event_handling',
                         element: 'script',
                         xpath: getFullXPath(script),
                         html: script.outerHTML.substring(0, 200),
@@ -430,7 +430,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     results.warnings.push({
                         err: 'DiscoFoundJS',
                         type: 'disco',
-                        cat: 'event_handlers',
+                        cat: 'event_handling',
                         element: element.tagName.toLowerCase(),
                         xpath: getFullXPath(element),
                         html: element.outerHTML.substring(0, 200),
@@ -489,7 +489,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
             results['errors'].append({
                 'err': 'ErrModalWithoutEscape',
                 'type': 'err',
-                'cat': 'event_handlers',
+                'cat': 'event_handling',
                 'element': modal['tagName'],
                 'xpath': modal['xpath'],
                 'html': modal['html'],
@@ -933,7 +933,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
                     result_list.append({
                         'err': error_code,
                         'type': result_type,
-                        'cat': 'event_handlers',
+                        'cat': 'event_handling',
                         'element': elem['tag'],
                         'xpath': elem.get('xpath', ''),
                         'html': elem.get('html', ''),  # Include HTML snippet for code display

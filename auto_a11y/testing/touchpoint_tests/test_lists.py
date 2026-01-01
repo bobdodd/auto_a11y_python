@@ -290,7 +290,7 @@ async def test_lists(page) -> Dict[str, Any]:
                     results.errors.push({
                         err: 'ErrFakeListImplementation',
                         type: 'err',
-                        cat: 'list',
+                        cat: 'lists',
                         element: element.tagName.toLowerCase(),
                         xpath: getFullXPath(element),
                         html: element.outerHTML.substring(0, 200),
@@ -342,7 +342,7 @@ async def test_lists(page) -> Dict[str, Any]:
                             results.warnings.push({
                                 err: 'WarnListRoleOnList',
                                 type: 'warn',
-                                cat: 'list',
+                                cat: 'lists',
                                 element: listTag,
                                 xpath: getFullXPath(list),
                                 html: list.outerHTML.substring(0, 200),
@@ -357,7 +357,7 @@ async def test_lists(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrEmptyList',
                             type: 'err',
-                            cat: 'list',
+                            cat: 'lists',
                             element: listTag,
                             xpath: getFullXPath(list),
                             html: list.outerHTML.substring(0, 200),
@@ -381,7 +381,7 @@ async def test_lists(page) -> Dict[str, Any]:
                             results.errors.push({
                                 err: 'ErrListitemEmpty',
                                 type: 'err',
-                                cat: 'list',
+                                cat: 'lists',
                                 element: item.tagName.toLowerCase(),
                                 xpath: getFullXPath(item),
                                 html: item.outerHTML.substring(0, 200),
@@ -398,7 +398,7 @@ async def test_lists(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnDeepListNesting',
                             type: 'warn',
-                            cat: 'list',
+                            cat: 'lists',
                             element: list.tagName.toLowerCase(),
                             xpath: getFullXPath(list),
                             html: list.outerHTML.substring(0, 200),
@@ -482,7 +482,7 @@ async def test_lists(page) -> Dict[str, Any]:
                             results.warnings.push({
                                 err: 'WarnIconFontBulletsInList',
                                 type: 'warn',
-                                cat: 'list',
+                                cat: 'lists',
                                 element: item.tagName.toLowerCase(),
                                 xpath: getFullXPath(item),
                                 html: item.outerHTML.substring(0, 200),
@@ -520,7 +520,7 @@ async def test_lists(page) -> Dict[str, Any]:
                             results.warnings.push({
                                 err: 'WarnCustomBulletStyling',
                                 type: 'warn',
-                                cat: 'list',
+                                cat: 'lists',
                                 element: item.tagName.toLowerCase(),
                                 xpath: getFullXPath(item),
                                 html: item.outerHTML.substring(0, 200),
@@ -545,7 +545,7 @@ async def test_lists(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrListitemEmpty',
                             type: 'err',
-                            cat: 'list',
+                            cat: 'lists',
                             element: item.tagName.toLowerCase() + '[role="listitem"]',
                             xpath: getFullXPath(item),
                             html: item.outerHTML.substring(0, 200),

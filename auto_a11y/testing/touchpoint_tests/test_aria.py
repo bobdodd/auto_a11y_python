@@ -125,7 +125,7 @@ async def test_aria(page) -> Dict[str, Any]:
                             results.errors.push({
                                 err: 'ErrAriaLabelMayNotBeFoundByVoiceControl',
                                 type: 'err',
-                                cat: 'aria',
+                                cat: 'accessible_names',
                                 element: tag,
                                 xpath: getFullXPath(element),
                                 html: element.outerHTML.substring(0, 200),
@@ -170,7 +170,7 @@ async def test_aria(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrAccordionWithoutARIA',
                             type: 'err',
-                            cat: 'aria',
+                            cat: 'accessible_names',
                             element: trigger.tagName.toLowerCase(),
                             xpath: getFullXPath(trigger),
                             html: trigger.outerHTML.substring(0, 200),
@@ -201,7 +201,7 @@ async def test_aria(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrDialogMissingRole',
                             type: 'err',
-                            cat: 'aria',
+                            cat: 'accessible_names',
                             element: dialog.tagName.toLowerCase(),
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),
@@ -236,7 +236,7 @@ async def test_aria(page) -> Dict[str, Any]:
                             results.errors.push({
                                 err: 'ErrMenuWithoutARIA',
                                 type: 'err',
-                                cat: 'aria',
+                                cat: 'accessible_names',
                                 element: menu.tagName.toLowerCase(),
                                 xpath: getFullXPath(menu),
                                 html: menu.outerHTML.substring(0, 200),
@@ -267,7 +267,7 @@ async def test_aria(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrInteractiveElementIssue',
                             type: 'err',
-                            cat: 'aria',
+                            cat: 'accessible_names',
                             element: el.tagName.toLowerCase(),
                             xpath: getFullXPath(el),
                             html: el.outerHTML.substring(0, 200),
@@ -304,7 +304,7 @@ async def test_aria(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrMissingInteractiveRole',
                             type: 'err',
-                            cat: 'aria',
+                            cat: 'accessible_names',
                             element: control.tagName.toLowerCase(),
                             xpath: getFullXPath(control),
                             html: control.outerHTML.substring(0, 200),
@@ -341,7 +341,7 @@ async def test_aria(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrTabpanelWithoutARIA',
                             type: 'err',
-                            cat: 'aria',
+                            cat: 'accessible_names',
                             element: container.tagName.toLowerCase(),
                             xpath: getFullXPath(container),
                             html: container.outerHTML.substring(0, 200),
@@ -372,7 +372,7 @@ async def test_aria(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrTooltipWithoutARIA',
                             type: 'err',
-                            cat: 'aria',
+                            cat: 'accessible_names',
                             element: trigger.tagName.toLowerCase(),
                             xpath: getFullXPath(trigger),
                             html: trigger.outerHTML.substring(0, 200),
@@ -400,7 +400,7 @@ async def test_aria(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnSliderWithoutARIA',
                             type: 'warn',
-                            cat: 'aria',
+                            cat: 'accessible_names',
                             element: slider.tagName.toLowerCase(),
                             xpath: getFullXPath(slider),
                             html: slider.outerHTML.substring(0, 200),
@@ -432,7 +432,7 @@ async def test_aria(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnSwitchWithoutARIA',
                             type: 'warn',
-                            cat: 'aria',
+                            cat: 'accessible_names',
                             element: switchEl.tagName.toLowerCase(),
                             xpath: getFullXPath(switchEl),
                             html: switchEl.outerHTML.substring(0, 200),
@@ -457,7 +457,7 @@ async def test_aria(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnTreeviewWithoutARIA',
                             type: 'warn',
-                            cat: 'aria',
+                            cat: 'accessible_names',
                             element: tree.tagName.toLowerCase(),
                             xpath: getFullXPath(tree),
                             html: tree.outerHTML.substring(0, 200),
@@ -489,7 +489,7 @@ async def test_aria(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrCarouselWithoutARIA',
                             type: 'err',
-                            cat: 'aria',
+                            cat: 'accessible_names',
                             element: carousel.tagName.toLowerCase(),
                             xpath: getFullXPath(carousel),
                             html: carousel.outerHTML.substring(0, 200),
@@ -525,7 +525,7 @@ async def test_aria(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrClickableWithoutKeyboard',
                             type: 'err',
-                            cat: 'aria',
+                            cat: 'accessible_names',
                             element: el.tagName.toLowerCase(),
                             xpath: getFullXPath(el),
                             html: el.outerHTML.substring(0, 200),
@@ -573,7 +573,7 @@ async def test_aria(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrDropdownWithoutARIA',
                             type: 'err',
-                            cat: 'aria',
+                            cat: 'accessible_names',
                             element: dropdown.tagName.toLowerCase(),
                             xpath: getFullXPath(dropdown),
                             html: dropdown.outerHTML.substring(0, 200),

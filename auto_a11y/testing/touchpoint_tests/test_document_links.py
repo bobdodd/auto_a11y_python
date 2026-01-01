@@ -180,7 +180,7 @@ async def test_document_links(page) -> Dict[str, Any]:
                         results.warnings.push({
                             err: 'WarnGenericDocumentLinkText',
                             type: 'warn',
-                            cat: 'document_links',
+                            cat: 'electronic_documents',
                             element: 'A',
                             xpath: getFullXPath(link),
                             html: link.outerHTML.substring(0, 200),
@@ -259,7 +259,7 @@ async def test_document_links(page) -> Dict[str, Any]:
                     results.warnings.push({
                         err: 'DiscoPDFLinksFound',
                         type: 'disco',
-                        cat: 'document_links',
+                        cat: 'electronic_documents',
                         element: 'a',
                         xpath: getFullXPath(link),
                         html: link.outerHTML.substring(0, 200),

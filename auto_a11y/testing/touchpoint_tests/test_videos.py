@@ -211,7 +211,7 @@ async def test_videos(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrVideoIframeMissingTitle',
                             type: 'err',
-                            cat: 'video',
+                            cat: 'videos',
                             element: 'iframe',
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
@@ -228,7 +228,7 @@ async def test_videos(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrNativeVideoMissingControls',
                             type: 'err',
-                            cat: 'video',
+                            cat: 'videos',
                             element: 'video',
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
@@ -267,7 +267,7 @@ async def test_videos(page) -> Dict[str, Any]:
                             results.warnings.push({
                                 err: 'WarnVideoAutoplay',
                                 type: 'warn',
-                                cat: 'video',
+                                cat: 'videos',
                                 element: element.tagName.toLowerCase(),
                                 xpath: getFullXPath(element),
                                 html: element.outerHTML.substring(0, 200),
@@ -282,7 +282,7 @@ async def test_videos(page) -> Dict[str, Any]:
                             results.warnings.push({
                                 err: 'WarnVideoMutedAutoplay',
                                 type: 'warn',
-                                cat: 'video',
+                                cat: 'videos',
                                 element: element.tagName.toLowerCase(),
                                 xpath: getFullXPath(element),
                                 html: element.outerHTML.substring(0, 200),
@@ -301,7 +301,7 @@ async def test_videos(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrAutoplayWithoutControls',
                             type: 'err',
-                            cat: 'video',
+                            cat: 'videos',
                             element: element.tagName.toLowerCase(),
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),
@@ -333,7 +333,7 @@ async def test_videos(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrAutoplayWithoutControls',
                             type: 'err',
-                            cat: 'video',
+                            cat: 'videos',
                             element: 'audio',
                             xpath: getFullXPath(element),
                             html: element.outerHTML.substring(0, 200),

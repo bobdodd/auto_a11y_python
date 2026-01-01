@@ -41,6 +41,8 @@ class CSSFocusCapture:
         self.cache = CSSFocusCache()
         self._response_handler = None
         self._page = None
+        self._pending_responses: List[Any] = []
+        self._loop = None
     
     async def start_capture(self, page) -> None:
         """
@@ -52,19 +54,21 @@ class CSSFocusCapture:
         """
         self._page = page
         self.cache = CSSFocusCache()
+        self._pending_responses = []
         
-        async def handle_response(response):
+        try:
+            self._loop = asyncio.get_event_loop()
+        except RuntimeError:
+            self._loop = None
+        
+        def handle_response(response):
+            """Synchronous handler that queues CSS responses for later processing"""
             try:
                 content_type = response.headers.get('content-type', '')
                 url = response.url
                 
                 if 'text/css' in content_type or url.endswith('.css'):
-                    try:
-                        css_text = await response.text()
-                        self._parse_focus_rules(css_text, url)
-                        self.cache.captured_urls.add(url)
-                    except Exception as e:
-                        logger.debug(f"Could not read CSS from {url}: {e}")
+                    self._pending_responses.append(response)
             except Exception as e:
                 logger.debug(f"Error in CSS response handler: {e}")
         
@@ -73,13 +77,25 @@ class CSSFocusCapture:
         logger.debug("CSS focus capture started")
     
     async def stop_capture(self) -> None:
-        """Stop capturing CSS responses"""
+        """Stop capturing CSS responses and process pending ones"""
         if self._page and self._response_handler:
             try:
                 self._page.remove_listener('response', self._response_handler)
             except Exception as e:
                 logger.debug(f"Error removing response listener: {e}")
         
+        for response in self._pending_responses:
+            try:
+                url = response.url
+                css_text = await asyncio.wait_for(response.text(), timeout=2.0)
+                self._parse_focus_rules(css_text, url)
+                self.cache.captured_urls.add(url)
+            except asyncio.TimeoutError:
+                logger.debug(f"Timeout reading CSS from {response.url}")
+            except Exception as e:
+                logger.debug(f"Could not read CSS from {response.url}: {e}")
+        
+        self._pending_responses = []
         self._response_handler = None
         self.cache.is_complete = True
         logger.debug(f"CSS focus capture stopped. Captured {len(self.cache.captured_urls)} stylesheets, "

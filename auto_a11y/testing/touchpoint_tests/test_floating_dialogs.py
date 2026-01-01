@@ -512,7 +512,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                         results.errors.push({
                             err: 'ErrModalNoHeading',
                             type: 'err',
-                            cat: 'floating_dialogs',
+                            cat: 'dialogs',
                             element: dialog.tagName,
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),
@@ -567,6 +567,9 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                         id: dialog.id,
                         class: dialog.className,
                         isModal: isModal,
+                        headingLevel: headingLevel,
+                        headingText: headingText,
+                        hasClose: hasClose,
                         overlappingCount: overlappingElements.length,
                         overlapping: overlappingElements.slice(0, 5)
                     });
@@ -643,6 +646,9 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                 logger.warning(f"DEBUG floating_dialogs at {breakpoint_width}px: {results['_debug']}")
             if results.get('_dialogDebug'):
                 logger.warning(f"DEBUG dialog details at {breakpoint_width}px: {results['_dialogDebug']}")
+            if results.get('errors'):
+                error_codes = [e.get('err') for e in results['errors']]
+                logger.warning(f"DEBUG floating_dialogs errors at {breakpoint_width}px: {error_codes}")
 
             # Aggregate results from this breakpoint
             if results['applicable']:

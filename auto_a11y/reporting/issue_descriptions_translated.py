@@ -107,9 +107,18 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         for field in translatable_fields:
             if field in translated_desc and isinstance(translated_desc[field], str):
                 try:
-                    translated_desc[field] = translated_desc[field] % metadata
-                except (KeyError, ValueError):
-                    pass
+                    # Escape literal % characters that are NOT format specifiers
+                    # before applying % formatting. This handles cases like "8% of men"
+                    # where the % is literal text, not a format specifier.
+                    text = translated_desc[field]
+                    # Replace % with %% EXCEPT when followed by ( which indicates %(name)s
+                    escaped_text = re.sub(r'%(?!\()', '%%', text)
+                    translated_desc[field] = escaped_text % metadata
+                except (KeyError, ValueError, TypeError) as e:
+                    # Log the error for debugging but don't fail
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.warning(f"Placeholder substitution failed for {issue_code}: {e}, keys available: {list(metadata.keys())}")
 
     return translated_desc
 

@@ -6,6 +6,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_babel import gettext as _, lazy_gettext
 from auto_a11y.models import PageStatus
 from auto_a11y.reporting.issue_catalog import IssueCatalog
+from auto_a11y.reporting.wcag_mapper import enrich_wcag_criteria
 from datetime import datetime
 import logging
 
@@ -117,22 +118,13 @@ def enrich_test_result_with_catalog(test_result):
                 violation.metadata['what_generic'] = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
                 violation.metadata['who'] = catalog_info['who_it_affects']
 
-                # Handle WCAG criteria properly - use wcag_full for full translated names
-                wcag_full_raw = catalog_info.get('wcag_full', '')
-                if isinstance(wcag_full_raw, str) and wcag_full_raw and wcag_full_raw != 'N/A':
-                    # Split comma-separated string into list
-                    violation.metadata['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
-                elif isinstance(wcag_full_raw, list):
-                    violation.metadata['wcag_full'] = wcag_full_raw
-                else:
-                    # Fallback to wcag codes if wcag_full not available
-                    wcag = catalog_info.get('wcag', [])
-                    if isinstance(wcag, list) and wcag:
-                        violation.metadata['wcag_full'] = wcag
-                    elif isinstance(wcag, str) and wcag != 'N/A':
-                        violation.metadata['wcag_full'] = [wcag]
-                    else:
-                        violation.metadata['wcag_full'] = []
+                # Handle WCAG criteria - enrich with full names and levels
+                wcag_codes = catalog_info.get('wcag', [])
+                if isinstance(wcag_codes, str) and wcag_codes and wcag_codes != 'N/A':
+                    wcag_codes = [c.strip() for c in wcag_codes.split(',') if c.strip()]
+                elif not isinstance(wcag_codes, list):
+                    wcag_codes = []
+                violation.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
                 violation.metadata['full_remediation'] = catalog_info['how_to_fix']
                 violation.metadata['impact_detail'] = catalog_info['impact']
     
@@ -181,20 +173,13 @@ def enrich_test_result_with_catalog(test_result):
                 
                 warning.metadata['what_generic'] = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
                 warning.metadata['who'] = catalog_info['who_it_affects']
-                # Handle WCAG criteria properly - use wcag_full for full translated names
-                wcag_full_raw = catalog_info.get('wcag_full', '')
-                if isinstance(wcag_full_raw, str) and wcag_full_raw and wcag_full_raw != 'N/A':
-                    warning.metadata['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
-                elif isinstance(wcag_full_raw, list):
-                    warning.metadata['wcag_full'] = wcag_full_raw
-                else:
-                    wcag = catalog_info.get('wcag', [])
-                    if isinstance(wcag, list) and wcag:
-                        warning.metadata['wcag_full'] = wcag
-                    elif isinstance(wcag, str) and wcag != 'N/A':
-                        warning.metadata['wcag_full'] = [wcag]
-                    else:
-                        warning.metadata['wcag_full'] = []
+                # Handle WCAG criteria - enrich with full names and levels
+                wcag_codes = catalog_info.get('wcag', [])
+                if isinstance(wcag_codes, str) and wcag_codes and wcag_codes != 'N/A':
+                    wcag_codes = [c.strip() for c in wcag_codes.split(',') if c.strip()]
+                elif not isinstance(wcag_codes, list):
+                    wcag_codes = []
+                warning.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
                 warning.metadata['full_remediation'] = catalog_info['how_to_fix']
                 warning.metadata['impact_detail'] = catalog_info['impact']
     
@@ -221,20 +206,13 @@ def enrich_test_result_with_catalog(test_result):
                 info.metadata['why'] = catalog_info['why_it_matters']
                 info.metadata['who'] = catalog_info['who_it_affects']
                 info.metadata['how'] = catalog_info['how_to_fix']
-                # Handle WCAG criteria properly - use wcag_full for full translated names
-                wcag_full_raw = catalog_info.get('wcag_full', '')
-                if isinstance(wcag_full_raw, str) and wcag_full_raw and wcag_full_raw != 'N/A':
-                    info.metadata['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
-                elif isinstance(wcag_full_raw, list):
-                    info.metadata['wcag_full'] = wcag_full_raw
-                else:
-                    wcag = catalog_info.get('wcag', [])
-                    if isinstance(wcag, list) and wcag:
-                        info.metadata['wcag_full'] = wcag
-                    elif isinstance(wcag, str) and wcag != 'N/A':
-                        info.metadata['wcag_full'] = [wcag]
-                    else:
-                        info.metadata['wcag_full'] = []
+                # Handle WCAG criteria - enrich with full names and levels
+                wcag_codes = catalog_info.get('wcag', [])
+                if isinstance(wcag_codes, str) and wcag_codes and wcag_codes != 'N/A':
+                    wcag_codes = [c.strip() for c in wcag_codes.split(',') if c.strip()]
+                elif not isinstance(wcag_codes, list):
+                    wcag_codes = []
+                info.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
                 info.metadata['full_remediation'] = catalog_info['how_to_fix']
                 info.metadata['impact_detail'] = catalog_info['impact']
     
@@ -266,20 +244,13 @@ def enrich_test_result_with_catalog(test_result):
                 discovery.metadata['who'] = catalog_info['who_it_affects']
                 discovery.metadata['how'] = catalog_info['how_to_fix']
 
-                # Handle WCAG criteria properly - use wcag_full for full translated names
-                wcag_full_raw = catalog_info.get('wcag_full', '')
-                if isinstance(wcag_full_raw, str) and wcag_full_raw and wcag_full_raw != 'N/A':
-                    discovery.metadata['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
-                elif isinstance(wcag_full_raw, list):
-                    discovery.metadata['wcag_full'] = wcag_full_raw
-                else:
-                    wcag = catalog_info.get('wcag', [])
-                    if isinstance(wcag, list) and wcag:
-                        discovery.metadata['wcag_full'] = wcag
-                    elif isinstance(wcag, str) and wcag != 'N/A':
-                        discovery.metadata['wcag_full'] = [wcag]
-                    else:
-                        discovery.metadata['wcag_full'] = []
+                # Handle WCAG criteria - enrich with full names and levels
+                wcag_codes = catalog_info.get('wcag', [])
+                if isinstance(wcag_codes, str) and wcag_codes and wcag_codes != 'N/A':
+                    wcag_codes = [c.strip() for c in wcag_codes.split(',') if c.strip()]
+                elif not isinstance(wcag_codes, list):
+                    wcag_codes = []
+                discovery.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
 
                 discovery.metadata['full_remediation'] = catalog_info['how_to_fix']
                 discovery.metadata['impact_detail'] = catalog_info['impact']

@@ -554,10 +554,16 @@
         <div class="card-body">
             <!-- Errors (Violations) -->
             {% if latest_result.violations %}
-            <h6 class="text-danger mb-3">
-                <i class="bi bi-x-circle"></i> {{ _('Errors') }} ({{ latest_result.violations|length }})
-            </h6>
-            <div class="accordion mb-4" id="violationsAccordion">
+            <div class="section-panel errors-section mb-4" style="border: 2px solid #dc3545; border-radius: 8px; overflow: hidden;">
+                <div class="section-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 12px 16px;">
+                    <h5 class="mb-0">
+                        <i class="bi bi-x-circle-fill me-2"></i> {{ _('Errors') }} 
+                        <span class="badge bg-light text-danger ms-2">{{ latest_result.violations|length }}</span>
+                    </h5>
+                    <small class="opacity-75">{{ _('Issues that must be fixed for WCAG compliance') }}</small>
+                </div>
+                <div class="section-body" style="padding: 16px; background: #fff5f5;">
+            <div class="accordion" id="violationsAccordion">
                 {% set viol_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_violations in latest_result.violations|groupby('touchpoint') %}
                     <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #dc3545;">
@@ -1756,14 +1762,22 @@
                     {% endfor %}
                 {% endfor %}
             </div>
+                </div>
+            </div>
             {% endif %}
 
             <!-- Warnings -->
             {% if latest_result.warnings %}
-            <h6 class="text-warning mb-3">
-                <i class="bi bi-exclamation-triangle"></i> {{ _('Warnings') }} ({{ latest_result.warnings|length }})
-            </h6>
-            <div class="accordion mb-4" id="warningsAccordion">
+            <div class="section-panel warnings-section mb-4" style="border: 2px solid #ffc107; border-radius: 8px; overflow: hidden;">
+                <div class="section-header" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #212529; padding: 12px 16px;">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ _('Warnings') }} 
+                        <span class="badge bg-dark text-warning ms-2">{{ latest_result.warnings|length }}</span>
+                    </h5>
+                    <small class="opacity-75">{{ _('Potential issues that should be reviewed') }}</small>
+                </div>
+                <div class="section-body" style="padding: 16px; background: #fffef5;">
+            <div class="accordion" id="warningsAccordion">
                 {% set warn_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_warnings in latest_result.warnings|groupby('touchpoint') %}
                     <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #ffc107;">
@@ -2401,14 +2415,22 @@
                     {% endfor %}
                 {% endfor %}
             </div>
+                </div>
+            </div>
             {% endif %}
 
             <!-- Info Notes -->
             {% if latest_result.info %}
-            <h6 class="text-info mb-3">
-                <i class="bi bi-info-circle"></i> {{ _('Info Notes') }} ({{ latest_result.info|length }})
-            </h6>
-            <div class="accordion mb-4" id="infoAccordion">
+            <div class="section-panel info-section mb-4" style="border: 2px solid #0dcaf0; border-radius: 8px; overflow: hidden;">
+                <div class="section-header" style="background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle-fill me-2"></i> {{ _('Info Notes') }} 
+                        <span class="badge bg-light text-info ms-2">{{ latest_result.info|length }}</span>
+                    </h5>
+                    <small class="opacity-75">{{ _('Additional information and best practice recommendations') }}</small>
+                </div>
+                <div class="section-body" style="padding: 16px; background: #f0fcff;">
+            <div class="accordion" id="infoAccordion">
                 {% set info_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_infos in latest_result.info|groupby('touchpoint') %}
                     <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #0dcaf0;">
@@ -2780,14 +2802,22 @@
                     {% endfor %}
                 {% endfor %}
             </div>
+                </div>
+            </div>
             {% endif %}
 
             <!-- Discovery Items -->
             {% if latest_result.discovery %}
-            <h6 class="mb-3" style="color: #6f42c1;">
-                <i class="bi bi-search"></i> {{ _('Discovery Items') }} ({{ latest_result.discovery|length }})
-            </h6>
-            <div class="accordion mb-4" id="discoveryAccordion">
+            <div class="section-panel discovery-section mb-4" style="border: 2px solid #6f42c1; border-radius: 8px; overflow: hidden;">
+                <div class="section-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; padding: 12px 16px;">
+                    <h5 class="mb-0">
+                        <i class="bi bi-search me-2"></i> {{ _('Discovery Items') }} 
+                        <span class="badge bg-light text-purple ms-2" style="color: #6f42c1 !important;">{{ latest_result.discovery|length }}</span>
+                    </h5>
+                    <small class="opacity-75">{{ _('Elements found that may need manual review') }}</small>
+                </div>
+                <div class="section-body" style="padding: 16px; background: #f8f5ff;">
+            <div class="accordion" id="discoveryAccordion">
                 {% set disc_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_discoveries in latest_result.discovery|groupby('touchpoint') %}
                     <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #6f42c1;">
@@ -3205,6 +3235,8 @@
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
+            </div>
+                </div>
             </div>
             {% endif %}
 

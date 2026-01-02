@@ -2610,8 +2610,8 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Fix both issues: (1) Increase contrast inside container from {ratio}:1 to at least {required} by adjusting foreground {fg} or background {bg} colors, and (2) Ensure all text stays within its background container by fixing overflow (adjust container size, font size, or use overflow: hidden/auto). For normal text, aim for 7:1 contrast; for large text (18pt+), aim for 4.5:1."
         },
         'WarnTextContrastCannotCalculate': {
-            'title': "Text contrast cannot be automatically calculated - manual inspection required",
-            'what': "Text contrast cannot be automatically verified due to complex background (gradient, image, z-index floating, or text overflow)",
+            'title': "Text contrast cannot be automatically calculated: {description}",
+            'what': "Text contrast cannot be automatically verified. Reason: {description}",
             'why': "Cannot determine text contrast when background is a gradient or image, element has z-index positioning that may float over varying content, or text overflows its container boundaries. These scenarios require manual visual inspection to ensure adequate contrast.",
             'what_generic': "Text contrast requires manual verification",
             'who': "All users, especially those with low vision or color blindness",

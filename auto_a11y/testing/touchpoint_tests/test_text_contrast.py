@@ -63,12 +63,9 @@ async def test_text_contrast(page) -> Dict[str, Any]:
     """
     try:
         # First, discover all breakpoints from CSS media queries
-        breakpoint_data = await page.evaluate('''
+        breakpoint_data = await page.evaluate(r'''
             () => {
                 const breakpoints = new Set();
-
-                // Always test at a base mobile size
-                breakpoints.add(320);
 
                 // Parse all stylesheets for media queries
                 for (const sheet of document.styleSheets) {
@@ -78,33 +75,27 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                                 if (rule instanceof CSSMediaRule) {
                                     // Extract width values from media query
                                     const media = rule.media.mediaText;
-                                    const widthMatches = media.match(/(?:min-width|max-width):\\s*(\\d+)(?:px|em|rem)?/g);
-
+                                    const widthMatches = media.match(/(?:min-width|max-width):\s*(\d+)px/g);
                                     if (widthMatches) {
                                         widthMatches.forEach(match => {
-                                            const valueMatch = match.match(/(\\d+)/);
-                                            if (valueMatch) {
-                                                let value = parseInt(valueMatch[1]);
-                                                // Convert em/rem to px (assume 16px base)
-                                                if (match.includes('em') || match.includes('rem')) {
-                                                    value = value * 16;
-                                                }
-                                                breakpoints.add(value);
-                                            }
+                                            const value = parseInt(match.match(/(\d+)px/)[1]);
+                                            breakpoints.add(value);
                                         });
                                     }
                                 }
                             }
                         }
                     } catch (e) {
-                        // Skip inaccessible stylesheets
+                        // Skip stylesheets we can't access (CORS)
                     }
                 }
 
-                // Always include common standard breakpoints to catch content changes
-                breakpoints.add(768);  // Tablet
-                breakpoints.add(1024); // Desktop
+                // If no breakpoints found in CSS, test at current viewport only
+                if (breakpoints.size === 0) {
+                    return [window.innerWidth];
+                }
 
+                // Return only the breakpoints declared in the page's CSS
                 return Array.from(breakpoints).sort((a, b) => a - b);
             }
         ''')
@@ -283,26 +274,61 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                 }
 
                 // Check if element has CSS animations
-                function hasAnimation(element) {
-                    const style = window.getComputedStyle(element);
-                    const animationName = style.animationName || style.webkitAnimationName || '';
-                    const transition = style.transition || style.webkitTransition || '';
-                    const transitionDuration = style.transitionDuration || '0s';
-
-                    // Check if animation-name is not 'none'
-                    const hasAnim = animationName && animationName !== 'none';
+                // Returns { hasAnimation, animationElement, animationType, animationName }
+                // Note: Short transitions (<=0.5s) are ignored as they don't affect contrast readability
+                function getAnimationInfo(element) {
+                    let currentElement = element;
                     
-                    // Check if transition affects color/opacity and has non-zero duration
-                    // Browser default 'all 0s ease 0s' should not be flagged as animation
-                    const hasNonZeroDuration = transitionDuration && !transitionDuration.match(/^0s(,\\s*0s)*$/);
-                    const hasColorTransition = hasNonZeroDuration && transition && (
-                        transition.includes('color') ||
-                        transition.includes('background') ||
-                        transition.includes('opacity') ||
-                        transition.includes('all')
-                    );
+                    while (currentElement) {
+                        const style = window.getComputedStyle(currentElement);
+                        const animationName = style.animationName || style.webkitAnimationName || '';
+                        const transition = style.transition || style.webkitTransition || '';
+                        const transitionDuration = style.transitionDuration || '0s';
 
-                    return hasAnim || hasColorTransition;
+                        // Check if animation-name is not 'none' (actual CSS animations are always a concern)
+                        const hasAnim = animationName && animationName !== 'none';
+                        
+                        // Parse transition duration - only flag if > 0.5s
+                        // Short hover transitions don't affect contrast readability
+                        let maxDuration = 0;
+                        const durations = transitionDuration.split(',').map(d => d.trim());
+                        for (const dur of durations) {
+                            if (dur.endsWith('ms')) {
+                                maxDuration = Math.max(maxDuration, parseFloat(dur) / 1000);
+                            } else if (dur.endsWith('s')) {
+                                maxDuration = Math.max(maxDuration, parseFloat(dur));
+                            }
+                        }
+                        
+                        // Only flag transitions > 0.5s that affect color/background/opacity
+                        const hasLongTransition = maxDuration > 0.5 && transition && (
+                            transition.includes('color') ||
+                            transition.includes('background') ||
+                            transition.includes('opacity') ||
+                            transition.includes('all')
+                        );
+
+                        if (hasAnim) {
+                            return {
+                                hasAnimation: true,
+                                animationElementXpath: getXPath(currentElement),
+                                animationType: 'CSS animation',
+                                animationName: animationName
+                            };
+                        }
+                        if (hasLongTransition) {
+                            return {
+                                hasAnimation: true,
+                                animationElementXpath: getXPath(currentElement),
+                                animationType: 'CSS transition (>' + maxDuration.toFixed(1) + 's)',
+                                animationName: transition
+                            };
+                        }
+                        
+                        currentElement = currentElement.parentElement;
+                    }
+                    
+                    return { hasAnimation: false, animationElementXpath: null, animationType: null, animationName: null };
                 }
 
                 // Composite two colors (overlay on top of base)
@@ -319,11 +345,14 @@ async def test_text_contrast(page) -> Dict[str, Any]:
 
                 // Get effective background color by walking up the DOM
                 // Handles semi-transparent backgrounds by compositing with backgrounds behind
-                // Returns: { backgroundColor, stoppedAtZIndex, hasGradient, hasImage }
+                // Returns: { backgroundColor, stoppedAtZIndex, zIndexElementXpath, zIndexValue, zIndexPosition, hasGradient, hasImage }
                 function getEffectiveBackground(element) {
                     let currentElement = element;
                     let compositedBg = { r: 0, g: 0, b: 0, a: 0 };
                     let stoppedAtZIndex = false;
+                    let zIndexElement = null;
+                    let zIndexValue = null;
+                    let zIndexPosition = null;
                     let hasGradient = false;
                     let hasImage = false;
 
@@ -351,6 +380,9 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         const position = style.position;
                         if (zIndex !== 'auto' && position !== 'static') {
                             stoppedAtZIndex = true;
+                            zIndexElement = currentElement;
+                            zIndexValue = zIndex;
+                            zIndexPosition = position;
                             break;
                         }
 
@@ -372,17 +404,21 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     return {
                         backgroundColor,
                         stoppedAtZIndex,
+                        zIndexElementXpath: zIndexElement ? getXPath(zIndexElement) : null,
+                        zIndexValue: zIndexValue,
+                        zIndexPosition: zIndexPosition,
                         hasGradient,
                         hasImage
                     };
                 }
 
                 // Check if text overflows its container
+                // Returns { hasOverflow, containerXpath } or { hasOverflow: false }
                 function checkTextOverflow(element) {
                     const elementRect = element.getBoundingClientRect();
                     let parent = element.parentElement;
 
-                    if (!parent) return false;
+                    if (!parent) return { hasOverflow: false };
 
                     const parentRect = parent.getBoundingClientRect();
 
@@ -393,7 +429,13 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         elementRect.left < parentRect.left ||
                         elementRect.right > parentRect.right;
 
-                    return overflows;
+                    if (overflows) {
+                        return {
+                            hasOverflow: true,
+                            containerXpath: getXPath(parent)
+                        };
+                    }
+                    return { hasOverflow: false };
                 }
 
                 // Check if element or any ancestor is hidden
@@ -627,10 +669,10 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     const bgColor = parseColor(bgInfo.backgroundColor);
 
                     // Check for text overflow
-                    const hasOverflow = checkTextOverflow(element);
+                    const overflowInfo = checkTextOverflow(element);
 
                     // Check for animations
-                    const hasAnim = hasAnimation(element);
+                    const animInfo = getAnimationInfo(element);
 
                     // Calculate contrast ratio for default state
                     // We CAN calculate if text is inside container, even if it also overflows
@@ -675,10 +717,17 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         fontWeight: fontWeight,
                         isLargeText: isLargeText,
                         stoppedAtZIndex: bgInfo.stoppedAtZIndex,
+                        zIndexElementXpath: bgInfo.zIndexElementXpath,
+                        zIndexValue: bgInfo.zIndexValue,
+                        zIndexPosition: bgInfo.zIndexPosition,
                         hasGradient: bgInfo.hasGradient,
                         hasImage: bgInfo.hasImage,
-                        hasOverflow: hasOverflow,
-                        hasAnimation: hasAnim,
+                        hasOverflow: overflowInfo.hasOverflow,
+                        overflowContainerXpath: overflowInfo.containerXpath || null,
+                        hasAnimation: animInfo.hasAnimation,
+                        animationElementXpath: animInfo.animationElementXpath,
+                        animationType: animInfo.animationType,
+                        animationName: animInfo.animationName,
                         canCalculateInsideContrast: canCalculateInsideContrast,
                         tag: element.tagName.toLowerCase(),
                         pseudoclassStates: pseudoclassStates,
@@ -711,8 +760,9 @@ async def test_text_contrast(page) -> Dict[str, Any]:
 
                 # Case 1: Text inside FAILS contrast AND has overflow/complex conditions
                 # Result: ErrPartialTextContrastAA or ErrPartialTextContrastAAA (partial failure)
-                if can_calculate_inside and contrast is not None and contrast < required_ratio and text_elem['hasOverflow']:
+                if can_calculate_inside and contrast is not None and contrast < required_ratio and text_elem.get('hasOverflow'):
                     partial_error_code = 'ErrPartialTextContrastAAA' if wcag_level == 'AAA' else 'ErrPartialTextContrastAA'
+                    container_xpath = text_elem.get('overflowContainerXpath', 'unknown')
                     results['errors'].append({
                         'err': partial_error_code,
                         'type': 'err',
@@ -720,7 +770,7 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         'element': text_elem['tag'],
                         'xpath': text_elem['xpath'],
                         'html': text_elem['html'],
-                        'description': f'{"Large" if is_large else "Normal"} text contrast {contrast:.2f}:1 fails WCAG {wcag_level} requirement ({required_ratio}:1) inside container. Additionally, text overflows container where contrast cannot be determined. Text color {text_elem["textColor"]} on background {text_elem["backgroundColor"]}. (Breakpoint: {breakpoint}px)',
+                        'description': f'{"Large" if is_large else "Normal"} text contrast {contrast:.2f}:1 fails WCAG {wcag_level} requirement ({required_ratio}:1) inside container. Additionally, text overflows container (container: {container_xpath}) where contrast cannot be determined. Text color {text_elem["textColor"]} on background {text_elem["backgroundColor"]}.',
                         'text': text_elem['text'],
                         'textColor': text_elem['textColor'],
                         'backgroundColor': text_elem['backgroundColor'],
@@ -730,7 +780,7 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         'isLargeText': is_large,
                         'breakpoint': breakpoint,
                         'wcag': wcag_criterion,
-                        'partialReason': 'Text overflows container'
+                        'partialReason': f'Text overflows container (container: {container_xpath})'
                     })
                     results['elements_failed'] += 1
                     continue
@@ -748,6 +798,11 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         warning_reasons.append('gradient background')
                     if text_elem['hasImage']:
                         warning_reasons.append('image background')
+                    if text_elem.get('stoppedAtZIndex'):
+                        z_xpath = text_elem.get('zIndexElementXpath', 'unknown')
+                        z_val = text_elem.get('zIndexValue', 'unknown')
+                        z_pos = text_elem.get('zIndexPosition', 'unknown')
+                        warning_reasons.append(f'z-index stacking context (element: {z_xpath}, position: {z_pos}, z-index: {z_val})')
                     if not warning_reasons:
                         warning_reasons.append('transparent or undefined background')
 
@@ -760,31 +815,47 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                     if text_elem['hasImage']:
                         should_warn = True
                         warning_reasons.append('image background')
-                    if text_elem['hasAnimation']:
+                    if text_elem.get('hasAnimation'):
                         should_warn = True
-                        warning_reasons.append('CSS animation present')
-                    if text_elem['hasOverflow']:
+                        anim_xpath = text_elem.get('animationElementXpath', 'unknown')
+                        anim_type = text_elem.get('animationType', 'CSS animation')
+                        anim_name = text_elem.get('animationName', 'unknown')
+                        warning_reasons.append(f'{anim_type} present (element: {anim_xpath}, name: {anim_name})')
+                    if text_elem.get('hasOverflow'):
                         should_warn = True
-                        warning_reasons.append('text overflows container')
+                        container_xpath = text_elem.get('overflowContainerXpath', 'unknown')
+                        warning_reasons.append(f'text overflows container (container: {container_xpath})')
                     # Note: We do NOT warn for stoppedAtZIndex alone - only if combined with other issues
 
                 if should_warn and warning_reasons:
-                    results['warnings'].append({
+                    warning_data = {
                         'err': 'WarnTextContrastCannotCalculate',
                         'type': 'warn',
                         'cat': 'colors',
                         'element': text_elem['tag'],
                         'xpath': text_elem['xpath'],
                         'html': text_elem['html'],
-                        'description': f'Cannot automatically calculate text contrast due to: {", ".join(warning_reasons)}. Manual inspection required. (Breakpoint: {breakpoint}px)',
+                        'description': f'Cannot automatically calculate text contrast due to: {", ".join(warning_reasons)}. Manual inspection required.',
                         'text': text_elem['text'],
                         'textColor': text_elem['textColor'],
                         'backgroundColor': text_elem['backgroundColor'],
                         'fontSize': text_elem['fontSize'],
                         'isLargeText': text_elem['isLargeText'],
                         'breakpoint': breakpoint,
-                        'wcag': wcag_criterion
-                    })
+                        'wcag': wcag_criterion,
+                        'reasons': warning_reasons
+                    }
+                    # Add z-index details if present
+                    if text_elem.get('stoppedAtZIndex'):
+                        warning_data['zIndexElementXpath'] = text_elem.get('zIndexElementXpath')
+                        warning_data['zIndexValue'] = text_elem.get('zIndexValue')
+                        warning_data['zIndexPosition'] = text_elem.get('zIndexPosition')
+                    # Add animation details if present
+                    if text_elem.get('hasAnimation'):
+                        warning_data['animationElementXpath'] = text_elem.get('animationElementXpath')
+                        warning_data['animationType'] = text_elem.get('animationType')
+                        warning_data['animationName'] = text_elem.get('animationName')
+                    results['warnings'].append(warning_data)
                     continue
 
                 # Case 3: Can calculate and no overflow - proceed with normal contrast check
@@ -850,6 +921,25 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                             'wcag': wcag_criterion
                         })
                         # Note: We don't increment elements_failed again, as this is the same element
+
+        # Deduplicate errors and warnings by xpath (same element may appear at multiple breakpoints)
+        seen_error_xpaths = set()
+        deduped_errors = []
+        for err in results['errors']:
+            key = (err.get('xpath', ''), err.get('err', ''), err.get('pseudoclass', ''))
+            if key not in seen_error_xpaths:
+                seen_error_xpaths.add(key)
+                deduped_errors.append(err)
+        results['errors'] = deduped_errors
+
+        seen_warning_xpaths = set()
+        deduped_warnings = []
+        for warn in results['warnings']:
+            key = (warn.get('xpath', ''), warn.get('err', ''))
+            if key not in seen_warning_xpaths:
+                seen_warning_xpaths.add(key)
+                deduped_warnings.append(warn)
+        results['warnings'] = deduped_warnings
 
         # Add check information
         results['checks'].append({

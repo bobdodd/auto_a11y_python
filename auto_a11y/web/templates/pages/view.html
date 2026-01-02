@@ -1773,7 +1773,8 @@
                     {% for error_code, description_group in touchpoint_warnings|groupby('id') %}
                         {% set group_list = description_group|list %}
                         {% set warn_counter.value = warn_counter.value + 1 %}
-                        {% if group_list|length > 1 %}
+                        {% set has_breakpoints = group_list[0].metadata and group_list[0].metadata.get('breakpoint') is not none %}
+                        {% if group_list|length > 1 or has_breakpoints %}
                             <!-- Multiple instances - create sub-accordion -->
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
@@ -1804,10 +1805,30 @@
                                 <div id="warn-group-{{ warn_counter.value }}" 
                                      class="accordion-collapse collapse">
                                     <div class="accordion-body">
-                                        <div class="accordion" id="warn-instances-{{ warn_counter.value }}">
-                                            {% for warning in group_list %}
-                                            {% set warn_instance_id = warn_counter.value ~ '-' ~ loop.index %}
-                                            <div class="accordion-item">
+                                        {% if has_breakpoints %}
+                                            {# Group by breakpoint for contrast warnings #}
+                                            {% set breakpoint_groups = group_list|groupby('metadata.breakpoint') %}
+                                            <div class="accordion" id="warn-group-breakpoints-{{ warn_counter.value }}">
+                                            {% for breakpoint, breakpoint_warnings in breakpoint_groups %}
+                                                {% set breakpoint_list = breakpoint_warnings|list %}
+                                                {% set breakpoint_id = warn_counter.value ~ '-bp-' ~ (breakpoint if breakpoint else 'none') %}
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#warn-breakpoint-{{ breakpoint_id }}">
+                                                            <span class="badge bg-info me-2">{{ breakpoint_list|length }}</span>
+                                                            <strong>{{ _('Breakpoint:') }} {{ breakpoint }}{{ _('px width') }}</strong>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="warn-breakpoint-{{ breakpoint_id }}"
+                                                         class="accordion-collapse collapse"
+                                                         data-bs-parent="#warn-group-breakpoints-{{ warn_counter.value }}">
+                                                        <div class="accordion-body">
+                                                            <div class="accordion" id="warn-breakpoint-instances-{{ breakpoint_id }}">
+                                                            {% for warning in breakpoint_list %}
+                                                            {% set warn_instance_id = breakpoint_id ~ '-' ~ loop.index %}
+                                                            <div class="accordion-item">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed" type="button" 
                                                             data-bs-toggle="collapse" 
@@ -1820,7 +1841,7 @@
                                                 </h2>
                                                 <div id="warn-instance-{{ warn_instance_id }}" 
                                                      class="accordion-collapse collapse"
-                                                     data-bs-parent="#warn-instances-{{ warn_counter.value }}">
+                                                     data-bs-parent="#warn-breakpoint-instances-{{ breakpoint_id }}">
                                                     <div class="accordion-body">
                                                         <!-- Full warning details as before -->
                                                         {% if warning.metadata and warning.metadata.title %}
@@ -2002,7 +2023,113 @@
                                                 </div>
                                             </div>
                                             {% endfor %}
-                                        </div>
+                                                            </div> {# Close warn-breakpoint-instances #}
+                                                        </div> {# Close accordion-body #}
+                                                    </div> {# Close warn-breakpoint collapse #}
+                                                </div> {# Close accordion-item #}
+                                            {% endfor %} {# End breakpoint loop #}
+                                            </div> {# Close warn-group-breakpoints #}
+                                        {% else %}
+                                            {# No breakpoints - render instances directly #}
+                                            <div class="accordion" id="warn-instances-{{ warn_counter.value }}">
+                                            {% for warning in group_list %}
+                                            {% set warn_instance_id = warn_counter.value ~ '-' ~ loop.index %}
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed" type="button" 
+                                                            data-bs-toggle="collapse" 
+                                                            data-bs-target="#warn-instance-{{ warn_instance_id }}">
+                                                        <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
+                                                        {% if warning.xpath %}
+                                                        <code class="ms-2">{{ warning.xpath }}</code>
+                                                        {% endif %}
+                                                    </button>
+                                                </h2>
+                                                <div id="warn-instance-{{ warn_instance_id }}" 
+                                                     class="accordion-collapse collapse"
+                                                     data-bs-parent="#warn-instances-{{ warn_counter.value }}">
+                                                    <div class="accordion-body">
+                                                        <!-- Full warning details as before -->
+                                                        {% if warning.metadata and warning.metadata.title %}
+                                                        <!-- Enhanced description available -->
+                                                        <div class="alert alert-warning mb-3">
+                                                            <h6 class="alert-heading">{{ warning.metadata.what if warning.metadata.what else warning.description }}</h6>
+                                                        </div>
+                                                        
+                                                        <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
+
+                                                        <div class="mb-3">
+                                                            <strong>{{ _('What the issue is:') }}</strong>
+                                                            <p>{{ warning.metadata.what|default(warning.description) }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>{{ _('Why this is important:') }}</strong>
+                                                            <p>{{ warning.metadata.why }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>{{ _('Who it affects:') }}</strong>
+                                                            <p>{{ warning.metadata.who }}</p>
+                                                        </div>
+                                                        
+                                                        <div class="mb-3">
+                                                            <strong>{{ _('How to remediate:') }}</strong>
+                                                            <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation|default(warning.failure_summary) }}</div>
+                                                        </div>
+
+                                                        {% if warning.metadata.wcag_full or warning.wcag_criteria %}
+                                                        <h6 class="text-warning mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
+                                                        <div class="mb-3">
+                                                            {% if warning.metadata.wcag_full %}
+                                                            <strong>{{ _('WCAG Success Criteria:') }}</strong>
+                                                            <ul>
+                                                            {% for criterion in warning.metadata.wcag_full %}
+                                                                <li>{{ criterion|safe }}</li>
+                                                            {% endfor %}
+                                                            </ul>
+                                                            {% elif warning.wcag_criteria %}
+                                                            <strong>{{ _('WCAG Success Criteria:') }}</strong>
+                                                            <ul>
+                                                            {% for criterion in warning.wcag_criteria %}
+                                                                <li>
+                                                                    <a href="https://www.w3.org/WAI/WCAG21/Understanding/" target="_blank" class="text-decoration-none">
+                                                                        {{ criterion }}
+                                                                    </a>
+                                                                </li>
+                                                            {% endfor %}
+                                                            </ul>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% endif %}
+                                                        {% else %}
+                                                        <!-- Standard description -->
+                                                        <p><strong>{{ _('Rule:') }}</strong> {{ warning.rule_id|default(warning.id) }}</p>
+                                                        <p><strong>{{ _('Help:') }}</strong> {{ warning.help_text|default(warning.description) }}</p>
+                                                        {% if warning.failure_summary %}
+                                                        <p><strong>{{ _('How to fix:') }}</strong> {{ warning.failure_summary }}</p>
+                                                        {% endif %}
+                                                        {% endif %}
+
+                                                        <hr>
+                                                        {% if warning.xpath %}
+                                                        <p>
+                                <strong>Location:</strong> <code>{{warning.xpath}}</code>
+                                <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{warning.xpath|e}}', this)" title="Copy XPath to clipboard">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </p>
+                                                        {% endif %}
+                                                        {% if warning.html %}
+                                                        <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
+                                                        <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                            </div> {# Close warn-instances #}
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

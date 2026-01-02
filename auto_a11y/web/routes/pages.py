@@ -153,12 +153,34 @@ def enrich_test_result_with_catalog(test_result):
             catalog_info = IssueCatalog.get_issue(error_code)
             
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
-                warning.metadata['title'] = catalog_info.get('title', '') or catalog_info.get('description', '')
-                warning.metadata['what'] = catalog_info['description']
+                # Get descriptions with placeholders
+                title_template = catalog_info.get('title', '') or catalog_info.get('description', '')
+                what_template = catalog_info['description']
+                why_template = catalog_info['why_it_matters']
+                how_template = catalog_info['how_to_fix']
+                
+                # Fill in placeholders from warning data
+                placeholder_values = {}
+                if hasattr(warning, 'metadata') and warning.metadata:
+                    for key, value in warning.metadata.items():
+                        if value is not None and not isinstance(value, (dict, list)):
+                            placeholder_values[key] = str(value)
+                
+                # Replace placeholders in templates
+                try:
+                    warning.metadata['title'] = title_template % placeholder_values
+                    warning.metadata['what'] = what_template % placeholder_values
+                    warning.metadata['why'] = why_template % placeholder_values
+                    warning.metadata['how'] = how_template % placeholder_values
+                except (KeyError, ValueError, TypeError) as e:
+                    logger.warning(f"Placeholder substitution failed for warning {error_code}: {e}, keys available: {list(placeholder_values.keys())}")
+                    warning.metadata['title'] = title_template
+                    warning.metadata['what'] = what_template
+                    warning.metadata['why'] = why_template
+                    warning.metadata['how'] = how_template
+                
                 warning.metadata['what_generic'] = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
-                warning.metadata['why'] = catalog_info['why_it_matters']
                 warning.metadata['who'] = catalog_info['who_it_affects']
-                warning.metadata['how'] = catalog_info['how_to_fix']
                 # Handle WCAG criteria properly - use wcag_full for full translated names
                 wcag_full_raw = catalog_info.get('wcag_full', '')
                 if isinstance(wcag_full_raw, str) and wcag_full_raw and wcag_full_raw != 'N/A':

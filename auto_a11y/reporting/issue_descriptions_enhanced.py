@@ -793,7 +793,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'why': "Maps without proper accessibility attributes are completely inaccessible to screen reader users who cannot perceive the visual information.",
             'who': "Blind and low vision users, users who rely on screen readers to understand map content and functionality.",
             'impact': ImpactScale.HIGH.value,
-            'wcag': ['1.1.1'],
+            'wcag': ['1.1.1', '4.1.2'],
             'remediation': "Add appropriate ARIA labels and descriptions, provide text alternatives for map information, ensure all map controls are keyboard accessible."
         },
         'ErrDuplicateLabelForBannerLandmark': {
@@ -1155,15 +1155,6 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['1.3.1', '2.4.6'],
             'remediation': "Add meaningful label describing form purpose"
         },
-        'ErrFormLandmarkMustHaveAccessibleName': {
-            'title': "Form element missing accessible name required to become a landmark",
-            'what': "A <form> element or element with role=\"form\" lacks an accessible name via aria-label or aria-labelledby. Without an accessible name, <form> elements do not create form landmarks, making them harder for screen reader users to discover and navigate. Elements with explicit role=\"form\" always create landmarks and absolutely require accessible names.",
-            'why': "Form landmarks are critical navigation points that allow screen reader users to quickly jump between different forms on a page using landmark navigation commands. A <form> element only becomes a landmark when it has an accessible name - without one, it remains a generic container that screen readers cannot easily locate. When a page has multiple forms (like a search form, newsletter signup, and contact form), users need these named landmarks to efficiently navigate to the form they want without tabbing through every field. Elements with explicit role=\"form\" create landmarks regardless of accessible name presence, but an unnamed form landmark announces as just \"form\" with no identifying information, forcing users to explore its contents to determine its purpose.",
-            'who': "Screen reader users who rely on landmark navigation to efficiently move between page regions and locate forms, users with motor disabilities who use voice control and need to target forms by name, users with cognitive disabilities who benefit from clear form identification and predictable navigation structure, mobile screen reader users who need quick access to forms without exploring entire pages, and power users who navigate by landmarks to skip repetitive content and go directly to specific forms",
-            'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['3.3.2', '5.2.4'],
-            'remediation': "Add aria-label with a descriptive name to the form element (e.g., <form aria-label=\"Newsletter signup\">), or use aria-labelledby to reference a visible heading that describes the form's purpose (e.g., <form aria-labelledby=\"contact-heading\"> with <h2 id=\"contact-heading\">Contact Us</h2>). Prefer aria-labelledby when there is a visible heading that describes the form, as this benefits all users. Use aria-label for secondary forms like search that may not have dedicated headings. Ensure each accessible name clearly distinguishes the form's purpose when multiple forms exist on the page."
-        },
         'ErrFormLandmarkHasAriaLabelAndAriaLabelledByAttrs': {
             'title': "Form landmark has both aria-label and aria-labelledby",
             'what': "Form landmark has both aria-label and aria-labelledby",
@@ -1435,8 +1426,8 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'what': "Link has visual styling that makes it appear to be a button (button-like padding, borders, background colors, rounded corners) but only responds to Enter key, not Space key, violating user expectations that button-styled elements activate with Space",
             'why': "There's a fundamental difference in keyboard interaction between links and buttons: links activate with Enter key, buttons activate with both Enter and Space keys. When you style a link to look like a button, users form the mental model that it IS a button and expect Space key to work. Keyboard users, especially those with motor disabilities who find certain key combinations difficult, may rely on Space key for activation and become frustrated or confused when styled-as-button links don't respond. This creates an inconsistency between visual appearance and behavior - a usability failure. Users may think the element is broken when Space doesn't work. Power users who know the difference between links and buttons are constantly forced to remember which button-looking things are real buttons and which are styled links, adding cognitive load.",
             'who': "Keyboard users who expect Space key activation for button-styled elements, users with motor disabilities who find Space easier than Enter, users with cognitive disabilities confused by inconsistency between appearance and behavior, power users frustrated by having to remember which button-like elements are real buttons versus styled links, users with attention difficulties distracted by unexpected behavior, and developers trying to maintain consistent interaction patterns",
-            'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['3.2.4', '2.1.1'],
+            'impact': ImpactScale.LOW.value,
+            'wcag': ['3.2.4'],
             'remediation': "Best solution: use actual <button> elements instead of styled links when you want button appearance and behavior. Change <a href=\"#\" class=\"btn\"> to <button type=\"button\">. If you must use a link styled as a button (for navigation purposes), add JavaScript to handle Space key: link.addEventListener('keydown', (e) => { if (e.key === ' ') { e.preventDefault(); link.click(); } }); The preventDefault() stops Space from scrolling the page, and click() activates the link. However, this is a workaround - semantic HTML is better. Consider: is this actually a button (performs action) or a link (navigates)? Use the correct element. If it navigates to another page or section, use <a>. If it performs an action (submit, open modal, toggle), use <button>. Don't mix semantics and visual styling - they should align."
         },
         'ErrLinkColorChangeOnly': {
@@ -1735,7 +1726,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'what': "Modal cannot be closed using the Escape key",
             'why': "Escape key is the expected keyboard shortcut for closing modals; without it, keyboard users may become trapped.",
             'who': "Keyboard users who expect standard modal behavior, power users who rely on keyboard shortcuts.",
-            'impact': ImpactScale.HIGH.value,
+            'impact': ImpactScale.LOW.value,
             'wcag': ['2.1.2'],
             'remediation': "Implement Escape key handler to close modals, ensure it works even when focus is within modal content."
         },
@@ -2298,11 +2289,11 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         'ErrSmallText': {
             'title': "Text is too small - minimum 16px recommended",
             'what': "Text size is below the recommended minimum of 16px for comfortable reading. See the list of affected elements below.",
-            'why': "Small text is difficult to read, especially for users with low vision or on mobile devices.",
+            'why': "Small text forces users with low vision to rely on magnification assistive technology before they otherwise would need to.",
             'what_generic': "Text size is below the recommended minimum of 16px for comfortable reading",
             'who': "Users with low vision, aging users, mobile device users, users with reading disabilities.",
             'impact': ImpactScale.MEDIUM.value,
-            'wcag': ['1.4.4'],
+            'wcag': ['5.2.4'],
             'remediation': "Increase font size to minimum 16px for body text (14px absolute minimum). Ensure text can be zoomed to 200% without loss of functionality. Review each instance below and adjust font sizes accordingly."
         },
         'ErrSvgStaticWithoutRole': {
@@ -3284,8 +3275,8 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'what': "Navigation menu lacks aria-current=\"page\" attribute on the current page link, preventing screen readers from announcing the user\'s current location in the site navigation",
             'why': "This fails WCAG 5.2.4 Accessibility Supported because a common but problematic design pattern relies on a heading immediately after navigation having the same text as a menu item to indicate current page. While this creates a visual connection for sighted users, it provides a terrible experience for screen reader users who must listen to the entire navigation menu (which can be lengthy with many links and submenus) before discovering the matching heading that reveals their current location. Screen reader users cannot \"glance\" at the menu to see the highlighted item - they must sequentially process every menu item, announcement by announcement, until they hear the subsequent heading. This forces users to rely on inefficient linear navigation when the HTML could natively support immediate location awareness through aria-current=\"page\". The pattern fails Accessibility Supported because it doesn\'t work well with assistive technology - it creates an unnecessarily poor user experience that could be easily avoided with proper semantic markup.",
             'who': "Screen reader users (NVDA, JAWS, VoiceOver, TalkBack) who navigate sequentially through content and cannot visually scan for highlighted menu items, users with cognitive disabilities who need immediate feedback about their current location without processing lengthy navigation lists, mobile screen reader users on touch devices who navigate more slowly through menus, users with reading difficulties who struggle to remember their location while processing long lists of links",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['5.2.4'],
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.6', '5.2.4'],
             'remediation': "Add aria-current=\"page\" to the navigation link that corresponds to the current page: <a href=\"/about\" aria-current=\"page\">About Us</a>. Screen readers will announce this as \"About Us, current page\" or similar, immediately informing users of their location without requiring them to listen to subsequent headings or the entire menu. This also enables \"List current page links\" screen reader features. Keep any matching heading for visual users, but don\'t rely on it as the only indicator. Apply visual styling to aria-current=\"page\" links (e.g., [aria-current=\"page\"] { font-weight: bold; text-decoration: underline; }) to create a multi-modal indicator that works for all users. Test by using a screen reader to navigate to the menu - you should hear the current page announced immediately when reaching that link, not after processing the entire menu. NOTE: This is a WCAG Conformance Requirement 5.2.4 Accessibility Supported failure - the heading pattern creates an accessibility-supported implementation gap."
         },
         'ErrNoCurrentPageIndicatorMagnification': {
@@ -3293,8 +3284,8 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'what': "Navigation menu lacks visual styling to indicate the current page (typically highlighting, bold text, underline, or background color), forcing screen magnifier users to pan between the menu and page content to determine their location",
             'why': "Screen magnifier users at high magnification levels (200%-400%+) can only see a small portion of the screen at once - typically not enough to view both the navigation menu and the page heading simultaneously. Without a clear visual indicator in the navigation showing which item represents the current page, magnifier users must constantly pan back and forth between the menu area and the page content area to compare the heading text with menu items to figure out where they are in the site structure. This creates significant cognitive load and navigation friction. Sighted users without magnification can instantly glance at the menu to see the highlighted current page, but magnifier users lose this affordance when visual styling is absent. While aria-current=\"page\" helps screen reader users, it provides no visual indication - both programmatic AND visual indicators are needed to serve all users.",
             'who': "Users with low vision using screen magnification software (ZoomText, MAGic, OS zoom features) who cannot see the entire page layout at once, users with tunnel vision or other visual field defects who see limited screen area, older users who use browser zoom and struggle to maintain spatial awareness, users with cognitive disabilities who need strong visual cues to maintain orientation, mobile users who zoom into content and lose contextual awareness",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['2.4.6', '2.4.8', '5.2.4'],
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.6', '5.2.4'],
             'remediation': "Apply distinctive visual styling to the current page link in navigation - use a combination of multiple visual indicators for robust identification: (1) Background color change: .current-page { background-color: #003366; color: white; }; (2) Border or underline: border-left: 4px solid blue or text-decoration: underline; (3) Font weight: font-weight: bold; (4) Icon or symbol: prepend/append a visual indicator. Combine with aria-current=\"page\" for screen reader users. Ensure visual indicators have sufficient contrast (4.5:1 for text, 3:1 for non-text). The visual distinction should be immediately recognizable when viewing only the navigation area at high magnification. Test by zooming to 400% and viewing only the navigation - the current page should be unmistakably identified without seeing page content. Common pattern: <a href=\"/about\" aria-current=\"page\" class=\"current-page\">About Us</a> with CSS targeting both [aria-current=\"page\"] and .current-page for backwards compatibility."
         },
         'WarnNoCursorPointer': {
@@ -3432,7 +3423,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'what': "Form element lacks an accessible name (via aria-label, aria-labelledby, or title attribute), preventing it from becoming a form landmark that screen reader users can navigate to",
             'why': "Without an accessible name, a form element does not become a form landmark in the accessibility tree. This is a WCAG conformance failure through Section 5.2.4 Accessibility Supported - the HTML form element is not being used in an accessibility-supported way. Screen reader users rely on landmark navigation to quickly jump between major page regions, including forms. When a form lacks an accessible name, it becomes invisible to landmark navigation - users cannot find it using NVDA's 'D' key, JAWS' semicolon key, or VoiceOver's rotor. Users must tab through every field to discover the form exists, or stumble upon it while reading the entire page linearly. For pages with multiple forms (login, search, newsletter signup, contact), the inability to distinguish and navigate between forms creates significant barriers. The accessible name also helps users understand the form's purpose before entering it.",
             'who': "Screen reader users who use landmark navigation (e.g., NVDA's 'D' key, JAWS' ';' key, VoiceOver's rotor) to quickly find and move between forms on the page, users with cognitive disabilities who benefit from clear form labels to understand each form's purpose, keyboard users who want to efficiently navigate to specific forms without tabbing through every field, mobile screen reader users who use touch gestures to navigate by landmarks",
-            'impact': ImpactScale.HIGH.value,
+            'impact': ImpactScale.LOW.value,
             'wcag': ['5.2.4'],
             'remediation': "Add an accessible name to the form using one of these methods: (1) aria-label: <form aria-label=\"Contact form\"> - provides a clear, concise label; (2) aria-labelledby: <h2 id=\"contact-heading\">Contact Us</h2> <form aria-labelledby=\"contact-heading\"> - references a visible heading; (3) title attribute: <form title=\"Newsletter signup\"> - less preferred but acceptable. Choose descriptive names that distinguish multiple forms on the same page: 'Login form', 'Search site', 'Newsletter signup', 'Contact form'. The name should be concise (2-4 words) and describe the form's purpose. Avoid generic names like 'Form 1' or 'Main form' that don't convey meaning. For pages with a single form, the name can be general ('Contact form'), but multiple forms require specific, distinguishing names. NOTE: This is a WCAG Conformance Requirement 5.2.4 Accessibility Supported failure, not a specific success criterion failure."
         },
@@ -3549,8 +3540,8 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'what': "Inline style attributes define color or font properties directly on HTML elements, overriding user stylesheets and preventing users from customizing visual presentation",
             'why': "When colors and fonts are hard-coded in inline style attributes, CSS specificity rules make them extremely difficult for users to override with their own stylesheets. Users with low vision who need specific color schemes (high contrast, inverted colors, custom color combinations), users with dyslexia who need particular fonts, and users who need custom text spacing cannot apply their accessibility preferences. Inline styles essentially lock visual presentation, forcing all users to view content exactly as designed regardless of their needs.",
             'who': "Users with low vision who require custom color schemes or high contrast settings, users with dyslexia or reading disabilities who need specific fonts like OpenDyslexic or Comic Sans, users with light sensitivity who need dark mode or specific color combinations, users with cognitive disabilities who need customized text presentation, elderly users who need larger text with specific spacing, and users with color blindness who need adjusted color palettes",
-            'impact': ImpactScale.HIGH.value,
-            'wcag': ['1.4.8', '5.2.4'],
+            'impact': ImpactScale.LOW.value,
+            'wcag': ['5.2.4'],
             'remediation': "Move all color and font declarations from inline style attributes to external CSS files or <style> blocks with lower specificity, use CSS classes instead of inline styles (replace style=\"color: red; font-size: 18px;\" with class=\"error-text\"), ensure user stylesheets can override your styles by avoiding !important declarations, test that users can apply custom stylesheets successfully, and reserve inline styles only for layout properties like positioning or dimensions when absolutely necessary"
         },
         'WarnStyleAttrOther': {

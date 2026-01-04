@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Mobile Responsive CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mobile.css') }}">
     
     {% block extra_css %}{% endblock %}
 </head>
@@ -151,12 +153,50 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
+    <!-- Footer (hidden on mobile - replaced by bottom nav) -->
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container text-center">
             <span class="text-muted">{{ _('Auto A11y') }} © 2025 | {{ _('Canadian National Institute for the Blind') }}</span>
         </div>
     </footer>
+
+    <!-- Mobile Bottom Navigation -->
+    {% if current_user.is_authenticated %}
+    <nav class="mobile-bottom-nav" aria-label="{{ _('Mobile navigation') }}">
+        <ul>
+            <li>
+                <a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active"{% endif %}>
+                    <i class="bi bi-speedometer2"></i>
+                    <span>{{ _('Dashboard') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('projects.list_projects') }}" {% if request.endpoint and request.endpoint.startswith('projects.') %}class="active"{% endif %}>
+                    <i class="bi bi-folder"></i>
+                    <span>{{ _('Projects') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('testing.testing_dashboard') }}" {% if request.endpoint and request.endpoint.startswith('testing.') %}class="active"{% endif %}>
+                    <i class="bi bi-check2-square"></i>
+                    <span>{{ _('Testing') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('reports.reports_dashboard') }}" {% if request.endpoint and request.endpoint.startswith('reports.') %}class="active"{% endif %}>
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span>{{ _('Reports') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('auth.profile') }}" {% if request.endpoint and request.endpoint.startswith('auth.') %}class="active"{% endif %}>
+                    <i class="bi bi-person-circle"></i>
+                    <span>{{ _('Profile') }}</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

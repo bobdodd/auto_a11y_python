@@ -4,35 +4,38 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2">{{ _('Projects') }}</h1>
-        <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary">
+    <!-- Page Header - Stacks on mobile -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
+        <h1 class="h2 mb-0">{{ _('Projects') }}</h1>
+        <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary w-100 w-sm-auto">
             <i class="bi bi-plus-circle"></i> {{ _('New Project') }}
         </a>
     </div>
 
-    <!-- Filter Buttons -->
-    <div class="btn-group mb-3" role="group">
-        <a href="{{ url_for('projects.list_projects') }}"
-           class="btn btn-outline-secondary {{ 'active' if not request.args.get('status') }}">
-            {{ _('All') }}
-        </a>
-        <a href="{{ url_for('projects.list_projects', status='active') }}"
-           class="btn btn-outline-success {{ 'active' if request.args.get('status') == 'active' }}">
-            {{ _('Active') }}
-        </a>
-        <a href="{{ url_for('projects.list_projects', status='paused') }}"
-           class="btn btn-outline-warning {{ 'active' if request.args.get('status') == 'paused' }}">
-            {{ _('Paused') }}
-        </a>
-        <a href="{{ url_for('projects.list_projects', status='completed') }}"
-           class="btn btn-outline-info {{ 'active' if request.args.get('status') == 'completed' }}">
-            {{ _('Completed') }}
-        </a>
-        <a href="{{ url_for('projects.list_projects', status='archived') }}"
-           class="btn btn-outline-secondary {{ 'active' if request.args.get('status') == 'archived' }}">
-            {{ _('Archived') }}
-        </a>
+    <!-- Filter Buttons - Scrollable on mobile -->
+    <div class="filter-scroll-container mb-3">
+        <div class="btn-group btn-group-sm" role="group">
+            <a href="{{ url_for('projects.list_projects') }}"
+               class="btn btn-outline-secondary {{ 'active' if not request.args.get('status') }}">
+                {{ _('All') }}
+            </a>
+            <a href="{{ url_for('projects.list_projects', status='active') }}"
+               class="btn btn-outline-success {{ 'active' if request.args.get('status') == 'active' }}">
+                {{ _('Active') }}
+            </a>
+            <a href="{{ url_for('projects.list_projects', status='paused') }}"
+               class="btn btn-outline-warning {{ 'active' if request.args.get('status') == 'paused' }}">
+                {{ _('Paused') }}
+            </a>
+            <a href="{{ url_for('projects.list_projects', status='completed') }}"
+               class="btn btn-outline-info {{ 'active' if request.args.get('status') == 'completed' }}">
+                {{ _('Completed') }}
+            </a>
+            <a href="{{ url_for('projects.list_projects', status='archived') }}"
+               class="btn btn-outline-secondary {{ 'active' if request.args.get('status') == 'archived' }}">
+                {{ _('Archived') }}
+            </a>
+        </div>
     </div>
 
     {% if projects %}

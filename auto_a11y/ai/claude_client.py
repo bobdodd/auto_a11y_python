@@ -17,14 +17,18 @@ logger = logging.getLogger(__name__)
 class ClaudeConfig:
     """Claude AI configuration"""
     api_key: str
-    model: str = "claude-sonnet-4-5-20250929"  # Updated to latest Sonnet 4.5 model
-    max_tokens: int = 4096
-    temperature: float = 1.0
-    timeout: int = 60
+    model: str = "claude-opus-4-20250514"  # Opus 4 with extended thinking
+    max_tokens: int = 16000
+    budget_tokens: int = 5000  # Thinking budget (must be less than max_tokens)
+    temperature: float = 1.0  # Must be 1.0 for extended thinking
+    timeout: int = 120
+    use_extended_thinking: bool = True
 
     # Available models (updated to latest versions)
     MODELS = {
-        'sonnet-4.5': 'claude-sonnet-4-5-20250929',       # Latest Sonnet 4.5 (recommended)
+        'opus-4': 'claude-opus-4-20250514',               # Opus 4 (best, supports extended thinking)
+        'sonnet-4': 'claude-sonnet-4-20250514',           # Sonnet 4
+        'sonnet-4.5': 'claude-sonnet-4-5-20250929',       # Sonnet 4.5
         'sonnet-3.5': 'claude-3-5-sonnet-20241022',       # Sonnet 3.5
         'haiku-3.5': 'claude-3-5-haiku-20241022',         # Haiku 3.5 (fastest)
         # Legacy models
@@ -45,11 +49,18 @@ class ClaudeClient:
             config: Claude configuration
         """
         self.config = config
-        self.async_client = AsyncAnthropic(api_key=config.api_key)
-        self.sync_client = Anthropic(api_key=config.api_key)
+        # Initialize clients with beta headers for long context
+        self.async_client = AsyncAnthropic(
+            api_key=config.api_key,
+            default_headers={"anthropic-beta": "interleaved-thinking-2025-05-14,output-128k-2025-02-19"}
+        )
+        self.sync_client = Anthropic(
+            api_key=config.api_key,
+            default_headers={"anthropic-beta": "interleaved-thinking-2025-05-14,output-128k-2025-02-19"}
+        )
         self.system_prompt = self._get_system_prompt()
         
-        logger.info(f"Claude client initialized with model: {config.model}")
+        logger.info(f"Claude client initialized with model: {config.model}, beta features enabled")
     
     def _get_system_prompt(self) -> str:
         """Get system prompt for accessibility analysis"""
@@ -95,13 +106,11 @@ class ClaudeClient:
             # Convert image to base64
             image_base64 = base64.b64encode(image_data).decode('utf-8')
             
-            # Send request to Claude
-            message = await self.async_client.messages.create(
-                model=self.config.model,
-                max_tokens=self.config.max_tokens,
-                temperature=self.config.temperature,
-                system=self.system_prompt,
-                messages=[{
+            # Build request parameters
+            request_params = {
+                "model": self.config.model,
+                "max_tokens": self.config.max_tokens,
+                "messages": [{
                     "role": "user",
                     "content": [
                         {
@@ -118,14 +127,37 @@ class ClaudeClient:
                         }
                     ]
                 }]
-            )
+            }
             
-            # Extract and parse response
-            response_text = message.content[0].text
+            # Add extended thinking or standard params
+            if self.config.use_extended_thinking:
+                request_params["thinking"] = {
+                    "type": "enabled",
+                    "budget_tokens": self.config.budget_tokens
+                }
+                request_params["temperature"] = 1.0
+            else:
+                request_params["temperature"] = self.config.temperature
+                request_params["system"] = self.system_prompt
+            
+            # Send request - use streaming for extended thinking
+            response_text = None
+            
+            if self.config.use_extended_thinking:
+                collected_text = []
+                # Beta headers set on client init
+                async with self.async_client.messages.stream(**request_params) as stream:
+                    async for event in stream:
+                        if hasattr(event, 'type') and event.type == 'content_block_delta':
+                            if hasattr(event.delta, 'text'):
+                                collected_text.append(event.delta.text)
+                response_text = ''.join(collected_text)
+            else:
+                message = await self.async_client.messages.create(**request_params)
+                response_text = message.content[0].text
             
             # Parse response - extract JSON from text
             try:
-                # Try to find JSON in the response
                 json_start = response_text.find('{')
                 json_end = response_text.rfind('}')
                 
@@ -158,22 +190,45 @@ class ClaudeClient:
             Analysis results
         """
         try:
-            message = await self.async_client.messages.create(
-                model=self.config.model,
-                max_tokens=self.config.max_tokens,
-                temperature=self.config.temperature,
-                system=self.system_prompt,
-                messages=[{
+            # Build request parameters
+            request_params = {
+                "model": self.config.model,
+                "max_tokens": self.config.max_tokens,
+                "messages": [{
                     "role": "user",
                     "content": f"{prompt}\n\nHTML:\n{html}"
                 }]
-            )
+            }
             
-            response_text = message.content[0].text
+            # Add extended thinking or standard params
+            if self.config.use_extended_thinking:
+                request_params["thinking"] = {
+                    "type": "enabled",
+                    "budget_tokens": self.config.budget_tokens
+                }
+                request_params["temperature"] = 1.0
+            else:
+                request_params["temperature"] = self.config.temperature
+                request_params["system"] = self.system_prompt
+            
+            # Send request - use streaming for extended thinking
+            response_text = None
+            
+            if self.config.use_extended_thinking:
+                collected_text = []
+                # Beta headers set on client init
+                async with self.async_client.messages.stream(**request_params) as stream:
+                    async for event in stream:
+                        if hasattr(event, 'type') and event.type == 'content_block_delta':
+                            if hasattr(event.delta, 'text'):
+                                collected_text.append(event.delta.text)
+                response_text = ''.join(collected_text)
+            else:
+                message = await self.async_client.messages.create(**request_params)
+                response_text = message.content[0].text
             
             # Parse response - extract JSON from text
             try:
-                # Try to find JSON in the response
                 json_start = response_text.find('{')
                 json_end = response_text.rfind('}')
                 
@@ -224,20 +279,18 @@ class ClaudeClient:
             # Convert image to base64
             image_base64 = base64.b64encode(image_data).decode('utf-8')
             
-            # Combine prompt with HTML
+            # Combine prompt with full HTML (using long context beta)
             full_prompt = f"""{prompt}
             
             HTML Content:
-            {html[:10000]}  # Limit HTML to avoid token limits
+            {html}
             """
             
-            # Send request
-            message = await self.async_client.messages.create(
-                model=self.config.model,
-                max_tokens=self.config.max_tokens,
-                temperature=self.config.temperature,
-                system=self.system_prompt,
-                messages=[{
+            # Build request parameters
+            request_params = {
+                "model": self.config.model,
+                "max_tokens": self.config.max_tokens,
+                "messages": [{
                     "role": "user",
                     "content": [
                         {
@@ -254,9 +307,61 @@ class ClaudeClient:
                         }
                     ]
                 }]
-            )
+            }
             
-            response_text = message.content[0].text
+            # Add extended thinking if enabled (requires temperature=1, no system prompt)
+            if self.config.use_extended_thinking:
+                request_params["thinking"] = {
+                    "type": "enabled",
+                    "budget_tokens": self.config.budget_tokens
+                }
+                # Extended thinking requires temperature=1 and no system prompt
+                request_params["temperature"] = 1.0
+                logger.warning(f"Using extended thinking - max_tokens: {self.config.max_tokens}, budget_tokens: {self.config.budget_tokens}")
+            else:
+                request_params["temperature"] = self.config.temperature
+                request_params["system"] = self.system_prompt
+            
+            # Send request - use streaming for extended thinking (required for long operations)
+            response_text = None
+            thinking_text = None
+            
+            if self.config.use_extended_thinking:
+                # Use streaming for extended thinking with long context beta
+                collected_text = []
+                collected_thinking = []
+                
+                # Add betas for long context (up to 1M tokens input)
+                # Beta headers set on client init
+                
+                async with self.async_client.messages.stream(**request_params) as stream:
+                    async for event in stream:
+                        if hasattr(event, 'type'):
+                            if event.type == 'content_block_start':
+                                pass  # Block starting
+                            elif event.type == 'content_block_delta':
+                                if hasattr(event.delta, 'thinking'):
+                                    collected_thinking.append(event.delta.thinking)
+                                elif hasattr(event.delta, 'text'):
+                                    collected_text.append(event.delta.text)
+                
+                response_text = ''.join(collected_text)
+                thinking_text = ''.join(collected_thinking) if collected_thinking else None
+                
+                if thinking_text:
+                    logger.debug(f"Extended thinking used: {len(thinking_text)} chars")
+            else:
+                # Non-streaming for regular requests
+                message = await self.async_client.messages.create(**request_params)
+                for block in message.content:
+                    if block.type == "thinking":
+                        thinking_text = block.thinking
+                        logger.debug(f"Extended thinking used: {len(thinking_text)} chars")
+                    elif block.type == "text":
+                        response_text = block.text
+            
+            if response_text is None:
+                response_text = ""
             
             # DEBUG: Save raw response to file
             import os
@@ -272,6 +377,11 @@ class ClaudeClient:
                 f.write("PROMPT:\n")
                 f.write("=" * 60 + "\n")
                 f.write(full_prompt + "\n")
+                if thinking_text:
+                    f.write("=" * 60 + "\n")
+                    f.write("THINKING:\n")
+                    f.write("=" * 60 + "\n")
+                    f.write(thinking_text + "\n")
                 f.write("=" * 60 + "\n")
                 f.write("RAW RESPONSE:\n")
                 f.write("=" * 60 + "\n")

@@ -34,18 +34,31 @@ class ClaudeAnalyzer:
             api_key: Anthropic API key
             model: Claude model to use (defaults to config)
         """
-        # Get model from config if not provided
-        if model is None:
-            try:
-                from config import config as app_config
-                model = getattr(app_config, 'CLAUDE_MODEL', 'claude-3-opus-20240229')
-                logger.info(f"Using CLAUDE_MODEL from config: {model}")
-            except Exception as e:
-                model = 'claude-3-opus-20240229'
-                logger.warning(f"Could not get CLAUDE_MODEL from config, using default: {model}")
+        # Get config values
+        try:
+            from config import config as app_config
+            if model is None:
+                model = getattr(app_config, 'CLAUDE_MODEL', 'claude-opus-4-20250514')
+            max_tokens = getattr(app_config, 'CLAUDE_MAX_TOKENS', 16000)
+            budget_tokens = getattr(app_config, 'CLAUDE_BUDGET_TOKENS', 10000)
+            use_thinking = getattr(app_config, 'CLAUDE_USE_THINKING', True)
+            logger.info(f"Using CLAUDE_MODEL from config: {model}, thinking: {use_thinking}")
+        except Exception as e:
+            if model is None:
+                model = 'claude-opus-4-20250514'
+            max_tokens = 16000
+            budget_tokens = 10000
+            use_thinking = True
+            logger.warning(f"Could not get Claude config, using defaults: {model}")
         
-        # Initialize client
-        config = ClaudeConfig(api_key=api_key, model=model)
+        # Initialize client with extended thinking support
+        config = ClaudeConfig(
+            api_key=api_key, 
+            model=model,
+            max_tokens=max_tokens,
+            budget_tokens=budget_tokens,
+            use_extended_thinking=use_thinking
+        )
         self.client = ClaudeClient(config)
         
         # Initialize analyzers
@@ -174,8 +187,10 @@ class ClaudeAnalyzer:
         issues = result.get('issues', [])
         
         for issue in issues:
+            logger.warning(f"AI issue raw data: {issue}")
             finding = self._create_finding(analysis_type, issue, result)
             if finding:
+                logger.warning(f"AI finding metadata: {finding.metadata}")
                 findings.append(finding)
         
         # Special processing for specific analyzers
@@ -230,145 +245,74 @@ class ClaudeAnalyzer:
         full_result: Dict[str, Any]
     ) -> Optional[Violation]:
         """
-        Create a Violation from an AI-detected issue
+        Create a Violation from an AI-detected issue.
+        
+        The AI analyzers now return specific error codes in the 'err' field.
         
         Args:
             analysis_type: Type of analysis
-            issue: Issue dictionary
+            issue: Issue dictionary with 'err', 'type', 'description', etc.
             full_result: Complete analysis result
             
         Returns:
             Violation object or None
         """
         try:
-            # Get more specific issue code based on the actual failure
-            issue_code, impact = self._determine_specific_issue_code(analysis_type, issue)
+            # Get error code directly from AI response (new approach)
+            # AI analyzers now return specific codes like AI_ErrVisualHeadingNotMarked
+            issue_code = issue.get('err')
+            issue_type = issue.get('type', 'err')  # 'err', 'warn', or 'info'
             
-            if not issue_code:
-                # Fall back to generic code if we can't determine specific issue
-                issue_code = 'AI_ErrInteractiveElementIssue'
+            # Determine impact from issue type
+            if issue_type == 'err':
+                impact = ImpactLevel.HIGH
+            elif issue_type == 'warn':
                 impact = ImpactLevel.MEDIUM
+            else:
+                impact = ImpactLevel.LOW
             
-            # Build metadata with AI-specific information
+            # Fallback if AI didn't provide error code
+            if not issue_code:
+                fallback_codes = {
+                    'headings': 'AI_ErrHeadingIssue',
+                    'reading_order': 'AI_ErrReadingOrderMismatch',
+                    'modals': 'AI_ErrDialogMissingRole',
+                    'language': 'AI_WarnForeignTextUnmarked',
+                    'animations': 'AI_WarnNoReducedMotion',
+                    'interactive': 'AI_ErrNonSemanticButton'
+                }
+                issue_code = fallback_codes.get(analysis_type, 'AI_ErrAccessibilityIssue')
+            
+            # Build metadata - copy all issue fields plus AI-specific info
             metadata = {
                 'ai_detected': True,
                 'ai_confidence': 0.85,
-                'ai_analysis_type': analysis_type
+                'ai_analysis_type': analysis_type,
+                **{k: v for k, v in issue.items() if k not in ('err', 'type')}
             }
             
-            # Add metadata keys that match template placeholders
-            # For buttons/interactive elements
-            metadata['element_tag'] = issue.get('element_tag') or issue.get('tag', 'div')
+            # Ensure key fields for template placeholders
+            metadata['element_tag'] = issue.get('element_tag', 'div')
+            metadata['element_text'] = issue.get('element_text', '')
+            metadata['visual_text'] = issue.get('visual_text', '')
+            metadata['heading_text'] = issue.get('heading_text', '')
+            metadata['suggested_level'] = issue.get('suggested_level', '')
+            metadata['current_level'] = issue.get('current_level', '')
             
-            # Get actual element text, not the issue description
-            # element_text should be the visible text IN the element, not a description ABOUT it
-            element_text = issue.get('element_text', '')
-            
-            # Clean up element_text - remove None, null, or description-like text
-            if element_text:
-                element_text = str(element_text).strip()
-                
-                # Check if this looks like a description rather than actual element text
-                # Descriptions tend to be long and contain certain keywords
-                description_keywords = ['lacks', 'contains', 'should', 'does not', 'implementation', 
-                                      'likely', 'appears', 'missing', 'button uses', 'uses div']
-                
-                if (len(element_text) > 100 or 
-                    any(word in element_text.lower() for word in description_keywords) or
-                    element_text.lower() in ['none', 'null', 'undefined']):
-                    # This is probably a description or placeholder, not actual text
-                    # Try alternatives
-                    element_text = issue.get('text', issue.get('visual_text', ''))
-                    if not element_text or element_text.lower() in ['none', 'null', 'undefined']:
-                        element_text = ''  # No actual text found
-            else:
-                element_text = ''
-            
-            metadata['element_text'] = element_text
-            
-            # For headings
-            metadata['visual_text'] = issue.get('visual_text', issue.get('text', ''))
-            metadata['heading_text'] = issue.get('heading_text', issue.get('text', ''))
-            
-            # Add issue-specific metadata
-            if 'current_level' in issue:
-                metadata['current_level'] = issue['current_level']
-            if 'suggested_level' in issue:
-                metadata['suggested_level'] = issue['suggested_level']
-            if 'element_class' in issue:
-                metadata['element_class'] = issue['element_class']
-            if 'element_id' in issue:
-                metadata['element_id'] = issue['element_id']
-            if 'approximate_location' in issue:
-                metadata['visual_location'] = issue['approximate_location']
-            
-            # Additional metadata for specific issue types
-            metadata['heading_level'] = issue.get('level', issue.get('heading_level', ''))
-            metadata['next_level'] = issue.get('next_level', '')
-            
-            # Generate xpath - always try to generate something
-            xpath = None
-            
-            # Get element info from various possible fields
-            element_tag = issue.get('element_tag') or issue.get('tag') or issue.get('element')
+            # Generate XPath from element info
+            element_tag = issue.get('element_tag', 'div')
             element_id = issue.get('element_id')
             element_class = issue.get('element_class')
             
-            # Clean up None/null values
-            if element_id and str(element_id).lower() in ['none', 'null', 'undefined', '']:
+            # Clean None/null string values
+            if element_id and str(element_id).lower() in ['none', 'null', '']:
                 element_id = None
-            if element_class and str(element_class).lower() in ['none', 'null', 'undefined', '']:
+            if element_class and str(element_class).lower() in ['none', 'null', '']:
                 element_class = None
-            if element_tag and str(element_tag).lower() in ['none', 'null', 'undefined', '']:
-                element_tag = None
-                
-            # Try to infer element type from issue type if not provided
-            if not element_tag:
-                issue_type = issue.get('type', '')
-                if 'modal' in issue_type or 'dialog' in issue_type:
-                    element_tag = 'div'  # Most modals are divs
-                elif 'button' in issue_type:
-                    element_tag = 'button'
-                elif 'link' in issue_type:
-                    element_tag = 'a'
-                elif 'heading' in issue_type:
-                    element_tag = 'h2'  # Default heading level
-                elif 'form' in issue_type or 'input' in issue_type:
-                    element_tag = 'input'
-                else:
-                    # Default to div for unknown elements
-                    element_tag = 'div'
             
-            # Get element index if provided
-            element_index = issue.get('element_index')
-            if element_index and str(element_index).lower() in ['none', 'null', 'undefined', '']:
-                element_index = None
-            elif element_index:
-                try:
-                    element_index = int(element_index)
-                except (ValueError, TypeError):
-                    element_index = None
+            xpath = generate_xpath(element_tag, element_id, element_class)
             
-            # Generate XPath without text to avoid duplicates
-            # Always generate something, even if it's generic
-            xpath = generate_xpath(element_tag, element_id, element_class, 
-                                 element_text=None, element_index=element_index, use_text=False)
-            
-            # Clean up description to avoid formatting issues
-            description = issue.get('description', 'AI-detected accessibility issue')
-            if description:
-                # Remove any stray quotes or problematic characters
-                description = description.replace('""', '"').replace("''", "'")
-                # Ensure quotes are balanced
-                if description.count('"') % 2 != 0:
-                    description = description.replace('"', "'")
-            
-            # Get element descriptor
-            element = issue.get('element_tag') or issue.get('element') or issue.get('element_description', '')
-            if element and str(element).lower() in ['none', 'null', 'various']:
-                element = issue.get('element_tag', 'element')
-            
-            # Map AI analysis types directly to touchpoint IDs
+            # Map analysis type to touchpoint
             from auto_a11y.core.touchpoints import TouchpointID
             ai_to_touchpoint_map = {
                 'headings': TouchpointID.HEADINGS,
@@ -386,9 +330,9 @@ class ClaudeAnalyzer:
                 id=issue_code,
                 impact=impact,
                 touchpoint=touchpoint_value,
-                description=description,
-                element=element,
-                html=issue.get('element_html') or issue.get('related_html'),
+                description=issue.get('description', 'AI-detected accessibility issue'),
+                element=element_tag,
+                html=issue.get('element_html'),
                 xpath=xpath,
                 failure_summary=issue.get('fix') or issue.get('suggested_fix'),
                 metadata=metadata
@@ -433,104 +377,6 @@ class ClaudeAnalyzer:
             base_type = finding.touchpoint  # Get analyzer name
             counts[base_type] = counts.get(base_type, 0) + 1
         return counts
-    
-    def _determine_specific_issue_code(
-        self,
-        analysis_type: str,
-        issue: Dict[str, Any]
-    ) -> tuple[Optional[str], Optional[ImpactLevel]]:
-        """
-        Determine the specific AI issue code based on the analysis type and issue details
-        
-        Args:
-            analysis_type: Type of analysis performed
-            issue: Issue dictionary with details
-            
-        Returns:
-            Tuple of (issue_code, impact_level)
-        """
-        issue_type = issue.get('type', '')
-        description = issue.get('description', '').lower()
-        element = issue.get('element_tag', '').lower()
-        
-        # Interactive element issues - most specific matching
-        if analysis_type == 'interactive':
-            # Check for specific interactive patterns
-            # Note: Non-semantic button detection is now handled algorithmically in test_buttons.py
-            if 'button' in description or 'click' in description:
-                if 'keyboard' not in description and 'onclick' in description:
-                    return ('ErrClickableWithoutKeyboard', ImpactLevel.HIGH)
-            
-            if 'toggle' in description or 'expand' in description or 'collapse' in description:
-                if 'aria-expanded' not in description:
-                    return ('AI_ErrToggleWithoutState', ImpactLevel.HIGH)
-            
-            if 'menu' in description or 'navigation' in description:
-                if 'aria' not in description:
-                    return ('ErrMenuWithoutARIA', ImpactLevel.HIGH)
-
-            if 'tab' in description:
-                if 'aria-selected' not in description and 'role' not in description:
-                    return ('ErrTabpanelWithoutARIA', ImpactLevel.HIGH)
-
-            if 'accordion' in description:
-                return ('ErrAccordionWithoutARIA', ImpactLevel.HIGH)
-
-            if 'carousel' in description or 'slider' in description:
-                return ('ErrCarouselWithoutARIA', ImpactLevel.HIGH)
-
-            if 'tooltip' in description:
-                return ('ErrTooltipWithoutARIA', ImpactLevel.MEDIUM)
-
-            if 'dropdown' in description:
-                return ('ErrDropdownWithoutARIA', ImpactLevel.HIGH)
-
-            if 'dialog' in description or 'modal' in description:
-                return ('ErrDialogMissingRole', ImpactLevel.HIGH)
-
-            # Generic interactive issue fallback
-            return ('ErrInteractiveElementIssue', ImpactLevel.HIGH)
-        
-        # Heading issues
-        elif analysis_type == 'headings':
-            if issue_type == 'visual_not_marked':
-                return ('AI_ErrVisualHeadingNotMarked', ImpactLevel.HIGH)
-            elif issue_type == 'wrong_level':
-                return ('AI_ErrHeadingLevelMismatch', ImpactLevel.MEDIUM)
-            elif 'skip' in description:
-                return ('AI_ErrSkippedHeading', ImpactLevel.HIGH)
-        
-        # Reading order issues
-        elif analysis_type == 'reading_order':
-            return ('AI_ErrReadingOrderMismatch', ImpactLevel.HIGH)
-        
-        # Modal/Dialog issues
-        elif analysis_type == 'modals':
-            if 'focus' in description:
-                return ('AI_ErrModalFocusTrap', ImpactLevel.HIGH)
-            else:
-                return ('AI_ErrDialogWithoutARIA', ImpactLevel.HIGH)
-        
-        # Language issues
-        elif analysis_type == 'language':
-            if issue_type in ['missing_lang', 'wrong_lang', 'unmarked_foreign']:
-                return ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM)
-        
-        # Default mapping for unrecognized patterns
-        issue_map = {
-            'visual_not_marked': ('AI_ErrVisualHeadingNotMarked', ImpactLevel.HIGH),
-            'wrong_level': ('AI_ErrHeadingLevelMismatch', ImpactLevel.MEDIUM),
-            'reading_order': ('AI_ErrReadingOrderMismatch', ImpactLevel.HIGH),
-            'modal_issue': ('AI_ErrDialogWithoutARIA', ImpactLevel.HIGH),
-            'missing_lang': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
-            'wrong_lang': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
-            'unmarked_foreign': ('AI_WarnMixedLanguage', ImpactLevel.MEDIUM),
-            'interactive_issue': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
-            'missing_aria': ('AI_ErrInteractiveElementIssue', ImpactLevel.HIGH),
-            'visual_cue': ('AI_InfoVisualCue', ImpactLevel.LOW)
-        }
-        
-        return issue_map.get(issue_type, (None, None))
     
     async def analyze_batch(
         self,

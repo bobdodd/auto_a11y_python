@@ -380,7 +380,7 @@ class TestRunner:
                         logger.warning(f"Could not get CLAUDE_API_KEY from config: {e}")
                 
                 # Log decision factors
-                logger.info(f"AI analysis decision - run_ai: {run_ai}, has_api_key: {bool(ai_api_key)}, has_screenshot: {bool(screenshot_bytes)}, tests_to_run: {ai_tests_to_run}")
+                logger.warning(f"AI analysis decision - run_ai: {run_ai}, has_api_key: {bool(ai_api_key)}, has_screenshot: {bool(screenshot_bytes)}, tests_to_run: {ai_tests_to_run}")
                 
                 # Run AI analysis if enabled
                 if run_ai and ai_api_key and screenshot_bytes and ai_tests_to_run:
@@ -395,7 +395,7 @@ class TestRunner:
                         analyzer = ClaudeAnalyzer(ai_api_key)
                         
                         # Run only the selected AI tests
-                        logger.info(f"Running AI accessibility analysis with tests: {ai_tests_to_run}")
+                        logger.warning(f"Running AI accessibility analysis with tests: {ai_tests_to_run}")
                         ai_results = await analyzer.analyze_page(
                             screenshot=screenshot_bytes,
                             html=page_html,
@@ -406,7 +406,9 @@ class TestRunner:
                         ai_findings = ai_results.get('findings', [])
                         ai_analysis_results = ai_results.get('raw_results', {})
                         
-                        logger.info(f"AI analysis found {len(ai_findings)} issues")
+                        logger.warning(f"AI analysis found {len(ai_findings)} issues")
+                        if ai_findings:
+                            logger.warning(f"AI finding IDs: {[f.id if hasattr(f, 'id') else str(f) for f in ai_findings]}")
                         
                     except Exception as e:
                         logger.error(f"AI analysis failed: {e}")
@@ -728,8 +730,71 @@ class TestRunner:
 
                     # Take screenshot if requested
                     screenshot_path = None
+                    screenshot_bytes = None
                     if take_screenshot:
                         screenshot_path = await self._take_screenshot(browser_page, page_id)
+                        # Also get screenshot bytes for AI analysis
+                        screenshot_bytes = await browser_page.screenshot({
+                            'fullPage': True,
+                            'type': 'jpeg',
+                            'quality': 80
+                        })
+
+                    # Check if project has AI testing enabled
+                    ai_findings = []
+                    ai_analysis_results = {}
+                    
+                    run_ai = False
+                    ai_tests_to_run = []
+                    
+                    if project_config:
+                        if project_config.get('enable_ai_testing', False):
+                            run_ai = True
+                            ai_tests_to_run = project_config.get('ai_tests', [])
+                            logger.info(f"AI testing enabled, will run tests: {ai_tests_to_run}")
+                    
+                    # Get API key from config
+                    ai_api_key = None
+                    try:
+                        from config import config
+                        ai_api_key = getattr(config, 'CLAUDE_API_KEY', None)
+                    except Exception as e:
+                        logger.warning(f"Could not get CLAUDE_API_KEY: {e}")
+                    
+                    logger.warning(f"AI analysis decision - run_ai: {run_ai}, has_api_key: {bool(ai_api_key)}, has_screenshot: {bool(screenshot_bytes)}, tests_to_run: {ai_tests_to_run}")
+                    
+                    # Run AI analysis if enabled
+                    if run_ai and ai_api_key and screenshot_bytes and ai_tests_to_run:
+                        analyzer = None
+                        try:
+                            from auto_a11y.ai import ClaudeAnalyzer
+                            
+                            page_html = await browser_page.content()
+                            analyzer = ClaudeAnalyzer(ai_api_key)
+                            
+                            logger.warning(f"Running AI accessibility analysis with tests: {ai_tests_to_run}")
+                            ai_results = await analyzer.analyze_page(
+                                screenshot=screenshot_bytes,
+                                html=page_html,
+                                analyses=ai_tests_to_run,
+                                test_config=test_config
+                            )
+                            
+                            ai_findings = ai_results.get('findings', [])
+                            ai_analysis_results = ai_results.get('raw_results', {})
+                            
+                            logger.warning(f"AI analysis found {len(ai_findings)} issues")
+                            if ai_findings:
+                                logger.warning(f"AI finding IDs: {[f.id if hasattr(f, 'id') else str(f) for f in ai_findings]}")
+                            
+                        except Exception as e:
+                            logger.error(f"AI analysis failed: {e}")
+                        finally:
+                            if analyzer and hasattr(analyzer, 'client'):
+                                try:
+                                    await analyzer.client.aclose()
+                                except Exception:
+                                    pass
 
                     # Process results
                     duration_ms = 0  # Will be set by caller
@@ -738,8 +803,8 @@ class TestRunner:
                         raw_results=raw_results,
                         screenshot_path=screenshot_path,
                         duration_ms=duration_ms,
-                        ai_findings=[],
-                        ai_analysis_results={}
+                        ai_findings=ai_findings,
+                        ai_analysis_results=ai_analysis_results
                     )
 
                     return test_result

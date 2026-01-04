@@ -2600,19 +2600,20 @@ class IssueCatalog:
     }
     
     @classmethod
-    def get_issue(cls, issue_id: str) -> Dict[str, Any]:
+    def get_issue(cls, issue_id: str, metadata: Dict[str, Any] = None) -> Dict[str, Any]:
         """
         Get issue details by ID
         
         Args:
             issue_id: The issue identifier
+            metadata: Optional metadata for placeholder substitution
             
         Returns:
             Dictionary with issue details or default if not found
         """
         # First try to get enhanced description
         try:
-            enhanced = get_detailed_issue_description(issue_id)
+            enhanced = get_detailed_issue_description(issue_id, metadata)
             if enhanced and enhanced.get('title') != f"Issue {issue_id} needs documentation":
                 # Convert enhanced format to catalog format
                 # description is the templated what (for instances), what_generic is for summaries
@@ -2699,7 +2700,8 @@ class IssueCatalog:
             Enriched issue dictionary
         """
         issue_id = issue_dict.get('id', issue_dict.get('err', ''))
-        catalog_data = cls.get_issue(issue_id)
+        metadata = issue_dict.get('metadata', {})
+        catalog_data = cls.get_issue(issue_id, metadata)
         
         # Merge catalog data with existing issue data
         enriched = issue_dict.copy()

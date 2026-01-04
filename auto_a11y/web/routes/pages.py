@@ -45,8 +45,8 @@ def enrich_test_result_with_catalog(test_result):
             # (Previously we skipped if metadata existed, but we need to re-enrich
             # to support runtime translation)
 
-            # Get catalog info for this issue as fallback
-            catalog_info = IssueCatalog.get_issue(error_code)
+            # Get catalog info for this issue with metadata for placeholder substitution
+            catalog_info = IssueCatalog.get_issue(error_code, violation.metadata if hasattr(violation, 'metadata') else None)
             
             # Only update if we got meaningful enriched data
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
@@ -125,7 +125,7 @@ def enrich_test_result_with_catalog(test_result):
                 elif not isinstance(wcag_codes, list):
                     wcag_codes = []
                 violation.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
-                violation.metadata['full_remediation'] = catalog_info['how_to_fix']
+                violation.metadata['full_remediation'] = violation.metadata.get('how') or catalog_info['how_to_fix']
                 violation.metadata['impact_detail'] = catalog_info['impact']
     
     # Enrich warnings
@@ -141,8 +141,8 @@ def enrich_test_result_with_catalog(test_result):
             else:
                 error_code = issue_id
 
-            # Always re-enrich for translations
-            catalog_info = IssueCatalog.get_issue(error_code)
+            # Always re-enrich for translations with metadata for placeholder substitution
+            catalog_info = IssueCatalog.get_issue(error_code, warning.metadata if hasattr(warning, 'metadata') else None)
             
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
                 # Get descriptions with placeholders
@@ -180,7 +180,7 @@ def enrich_test_result_with_catalog(test_result):
                 elif not isinstance(wcag_codes, list):
                     wcag_codes = []
                 warning.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
-                warning.metadata['full_remediation'] = catalog_info['how_to_fix']
+                warning.metadata['full_remediation'] = warning.metadata.get('how') or catalog_info['how_to_fix']
                 warning.metadata['impact_detail'] = catalog_info['impact']
     
     # Enrich info items
@@ -196,8 +196,8 @@ def enrich_test_result_with_catalog(test_result):
             else:
                 error_code = issue_id
 
-            # Always re-enrich for translations
-            catalog_info = IssueCatalog.get_issue(error_code)
+            # Always re-enrich for translations with metadata for placeholder substitution
+            catalog_info = IssueCatalog.get_issue(error_code, info.metadata if hasattr(info, 'metadata') else None)
             
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
                 info.metadata['title'] = catalog_info.get('title', '') or catalog_info.get('description', '')
@@ -213,7 +213,7 @@ def enrich_test_result_with_catalog(test_result):
                 elif not isinstance(wcag_codes, list):
                     wcag_codes = []
                 info.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
-                info.metadata['full_remediation'] = catalog_info['how_to_fix']
+                info.metadata['full_remediation'] = info.metadata.get('how') or catalog_info['how_to_fix']
                 info.metadata['impact_detail'] = catalog_info['impact']
     
     # Enrich discovery items
@@ -235,9 +235,9 @@ def enrich_test_result_with_catalog(test_result):
                         error_code = '_'.join(parts[i:])
                         break
 
-            # Always re-enrich to get fresh translations based on current locale
+            # Always re-enrich to get fresh translations based on current locale with metadata
             logger.debug(f"Looking up discovery issue: {error_code} (from ID: {issue_id})")
-            catalog_info = IssueCatalog.get_issue(error_code)
+            catalog_info = IssueCatalog.get_issue(error_code, discovery.metadata if hasattr(discovery, 'metadata') else None)
             
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
                 # Build placeholder values from discovery metadata for string substitution
@@ -294,7 +294,7 @@ def enrich_test_result_with_catalog(test_result):
                     wcag_codes = []
                 discovery.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
 
-                discovery.metadata['full_remediation'] = _(catalog_info['how_to_fix'])
+                discovery.metadata['full_remediation'] = discovery.metadata.get('how') or _(catalog_info['how_to_fix'])
                 discovery.metadata['impact_detail'] = _(catalog_info['impact'])
                 logger.debug(f"Enriched discovery item with catalog data: {discovery.metadata.get('title')}")
     

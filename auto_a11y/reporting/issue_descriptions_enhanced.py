@@ -104,14 +104,34 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'remediation': "Add aria-haspopup=\"true\", aria-expanded state, and role=\"menu\" with role=\"menuitem\" for options"
         },
         'AI_ErrHeadingLevelMismatch': {
-            'title': "Heading level {current_level} doesn\'t match visual hierarchy (should be level {suggested_level})",
-            'what': "Heading level {current_level} doesn\'t match visual hierarchy (should be level {suggested_level})",
-            'why': "Incorrect heading levels create confusing document structure for screen reader users",
-                    'what_generic': "Heading level doesn't match visual hierarchy",
+            'title': "Heading \"{heading_text}\" is <h{current_level}> but should be <h{suggested_level}>",
+            'what': "Heading \"{heading_text}\" is marked as <h{current_level}> but its visual prominence suggests it should be <h{suggested_level}>",
+            'why': "Incorrect heading levels create confusing document structure for screen reader users who navigate by headings",
+            'what_generic': "Heading level doesn't match visual hierarchy",
             'who': "Screen reader users, users who navigate by headings",
             'impact': ImpactScale.MEDIUM.value,
             'wcag': ['1.3.1', '2.4.1'],
-            'remediation': "Adjust heading level to match the visual hierarchy of the page"
+            'remediation': "Change the heading from <h{current_level}> to <h{suggested_level}> to match the visual hierarchy"
+        },
+        'AI_ErrHeadingIssue': {
+            'title': "Heading structure has accessibility issues",
+            'what': "AI analysis detected a heading-related accessibility issue",
+            'what_generic': "Heading structure has accessibility issues",
+            'why': "Proper heading structure is essential for screen reader users to navigate and understand page content",
+            'who': "Screen reader users, users who navigate by headings",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['1.3.1', '2.4.6'],
+            'remediation': "Review and fix the heading structure to ensure proper hierarchy and semantic markup"
+        },
+        'AI_ErrAccessibilityIssue': {
+            'title': "Accessibility issue detected",
+            'what': "AI analysis detected an accessibility issue that requires attention",
+            'what_generic': "Accessibility issue detected",
+            'why': "This issue may create barriers for users with disabilities",
+            'who': "Users with disabilities",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': [],
+            'remediation': "Review the specific issue and apply appropriate accessibility fixes"
         },
         'ErrInteractiveElementIssue': {
             'title': "Interactive {element_tag} element \"{element_text}\" has accessibility issues",
@@ -253,15 +273,25 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['4.1.2'],
             'remediation': "Add aria-expanded=\"true/false\" and update it when state changes"
         },
+        'AI_ErrInteractiveElementIssue': {
+            'title': "Interactive element has accessibility issues",
+            'what': "An interactive element was detected that may have keyboard or ARIA accessibility issues",
+            'what_generic': "Interactive element has accessibility issues",
+            'why': "Interactive elements that lack proper keyboard support or ARIA attributes prevent some users from operating the interface",
+            'who': "Keyboard users, screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.1.1', '4.1.2'],
+            'remediation': "Ensure the element is keyboard accessible (can be focused and activated with Enter/Space), has appropriate ARIA roles and states, and provides feedback to assistive technologies"
+        },
         'AI_ErrVisualHeadingNotMarked': {
-            'title': "Text \"{visual_text}\" appears visually as a heading but is not marked up with proper heading tags",
-            'what': "Text \"{visual_text}\" appears visually as a heading but is not marked up with proper heading tags",
-            'why': "Screen reader users won\'t recognize this text as a heading, breaking navigation and document structure",
-                    'what_generic': "Text appears visually as a heading but is not marked up with proper heading tags",
+            'title': "Text \"{visual_text}\" appears as a heading but uses <{element_tag}> instead of <h{suggested_level}>",
+            'what': "Text \"{visual_text}\" appears visually as a heading but uses <{element_tag}> instead of proper heading markup",
+            'why': "Screen reader users won't recognize this text as a heading, breaking navigation and document structure",
+            'what_generic': "Text appears visually as a heading but is not marked up with proper heading tags",
             'who': "Screen reader users, users who navigate by headings",
             'impact': ImpactScale.HIGH.value,
             'wcag': ['1.3.1', '2.4.1', '2.4.6'],
-            'remediation': "Use appropriate HTML heading tags (h1-h6) for text that serves as headings"
+            'remediation': "Change the <{element_tag}> to <h{suggested_level}> to properly mark this text as a heading"
         },
         'AI_InfoVisualCue': {
             'title': "Information conveyed only through visual cues (color, position, size)",
@@ -298,6 +328,186 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'impact': ImpactScale.HIGH.value,
             'wcag': ['2.1.2', '2.4.3'],
             'remediation': "Implement focus trap that keeps tab navigation within the modal"
+        },
+        'AI_ErrVisualHierarchyInconsistent': {
+            'title': "Visual heading sizes don\'t follow a logical hierarchy",
+            'what': "Visual heading sizes don\'t follow a logical hierarchy",
+            'what_generic': "Visual heading sizes are inconsistent with their importance",
+            'why': "Inconsistent visual hierarchy confuses users about content organization",
+            'who': "Users with cognitive disabilities, users who rely on visual hierarchy",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['1.3.1', '2.4.6'],
+            'remediation': "Ensure visual heading sizes decrease consistently with heading levels (h1 largest, h6 smallest)"
+        },
+        'AI_ErrVisualGroupingBroken': {
+            'title': "Related content appears grouped visually but is separated in DOM",
+            'what': "Related content appears grouped visually but is separated in the DOM order",
+            'what_generic': "Visual grouping doesn\'t match DOM structure",
+            'why': "Screen readers read content in DOM order, so visually related items may be announced out of context",
+            'who': "Screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['1.3.2'],
+            'remediation': "Restructure the DOM so related content is adjacent, or use ARIA to establish programmatic relationships"
+        },
+        'AI_ErrDialogMissingRole': {
+            'title': "Visible modal dialog lacks role=\"dialog\" or role=\"alertdialog\"",
+            'what': "Visible modal dialog lacks role=\"dialog\" or role=\"alertdialog\"",
+            'what_generic': "Modal dialog is missing dialog role",
+            'why': "Screen readers won\'t announce this as a dialog or provide appropriate navigation",
+            'who': "Screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['4.1.2'],
+            'remediation': "Add role=\"dialog\" or role=\"alertdialog\" to the modal container element"
+        },
+        'AI_ErrDialogMissingLabel': {
+            'title': "Dialog has role but no accessible name",
+            'what': "Dialog has role=\"dialog\" but no aria-label or aria-labelledby",
+            'what_generic': "Dialog is missing an accessible name",
+            'why': "Screen readers won\'t announce what the dialog is for",
+            'who': "Screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['4.1.2'],
+            'remediation': "Add aria-label or aria-labelledby pointing to the dialog\'s visible title"
+        },
+        'AI_ErrDialogNoCloseButton': {
+            'title': "Modal has no visible close mechanism",
+            'what': "Modal dialog has no visible close button, X, or other dismiss mechanism",
+            'what_generic': "Modal has no visible way to close it",
+            'why': "Users may feel trapped if they can\'t figure out how to dismiss the modal",
+            'who': "All users, especially keyboard users and users with cognitive disabilities",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.1.2'],
+            'remediation': "Add a visible close button and ensure Escape key also closes the dialog"
+        },
+        'AI_WarnDialogBackgroundNotInert': {
+            'title': "Content behind modal appears still interactive",
+            'what': "Content behind the modal dialog appears to still be interactive (not properly disabled)",
+            'what_generic': "Background content behind modal is not properly inert",
+            'why': "Users might interact with background content while the modal is open, causing confusion",
+            'who': "Keyboard users, screen reader users",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.3'],
+            'remediation': "Add aria-hidden=\"true\" to background content or use the inert attribute when modal is open"
+        },
+        'AI_ErrPageLanguageMissing': {
+            'title': "Page is missing lang attribute on <html> element",
+            'what': "No lang attribute found on the <html> element",
+            'what_generic': "Page language is not declared",
+            'why': "Screen readers may use incorrect pronunciation rules for the entire page",
+            'who': "Screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['3.1.1'],
+            'remediation': "Add lang=\"en\" (or appropriate language code) to the <html> element"
+        },
+        'AI_ErrPageLanguageWrong': {
+            'title': "Page lang attribute doesn\'t match visible content language",
+            'what': "Page lang=\"{html_lang}\" but content appears to be in a different language",
+            'what_generic': "Page language declaration doesn\'t match actual content",
+            'why': "Screen readers will use wrong pronunciation rules, making content hard to understand",
+            'who': "Screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['3.1.1'],
+            'remediation': "Update the lang attribute to match the primary language of the page content"
+        },
+        'AI_WarnForeignTextUnmarked': {
+            'title': "Foreign language text found without lang attribute",
+            'what': "Text in {detected_language} found without lang=\"{detected_language}\" attribute",
+            'what_generic': "Foreign language text is not marked with lang attribute",
+            'why': "Screen readers may mispronounce foreign language text without proper lang markup",
+            'who': "Screen reader users",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['3.1.2'],
+            'remediation': "Wrap foreign language text in a span with lang attribute (e.g., <span lang=\"es\">)</span>"
+        },
+        'AI_ErrInfiniteAnimationNoPause': {
+            'title': "Infinite animation has no pause control",
+            'what': "Infinite CSS animation \"{animation_name}\" has no mechanism to pause or stop",
+            'what_generic': "Infinite animation cannot be paused",
+            'why': "Continuous motion can be distracting or cause discomfort for some users",
+            'who': "Users with vestibular disorders, attention disorders, or cognitive disabilities",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.2.2'],
+            'remediation': "Add a pause/stop control or use prefers-reduced-motion media query to disable animation"
+        },
+        'AI_ErrAutoPlayingMedia': {
+            'title': "Auto-playing video or audio without controls",
+            'what': "Auto-playing video or audio detected without visible controls to stop it",
+            'what_generic': "Auto-playing media cannot be controlled",
+            'why': "Unexpected audio can interfere with screen readers; auto-playing video can be disorienting",
+            'who': "Screen reader users, users with cognitive disabilities, users in quiet environments",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['1.4.2'],
+            'remediation': "Remove autoplay or provide visible pause/stop controls within first 3 seconds"
+        },
+        'AI_WarnNoReducedMotion': {
+            'title': "Animations don\'t respect prefers-reduced-motion preference",
+            'what': "Animations detected but no @media (prefers-reduced-motion) query found",
+            'what_generic': "Site doesn\'t respect reduced motion preference",
+            'why': "Users who need reduced motion won\'t get relief from animations",
+            'who': "Users with vestibular disorders, motion sensitivity, or cognitive disabilities",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.3.3'],
+            'remediation': "Add @media (prefers-reduced-motion: reduce) to disable or reduce animations"
+        },
+        'AI_WarnPotentialFlashing': {
+            'title': "Animation may cause flashing content",
+            'what': "Animation detected that may cause rapid flashing or strobing effects",
+            'what_generic': "Potential flashing content detected",
+            'why': "Flashing content can trigger seizures in people with photosensitive epilepsy",
+            'who': "Users with photosensitive epilepsy",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.3.1'],
+            'remediation': "Ensure content doesn\'t flash more than 3 times per second, or reduce flash intensity"
+        },
+        'AI_ErrNonSemanticButton': {
+            'title': "Element styled as button but uses non-semantic HTML",
+            'what': "<{element_tag}> element styled as a button with onclick - should use <button>",
+            'what_generic': "Non-semantic element used as a button",
+            'why': "Non-semantic buttons lack keyboard accessibility and screen reader announcements",
+            'who': "Keyboard users, screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['4.1.2', '2.1.1'],
+            'remediation': "Replace with <button> element, or add role=\"button\", tabindex=\"0\", and keyboard event handlers"
+        },
+        'AI_ErrNonSemanticLink': {
+            'title': "Element styled as link but uses non-semantic HTML",
+            'what': "<{element_tag}> element styled as a link - should use <a> with href",
+            'what_generic': "Non-semantic element used as a link",
+            'why': "Non-semantic links won\'t be announced as links or work with keyboard navigation",
+            'who': "Keyboard users, screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['4.1.2', '2.1.1'],
+            'remediation': "Replace with <a href=\"...\"> element, or add role=\"link\", tabindex=\"0\", and keyboard handlers"
+        },
+        'AI_ErrCustomControlNoARIA': {
+            'title': "Custom widget lacks proper ARIA roles and states",
+            'what': "Custom widget (tabs, accordion, dropdown) lacks proper ARIA roles and states",
+            'what_generic': "Custom control is missing ARIA attributes",
+            'why': "Screen readers can\'t convey the control\'s purpose, state, or how to interact with it",
+            'who': "Screen reader users",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['4.1.2', '1.3.1'],
+            'remediation': "Add appropriate ARIA roles (tablist, tab, accordion, etc.) and states (aria-expanded, aria-selected)"
+        },
+        'AI_ErrClickableNotFocusable': {
+            'title': "Clickable element is not keyboard focusable",
+            'what': "Element has click handler but cannot receive keyboard focus (no tabindex)",
+            'what_generic': "Clickable element can\'t be reached by keyboard",
+            'why': "Keyboard users cannot interact with this element",
+            'who': "Keyboard users, users who cannot use a mouse",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['2.1.1'],
+            'remediation': "Add tabindex=\"0\" to make element focusable, and handle Enter/Space key events"
+        },
+        'AI_WarnFocusIndicatorWeak': {
+            'title': "Focus indicator appears too subtle or missing",
+            'what': "Interactive element\'s focus indicator is too subtle or not visible",
+            'what_generic': "Focus indicator is hard to see or missing",
+            'why': "Users can\'t see which element has keyboard focus",
+            'who': "Keyboard users, users with low vision",
+            'impact': ImpactScale.MEDIUM.value,
+            'wcag': ['2.4.7'],
+            'remediation': "Add visible focus styles with sufficient contrast (3:1 ratio) using outline, border, or background"
         },
         'WarnProblematicAnimation': {
             'title': "Animation detected that may cause accessibility issues",

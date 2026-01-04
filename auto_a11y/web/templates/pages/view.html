@@ -3719,9 +3719,9 @@ function copyXpathToClipboard(xpath, button) {
 }
 </script>
 
-<!-- Translation strings for JavaScript -->
+<!-- Additional translation strings for JavaScript (merged with existing i18n) -->
 <script>
-window.i18n = {
+Object.assign(window.i18n, {
     'Filter Test Results': {{ _('Filter Test Results') | tojson }},
     'Clear All': {{ _('Clear All') | tojson }},
     'Active Filters:': {{ _('Active Filters:') | tojson }},
@@ -3748,12 +3748,8 @@ window.i18n = {
     'Seizure': {{ _('Seizure') | tojson }},
     'Test User': {{ _('Test User') | tojson }},
     'Quick Search': {{ _('Quick Search') | tojson }},
-    'Search in issue descriptions, IDs, or code...': {{ _('Search in issue descriptions, IDs, or code...') | tojson }},
-    'noWcagCriteriaFound': {{ _('No WCAG criteria found') | tojson }},
-    'noTouchpointsFound': {{ _('No touchpoints found') | tojson }},
-    'allTouchpoints': {{ _('All Touchpoints') | tojson }},
-    'allWcag': {{ _('All WCAG Criteria') | tojson }}
-};
+    'Search in issue descriptions, IDs, or code...': {{ _('Search in issue descriptions, IDs, or code...') | tojson }}
+});
 
 // Pass touchpoint names for use in filters
 window.touchpointNames = {{ touchpoint_names | tojson }};

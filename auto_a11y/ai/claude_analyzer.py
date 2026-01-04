@@ -16,7 +16,8 @@ from auto_a11y.ai.analysis_modules import (
     LanguageAnalyzer,
     AnimationAnalyzer,
     InteractiveAnalyzer,
-    generate_xpath
+    generate_xpath,
+    find_element_xpath_by_text
 )
 from auto_a11y.models import Violation, ImpactLevel
 
@@ -154,8 +155,8 @@ class ClaudeAnalyzer:
                 result = await task
                 results['raw_results'][name] = result
                 
-                # Process findings into AIFinding objects
-                findings = self._process_findings(name, result)
+                # Process findings into AIFinding objects, passing HTML for xpath calculation
+                findings = self._process_findings(name, result, html)
                 results['findings'].extend(findings)
                 
             except Exception as e:
@@ -167,13 +168,14 @@ class ClaudeAnalyzer:
         
         return results
     
-    def _process_findings(self, analysis_type: str, result: Dict[str, Any]) -> List[Violation]:
+    def _process_findings(self, analysis_type: str, result: Dict[str, Any], html: str = None) -> List[Violation]:
         """
         Process raw analysis results into Violation objects
         
         Args:
             analysis_type: Type of analysis
             result: Raw analysis result
+            html: Page HTML for xpath calculation
             
         Returns:
             List of AI findings
@@ -188,7 +190,7 @@ class ClaudeAnalyzer:
         
         for issue in issues:
             logger.warning(f"AI issue raw data: {issue}")
-            finding = self._create_finding(analysis_type, issue, result)
+            finding = self._create_finding(analysis_type, issue, result, html)
             if finding:
                 logger.warning(f"AI finding metadata: {finding.metadata}")
                 findings.append(finding)
@@ -242,7 +244,8 @@ class ClaudeAnalyzer:
         self,
         analysis_type: str,
         issue: Dict[str, Any],
-        full_result: Dict[str, Any]
+        full_result: Dict[str, Any],
+        html: str = None
     ) -> Optional[Violation]:
         """
         Create a Violation from an AI-detected issue.
@@ -253,6 +256,7 @@ class ClaudeAnalyzer:
             analysis_type: Type of analysis
             issue: Issue dictionary with 'err', 'type', 'description', etc.
             full_result: Complete analysis result
+            html: Page HTML for precise xpath calculation
             
         Returns:
             Violation object or None
@@ -299,7 +303,8 @@ class ClaudeAnalyzer:
             metadata['suggested_level'] = issue.get('suggested_level', '')
             metadata['current_level'] = issue.get('current_level', '')
             
-            # Generate XPath from element info
+            # Get text content for xpath lookup
+            text_sample = issue.get('text_sample', '') or issue.get('visual_text', '') or issue.get('heading_text', '')
             element_tag = issue.get('element_tag', 'div')
             element_id = issue.get('element_id')
             element_class = issue.get('element_class')
@@ -310,7 +315,23 @@ class ClaudeAnalyzer:
             if element_class and str(element_class).lower() in ['none', 'null', '']:
                 element_class = None
             
-            xpath = generate_xpath(element_tag, element_id, element_class)
+            # Generate XPath - prefer finding by text in HTML for accuracy
+            xpath = None
+            if html and text_sample:
+                # Use text-based lookup for precise xpath
+                xpath = find_element_xpath_by_text(html, text_sample)
+                if xpath:
+                    logger.debug(f"Found xpath by text '{text_sample[:30]}...': {xpath}")
+            
+            # Fallback to AI-provided element info if text lookup failed
+            if not xpath:
+                xpath = generate_xpath(
+                    element_tag, 
+                    element_id, 
+                    element_class,
+                    element_text=text_sample,
+                    use_text=bool(text_sample and not element_class and not element_id)
+                )
             
             # Map analysis type to touchpoint
             from auto_a11y.core.touchpoints import TouchpointID

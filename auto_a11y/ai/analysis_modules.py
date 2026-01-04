@@ -4,10 +4,115 @@ Specific AI analysis modules for different accessibility aspects
 
 import logging
 from typing import Dict, Any, List, Optional
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString
 import re
 
 logger = logging.getLogger(__name__)
+
+
+def find_element_xpath_by_text(html: str, text_sample: str) -> Optional[str]:
+    """
+    Find an element in HTML by its text content and return a precise xpath.
+    
+    Args:
+        html: The HTML content to search
+        text_sample: The text to find
+        
+    Returns:
+        XPath string or None if not found
+    """
+    if not html or not text_sample:
+        return None
+        
+    soup = BeautifulSoup(html, 'html.parser')
+    
+    # Clean the text sample for comparison
+    clean_text = text_sample.strip()
+    
+    # Find elements containing this text
+    # First try exact match, then partial match
+    for element in soup.find_all(string=lambda t: t and clean_text in t):
+        if isinstance(element, NavigableString):
+            parent = element.parent
+            if parent and parent.name:
+                xpath = _build_xpath_for_element(parent, soup)
+                if xpath:
+                    return xpath
+    
+    # Also try finding by normalized text in elements
+    for tag in ['p', 'span', 'div', 'a', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'li', 'td', 'th', 'label', 'button']:
+        for element in soup.find_all(tag):
+            element_text = element.get_text(strip=True)
+            if clean_text in element_text:
+                xpath = _build_xpath_for_element(element, soup)
+                if xpath:
+                    return xpath
+    
+    return None
+
+
+def _build_xpath_for_element(element, soup) -> Optional[str]:
+    """
+    Build a precise xpath for a BeautifulSoup element.
+    
+    Args:
+        element: BeautifulSoup element
+        soup: Root soup object
+        
+    Returns:
+        XPath string
+    """
+    if not element or not element.name:
+        return None
+    
+    tag = element.name
+    
+    # Priority 1: ID (most specific)
+    if element.get('id'):
+        return f"//*[@id='{element.get('id')}']"
+    
+    # Priority 2: Unique class combination
+    classes = element.get('class', [])
+    if classes:
+        class_str = ' '.join(classes)
+        # Check if this class combo is unique
+        matching = soup.find_all(tag, class_=classes)
+        if len(matching) == 1:
+            if len(classes) == 1:
+                return f"//{tag}[@class='{class_str}']"
+            else:
+                conditions = " and ".join([f"contains(@class, '{c}')" for c in classes])
+                return f"//{tag}[{conditions}]"
+        elif len(matching) > 1:
+            # Find index among siblings with same class
+            for idx, el in enumerate(matching, 1):
+                if el == element:
+                    if len(classes) == 1:
+                        return f"(//{tag}[@class='{class_str}'])[{idx}]"
+                    else:
+                        conditions = " and ".join([f"contains(@class, '{c}')" for c in classes])
+                        return f"(//{tag}[{conditions}])[{idx}]"
+    
+    # Priority 3: Text content (for short, unique text)
+    element_text = element.get_text(strip=True)
+    if element_text and len(element_text) <= 60:
+        # Escape quotes
+        escaped_text = element_text.replace("'", "&apos;")
+        # Check uniqueness
+        matching = soup.find_all(tag, string=lambda t: t and element_text in t)
+        if len(matching) <= 1:
+            if len(element_text) <= 30:
+                return f"//{tag}[normalize-space()='{escaped_text}']"
+            else:
+                return f"//{tag}[contains(normalize-space(), '{escaped_text[:40]}')]"
+    
+    # Priority 4: Position among all same tags
+    all_same_tags = soup.find_all(tag)
+    for idx, el in enumerate(all_same_tags, 1):
+        if el == element:
+            return f"(//{tag})[{idx}]"
+    
+    return f"//{tag}"
 
 
 def generate_xpath(element_tag: str, element_id: str = None, element_class: str = None, 
@@ -319,7 +424,10 @@ ISSUE CODES (use these exactly):
 - AI_ErrPageLanguageWrong: Page lang attribute doesn't match visible content language
 - AI_ErrForeignTextUnmarked: Foreign language text found without lang attribute (ERROR - screen readers will mispronounce)
 
-For each foreign text found, extract the EXACT text from the HTML.
+For each foreign text found:
+1. Extract the EXACT text from the HTML
+2. Find the element's class or id attribute
+3. If no class/id, find the nearest parent section/div with a class
 
 Return ONLY valid JSON:
 {{
@@ -339,14 +447,18 @@ Return ONLY valid JSON:
             "type": "err",
             "text_sample": "EXACT foreign text from HTML",
             "detected_language": "de",
-            "element_tag": "p/span/div/h2/section",
-            "element_class": "class if found",
+            "element_tag": "p/span/div/h2/section/a",
+            "element_class": "class-from-element-or-parent",
+            "element_id": "id-if-exists-or-null",
+            "parent_class": "class-of-nearest-parent-with-class",
             "description": "German text found without lang='de' attribute"
         }}
     ]
 }}
 
-CRITICAL: Use the EXACT text from the HTML. Do NOT paraphrase or translate the text."""
+CRITICAL: 
+- Use the EXACT text from the HTML. Do NOT paraphrase or translate the text.
+- Always try to find a class or id attribute for element identification."""
         
         try:
             result = await self.client.analyze_with_image_and_html(screenshot, html, prompt)

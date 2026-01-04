@@ -49,18 +49,19 @@ class ClaudeClient:
             config: Claude configuration
         """
         self.config = config
-        # Initialize clients with beta headers for long context
+        # Initialize clients with beta headers for extended thinking, long context, and prompt caching
+        beta_features = "interleaved-thinking-2025-05-14,output-128k-2025-02-19,prompt-caching-2024-07-31"
         self.async_client = AsyncAnthropic(
             api_key=config.api_key,
-            default_headers={"anthropic-beta": "interleaved-thinking-2025-05-14,output-128k-2025-02-19"}
+            default_headers={"anthropic-beta": beta_features}
         )
         self.sync_client = Anthropic(
             api_key=config.api_key,
-            default_headers={"anthropic-beta": "interleaved-thinking-2025-05-14,output-128k-2025-02-19"}
+            default_headers={"anthropic-beta": beta_features}
         )
         self.system_prompt = self._get_system_prompt()
         
-        logger.info(f"Claude client initialized with model: {config.model}, beta features enabled")
+        logger.info(f"Claude client initialized with model: {config.model}, beta features: {beta_features}")
     
     def _get_system_prompt(self) -> str:
         """Get system prompt for accessibility analysis"""
@@ -106,7 +107,7 @@ class ClaudeClient:
             # Convert image to base64
             image_base64 = base64.b64encode(image_data).decode('utf-8')
             
-            # Build request parameters
+            # Build request parameters with prompt caching for image
             request_params = {
                 "model": self.config.model,
                 "max_tokens": self.config.max_tokens,
@@ -119,7 +120,8 @@ class ClaudeClient:
                                 "type": "base64",
                                 "media_type": actual_format,
                                 "data": image_base64
-                            }
+                            },
+                            "cache_control": {"type": "ephemeral"}
                         },
                         {
                             "type": "text",
@@ -279,14 +281,9 @@ class ClaudeClient:
             # Convert image to base64
             image_base64 = base64.b64encode(image_data).decode('utf-8')
             
-            # Combine prompt with full HTML (using long context beta)
-            full_prompt = f"""{prompt}
-            
-            HTML Content:
-            {html}
-            """
-            
-            # Build request parameters
+            # Build request with prompt caching
+            # Cache the image and HTML (large, reusable content) separately from the prompt
+            # This allows multiple analysis prompts to reuse the cached screenshot+HTML
             request_params = {
                 "model": self.config.model,
                 "max_tokens": self.config.max_tokens,
@@ -299,11 +296,17 @@ class ClaudeClient:
                                 "type": "base64",
                                 "media_type": actual_format,
                                 "data": image_base64
-                            }
+                            },
+                            "cache_control": {"type": "ephemeral"}
                         },
                         {
                             "type": "text",
-                            "text": full_prompt
+                            "text": f"HTML Content:\n{html}",
+                            "cache_control": {"type": "ephemeral"}
+                        },
+                        {
+                            "type": "text",
+                            "text": prompt
                         }
                     ]
                 }]
@@ -376,7 +379,10 @@ class ClaudeClient:
                 f.write("=" * 60 + "\n")
                 f.write("PROMPT:\n")
                 f.write("=" * 60 + "\n")
-                f.write(full_prompt + "\n")
+                f.write(prompt + "\n")
+                f.write("=" * 60 + "\n")
+                f.write(f"HTML length: {len(html)} chars (cached)\n")
+                f.write(f"Image size: {len(image_data)} bytes (cached)\n")
                 if thinking_text:
                     f.write("=" * 60 + "\n")
                     f.write("THINKING:\n")

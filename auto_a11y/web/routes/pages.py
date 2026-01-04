@@ -223,26 +223,68 @@ def enrich_test_result_with_catalog(test_result):
                 discovery.metadata = {}
             
             # Extract the error code from the discovery ID
+            # IDs can be in formats like:
+            # - testname_DiscoCode (e.g., headings_DiscoFoundJS)
+            # - testname_subtest_DiscoCode (e.g., event_handlers_DiscoFoundJS)
             issue_id = discovery.id if hasattr(discovery, 'id') else ''
+            error_code = issue_id
             if '_' in issue_id:
-                error_code = issue_id.split('_', 1)[1]
-            else:
-                error_code = issue_id
-            
-            # Skip if already has enhanced metadata with 'what' field
-            if discovery.metadata.get('what'):
-                continue
-                
+                parts = issue_id.split('_')
+                for i, part in enumerate(parts):
+                    if part.startswith(('Err', 'Warn', 'Info', 'Disco', 'AI')):
+                        error_code = '_'.join(parts[i:])
+                        break
+
+            # Always re-enrich to get fresh translations based on current locale
             logger.debug(f"Looking up discovery issue: {error_code} (from ID: {issue_id})")
             catalog_info = IssueCatalog.get_issue(error_code)
             
             if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
-                discovery.metadata['title'] = catalog_info.get('title', '') or catalog_info.get('description', '')
-                discovery.metadata['what'] = catalog_info['description']
-                discovery.metadata['what_generic'] = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
-                discovery.metadata['why'] = catalog_info['why_it_matters']
-                discovery.metadata['who'] = catalog_info['who_it_affects']
-                discovery.metadata['how'] = catalog_info['how_to_fix']
+                # Build placeholder values from discovery metadata for string substitution
+                placeholder_values = {}
+                if hasattr(discovery, 'metadata') and discovery.metadata:
+                    for key, value in discovery.metadata.items():
+                        if value is not None and not isinstance(value, (dict, list)):
+                            placeholder_values[key] = str(value)
+                        elif isinstance(value, list):
+                            placeholder_values[f'{key}_list'] = ', '.join(str(v) for v in value)
+                
+                # Use what_generic for display (translatable, no placeholders)
+                what_generic = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
+                catalog_description = catalog_info['description']
+                
+                # Check if existing what has instance-specific data (filled placeholders with actual values)
+                existing_what = discovery.metadata.get('what', '')
+                existing_title = discovery.metadata.get('title', '')
+                
+                # If existing has unfilled placeholders, try to fill them
+                # Otherwise use catalog description (translated)
+                if existing_what and any(p in existing_what for p in ['%(', '{']):
+                    try:
+                        filled_what = existing_what % placeholder_values
+                        discovery.metadata['what'] = _(filled_what) if filled_what == existing_what else filled_what
+                    except (KeyError, ValueError, TypeError):
+                        discovery.metadata['what'] = _(what_generic)
+                elif not existing_what or existing_what == catalog_description:
+                    discovery.metadata['what'] = _(catalog_description)
+                else:
+                    discovery.metadata['what'] = _(existing_what)
+                
+                if existing_title and any(p in existing_title for p in ['%(', '{']):
+                    try:
+                        filled_title = existing_title % placeholder_values
+                        discovery.metadata['title'] = _(filled_title) if filled_title == existing_title else filled_title
+                    except (KeyError, ValueError, TypeError):
+                        discovery.metadata['title'] = _(what_generic)
+                elif not existing_title or existing_title == catalog_description:
+                    discovery.metadata['title'] = _(catalog_info.get('title', '') or catalog_description)
+                else:
+                    discovery.metadata['title'] = _(existing_title)
+                
+                discovery.metadata['what_generic'] = _(what_generic)
+                discovery.metadata['why'] = _(catalog_info['why_it_matters'])
+                discovery.metadata['who'] = _(catalog_info['who_it_affects'])
+                discovery.metadata['how'] = _(catalog_info['how_to_fix'])
 
                 # Handle WCAG criteria - enrich with full names and levels
                 wcag_codes = catalog_info.get('wcag', [])
@@ -252,8 +294,8 @@ def enrich_test_result_with_catalog(test_result):
                     wcag_codes = []
                 discovery.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
 
-                discovery.metadata['full_remediation'] = catalog_info['how_to_fix']
-                discovery.metadata['impact_detail'] = catalog_info['impact']
+                discovery.metadata['full_remediation'] = _(catalog_info['how_to_fix'])
+                discovery.metadata['impact_detail'] = _(catalog_info['impact'])
                 logger.debug(f"Enriched discovery item with catalog data: {discovery.metadata.get('title')}")
     
     return test_result
@@ -354,8 +396,9 @@ def view_page(page_id):
         'colors': lazy_gettext('Colors & Contrast'),
         'colors_contrast': lazy_gettext('Colors & Contrast'),  # Legacy key
         'dialogs': lazy_gettext('Dialogs & Modals'),
-        'document_links': lazy_gettext('Documents'),
-        'documents': lazy_gettext('Documents'),
+        'document_links': lazy_gettext('Electronic Documents'),
+        'documents': lazy_gettext('Electronic Documents'),
+        'electronic_documents': lazy_gettext('Electronic Documents'),
         'event_handlers': lazy_gettext('Event Handling'),
         'event_handling': lazy_gettext('Event Handling'),
         'floating_dialogs': lazy_gettext('Dialogs & Modals'),

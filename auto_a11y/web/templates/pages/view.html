@@ -729,7 +729,7 @@
                                                         <hr>
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                                <p><strong>{{ _('Touchpoint:') }}</strong> {{ violation.touchpoint|default(_('General')) }}</p>
+                                                                <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(violation.touchpoint, violation.touchpoint)|default(_('General')) }}</p>
                                                                 <p><strong>{{ _('Impact:') }}</strong> 
                                                                     <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">
                                                                         {{ _(violation.impact.value|upper if violation.impact.value else violation.impact|upper) }}
@@ -866,7 +866,7 @@
                                                         <h6 class="mt-4">All {{ violation.metadata.totalCount }} {{ violation.metadata.role }} landmarks on page:</h6>
                                                         {% for instance in violation.metadata.allInstances %}
                                                         <div class="mb-3">
-                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
@@ -891,10 +891,10 @@
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrSmallText' in violation.id and violation.metadata and violation.metadata.get('allInstances') %}
-                                                        <h6 class="mt-3">{{ violation.metadata.allInstances|length }} element(s) with text smaller than 16px:</h6>
+                                                        <h6 class="mt-3">{{ _('%(count)d element(s) with text smaller than 16px:', count=violation.metadata.allInstances|length) }}</h6>
                                                         {% for instance in violation.metadata.allInstances %}
                                                         <div class="mb-3">
-                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; element - Text size: <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
+                                                            <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; element - Text size: <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
                                                             <p class="mb-1 small">Text preview: "{{ instance.text }}"</p>
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
@@ -1077,7 +1077,7 @@
                                                         <hr>
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                                <p><strong>{{ _('Touchpoint:') }}</strong> {{ violation.touchpoint|default(_('General')) }}</p>
+                                                                <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(violation.touchpoint, violation.touchpoint)|default(_('General')) }}</p>
                                                                 <p><strong>{{ _('Impact:') }}</strong> 
                                                                     <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">
                                                                         {{ _(violation.impact.value|upper if violation.impact.value else violation.impact|upper) }}
@@ -1214,7 +1214,7 @@
                                                         <h6 class="mt-4">All {{ violation.metadata.totalCount }} {{ violation.metadata.role }} landmarks on page:</h6>
                                                         {% for instance in violation.metadata.allInstances %}
                                                         <div class="mb-3">
-                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
@@ -1239,10 +1239,10 @@
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrSmallText' in violation.id and violation.metadata and violation.metadata.get('allInstances') %}
-                                                        <h6 class="mt-3">{{ violation.metadata.allInstances|length }} element(s) with text smaller than 16px:</h6>
+                                                        <h6 class="mt-3">{{ _('%(count)d element(s) with text smaller than 16px:', count=violation.metadata.allInstances|length) }}</h6>
                                                         {% for instance in violation.metadata.allInstances %}
                                                         <div class="mb-3">
-                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; element - Text size: <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
+                                                            <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; element - Text size: <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
                                                             <p class="mb-1 small">Text preview: "{{ instance.text }}"</p>
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
@@ -1369,10 +1369,10 @@
                                 <h6 class="alert-heading">{{ violation.metadata.title }}</h6>
                             </div>
                             
-                            <h6 class="text-danger mb-2">About this issue:</h6>
+                            <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
                             
                             <div class="mb-3">
-                                <strong>What the issue is:</strong>
+                                <strong>{{ _('What the issue is:') }}</strong>
                                 {% if 'ErrLinkAccessibleNameMismatch' in violation.id and violation.description %}
                                 <p>{{ violation.description }}</p>
                                 {% else %}
@@ -1381,22 +1381,22 @@
                             </div>
                             
                             <div class="mb-3">
-                                <strong>Why this is important:</strong>
+                                <strong>{{ _('Why this is important:') }}</strong>
                                 <p>{{ violation.metadata.why }}</p>
                             </div>
                             
                             <div class="mb-3">
-                                <strong>Who it affects:</strong>
+                                <strong>{{ _('Who it affects:') }}</strong>
                                 <p>{{ violation.metadata.who }}</p>
                             </div>
                             
                             <div class="mb-3">
-                                <strong>How to remediate:</strong>
+                                <strong>{{ _('How to remediate:') }}</strong>
                                 <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</div>
                             </div>
 
                             {% if violation.metadata.wcag_full or violation.wcag_criteria %}
-                            <h6 class="text-danger mb-2 mt-4">Relevant test criteria:</h6>
+                            <h6 class="text-danger mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
                             <div class="mb-3">
                                 {% if violation.metadata.wcag_full %}
                                 <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -1431,7 +1431,7 @@
                             <hr>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p><strong>Touchpoint:</strong> {{ violation.touchpoint|default('General') }}</p>
+                                    <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(violation.touchpoint, violation.touchpoint)|default(_('General')) }}</p>
                                     <p><strong>Impact:</strong> 
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">
                                             {{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}
@@ -1515,7 +1515,7 @@
                             {% if 'ErrSmallText' in violation.id and violation.metadata and violation.metadata.get('allInstances') and not violation.html %}
                             <div class="mt-3">
                                 <h6>{{ _('Affected Elements') }}</h6>
-                                <p class="mb-2">{{ violation.metadata.allInstances|length }} element(s) with text smaller than 16px:</p>
+                                <p class="mb-2">{{ _('%(count)d element(s) with text smaller than 16px:', count=violation.metadata.allInstances|length) }}</p>
                                 {% for instance in violation.metadata.allInstances %}
                                 <div class="mb-3 border-start border-warning border-3 ps-3">
                                     <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; - {{ _('Text size:') }} <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
@@ -1649,7 +1649,7 @@
                                 <h6 class="mt-4">All {{ violation.metadata.totalCount }} {{ violation.metadata.role }} landmarks on page:</h6>
                                 {% for instance in violation.metadata.allInstances %}
                                 <div class="mb-3">
-                                    <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                    <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
                                     <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
@@ -1674,10 +1674,10 @@
                                 </div>
                                 {% endfor %}
                                 {% elif 'ErrSmallText' in violation.id and violation.metadata and violation.metadata.get('allInstances') %}
-                                <h6 class="mt-3">{{ violation.metadata.allInstances|length }} element(s) with text smaller than 16px:</h6>
+                                <h6 class="mt-3">{{ _('%(count)d element(s) with text smaller than 16px:', count=violation.metadata.allInstances|length) }}</h6>
                                 {% for instance in violation.metadata.allInstances %}
                                 <div class="mb-3">
-                                    <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; element - Text size: <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
+                                    <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; element - Text size: <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
                                     <p class="mb-1 small">Text preview: "{{ instance.text }}"</p>
                                     <p class="mb-1 small text-muted">
                                     Location: <code>{{instance.xpath}}</code>
@@ -1723,7 +1723,7 @@
 
                             <!-- Thumbnail of the page at time of test -->
                             {% if screenshot_filename %}
-                            <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                            <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                 <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
                                      alt="Thumbnail of {{ page.url }}"
@@ -1732,7 +1732,7 @@
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                 <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
                             </a>
-                            <p class="text-muted small mt-1">Click to view full size</p>
+                            <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                             {% endif %}
 
                             {% if violation.metadata.ai_detected %}
@@ -1922,7 +1922,7 @@
                                                         <hr>
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                                <p><strong>Touchpoint:</strong> {{ warning.touchpoint|default('General') }}</p>
+                                                                <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(warning.touchpoint, warning.touchpoint)|default(_('General')) }}</p>
                                                                 <p><strong>Impact:</strong>
                                                                     <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'secondary' }} impact-badge">
                                                                         {{ _(warning.impact.value|upper if warning.impact.value else warning.impact|upper) }}
@@ -1995,7 +1995,7 @@
                                                         <h6 class="mt-4">All {{ warning.metadata.totalCount }} {{ warning.metadata.role }} landmarks on page:</h6>
                                                         {% for instance in warning.metadata.allInstances %}
                                                         <div class="mb-3">
-                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
@@ -2186,30 +2186,30 @@
                                 <h6 class="alert-heading">{{ warning.metadata.title }}</h6>
                             </div>
                             
-                            <h6 class="text-warning mb-2">About this issue:</h6>
+                            <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
                             
                             <div class="mb-3">
-                                <strong>What the issue is:</strong>
+                                <strong>{{ _('What the issue is:') }}</strong>
                                 <p>{{ warning.metadata.what|default(warning.description) }}</p>
                             </div>
                             
                             <div class="mb-3">
-                                <strong>Why this is important:</strong>
+                                <strong>{{ _('Why this is important:') }}</strong>
                                 <p>{{ warning.metadata.why }}</p>
                             </div>
                             
                             <div class="mb-3">
-                                <strong>Who it affects:</strong>
+                                <strong>{{ _('Who it affects:') }}</strong>
                                 <p>{{ warning.metadata.who }}</p>
                             </div>
                             
                             <div class="mb-3">
-                                <strong>How to remediate:</strong>
+                                <strong>{{ _('How to remediate:') }}</strong>
                                 <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation|default(warning.failure_summary) }}</div>
                             </div>
 
                             {% if warning.metadata.wcag_full or warning.wcag_criteria %}
-                            <h6 class="text-warning mb-2 mt-4">Relevant test criteria:</h6>
+                            <h6 class="text-warning mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
                             <div class="mb-3">
                                 {% if warning.metadata.wcag_full %}
                                 <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -2236,7 +2236,7 @@
                             <hr>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p><strong>Touchpoint:</strong> {{ warning.touchpoint }}</p>
+                                    <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(warning.touchpoint, warning.touchpoint) }}</p>
                                     <p><strong>Impact:</strong>
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'secondary' }} impact-badge">
                                             {{ warning.impact.value|upper if warning.impact.value else warning.impact|upper }}
@@ -2310,7 +2310,7 @@
                                                         <h6 class="mt-4">All {{ warning.metadata.totalCount }} {{ warning.metadata.role }} landmarks on page:</h6>
                                                         {% for instance in warning.metadata.allInstances %}
                                                         <div class="mb-3">
-                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
@@ -2338,7 +2338,7 @@
 
                             <!-- Thumbnail of the page at time of test -->
                             {% if screenshot_filename %}
-                            <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                            <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                 <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
                                      alt="Thumbnail of {{ page.url }}"
@@ -2347,14 +2347,14 @@
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                 <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
                             </a>
-                            <p class="text-muted small mt-1">Click to view full size</p>
+                            <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                             {% endif %}
                             {% else %}
                             <!-- Standard description -->
                             <hr>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p><strong>Touchpoint:</strong> {{ warning.touchpoint }}</p>
+                                    <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(warning.touchpoint, warning.touchpoint) }}</p>
                                     <p><strong>Impact:</strong>
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'secondary' }} impact-badge">
                                             {{ warning.impact.value|upper if warning.impact.value else warning.impact|upper }}
@@ -2395,7 +2395,7 @@
 
                             <!-- Thumbnail of the page at time of test -->
                             {% if screenshot_filename %}
-                            <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                            <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                 <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
                                      alt="Thumbnail of {{ page.url }}"
@@ -2404,7 +2404,7 @@
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                 <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
                             </a>
-                            <p class="text-muted small mt-1">Click to view full size</p>
+                            <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                             {% endif %}
                             {% endif %}
                         </div>
@@ -2562,7 +2562,7 @@
                                                         <h6 class="mt-4">All {{ info.metadata.totalCount }} {{ info.metadata.role }} landmarks on page:</h6>
                                                         {% for instance in info.metadata.allInstances %}
                                                         <div class="mb-3">
-                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
@@ -2639,30 +2639,30 @@
                                 <h6 class="alert-heading">{{ info.metadata.title }}</h6>
                             </div>
                             
-                            <h6 class="text-info mb-2">About this issue:</h6>
+                            <h6 class="text-info mb-2">{{ _('About this issue:') }}</h6>
                             
                             <div class="mb-3">
-                                <strong>What the issue is:</strong>
+                                <strong>{{ _('What the issue is:') }}</strong>
                                 <p>{{ info.metadata.what|default(info.description) }}</p>
                             </div>
                             
                             <div class="mb-3">
-                                <strong>Why this is important:</strong>
+                                <strong>{{ _('Why this is important:') }}</strong>
                                 <p>{{ info.metadata.why }}</p>
                             </div>
                             
                             <div class="mb-3">
-                                <strong>Who it affects:</strong>
+                                <strong>{{ _('Who it affects:') }}</strong>
                                 <p>{{ info.metadata.who }}</p>
                             </div>
                             
                             <div class="mb-3">
-                                <strong>How to remediate:</strong>
+                                <strong>{{ _('How to remediate:') }}</strong>
                                 <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ info.metadata.full_remediation|default(info.failure_summary) }}</div>
                             </div>
 
                             {% if info.metadata.wcag_full or info.wcag_criteria %}
-                            <h6 class="text-info mb-2 mt-4">Relevant test criteria:</h6>
+                            <h6 class="text-info mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
                             <div class="mb-3">
                                 {% if info.metadata.wcag_full %}
                                 <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -2687,7 +2687,7 @@
                             {% endif %}
 
                             <hr>
-                            <p><strong>Touchpoint:</strong> {{ info.touchpoint }}</p>
+                            <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(info.touchpoint, info.touchpoint) }}</p>
                             {% if info.xpath %}
                             <p>
                                 <strong>Location:</strong> <code>{{info.xpath}}</code>
@@ -2710,7 +2710,7 @@
                                                         <h6 class="mt-4">All {{ info.metadata.totalCount }} {{ info.metadata.role }} landmarks on page:</h6>
                                                         {% for instance in info.metadata.allInstances %}
                                                         <div class="mb-3">
-                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
@@ -2751,7 +2751,7 @@
                             {% endif %}
                             {% else %}
                             <!-- Standard description -->
-                            <p><strong>Touchpoint:</strong> {{ info.touchpoint }}</p>
+                            <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(info.touchpoint, info.touchpoint) }}</p>
                             {% if info.wcag_criteria %}
                             {% for wcag_criterion in info.wcag_criteria|sort %}
                             <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #17a2b8;">
@@ -2782,7 +2782,7 @@
 
                             <!-- Thumbnail of the page at time of test -->
                             {% if screenshot_filename %}
-                            <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                            <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                 <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
                                      alt="Thumbnail of {{ page.url }}"
@@ -2791,7 +2791,7 @@
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                 <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
                             </a>
-                            <p class="text-muted small mt-1">Click to view full size</p>
+                            <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                             {% endif %}
                             {% endif %}
                         </div>
@@ -2821,7 +2821,7 @@
                 {% set disc_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_discoveries in latest_result.discovery|groupby('touchpoint') %}
                     <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #6f42c1;">
-                        <strong>{{ touchpoint|replace('_', ' ')|title }}</strong>
+                        <strong>{{ touchpoint_names.get(touchpoint, touchpoint|replace('_', ' ')|title) }}</strong>
                     </div>
                     
                     {% for error_code, description_group in touchpoint_discoveries|groupby('id') %}
@@ -2927,14 +2927,14 @@
                                                         {% endif %}
                                                         {% else %}
                                                         <!-- Standard description -->
-                                                        <p><strong>Touchpoint:</strong> {{ discovery.touchpoint }}</p>
+                                                        <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(discovery.touchpoint, discovery.touchpoint) }}</p>
                                                         <p class="text-muted">
                                                             <i class="bi bi-info-circle"></i> {{ _('This item requires manual inspection.') }}
                                                         </p>
                                                         {% endif %}
                                                         
                                                         <hr>
-                                                        <p><strong>Touchpoint:</strong> {{ discovery.touchpoint }}</p>
+                                                        <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(discovery.touchpoint, discovery.touchpoint) }}</p>
                                                         {% if discovery.xpath %}
                                                         <p>
                                 <strong>Location:</strong> <code>{{discovery.xpath}}</code>
@@ -2956,7 +2956,7 @@
                                                         <h6 class="mt-4">All {{ discovery.metadata.totalCount }} {{ discovery.metadata.role }} landmarks on page:</h6>
                                                         {% for instance in discovery.metadata.allInstances %}
                                                         <div class="mb-3">
-                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
@@ -3051,30 +3051,30 @@
                                 <h6 class="alert-heading" style="color: #6f42c1;">{{ discovery.metadata.title }}</h6>
                             </div>
                             
-                            <h6 style="color: #6f42c1;" class="mb-2">About this discovery item:</h6>
+                            <h6 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h6>
                             
                             <div class="mb-3">
-                                <strong>What was found:</strong>
+                                <strong>{{ _('What was found:') }}</strong>
                                 <p>{{ discovery.metadata.what|default(discovery.description) }}</p>
                             </div>
                             
                             <div class="mb-3">
-                                <strong>Why manual review is needed:</strong>
+                                <strong>{{ _('Why manual review is needed:') }}</strong>
                                 <p>{{ discovery.metadata.why }}</p>
                             </div>
                             
                             <div class="mb-3">
-                                <strong>Who could be affected:</strong>
+                                <strong>{{ _('Who could be affected:') }}</strong>
                                 <p>{{ discovery.metadata.who }}</p>
                             </div>
                             
                             <div class="mb-3">
-                                <strong>What to check manually:</strong>
+                                <strong>{{ _('What to check manually:') }}</strong>
                                 <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ discovery.metadata.full_remediation|default(discovery.failure_summary) }}</div>
                             </div>
 
                             {% if discovery.metadata.wcag_full or discovery.wcag_criteria %}
-                            <h6 style="color: #6f42c1;" class="mb-2 mt-4">Relevant test criteria:</h6>
+                            <h6 style="color: #6f42c1;" class="mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
                             <div class="mb-3">
                                 {% if discovery.metadata.wcag_full %}
                                 <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -3099,9 +3099,9 @@
                             {% endif %}
 
                             <hr>
-                            <p><strong>Touchpoint:</strong> {{ discovery.touchpoint }}</p>
+                            <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(discovery.touchpoint, discovery.touchpoint) }}</p>
                             <p class="text-muted">
-                                <i class="bi bi-info-circle"></i> This item requires manual inspection to ensure accessibility.
+                                <i class="bi bi-info-circle"></i> {{ _('This item requires manual inspection to ensure accessibility.') }}
                             </p>
                             {% if discovery.xpath %}
                             <p>
@@ -3125,7 +3125,7 @@
                                                         <h6 class="mt-4">All {{ discovery.metadata.totalCount }} {{ discovery.metadata.role }} landmarks on page:</h6>
                                                         {% for instance in discovery.metadata.allInstances %}
                                                         <div class="mb-3">
-                                                            <p class="mb-1"><strong>Instance {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
@@ -3169,7 +3169,7 @@
 
                             <!-- Thumbnail of the page at time of test -->
                             {% if screenshot_filename %}
-                            <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                            <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                 <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
                                      alt="Thumbnail of {{ page.url }}"
@@ -3178,13 +3178,13 @@
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                 <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
                             </a>
-                            <p class="text-muted small mt-1">Click to view full size</p>
+                            <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                             {% endif %}
                             {% else %}
                             <!-- Standard description -->
-                            <p><strong>Touchpoint:</strong> {{ discovery.touchpoint }}</p>
+                            <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(discovery.touchpoint, discovery.touchpoint) }}</p>
                             <p class="text-muted">
-                                <i class="bi bi-info-circle"></i> This item requires manual inspection to ensure accessibility.
+                                <i class="bi bi-info-circle"></i> {{ _('This item requires manual inspection to ensure accessibility.') }}
                             </p>
                             {% if discovery.wcag_criteria %}
                             {% for wcag_criterion in discovery.wcag_criteria|sort %}
@@ -3216,7 +3216,7 @@
 
                             <!-- Thumbnail of the page at time of test -->
                             {% if screenshot_filename %}
-                            <h6 class="mt-4">Page Thumbnail (at time of test)</h6>
+                            <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                 <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
                                      alt="Thumbnail of {{ page.url }}"
@@ -3225,7 +3225,7 @@
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                 <span style="display: none; font-size: 0.9em; color: #999;">Thumbnail not available</span>
                             </a>
-                            <p class="text-muted small mt-1">Click to view full size</p>
+                            <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                             {% endif %}
                             {% endif %}
                         </div>

@@ -84,7 +84,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
                 break
 
     # Translate each text field with context
-    translatable_fields = ('title', 'what', 'why', 'who', 'remediation')
+    translatable_fields = ('title', 'what', 'what_generic', 'why', 'who', 'remediation')
 
     for field in translatable_fields:
         if field in desc and isinstance(desc[field], str):

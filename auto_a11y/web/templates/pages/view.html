@@ -3396,8 +3396,13 @@ const i18n = {
     'testFailed': {{ _('Test failed:') | tojson }},
     'failedToStart': {{ _('Failed to start test') | tojson }},
     'startingTest': {{ _('Starting Test...') | tojson }},
-    'cancelling': {{ _('Cancelling...') | tojson }}
+    'cancelling': {{ _('Cancelling...') | tojson }},
+    'noWcagCriteriaFound': {{ _('No WCAG criteria found') | tojson }},
+    'noTouchpointsFound': {{ _('No touchpoints found') | tojson }},
+    'allTouchpoints': {{ _('All Touchpoints') | tojson }},
+    'allWcag': {{ _('All WCAG Criteria') | tojson }}
 };
+window.i18n = i18n;
 
 function showScreenshot(screenshotUrl, pageUrl) {
     $('#screenshotModalTitle').text(i18n.screenshot + ' ' + pageUrl);

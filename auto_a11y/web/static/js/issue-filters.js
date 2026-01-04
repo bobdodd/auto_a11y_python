@@ -336,7 +336,8 @@ class IssueFilterManager {
         if (wcagSelect) {
             wcagSelect.innerHTML = '';
             if (wcagCriteria.size === 0) {
-                wcagSelect.innerHTML = '<option value="">No WCAG criteria found</option>';
+                const noWcagText = window.i18n?.noWcagCriteriaFound || 'No WCAG criteria found';
+                wcagSelect.innerHTML = `<option value="">${noWcagText}</option>`;
             } else {
                 [...wcagCriteria].sort().forEach(criterion => {
                     const option = document.createElement('option');
@@ -352,7 +353,8 @@ class IssueFilterManager {
         if (touchpointSelect) {
             touchpointSelect.innerHTML = '';
             if (touchpoints.size === 0) {
-                touchpointSelect.innerHTML = '<option value="">No touchpoints found</option>';
+                const noTouchpointsText = window.i18n?.noTouchpointsFound || 'No touchpoints found';
+                touchpointSelect.innerHTML = `<option value="">${noTouchpointsText}</option>`;
             } else {
                 // Get touchpoint names mapping if available
                 const touchpointNames = window.touchpointNames || {};

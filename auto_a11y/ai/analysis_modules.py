@@ -307,44 +307,49 @@ class LanguageAnalyzer:
         html_tag = soup.find('html')
         html_lang = html_tag.get('lang') if html_tag else None
         
-        prompt = f"""Analyze language usage in this web page.
+        prompt = f"""Analyze language usage in this web page screenshot and HTML.
 
 The HTML tag has lang="{html_lang or 'not set'}".
+
+Look for text in DIFFERENT languages than the page's primary language ({html_lang or 'unknown'}).
+Use the HTML to find the EXACT text - do NOT guess or paraphrase text.
 
 ISSUE CODES (use these exactly):
 - AI_ErrPageLanguageMissing: No lang attribute on <html> element (only if html_lang is missing)
 - AI_ErrPageLanguageWrong: Page lang attribute doesn't match visible content language
-- AI_WarnForeignTextUnmarked: Foreign language text found without lang attribute
+- AI_ErrForeignTextUnmarked: Foreign language text found without lang attribute (ERROR - screen readers will mispronounce)
+
+For each foreign text found, extract the EXACT text from the HTML.
 
 Return ONLY valid JSON:
 {{
-    "detected_language": "en/fr/es/etc",
+    "detected_language": "en/fr/es/de/etc",
     "html_lang": "{html_lang or 'missing'}",
     "language_matches": true/false,
     "foreign_content": [
         {{
-            "text_sample": "sample of foreign text",
+            "text_sample": "EXACT text from HTML",
             "detected_language": "language code",
             "has_lang_attr": true/false
         }}
     ],
     "issues": [
         {{
-            "err": "AI_WarnForeignTextUnmarked",
-            "type": "warn",
-            "text_sample": "foreign text found",
-            "detected_language": "es",
-            "element_tag": "p/span/div",
+            "err": "AI_ErrForeignTextUnmarked",
+            "type": "err",
+            "text_sample": "EXACT foreign text from HTML",
+            "detected_language": "de",
+            "element_tag": "p/span/div/h2/section",
             "element_class": "class if found",
-            "description": "Spanish text found without lang='es' attribute"
+            "description": "German text found without lang='de' attribute"
         }}
     ]
 }}
 
-IMPORTANT: Only flag language issues if you're CONFIDENT about the language mismatch."""
+CRITICAL: Use the EXACT text from the HTML. Do NOT paraphrase or translate the text."""
         
         try:
-            result = await self.client.analyze_with_image(screenshot, prompt)
+            result = await self.client.analyze_with_image_and_html(screenshot, html, prompt)
             logger.warning(f"Language analysis result: {result}")
             if 'issues' not in result:
                 result['issues'] = []

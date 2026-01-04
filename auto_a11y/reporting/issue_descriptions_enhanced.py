@@ -409,15 +409,25 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'wcag': ['3.1.1'],
             'remediation': "Update the lang attribute to match the primary language of the page content"
         },
+        'AI_ErrForeignTextUnmarked': {
+            'title': "{detected_language} text \"{text_sample}\" missing lang attribute",
+            'what': "Text \"{text_sample}\" in {detected_language} found without lang=\"{detected_language}\" attribute",
+            'what_generic': "Foreign language text is not marked with lang attribute",
+            'why': "Screen readers will mispronounce this text using the wrong language rules, making it incomprehensible",
+            'who': "Screen reader users, users who rely on text-to-speech",
+            'impact': ImpactScale.HIGH.value,
+            'wcag': ['3.1.2'],
+            'remediation': "Add lang=\"{detected_language}\" attribute to the element containing \"{text_sample}\" (e.g., <span lang=\"{detected_language}\">{text_sample}</span>)"
+        },
         'AI_WarnForeignTextUnmarked': {
-            'title': "Foreign language text found without lang attribute",
-            'what': "Text in {detected_language} found without lang=\"{detected_language}\" attribute",
+            'title': "{detected_language} text \"{text_sample}\" missing lang attribute",
+            'what': "Text \"{text_sample}\" in {detected_language} found without lang=\"{detected_language}\" attribute",
             'what_generic': "Foreign language text is not marked with lang attribute",
             'why': "Screen readers may mispronounce foreign language text without proper lang markup",
             'who': "Screen reader users",
-            'impact': ImpactScale.MEDIUM.value,
+            'impact': ImpactScale.HIGH.value,
             'wcag': ['3.1.2'],
-            'remediation': "Wrap foreign language text in a span with lang attribute (e.g., <span lang=\"es\">)</span>"
+            'remediation': "Add lang=\"{detected_language}\" attribute to the element containing \"{text_sample}\" (e.g., <span lang=\"{detected_language}\">{text_sample}</span>)"
         },
         'AI_ErrInfiniteAnimationNoPause': {
             'title': "Infinite animation has no pause control",

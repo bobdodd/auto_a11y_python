@@ -277,7 +277,7 @@ class ClaudeAnalyzer:
                     'headings': 'AI_ErrHeadingIssue',
                     'reading_order': 'AI_ErrReadingOrderMismatch',
                     'modals': 'AI_ErrDialogMissingRole',
-                    'language': 'AI_WarnForeignTextUnmarked',
+                    'language': 'AI_ErrForeignTextUnmarked',
                     'animations': 'AI_WarnNoReducedMotion',
                     'interactive': 'AI_ErrNonSemanticButton'
                 }

@@ -2,61 +2,81 @@
 Translation wrapper for issue descriptions.
 
 This module wraps get_detailed_issue_description() to provide runtime translation
-of accessibility issue descriptions using Flask-Babel.
+of accessibility issue descriptions using built-in translations stored in JSON.
 
-Phase 1 (Beta Demo): Temporary wrapper approach
-Phase 2 (Post-Demo): Will be replaced by regenerated source with built-in translations
+The translations are loaded from issue_translations_fr.json which was extracted
+from the PO file. This approach avoids pybabel update issues that comment out
+translations for strings not found in direct _() calls.
 """
 
 import re
+import json
+import logging
+from pathlib import Path
 from typing import Dict, Any
-from flask_babel import gettext as _, pgettext
 
-# Import everything from the original module
+logger = logging.getLogger(__name__)
+
 from auto_a11y.reporting.issue_descriptions_enhanced import (
     get_detailed_issue_description as _get_original_description,
     ImpactScale,
     format_issue_for_display as _format_issue_for_display
 )
 
+_TRANSLATIONS_CACHE: Dict[str, Dict[str, Dict[str, str]]] = {}
 
-def convert_placeholders(text: str) -> str:
-    """
-    Convert Python f-string style placeholders to gettext format.
 
-    Converts:
-        {variable} → %(variable)s
-        {object.attribute} → %(object_attribute)s
+def _load_translations(lang: str) -> Dict[str, Dict[str, str]]:
+    """Load translations for a language from JSON file."""
+    if lang in _TRANSLATIONS_CACHE:
+        return _TRANSLATIONS_CACHE[lang]
+    
+    translations_file = Path(__file__).parent / f'issue_translations_{lang}.json'
+    if translations_file.exists():
+        try:
+            with open(translations_file, 'r', encoding='utf-8') as f:
+                _TRANSLATIONS_CACHE[lang] = json.load(f)
+                logger.debug(f"Loaded {len(_TRANSLATIONS_CACHE[lang])} issue translations for {lang}")
+        except Exception as e:
+            logger.warning(f"Failed to load translations for {lang}: {e}")
+            _TRANSLATIONS_CACHE[lang] = {}
+    else:
+        _TRANSLATIONS_CACHE[lang] = {}
+    
+    return _TRANSLATIONS_CACHE[lang]
 
-    Args:
-        text: String with {placeholder} format
 
-    Returns:
-        String with %(placeholder)s format
-    """
-    if not text or not isinstance(text, str):
-        return text
+def _get_current_locale() -> str:
+    """Get the current locale from Flask-Babel."""
+    try:
+        from flask_babel import get_locale
+        locale = get_locale()
+        if locale:
+            return str(locale.language)
+    except Exception:
+        pass
+    return 'en'
 
-    # Pattern to match {variable} or {object.attribute}
-    pattern = r'\{([a-zA-Z_][a-zA-Z0-9_\.]*)\}'
 
-    def replacer(match):
-        var_name = match.group(1)
-        # Convert dot notation to underscore: {element.tag} → %(element_tag)s
-        var_name = var_name.replace('.', '_')
-        return f'%({var_name})s'
-
-    return re.sub(pattern, replacer, text)
+def _extract_error_type(issue_code: str) -> str:
+    """Extract the error type from an issue code."""
+    if issue_code.startswith('AI_'):
+        return issue_code
+    
+    if '_' in issue_code:
+        parts = issue_code.split('_')
+        for i, part in enumerate(parts):
+            if part.startswith(('Err', 'Warn', 'Info', 'Disco')):
+                return '_'.join(parts[i:])
+    
+    return issue_code
 
 
 def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = None) -> Dict[str, Any]:
     """
     Get detailed translated description for an issue code.
 
-    This wrapper:
-    1. Calls the original get_detailed_issue_description()
-    2. Translates each text field using Flask-Babel gettext
-    3. Converts placeholders to gettext format
+    Uses built-in JSON translations instead of pgettext for reliability.
 
     Args:
         issue_code: The issue code (e.g., 'headings_ErrEmptyHeading')
@@ -65,74 +85,57 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
     Returns:
         Dictionary with translated description fields
     """
-    # Get original English description with placeholder replacement already done
     desc = _get_original_description(issue_code, metadata)
 
     if not desc:
         return desc
 
-    # Make a copy to avoid modifying the original
     translated_desc = desc.copy()
+    
+    lang = _get_current_locale()
+    
+    if lang == 'en':
+        return _apply_metadata(translated_desc, metadata)
+    
+    translations = _load_translations(lang)
+    error_type = _extract_error_type(issue_code)
+    
+    if error_type in translations:
+        issue_trans = translations[error_type]
+        translatable_fields = ('title', 'what', 'what_generic', 'why', 'who', 'remediation')
+        
+        for field in translatable_fields:
+            if field in issue_trans and issue_trans[field]:
+                translated_desc[field] = issue_trans[field]
+    
+    return _apply_metadata(translated_desc, metadata)
 
-    # Extract the error type for msgctxt (strip category prefix if present)
-    error_type = issue_code
-    if '_' in issue_code:
-        parts = issue_code.split('_')
-        for i, part in enumerate(parts):
-            if part.startswith(('Err', 'Warn', 'Info', 'Disco', 'AI_')):
-                error_type = '_'.join(parts[i:])
-                break
 
-    # Translate each text field with context
+def _apply_metadata(desc: Dict[str, Any], metadata: Dict[str, Any]) -> Dict[str, Any]:
+    """Apply metadata substitution to description fields."""
+    if not metadata:
+        return desc
+    
     translatable_fields = ('title', 'what', 'what_generic', 'why', 'who', 'remediation')
-
+    
     for field in translatable_fields:
         if field in desc and isinstance(desc[field], str):
-            # Create context-specific msgctxt
-            msgctxt = f'issue_{error_type}_{field}'
-
-            # Convert placeholders in original text
-            converted_text = convert_placeholders(desc[field])
-
-            # Translate with context using pgettext (context, message)
-            translated_text = pgettext(msgctxt, converted_text)
-
-            # If translation returned the same text, it means no translation exists
-            # In that case, keep the original English text
-            translated_desc[field] = translated_text
-
-    # Apply metadata substitution to translated text
-    # The translated text has %(variable)s placeholders that need to be filled
-    if metadata:
-        for field in translatable_fields:
-            if field in translated_desc and isinstance(translated_desc[field], str):
-                try:
-                    # Escape literal % characters that are NOT format specifiers
-                    # before applying % formatting. This handles cases like "8% of men"
-                    # where the % is literal text, not a format specifier.
-                    text = translated_desc[field]
-                    # Replace % with %% EXCEPT when followed by ( which indicates %(name)s
-                    escaped_text = re.sub(r'%(?!\()', '%%', text)
-                    translated_desc[field] = escaped_text % metadata
-                except (KeyError, ValueError, TypeError) as e:
-                    # Log the error for debugging but don't fail
-                    import logging
-                    logger = logging.getLogger(__name__)
-                    logger.warning(f"Placeholder substitution failed for {issue_code}: {e}, keys available: {list(metadata.keys())}")
-
-    return translated_desc
+            try:
+                text = desc[field]
+                escaped_text = re.sub(r'%(?!\()', '%%', text)
+                desc[field] = escaped_text % metadata
+            except (KeyError, ValueError, TypeError) as e:
+                logger.warning(f"Placeholder substitution failed for field {field}: {e}")
+    
+    return desc
 
 
 def format_issue_for_display(issue_code: str, violation_data: Dict[str, Any]) -> Dict[str, str]:
     """
     Format an issue with all its metadata for display (translated).
-
-    This is a pass-through wrapper that uses our translated get_detailed_issue_description.
     """
-    # Get the translated description using our wrapper
     description = get_detailed_issue_description(issue_code, violation_data)
 
-    # Add any additional runtime data (same as original)
     description['issue_id'] = issue_code
     description['location'] = violation_data.get('xpath', 'Not specified')
     description['element'] = violation_data.get('element', 'Not specified')
@@ -141,10 +144,8 @@ def format_issue_for_display(issue_code: str, violation_data: Dict[str, Any]) ->
     return description
 
 
-# Re-export ImpactScale for convenience
 __all__ = [
     'get_detailed_issue_description',
     'format_issue_for_display',
     'ImpactScale',
-    'convert_placeholders',
 ]

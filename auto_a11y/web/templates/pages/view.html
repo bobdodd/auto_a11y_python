@@ -533,7 +533,17 @@
             </p>
             <div class="btn-group" role="group" aria-label="{{ _('Page states') }}">
                 {% for state_result in state_results %}
-                    {% set state_desc = state_result.page_state.description if state_result.page_state else ("State " ~ state_result.state_sequence) %}
+                    {% set raw_state_desc = state_result.page_state.description if state_result.page_state else "" %}
+                    {% if raw_state_desc.startswith('Initial page state') %}
+                        {% set state_desc = _('Initial page state (before script execution)') %}
+                    {% elif raw_state_desc.startswith('After executing script:') %}
+                        {% set script_name = raw_state_desc.replace('After executing script: ', '') %}
+                        {% set state_desc = _('After executing script:') ~ ' ' ~ script_name %}
+                    {% elif raw_state_desc %}
+                        {% set state_desc = raw_state_desc %}
+                    {% else %}
+                        {% set state_desc = _('State') ~ ' ' ~ state_result.state_sequence %}
+                    {% endif %}
                     {% set is_active = (loop.index0 == selected_state_index) %}
                     <button type="button"
                             class="btn btn-outline-primary state-selector {% if is_active %}active{% endif %}"

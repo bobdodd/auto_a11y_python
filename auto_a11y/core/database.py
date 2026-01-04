@@ -17,7 +17,7 @@ from auto_a11y.models import (
     DocumentReference, DiscoveryRun,
     PageSetupScript, ScriptExecutionSession,
     WebsiteUser, ProjectUser, DiscoveredPage,
-    TestStateMatrix
+    TestStateMatrix, AppUser, UserRole
 )
 
 logger = logging.getLogger(__name__)
@@ -55,6 +55,7 @@ class Database:
         self.discovered_pages: Collection = self.db.discovered_pages  # Discovered pages for Drupal export
         self.drupal_issues: Collection = self.db.drupal_issues  # Track Drupal issue uploads by violation ID
         self.test_state_matrices: Collection = self.db.test_state_matrices  # Multi-state test configuration matrices
+        self.app_users: Collection = self.db.app_users  # Application users for authentication
 
         # Create indexes
         self._create_indexes()
@@ -181,6 +182,11 @@ class Database:
         self.drupal_issues.create_index([("unique_id", 1), ("project_id", 1)], unique=True)
         self.drupal_issues.create_index("drupal_uuid")
         self.drupal_issues.create_index("discovered_page_id")
+
+        # App users (application authentication)
+        self.app_users.create_index("email", unique=True)
+        self.app_users.create_index("role")
+        self.app_users.create_index("is_active")
     
     def test_connection(self) -> bool:
         """Test database connection"""
@@ -2326,3 +2332,95 @@ class Database:
 
         docs = self.test_state_matrices.find(query).sort("created_date", -1)
         return [TestStateMatrix.from_dict(doc) for doc in docs]
+
+    # ==========================================
+    # App User Methods (Authentication)
+    # ==========================================
+
+    def create_app_user(self, user: AppUser) -> str:
+        """
+        Create a new application user
+
+        Args:
+            user: AppUser instance
+
+        Returns:
+            User ID (string)
+        """
+        try:
+            result = self.app_users.insert_one(user.to_dict())
+            user._id = result.inserted_id
+            logger.info(f"Created app user: {user.email}")
+            return str(result.inserted_id)
+        except Exception as e:
+            if "duplicate key" in str(e).lower() or "E11000" in str(e):
+                logger.warning(f"App user already exists: {user.email}")
+                raise ValueError(f"User with email {user.email} already exists")
+            raise
+
+    def get_app_user(self, user_id: str) -> Optional[AppUser]:
+        """Get app user by ID"""
+        doc = self.app_users.find_one({"_id": ObjectId(user_id)})
+        return AppUser.from_dict(doc) if doc else None
+
+    def get_app_user_by_email(self, email: str) -> Optional[AppUser]:
+        """Get app user by email"""
+        doc = self.app_users.find_one({"email": email.lower()})
+        return AppUser.from_dict(doc) if doc else None
+
+    def update_app_user(self, user: AppUser) -> bool:
+        """Update existing app user"""
+        if not user._id:
+            logger.error("Cannot update user without _id")
+            return False
+
+        user.update_timestamp()
+        update_data = user.to_dict()
+        if '_id' in update_data:
+            del update_data['_id']
+
+        result = self.app_users.update_one(
+            {"_id": user._id},
+            {"$set": update_data}
+        )
+
+        if result.modified_count > 0:
+            logger.info(f"Updated app user: {user.email}")
+            return True
+        return False
+
+    def delete_app_user(self, user_id: str) -> bool:
+        """Delete app user"""
+        result = self.app_users.delete_one({"_id": ObjectId(user_id)})
+        if result.deleted_count > 0:
+            logger.info(f"Deleted app user: {user_id}")
+            return True
+        return False
+
+    def get_app_users(
+        self,
+        role: Optional[UserRole] = None,
+        is_active: Optional[bool] = None,
+        limit: int = 100,
+        skip: int = 0
+    ) -> List[AppUser]:
+        """Get app users with optional filtering"""
+        query = {}
+        if role:
+            query["role"] = role.value
+        if is_active is not None:
+            query["is_active"] = is_active
+
+        docs = self.app_users.find(query).sort("email", 1).limit(limit).skip(skip)
+        return [AppUser.from_dict(doc) for doc in docs]
+
+    def count_app_users(self, role: Optional[UserRole] = None) -> int:
+        """Count app users"""
+        query = {}
+        if role:
+            query["role"] = role.value
+        return self.app_users.count_documents(query)
+
+    def app_user_exists(self, email: str) -> bool:
+        """Check if an app user exists by email"""
+        return self.app_users.count_documents({"email": email.lower()}) > 0

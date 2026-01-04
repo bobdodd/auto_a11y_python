@@ -2,9 +2,10 @@
 Flask application factory
 """
 
-from flask import Flask, render_template, jsonify, request, session, g
+from flask import Flask, render_template, jsonify, request, session, g, redirect, url_for
 from flask_cors import CORS
 from flask_babel import Babel
+from flask_login import LoginManager, current_user, login_required
 import logging
 
 from auto_a11y.core import Database
@@ -22,7 +23,8 @@ from auto_a11y.web.routes import (
     recordings_bp,
     drupal_sync_bp,
     discovered_pages_bp,
-    automated_tests_bp
+    automated_tests_bp,
+    auth_bp
 )
 from auto_a11y.web.routes.demo import demo_bp
 
@@ -77,16 +79,29 @@ def create_app(config):
 
     babel = Babel(app, locale_selector=get_locale)
 
-    # Make get_locale and config available to all templates
+    # Initialize database connection (needed before Flask-Login)
+    app.db = Database(config.MONGODB_URI, config.DATABASE_NAME)
+
+    # Configure Flask-Login
+    login_manager = LoginManager()
+    login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'
+    login_manager.login_message = 'Please log in to access this page.'
+    login_manager.login_message_category = 'warning'
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        """Load user by ID for Flask-Login"""
+        return app.db.get_app_user(user_id)
+
+    # Make get_locale, config, and current_user available to all templates
     @app.context_processor
     def inject_globals():
         return dict(
             get_locale=get_locale,
-            show_error_codes=config.SHOW_ERROR_CODES
+            show_error_codes=config.SHOW_ERROR_CODES,
+            current_user=current_user
         )
-
-    # Initialize database connection
-    app.db = Database(config.MONGODB_URI, config.DATABASE_NAME)
     
     # Store config for access in routes
     app.app_config = config
@@ -126,6 +141,24 @@ def create_app(config):
     app.register_blueprint(discovered_pages_bp, url_prefix='')
     app.register_blueprint(automated_tests_bp, url_prefix='/automated_tests')
     app.register_blueprint(demo_bp, url_prefix='/demo')
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+
+    # Global login requirement - protect all routes except auth, static, and health
+    @app.before_request
+    def require_login():
+        """Require login for all routes except auth, static, and health endpoints"""
+        allowed_endpoints = [
+            'auth.login', 'auth.register', 'auth.logout',
+            'static', 'health', 'set_language'
+        ]
+        if request.endpoint and request.endpoint in allowed_endpoints:
+            return None
+        if request.endpoint and request.endpoint.startswith('static'):
+            return None
+        if not current_user.is_authenticated:
+            if request.is_json or request.path.startswith('/api/'):
+                return jsonify({'error': 'Authentication required'}), 401
+            return redirect(url_for('auth.login', next=request.url))
 
     # Custom Jinja filters
     @app.template_filter('error_code_only')
@@ -181,10 +214,13 @@ def create_app(config):
     # Main routes
     @app.route('/')
     def index():
-        """Home page"""
-        return render_template('index.html')
+        """Home page - redirect to dashboard if logged in"""
+        if current_user.is_authenticated:
+            return redirect(url_for('dashboard'))
+        return redirect(url_for('auth.login'))
     
     @app.route('/dashboard')
+    @login_required
     def dashboard():
         """Main dashboard"""
         # Get only the latest test results for each page

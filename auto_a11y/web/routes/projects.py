@@ -4,7 +4,9 @@ Project management routes
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from flask_babel import gettext as _, lazy_gettext
+from flask_login import login_required
 from auto_a11y.models import Project, ProjectStatus, ProjectType
+from auto_a11y.web.routes.auth import auditor_required
 import logging
 
 logger = logging.getLogger(__name__)
@@ -12,6 +14,7 @@ projects_bp = Blueprint('projects', __name__)
 
 
 @projects_bp.route('/api/list')
+@login_required
 def api_list_projects():
     """API endpoint to list all projects"""
     try:
@@ -32,6 +35,7 @@ def api_list_projects():
 
 
 @projects_bp.route('/api/<project_id>/websites')
+@login_required
 def api_project_websites(project_id):
     """API endpoint to list websites in a project"""
     try:
@@ -197,6 +201,7 @@ def api_issue_documentation_stats():
 
 
 @projects_bp.route('/')
+@login_required
 def list_projects():
     """List all projects"""
     status_filter = request.args.get('status')
@@ -211,6 +216,7 @@ def list_projects():
 
 
 @projects_bp.route('/create', methods=['GET', 'POST'])
+@auditor_required
 def create_project():
     """Create new project"""
     if request.method == 'POST':

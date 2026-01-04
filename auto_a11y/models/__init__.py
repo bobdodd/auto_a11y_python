@@ -23,6 +23,7 @@ from .recording import Recording, RecordingType, Timecode, WCAGReference
 from .recording_issue import RecordingIssue
 from .discovered_page import DiscoveredPage
 from .issue import Issue
+from .app_user import AppUser, UserRole
 
 __all__ = [
     'Project', 'ProjectStatus', 'ProjectType', 'LivedExperienceTester', 'TestSupervisor',
@@ -41,5 +42,6 @@ __all__ = [
     'Recording', 'RecordingType', 'Timecode', 'WCAGReference',
     'RecordingIssue',
     'DiscoveredPage',
-    'Issue'
+    'Issue',
+    'AppUser', 'UserRole'
 ]

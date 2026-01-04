@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Profile') }} - {{ _('Auto A11y') }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-person-circle"></i> {{ _('Profile') }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.profile') }}">
+                    <input type="hidden" name="action" value="update_profile">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">{{ _('Email') }}</label>
+                        <input type="email" class="form-control" id="email" value="{{ current_user.email }}" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="display_name" class="form-label">{{ _('Display Name') }}</label>
+                        <input type="text" class="form-control" id="display_name" name="display_name" value="{{ current_user.display_name or '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Role') }}</label>
+                        <input type="text" class="form-control" value="{{ current_user.role.value|title }}" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">{{ _('Member Since') }}</label>
+                        <input type="text" class="form-control" value="{{ current_user.created_at.strftime('%Y-%m-%d') }}" disabled>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg"></i> {{ _('Save Changes') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0"><i class="bi bi-key"></i> {{ _('Change Password') }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.profile') }}">
+                    <input type="hidden" name="action" value="change_password">
+                    <div class="mb-3">
+                        <label for="current_password" class="form-label">{{ _('Current Password') }}</label>
+                        <input type="password" class="form-control" id="current_password" name="current_password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">{{ _('New Password') }}</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" required minlength="8">
+                        <div class="form-text">{{ _('Minimum 8 characters.') }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirm_password" class="form-label">{{ _('Confirm New Password') }}</label>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                    </div>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-key"></i> {{ _('Change Password') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

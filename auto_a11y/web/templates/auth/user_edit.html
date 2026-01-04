@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Edit User') }} - {{ _('Auto A11y') }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-person-gear"></i> {{ _('Edit User') }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.user_edit', user_id=user.id) }}">
+                    <input type="hidden" name="action" value="update">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">{{ _('Email') }}</label>
+                        <input type="email" class="form-control" id="email" value="{{ user.email }}" disabled>
+                    </div>
+                    <div class="mb-3">
+                        <label for="display_name" class="form-label">{{ _('Display Name') }}</label>
+                        <input type="text" class="form-control" id="display_name" name="display_name" value="{{ user.display_name or '' }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">{{ _('Role') }}</label>
+                        <select class="form-select" id="role" name="role">
+                            <option value="client" {% if user.role.value == 'client' %}selected{% endif %}>{{ _('Client') }}</option>
+                            <option value="auditor" {% if user.role.value == 'auditor' %}selected{% endif %}>{{ _('Auditor') }}</option>
+                            <option value="admin" {% if user.role.value == 'admin' %}selected{% endif %}>{{ _('Admin') }}</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if user.is_active %}checked{% endif %}>
+                        <label class="form-check-label" for="is_active">{{ _('Active') }}</label>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg"></i> {{ _('Save Changes') }}
+                        </button>
+                        <a href="{{ url_for('auth.user_list') }}" class="btn btn-secondary">
+                            {{ _('Cancel') }}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-info-circle"></i> {{ _('User Statistics') }}</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">{{ _('Created') }}</dt>
+                    <dd class="col-sm-7">{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</dd>
+                    
+                    <dt class="col-sm-5">{{ _('Last Login') }}</dt>
+                    <dd class="col-sm-7">{{ user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else '-' }}</dd>
+                    
+                    <dt class="col-sm-5">{{ _('Login Count') }}</dt>
+                    <dd class="col-sm-7">{{ user.login_count }}</dd>
+                    
+                    <dt class="col-sm-5">{{ _('Failed Logins') }}</dt>
+                    <dd class="col-sm-7">{{ user.failed_login_count }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0"><i class="bi bi-key"></i> {{ _('Reset Password') }}</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.user_edit', user_id=user.id) }}">
+                    <input type="hidden" name="action" value="reset_password">
+                    <div class="mb-3">
+                        <label for="new_password" class="form-label">{{ _('New Password') }}</label>
+                        <input type="password" class="form-control" id="new_password" name="new_password" required minlength="8">
+                        <div class="form-text">{{ _('Minimum 8 characters.') }}</div>
+                    </div>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="bi bi-key"></i> {{ _('Reset Password') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        {% if user.is_locked() %}
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="bi bi-lock"></i> {{ _('Account Locked') }}</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ _('This account is locked due to too many failed login attempts.') }}</p>
+                <p>{{ _('Locked until:') }} {{ user.locked_until.strftime('%Y-%m-%d %H:%M') }}</p>
+                <form method="POST" action="{{ url_for('auth.user_edit', user_id=user.id) }}">
+                    <input type="hidden" name="action" value="unlock">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-unlock"></i> {{ _('Unlock Account') }}
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

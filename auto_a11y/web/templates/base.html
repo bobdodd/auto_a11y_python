@@ -80,6 +80,37 @@
                             </a></li>
                         </ul>
                     </li>
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> {{ current_user.name_display }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><span class="dropdown-item-text text-muted small">
+                                {% if current_user.role.value == 'admin' %}{{ _('Admin') }}{% elif current_user.role.value == 'auditor' %}{{ _('Auditor') }}{% else %}{{ _('Client') }}{% endif %}
+                            </span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}">
+                                <i class="bi bi-person"></i> {{ _('Profile') }}
+                            </a></li>
+                            {% if current_user.is_admin() %}
+                            <li><a class="dropdown-item" href="{{ url_for('auth.user_list') }}">
+                                <i class="bi bi-people"></i> {{ _('User Management') }}
+                            </a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                <i class="bi bi-box-arrow-right"></i> {{ _('Logout') }}
+                            </a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">
+                            <i class="bi bi-box-arrow-in-right"></i> {{ _('Login') }}
+                        </a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

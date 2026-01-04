@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-01-03 20:10-0500\n"
+"POT-Creation-Date: 2026-01-04 15:20-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -283,19 +283,157 @@ msgstr ""
 msgid "Accessibility checks for %(touchpoint)s"
 msgstr ""
 
-#: auto_a11y/web/routes/pages.py:644
+#: auto_a11y/web/routes/auth.py:27 auto_a11y/web/routes/auth.py:44
+#: auto_a11y/web/routes/auth.py:60
+msgid "Please log in to access this page."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:31
+msgid "You do not have permission to access this page."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:48
+msgid "Administrator access required."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:64
+msgid "Auditor access required."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:83
+msgid "Please enter both email and password."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:89 auto_a11y/web/routes/auth.py:103
+msgid "Invalid email or password."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:93
+msgid "Account is temporarily locked. Please try again later."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:97
+msgid "Your account has been deactivated. Please contact an administrator."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:125
+msgid "You have been logged out."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:147
+msgid "Email is required."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:149 auto_a11y/web/routes/auth.py:250
+msgid "Please enter a valid email address."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:152
+msgid "Password is required."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:154 auto_a11y/web/routes/auth.py:253
+#: auto_a11y/web/routes/auth.py:316
+msgid "Password must be at least 8 characters."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:157
+msgid "Passwords do not match."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:160 auto_a11y/web/routes/auth.py:256
+msgid "An account with this email already exists."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:180
+msgid "Admin account created successfully. Please log in."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:182
+msgid "Account created successfully. Please log in."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:205
+msgid "Profile updated successfully."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:213
+msgid "Current password is incorrect."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:215
+msgid "New password must be at least 8 characters."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:217
+msgid "New passwords do not match."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:222
+msgid "Password changed successfully."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:261
+msgid "Invalid role selected."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:279
+msgid "User created successfully."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:293 auto_a11y/web/routes/auth.py:347
+msgid "User not found."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:311
+msgid "User updated successfully."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:323
+msgid "Password reset successfully."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:330
+msgid "Account unlocked."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:342
+msgid "You cannot delete your own account."
+msgstr ""
+
+#: auto_a11y/web/routes/auth.py:351
+msgid "User deleted successfully."
+msgstr ""
+
+#: auto_a11y/web/routes/pages.py:285
+msgid "why_it_matters"
+msgstr ""
+
+#: auto_a11y/web/routes/pages.py:286
+msgid "who_it_affects"
+msgstr ""
+
+#: auto_a11y/web/routes/pages.py:287 auto_a11y/web/routes/pages.py:297
+msgid "how_to_fix"
+msgstr ""
+
+#: auto_a11y/web/routes/pages.py:298
+msgid "impact"
+msgstr ""
+
+#: auto_a11y/web/routes/pages.py:689
 msgid "Page not found"
 msgstr ""
 
-#: auto_a11y/web/routes/pages.py:711
+#: auto_a11y/web/routes/pages.py:756
 msgid "Test matrix updated successfully"
 msgstr ""
 
-#: auto_a11y/web/routes/pages.py:714
+#: auto_a11y/web/routes/pages.py:759
 msgid "Test matrix created successfully"
 msgstr ""
 
-#: auto_a11y/web/routes/pages.py:720
+#: auto_a11y/web/routes/pages.py:765
 #, python-format
 msgid "Failed to save test matrix: %(error)s"
 msgstr ""
@@ -545,7 +683,13 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: auto_a11y/web/templates/base.html:6 auto_a11y/web/templates/base.html:126
+#: auto_a11y/web/templates/auth/login.html:3
+#: auto_a11y/web/templates/auth/profile.html:3
+#: auto_a11y/web/templates/auth/register.html:3
+#: auto_a11y/web/templates/auth/user_create.html:3
+#: auto_a11y/web/templates/auth/user_edit.html:3
+#: auto_a11y/web/templates/auth/user_list.html:3
+#: auto_a11y/web/templates/base.html:6 auto_a11y/web/templates/base.html:157
 #: auto_a11y/web/templates/index.html:3 auto_a11y/web/templates/index.html:11
 #: auto_a11y/web/templates/pages/test_matrix.html:3
 #: auto_a11y/web/templates/pages/test_matrix_v2.html:3
@@ -572,7 +716,7 @@ msgstr ""
 #: auto_a11y/web/templates/base.html:41
 #: auto_a11y/web/templates/pages/edit.html:82
 #: auto_a11y/web/templates/pages/view.html:132
-#: auto_a11y/web/templates/pages/view.html:3372
+#: auto_a11y/web/templates/pages/view.html:3382
 #: auto_a11y/web/templates/projects/view.html:558
 #: auto_a11y/web/templates/websites/view.html:1048
 #: auto_a11y/web/templates/websites/view.html:1403
@@ -623,7 +767,52 @@ msgstr ""
 msgid "Fixture Status"
 msgstr ""
 
-#: auto_a11y/web/templates/base.html:126
+#: auto_a11y/web/templates/auth/user_create.html:32
+#: auto_a11y/web/templates/auth/user_edit.html:28
+#: auto_a11y/web/templates/auth/user_list.html:34
+#: auto_a11y/web/templates/base.html:90
+msgid "Admin"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_create.html:31
+#: auto_a11y/web/templates/auth/user_edit.html:27
+#: auto_a11y/web/templates/auth/user_list.html:36
+#: auto_a11y/web/templates/base.html:90
+#: auto_a11y/web/templates/recordings/detail.html:53
+msgid "Auditor"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_create.html:30
+#: auto_a11y/web/templates/auth/user_edit.html:26
+#: auto_a11y/web/templates/auth/user_list.html:38
+#: auto_a11y/web/templates/base.html:90
+msgid "Client"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/profile.html:3
+#: auto_a11y/web/templates/auth/profile.html:10
+#: auto_a11y/web/templates/base.html:94
+msgid "Profile"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_list.html:3
+#: auto_a11y/web/templates/auth/user_list.html:7
+#: auto_a11y/web/templates/base.html:98
+msgid "User Management"
+msgstr ""
+
+#: auto_a11y/web/templates/base.html:103
+msgid "Logout"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/login.html:3
+#: auto_a11y/web/templates/auth/login.html:10
+#: auto_a11y/web/templates/auth/login.html:27
+#: auto_a11y/web/templates/base.html:110
+msgid "Login"
+msgstr ""
+
+#: auto_a11y/web/templates/base.html:157
 msgid "Canadian National Institute for the Blind"
 msgstr ""
 
@@ -643,18 +832,18 @@ msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:73
 #: auto_a11y/web/templates/pages/view.html:279
-#: auto_a11y/web/templates/pages/view.html:560
-#: auto_a11y/web/templates/pages/view.html:3279
-#: auto_a11y/web/templates/pages/view.html:3717
+#: auto_a11y/web/templates/pages/view.html:570
+#: auto_a11y/web/templates/pages/view.html:3289
+#: auto_a11y/web/templates/pages/view.html:3732
 #: auto_a11y/web/templates/testing/dashboard.html:83
 msgid "Errors"
 msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:86
 #: auto_a11y/web/templates/pages/view.html:288
-#: auto_a11y/web/templates/pages/view.html:1774
-#: auto_a11y/web/templates/pages/view.html:3280
-#: auto_a11y/web/templates/pages/view.html:3718
+#: auto_a11y/web/templates/pages/view.html:1784
+#: auto_a11y/web/templates/pages/view.html:3290
+#: auto_a11y/web/templates/pages/view.html:3733
 #: auto_a11y/web/templates/reports/dashboard.html:383
 #: auto_a11y/web/templates/testing/dashboard.html:84
 #: auto_a11y/web/templates/testing/result.html:59
@@ -664,14 +853,14 @@ msgid "Warnings"
 msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:99
-#: auto_a11y/web/templates/pages/view.html:2427
+#: auto_a11y/web/templates/pages/view.html:2437
 msgid "Info Notes"
 msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:112
 #: auto_a11y/web/templates/pages/view.html:306
-#: auto_a11y/web/templates/pages/view.html:3282
-#: auto_a11y/web/templates/pages/view.html:3720
+#: auto_a11y/web/templates/pages/view.html:3292
+#: auto_a11y/web/templates/pages/view.html:3735
 #: auto_a11y/web/templates/testing/dashboard.html:86
 msgid "Discovery"
 msgstr ""
@@ -708,7 +897,7 @@ msgstr ""
 #: auto_a11y/web/templates/pages/edit.html:84
 #: auto_a11y/web/templates/pages/view.html:135
 #: auto_a11y/web/templates/pages/view.html:438
-#: auto_a11y/web/templates/pages/view.html:3373
+#: auto_a11y/web/templates/pages/view.html:3383
 #: auto_a11y/web/templates/projects/view.html:63
 #: auto_a11y/web/templates/websites/view.html:166
 #: auto_a11y/web/templates/websites/view.html:1424
@@ -716,7 +905,7 @@ msgid "Tested"
 msgstr ""
 
 #: auto_a11y/web/templates/dashboard.html:161
-#: auto_a11y/web/templates/pages/view.html:3714
+#: auto_a11y/web/templates/pages/view.html:3729
 #: auto_a11y/web/templates/websites/view.html:287
 msgid "of"
 msgstr ""
@@ -1432,13 +1621,300 @@ msgstr ""
 msgid "Comprehensive testing against WCAG 2.1 Level A, AA, and AAA guidelines"
 msgstr ""
 
+#: auto_a11y/web/templates/auth/login.html:15
+#: auto_a11y/web/templates/auth/profile.html:16
+#: auto_a11y/web/templates/auth/register.html:21
+#: auto_a11y/web/templates/auth/user_create.html:15
+#: auto_a11y/web/templates/auth/user_edit.html:16
+#: auto_a11y/web/templates/auth/user_list.html:19
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:51
+#: auto_a11y/web/templates/project_participants/create_tester.html:51
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:52
+#: auto_a11y/web/templates/project_participants/edit_tester.html:52
+#: auto_a11y/web/templates/project_participants/list.html:66
+#: auto_a11y/web/templates/project_participants/list.html:153
+msgid "Email"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/login.html:19
+#: auto_a11y/web/templates/auth/register.html:30
+#: auto_a11y/web/templates/auth/user_create.html:23
+#: auto_a11y/web/templates/project_users/create.html:59
+#: auto_a11y/web/templates/project_users/edit.html:61
+#: auto_a11y/web/templates/website_users/create.html:62
+#: auto_a11y/web/templates/website_users/edit.html:64
+msgid "Password"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/login.html:24
+msgid "Remember me"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/login.html:32
+msgid "Don't have an account? Register"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/profile.html:20
+#: auto_a11y/web/templates/auth/register.html:25
+#: auto_a11y/web/templates/auth/user_create.html:19
+#: auto_a11y/web/templates/auth/user_edit.html:20
+#: auto_a11y/web/templates/auth/user_list.html:20
+#: auto_a11y/web/templates/project_users/create.html:45
+#: auto_a11y/web/templates/project_users/edit.html:45
+#: auto_a11y/web/templates/website_users/create.html:48
+#: auto_a11y/web/templates/website_users/edit.html:48
+msgid "Display Name"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/profile.html:24
+#: auto_a11y/web/templates/auth/user_create.html:28
+#: auto_a11y/web/templates/auth/user_edit.html:24
+#: auto_a11y/web/templates/auth/user_list.html:21
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:58
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:60
+#: auto_a11y/web/templates/project_participants/list.html:151
+msgid "Role"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/profile.html:28
+msgid "Member Since"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/profile.html:32
+#: auto_a11y/web/templates/auth/user_edit.html:37
+#: auto_a11y/web/templates/pages/edit.html:60
+#: auto_a11y/web/templates/project_users/edit.html:276
+#: auto_a11y/web/templates/website_users/edit.html:279
+msgid "Save Changes"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/profile.html:42
+#: auto_a11y/web/templates/auth/profile.html:61
+msgid "Change Password"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/profile.html:48
+msgid "Current Password"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/profile.html:52
+#: auto_a11y/web/templates/auth/user_edit.html:78
+msgid "New Password"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/profile.html:54
+#: auto_a11y/web/templates/auth/register.html:32
+#: auto_a11y/web/templates/auth/user_create.html:25
+#: auto_a11y/web/templates/auth/user_edit.html:80
+msgid "Minimum 8 characters."
+msgstr ""
+
+#: auto_a11y/web/templates/auth/profile.html:57
+msgid "Confirm New Password"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/register.html:3
+#: auto_a11y/web/templates/auth/register.html:10
+msgid "Register"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/register.html:15
+msgid ""
+"This will be the first user account and will have administrator "
+"privileges."
+msgstr ""
+
+#: auto_a11y/web/templates/auth/register.html:27
+msgid "Optional. How you want your name displayed."
+msgstr ""
+
+#: auto_a11y/web/templates/auth/register.html:35
+msgid "Confirm Password"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/register.html:39
+msgid "Create Account"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/register.html:44
+msgid "Already have an account? Login"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_create.html:3
+#: auto_a11y/web/templates/auth/user_create.html:10
+#: auto_a11y/web/templates/auth/user_create.html:37
+msgid "Create User"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_create.html:30
+msgid "Can view tests and download reports"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_create.html:31
+msgid "Can create projects and run tests"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_create.html:32
+msgid "Full access including user management"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_create.html:40
+#: auto_a11y/web/templates/auth/user_edit.html:40
+#: auto_a11y/web/templates/pages/edit.html:63
+#: auto_a11y/web/templates/pages/test_matrix.html:334
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:211
+#: auto_a11y/web/templates/project_participants/create_supervisor.html:135
+#: auto_a11y/web/templates/project_participants/create_tester.html:144
+#: auto_a11y/web/templates/project_participants/edit_supervisor.html:139
+#: auto_a11y/web/templates/project_participants/edit_tester.html:148
+#: auto_a11y/web/templates/project_users/create.html:242
+#: auto_a11y/web/templates/project_users/edit.html:279
+#: auto_a11y/web/templates/projects/create.html:377
+#: auto_a11y/web/templates/projects/edit.html:432
+#: auto_a11y/web/templates/projects/view.html:368
+#: auto_a11y/web/templates/projects/view.html:432
+#: auto_a11y/web/templates/projects/view.html:481
+#: auto_a11y/web/templates/projects/view.html:504
+#: auto_a11y/web/templates/projects/view.html:738
+#: auto_a11y/web/templates/recordings/detail.html:28
+#: auto_a11y/web/templates/recordings/upload.html:354
+#: auto_a11y/web/templates/reports/dashboard.html:407
+#: auto_a11y/web/templates/reports/dashboard.html:890
+#: auto_a11y/web/templates/reports/dashboard.html:957
+#: auto_a11y/web/templates/reports/dashboard.html:1036
+#: auto_a11y/web/templates/reports/dashboard.html:1183
+#: auto_a11y/web/templates/reports/dashboard.html:1347
+#: auto_a11y/web/templates/scripts/create.html:292
+#: auto_a11y/web/templates/testing/configure.html:181
+#: auto_a11y/web/templates/website_users/create.html:245
+#: auto_a11y/web/templates/website_users/edit.html:282
+#: auto_a11y/web/templates/websites/edit.html:99
+#: auto_a11y/web/templates/websites/view.html:511
+#: auto_a11y/web/templates/websites/view.html:546
+#: auto_a11y/web/templates/websites/view.html:569
+msgid "Cancel"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_edit.html:3
+#: auto_a11y/web/templates/auth/user_edit.html:10
+#: auto_a11y/web/templates/project_users/view.html:178
+#: auto_a11y/web/templates/website_users/view.html:40
+#: auto_a11y/web/templates/website_users/view.html:183
+msgid "Edit User"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_edit.html:33
+#: auto_a11y/web/templates/auth/user_list.html:47
+#: auto_a11y/web/templates/projects/edit.html:71
+#: auto_a11y/web/templates/projects/list.html:22
+msgid "Active"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_edit.html:49
+msgid "User Statistics"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_edit.html:53
+msgid "Created"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_edit.html:56
+#: auto_a11y/web/templates/auth/user_list.html:23
+msgid "Last Login"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_edit.html:59
+msgid "Login Count"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_edit.html:62
+msgid "Failed Logins"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_edit.html:72
+#: auto_a11y/web/templates/auth/user_edit.html:83
+msgid "Reset Password"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_edit.html:92
+msgid "Account Locked"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_edit.html:95
+msgid "This account is locked due to too many failed login attempts."
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_edit.html:96
+msgid "Locked until:"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_edit.html:100
+msgid "Unlock Account"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_list.html:9
+msgid "Add User"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_list.html:22
+#: auto_a11y/web/templates/pages/view.html:120
+#: auto_a11y/web/templates/project_users/list.html:66
+#: auto_a11y/web/templates/projects/edit.html:69
+#: auto_a11y/web/templates/projects/view.html:174
+#: auto_a11y/web/templates/scripts/list.html:84
+#: auto_a11y/web/templates/scripts/list.html:190
+#: auto_a11y/web/templates/scripts/view.html:54
+#: auto_a11y/web/templates/testing/dashboard.html:87
+#: auto_a11y/web/templates/website_users/list.html:69
+#: auto_a11y/web/templates/websites/view.html:236
+#: auto_a11y/web/templates/websites/view.html:346
+msgid "Status"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_list.html:24
+#: auto_a11y/web/templates/pages/test_matrix.html:266
+#: auto_a11y/web/templates/pages/test_matrix_v2.html:190
+#: auto_a11y/web/templates/pages/view.html:3295
+#: auto_a11y/web/templates/project_participants/list.html:67
+#: auto_a11y/web/templates/project_participants/list.html:154
+#: auto_a11y/web/templates/project_users/list.html:68
+#: auto_a11y/web/templates/project_users/view.html:173
+#: auto_a11y/web/templates/projects/view.html:99
+#: auto_a11y/web/templates/projects/view.html:176
+#: auto_a11y/web/templates/projects/view.html:273
+#: auto_a11y/web/templates/reports/dashboard.html:253
+#: auto_a11y/web/templates/scripts/list.html:85
+#: auto_a11y/web/templates/scripts/list.html:191
+#: auto_a11y/web/templates/scripts/view.html:183
+#: auto_a11y/web/templates/testing/dashboard.html:88
+#: auto_a11y/web/templates/website_users/list.html:71
+#: auto_a11y/web/templates/websites/view.html:350
+msgid "Actions"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_list.html:43
+msgid "Inactive"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_list.html:45
+msgid "Locked"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_list.html:56
+msgid "Are you sure you want to delete this user?"
+msgstr ""
+
+#: auto_a11y/web/templates/auth/user_list.html:66
+msgid "No users found."
+msgstr ""
+
 #: auto_a11y/web/templates/drupal_sync/sync_card.html:5
 msgid "Drupal Sync"
 msgstr ""
 
 #: auto_a11y/web/templates/drupal_sync/sync_card.html:9
 #: auto_a11y/web/templates/drupal_sync/sync_card.html:18
-#: auto_a11y/web/templates/pages/view.html:3727
+#: auto_a11y/web/templates/pages/view.html:3742
 #: auto_a11y/web/templates/projects/create.html:401
 #: auto_a11y/web/templates/projects/create.html:517
 #: auto_a11y/web/templates/projects/create.html:720
@@ -1490,9 +1966,9 @@ msgid "Some items failed:"
 msgstr ""
 
 #: auto_a11y/web/templates/drupal_sync/sync_card.html:117
-#: auto_a11y/web/templates/pages/view.html:3330
-#: auto_a11y/web/templates/pages/view.html:3339
-#: auto_a11y/web/templates/pages/view.html:3351
+#: auto_a11y/web/templates/pages/view.html:3340
+#: auto_a11y/web/templates/pages/view.html:3349
+#: auto_a11y/web/templates/pages/view.html:3361
 #: auto_a11y/web/templates/projects/create.html:396
 #: auto_a11y/web/templates/projects/create.html:407
 #: auto_a11y/web/templates/projects/edit.html:451
@@ -1677,7 +2153,7 @@ msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:47
 #: auto_a11y/web/templates/pages/view.html:153
-#: auto_a11y/web/templates/pages/view.html:3722
+#: auto_a11y/web/templates/pages/view.html:3737
 #: auto_a11y/web/templates/recordings/list.html:109
 #: auto_a11y/web/templates/websites/view.html:540
 msgid "High"
@@ -1691,7 +2167,7 @@ msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:49
 #: auto_a11y/web/templates/pages/view.html:157
-#: auto_a11y/web/templates/pages/view.html:3724
+#: auto_a11y/web/templates/pages/view.html:3739
 #: auto_a11y/web/templates/recordings/list.html:115
 #: auto_a11y/web/templates/websites/view.html:541
 msgid "Low"
@@ -1709,47 +2185,6 @@ msgstr ""
 msgid "Add any notes about this page"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/edit.html:60
-#: auto_a11y/web/templates/project_users/edit.html:276
-#: auto_a11y/web/templates/website_users/edit.html:279
-msgid "Save Changes"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/edit.html:63
-#: auto_a11y/web/templates/pages/test_matrix.html:334
-#: auto_a11y/web/templates/pages/test_matrix_v2.html:211
-#: auto_a11y/web/templates/project_participants/create_supervisor.html:135
-#: auto_a11y/web/templates/project_participants/create_tester.html:144
-#: auto_a11y/web/templates/project_participants/edit_supervisor.html:139
-#: auto_a11y/web/templates/project_participants/edit_tester.html:148
-#: auto_a11y/web/templates/project_users/create.html:242
-#: auto_a11y/web/templates/project_users/edit.html:279
-#: auto_a11y/web/templates/projects/create.html:377
-#: auto_a11y/web/templates/projects/edit.html:432
-#: auto_a11y/web/templates/projects/view.html:368
-#: auto_a11y/web/templates/projects/view.html:432
-#: auto_a11y/web/templates/projects/view.html:481
-#: auto_a11y/web/templates/projects/view.html:504
-#: auto_a11y/web/templates/projects/view.html:738
-#: auto_a11y/web/templates/recordings/detail.html:28
-#: auto_a11y/web/templates/recordings/upload.html:354
-#: auto_a11y/web/templates/reports/dashboard.html:407
-#: auto_a11y/web/templates/reports/dashboard.html:890
-#: auto_a11y/web/templates/reports/dashboard.html:957
-#: auto_a11y/web/templates/reports/dashboard.html:1036
-#: auto_a11y/web/templates/reports/dashboard.html:1183
-#: auto_a11y/web/templates/reports/dashboard.html:1347
-#: auto_a11y/web/templates/scripts/create.html:292
-#: auto_a11y/web/templates/testing/configure.html:181
-#: auto_a11y/web/templates/website_users/create.html:245
-#: auto_a11y/web/templates/website_users/edit.html:282
-#: auto_a11y/web/templates/websites/edit.html:99
-#: auto_a11y/web/templates/websites/view.html:511
-#: auto_a11y/web/templates/websites/view.html:546
-#: auto_a11y/web/templates/websites/view.html:569
-msgid "Cancel"
-msgstr ""
-
 #: auto_a11y/web/templates/pages/edit.html:73
 msgid "Page Information"
 msgstr ""
@@ -1762,13 +2197,13 @@ msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:80
 #: auto_a11y/web/templates/pages/view.html:123
-#: auto_a11y/web/templates/pages/view.html:3370
+#: auto_a11y/web/templates/pages/view.html:3380
 msgid "Discovered"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:86
 #: auto_a11y/web/templates/pages/view.html:137
-#: auto_a11y/web/templates/pages/view.html:3374
+#: auto_a11y/web/templates/pages/view.html:3384
 #: auto_a11y/web/templates/testing/dashboard.html:132
 #: auto_a11y/web/templates/websites/view.html:264
 msgid "Error"
@@ -1794,7 +2229,7 @@ msgid "Violations:"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/edit.html:103
-#: auto_a11y/web/templates/pages/view.html:546
+#: auto_a11y/web/templates/pages/view.html:556
 msgid "Warnings:"
 msgstr ""
 
@@ -1895,7 +2330,7 @@ msgstr ""
 
 #: auto_a11y/web/templates/pages/test_matrix.html:243
 #: auto_a11y/web/templates/pages/test_matrix_v2.html:167
-#: auto_a11y/web/templates/pages/view.html:3711
+#: auto_a11y/web/templates/pages/view.html:3726
 #: auto_a11y/web/templates/websites/view.html:59
 #: auto_a11y/web/templates/websites/view.html:103
 msgid "Clear All"
@@ -1914,26 +2349,6 @@ msgstr ""
 #: auto_a11y/web/templates/pages/test_matrix.html:254
 #: auto_a11y/web/templates/pages/test_matrix_v2.html:178
 msgid "combinations"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/test_matrix.html:266
-#: auto_a11y/web/templates/pages/test_matrix_v2.html:190
-#: auto_a11y/web/templates/pages/view.html:3285
-#: auto_a11y/web/templates/project_participants/list.html:67
-#: auto_a11y/web/templates/project_participants/list.html:154
-#: auto_a11y/web/templates/project_users/list.html:68
-#: auto_a11y/web/templates/project_users/view.html:173
-#: auto_a11y/web/templates/projects/view.html:99
-#: auto_a11y/web/templates/projects/view.html:176
-#: auto_a11y/web/templates/projects/view.html:273
-#: auto_a11y/web/templates/reports/dashboard.html:253
-#: auto_a11y/web/templates/scripts/list.html:85
-#: auto_a11y/web/templates/scripts/list.html:191
-#: auto_a11y/web/templates/scripts/view.html:183
-#: auto_a11y/web/templates/testing/dashboard.html:88
-#: auto_a11y/web/templates/website_users/list.html:71
-#: auto_a11y/web/templates/websites/view.html:350
-msgid "Actions"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/test_matrix.html:281
@@ -2023,7 +2438,7 @@ msgid "Untitled Page"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:81
-#: auto_a11y/web/templates/pages/view.html:3375
+#: auto_a11y/web/templates/pages/view.html:3385
 #: auto_a11y/web/templates/websites/view.html:420
 msgid "Cancel Test"
 msgstr ""
@@ -2033,7 +2448,7 @@ msgid "Test as guest (no login)"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:93
-#: auto_a11y/web/templates/pages/view.html:3376
+#: auto_a11y/web/templates/pages/view.html:3386
 #: auto_a11y/web/templates/testing/dashboard.html:59
 #: auto_a11y/web/templates/websites/view.html:425
 msgid "Run Test"
@@ -2047,22 +2462,8 @@ msgstr ""
 msgid "The page will automatically refresh when testing completes."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:120
-#: auto_a11y/web/templates/project_users/list.html:66
-#: auto_a11y/web/templates/projects/edit.html:69
-#: auto_a11y/web/templates/projects/view.html:174
-#: auto_a11y/web/templates/scripts/list.html:84
-#: auto_a11y/web/templates/scripts/list.html:190
-#: auto_a11y/web/templates/scripts/view.html:54
-#: auto_a11y/web/templates/testing/dashboard.html:87
-#: auto_a11y/web/templates/website_users/list.html:69
-#: auto_a11y/web/templates/websites/view.html:236
-#: auto_a11y/web/templates/websites/view.html:346
-msgid "Status"
-msgstr ""
-
 #: auto_a11y/web/templates/pages/view.html:127
-#: auto_a11y/web/templates/pages/view.html:3371
+#: auto_a11y/web/templates/pages/view.html:3381
 #: auto_a11y/web/templates/websites/view.html:1042
 msgid "Queued"
 msgstr ""
@@ -2089,7 +2490,7 @@ msgid "N/A"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:192
-#: auto_a11y/web/templates/pages/view.html:3329
+#: auto_a11y/web/templates/pages/view.html:3339
 msgid "Page Screenshot"
 msgstr ""
 
@@ -2149,8 +2550,8 @@ msgid "types found"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:297
-#: auto_a11y/web/templates/pages/view.html:3281
-#: auto_a11y/web/templates/pages/view.html:3719
+#: auto_a11y/web/templates/pages/view.html:3291
+#: auto_a11y/web/templates/pages/view.html:3734
 #: auto_a11y/web/templates/testing/dashboard.html:85
 msgid "Info"
 msgstr ""
@@ -2185,7 +2586,7 @@ msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:390
 #: auto_a11y/web/templates/pages/view.html:439
-#: auto_a11y/web/templates/pages/view.html:3283
+#: auto_a11y/web/templates/pages/view.html:3293
 #: auto_a11y/web/templates/recordings/detail.html:356
 #: auto_a11y/web/templates/testing/result.html:67
 msgid "Passed"
@@ -2267,44 +2668,68 @@ msgstr ""
 msgid "Page states"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:546
+#: auto_a11y/web/templates/pages/view.html:538
+msgid "Initial page state (before script execution)"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:541
+msgid "After executing script:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:545
+msgid "State"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:556
 msgid "Errors:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:563
+#: auto_a11y/web/templates/pages/view.html:573
 msgid "Issues that must be fixed for WCAG compliance"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:621
-#: auto_a11y/web/templates/pages/view.html:816
-#: auto_a11y/web/templates/pages/view.html:1164
-#: auto_a11y/web/templates/pages/view.html:1599
-#: auto_a11y/web/templates/pages/view.html:1835
+#: auto_a11y/web/templates/pages/view.html:631
+#: auto_a11y/web/templates/pages/view.html:826
+#: auto_a11y/web/templates/pages/view.html:1174
+#: auto_a11y/web/templates/pages/view.html:1609
+#: auto_a11y/web/templates/pages/view.html:1845
 #: auto_a11y/web/templates/testing/result.html:159
 msgid "Breakpoint:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:621
-#: auto_a11y/web/templates/pages/view.html:816
-#: auto_a11y/web/templates/pages/view.html:1164
-#: auto_a11y/web/templates/pages/view.html:1599
-#: auto_a11y/web/templates/pages/view.html:1835
+#: auto_a11y/web/templates/pages/view.html:631
+#: auto_a11y/web/templates/pages/view.html:826
+#: auto_a11y/web/templates/pages/view.html:1174
+#: auto_a11y/web/templates/pages/view.html:1609
+#: auto_a11y/web/templates/pages/view.html:1845
 msgid "px width"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:637
-#: auto_a11y/web/templates/pages/view.html:985
-#: auto_a11y/web/templates/pages/view.html:1521
-#: auto_a11y/web/templates/pages/view.html:1850
-#: auto_a11y/web/templates/pages/view.html:2056
-#: auto_a11y/web/templates/pages/view.html:2473
-#: auto_a11y/web/templates/pages/view.html:2860
+#: auto_a11y/web/templates/pages/view.html:647
+#: auto_a11y/web/templates/pages/view.html:879
+#: auto_a11y/web/templates/pages/view.html:907
+#: auto_a11y/web/templates/pages/view.html:995
+#: auto_a11y/web/templates/pages/view.html:1227
+#: auto_a11y/web/templates/pages/view.html:1255
+#: auto_a11y/web/templates/pages/view.html:1531
+#: auto_a11y/web/templates/pages/view.html:1662
+#: auto_a11y/web/templates/pages/view.html:1690
+#: auto_a11y/web/templates/pages/view.html:1860
+#: auto_a11y/web/templates/pages/view.html:2008
+#: auto_a11y/web/templates/pages/view.html:2066
+#: auto_a11y/web/templates/pages/view.html:2323
+#: auto_a11y/web/templates/pages/view.html:2483
+#: auto_a11y/web/templates/pages/view.html:2575
+#: auto_a11y/web/templates/pages/view.html:2723
+#: auto_a11y/web/templates/pages/view.html:2870
+#: auto_a11y/web/templates/pages/view.html:2969
+#: auto_a11y/web/templates/pages/view.html:3138
 msgid "Instance"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:647
-#: auto_a11y/web/templates/pages/view.html:995
-#: auto_a11y/web/templates/pages/view.html:3299
+#: auto_a11y/web/templates/pages/view.html:657
+#: auto_a11y/web/templates/pages/view.html:1005
+#: auto_a11y/web/templates/pages/view.html:3309
 #: auto_a11y/web/templates/projects/view.html:394
 #: auto_a11y/web/templates/websites/view.html:30
 #: auto_a11y/web/templates/websites/view.html:41
@@ -2315,48 +2740,26 @@ msgstr ""
 msgid "Guest"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:670
-#: auto_a11y/web/templates/pages/view.html:1018
-#: auto_a11y/web/templates/pages/view.html:1372
-#: auto_a11y/web/templates/pages/view.html:1867
-#: auto_a11y/web/templates/pages/view.html:2073
-#: auto_a11y/web/templates/pages/view.html:2189
-#: auto_a11y/web/templates/pages/view.html:2490
-#: auto_a11y/web/templates/pages/view.html:2642
+#: auto_a11y/web/templates/pages/view.html:680
+#: auto_a11y/web/templates/pages/view.html:1028
+#: auto_a11y/web/templates/pages/view.html:1382
+#: auto_a11y/web/templates/pages/view.html:1877
+#: auto_a11y/web/templates/pages/view.html:2083
+#: auto_a11y/web/templates/pages/view.html:2199
+#: auto_a11y/web/templates/pages/view.html:2500
+#: auto_a11y/web/templates/pages/view.html:2652
 msgid "About this issue:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:673
-#: auto_a11y/web/templates/pages/view.html:1021
-#: auto_a11y/web/templates/pages/view.html:1375
-#: auto_a11y/web/templates/pages/view.html:1870
-#: auto_a11y/web/templates/pages/view.html:2076
-#: auto_a11y/web/templates/pages/view.html:2192
-#: auto_a11y/web/templates/pages/view.html:2493
-#: auto_a11y/web/templates/pages/view.html:2645
-msgid "What the issue is:"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/view.html:682
-#: auto_a11y/web/templates/pages/view.html:1030
-#: auto_a11y/web/templates/pages/view.html:1384
-#: auto_a11y/web/templates/pages/view.html:1875
-#: auto_a11y/web/templates/pages/view.html:2081
-#: auto_a11y/web/templates/pages/view.html:2197
-#: auto_a11y/web/templates/pages/view.html:2498
-#: auto_a11y/web/templates/pages/view.html:2650
-msgid "Why this is important:"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/view.html:687
-#: auto_a11y/web/templates/pages/view.html:1035
-#: auto_a11y/web/templates/pages/view.html:1389
+#: auto_a11y/web/templates/pages/view.html:683
+#: auto_a11y/web/templates/pages/view.html:1031
+#: auto_a11y/web/templates/pages/view.html:1385
 #: auto_a11y/web/templates/pages/view.html:1880
 #: auto_a11y/web/templates/pages/view.html:2086
 #: auto_a11y/web/templates/pages/view.html:2202
 #: auto_a11y/web/templates/pages/view.html:2503
 #: auto_a11y/web/templates/pages/view.html:2655
-msgid "Who it affects:"
+msgid "What the issue is:"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:692
@@ -2367,7 +2770,7 @@ msgstr ""
 #: auto_a11y/web/templates/pages/view.html:2207
 #: auto_a11y/web/templates/pages/view.html:2508
 #: auto_a11y/web/templates/pages/view.html:2660
-msgid "How to remediate:"
+msgid "Why this is important:"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:697
@@ -2378,390 +2781,432 @@ msgstr ""
 #: auto_a11y/web/templates/pages/view.html:2212
 #: auto_a11y/web/templates/pages/view.html:2513
 #: auto_a11y/web/templates/pages/view.html:2665
-#: auto_a11y/web/templates/pages/view.html:2905
-#: auto_a11y/web/templates/pages/view.html:3077
+msgid "Who it affects:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:702
+#: auto_a11y/web/templates/pages/view.html:1050
+#: auto_a11y/web/templates/pages/view.html:1404
+#: auto_a11y/web/templates/pages/view.html:1895
+#: auto_a11y/web/templates/pages/view.html:2101
+#: auto_a11y/web/templates/pages/view.html:2217
+#: auto_a11y/web/templates/pages/view.html:2518
+#: auto_a11y/web/templates/pages/view.html:2670
+msgid "How to remediate:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:707
+#: auto_a11y/web/templates/pages/view.html:1055
+#: auto_a11y/web/templates/pages/view.html:1409
+#: auto_a11y/web/templates/pages/view.html:1900
+#: auto_a11y/web/templates/pages/view.html:2106
+#: auto_a11y/web/templates/pages/view.html:2222
+#: auto_a11y/web/templates/pages/view.html:2523
+#: auto_a11y/web/templates/pages/view.html:2675
+#: auto_a11y/web/templates/pages/view.html:2915
+#: auto_a11y/web/templates/pages/view.html:3087
 msgid "Relevant test criteria:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:700
-#: auto_a11y/web/templates/pages/view.html:707
-#: auto_a11y/web/templates/pages/view.html:1048
-#: auto_a11y/web/templates/pages/view.html:1055
-#: auto_a11y/web/templates/pages/view.html:1402
-#: auto_a11y/web/templates/pages/view.html:1409
-#: auto_a11y/web/templates/pages/view.html:1893
-#: auto_a11y/web/templates/pages/view.html:1900
-#: auto_a11y/web/templates/pages/view.html:2099
-#: auto_a11y/web/templates/pages/view.html:2106
-#: auto_a11y/web/templates/pages/view.html:2215
-#: auto_a11y/web/templates/pages/view.html:2222
-#: auto_a11y/web/templates/pages/view.html:2516
-#: auto_a11y/web/templates/pages/view.html:2523
-#: auto_a11y/web/templates/pages/view.html:2668
-#: auto_a11y/web/templates/pages/view.html:2675
-#: auto_a11y/web/templates/pages/view.html:2908
-#: auto_a11y/web/templates/pages/view.html:2915
-#: auto_a11y/web/templates/pages/view.html:3080
-#: auto_a11y/web/templates/pages/view.html:3087
+#: auto_a11y/web/templates/pages/view.html:710
+#: auto_a11y/web/templates/pages/view.html:717
+#: auto_a11y/web/templates/pages/view.html:1058
+#: auto_a11y/web/templates/pages/view.html:1065
+#: auto_a11y/web/templates/pages/view.html:1412
+#: auto_a11y/web/templates/pages/view.html:1419
+#: auto_a11y/web/templates/pages/view.html:1903
+#: auto_a11y/web/templates/pages/view.html:1910
+#: auto_a11y/web/templates/pages/view.html:2109
+#: auto_a11y/web/templates/pages/view.html:2116
+#: auto_a11y/web/templates/pages/view.html:2225
+#: auto_a11y/web/templates/pages/view.html:2232
+#: auto_a11y/web/templates/pages/view.html:2526
+#: auto_a11y/web/templates/pages/view.html:2533
+#: auto_a11y/web/templates/pages/view.html:2678
+#: auto_a11y/web/templates/pages/view.html:2685
+#: auto_a11y/web/templates/pages/view.html:2918
+#: auto_a11y/web/templates/pages/view.html:2925
+#: auto_a11y/web/templates/pages/view.html:3090
+#: auto_a11y/web/templates/pages/view.html:3097
 msgid "WCAG Success Criteria:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:722
-#: auto_a11y/web/templates/pages/view.html:1070
-#: auto_a11y/web/templates/pages/view.html:1915
-#: auto_a11y/web/templates/pages/view.html:2121
+#: auto_a11y/web/templates/pages/view.html:732
+#: auto_a11y/web/templates/pages/view.html:1080
+#: auto_a11y/web/templates/pages/view.html:1925
+#: auto_a11y/web/templates/pages/view.html:2131
 #: auto_a11y/web/templates/testing/result.html:149
 msgid "Rule:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:723
-#: auto_a11y/web/templates/pages/view.html:1071
-#: auto_a11y/web/templates/pages/view.html:1916
-#: auto_a11y/web/templates/pages/view.html:2122
+#: auto_a11y/web/templates/pages/view.html:733
+#: auto_a11y/web/templates/pages/view.html:1081
+#: auto_a11y/web/templates/pages/view.html:1926
+#: auto_a11y/web/templates/pages/view.html:2132
 #: auto_a11y/web/templates/testing/result.html:123
 msgid "Help:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:725
-#: auto_a11y/web/templates/pages/view.html:1073
-#: auto_a11y/web/templates/pages/view.html:1918
-#: auto_a11y/web/templates/pages/view.html:2124
+#: auto_a11y/web/templates/pages/view.html:735
+#: auto_a11y/web/templates/pages/view.html:1083
+#: auto_a11y/web/templates/pages/view.html:1928
+#: auto_a11y/web/templates/pages/view.html:2134
 #: auto_a11y/web/templates/recordings/detail.html:607
 msgid "How to fix:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:732
-#: auto_a11y/web/templates/pages/view.html:1080
-#: auto_a11y/web/templates/pages/view.html:1434
-#: auto_a11y/web/templates/pages/view.html:1925
-#: auto_a11y/web/templates/pages/view.html:2239
-#: auto_a11y/web/templates/pages/view.html:2357
-#: auto_a11y/web/templates/pages/view.html:2538
-#: auto_a11y/web/templates/pages/view.html:2690
-#: auto_a11y/web/templates/pages/view.html:2754
-#: auto_a11y/web/templates/pages/view.html:2930
-#: auto_a11y/web/templates/pages/view.html:2937
-#: auto_a11y/web/templates/pages/view.html:3102
-#: auto_a11y/web/templates/pages/view.html:3185
+#: auto_a11y/web/templates/pages/view.html:742
+#: auto_a11y/web/templates/pages/view.html:1090
+#: auto_a11y/web/templates/pages/view.html:1444
+#: auto_a11y/web/templates/pages/view.html:1935
+#: auto_a11y/web/templates/pages/view.html:2249
+#: auto_a11y/web/templates/pages/view.html:2367
+#: auto_a11y/web/templates/pages/view.html:2548
+#: auto_a11y/web/templates/pages/view.html:2700
+#: auto_a11y/web/templates/pages/view.html:2764
+#: auto_a11y/web/templates/pages/view.html:2940
+#: auto_a11y/web/templates/pages/view.html:2947
+#: auto_a11y/web/templates/pages/view.html:3112
+#: auto_a11y/web/templates/pages/view.html:3195
 msgid "Touchpoint:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:732
-#: auto_a11y/web/templates/pages/view.html:1080
-#: auto_a11y/web/templates/pages/view.html:1434
-#: auto_a11y/web/templates/pages/view.html:1925
-#: auto_a11y/web/templates/pages/view.html:2538
+#: auto_a11y/web/templates/pages/view.html:742
+#: auto_a11y/web/templates/pages/view.html:1090
+#: auto_a11y/web/templates/pages/view.html:1444
+#: auto_a11y/web/templates/pages/view.html:1935
+#: auto_a11y/web/templates/pages/view.html:2548
 msgid "General"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:733
-#: auto_a11y/web/templates/pages/view.html:1081
+#: auto_a11y/web/templates/pages/view.html:743
+#: auto_a11y/web/templates/pages/view.html:1091
 #: auto_a11y/web/templates/testing/result.html:146
 msgid "Impact:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:749
-#: auto_a11y/web/templates/pages/view.html:769
-#: auto_a11y/web/templates/pages/view.html:1097
-#: auto_a11y/web/templates/pages/view.html:1117
-#: auto_a11y/web/templates/pages/view.html:1942
-#: auto_a11y/web/templates/pages/view.html:1962
+#: auto_a11y/web/templates/pages/view.html:759
+#: auto_a11y/web/templates/pages/view.html:779
+#: auto_a11y/web/templates/pages/view.html:1107
+#: auto_a11y/web/templates/pages/view.html:1127
+#: auto_a11y/web/templates/pages/view.html:1952
+#: auto_a11y/web/templates/pages/view.html:1972
 msgid "More about"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:754
-#: auto_a11y/web/templates/pages/view.html:774
-#: auto_a11y/web/templates/pages/view.html:1102
-#: auto_a11y/web/templates/pages/view.html:1122
-#: auto_a11y/web/templates/pages/view.html:1947
-#: auto_a11y/web/templates/pages/view.html:1967
+#: auto_a11y/web/templates/pages/view.html:764
+#: auto_a11y/web/templates/pages/view.html:784
+#: auto_a11y/web/templates/pages/view.html:1112
+#: auto_a11y/web/templates/pages/view.html:1132
+#: auto_a11y/web/templates/pages/view.html:1957
+#: auto_a11y/web/templates/pages/view.html:1977
 msgid "Ways to meet"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:786
-#: auto_a11y/web/templates/pages/view.html:826
-#: auto_a11y/web/templates/pages/view.html:1134
-#: auto_a11y/web/templates/pages/view.html:1174
-#: auto_a11y/web/templates/pages/view.html:1524
-#: auto_a11y/web/templates/pages/view.html:1545
+#: auto_a11y/web/templates/pages/view.html:796
+#: auto_a11y/web/templates/pages/view.html:836
+#: auto_a11y/web/templates/pages/view.html:1144
+#: auto_a11y/web/templates/pages/view.html:1184
+#: auto_a11y/web/templates/pages/view.html:1534
+#: auto_a11y/web/templates/pages/view.html:1555
 msgid "Location:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:787
-#: auto_a11y/web/templates/pages/view.html:827
-#: auto_a11y/web/templates/pages/view.html:1135
-#: auto_a11y/web/templates/pages/view.html:1175
-#: auto_a11y/web/templates/pages/view.html:1525
-#: auto_a11y/web/templates/pages/view.html:1546
+#: auto_a11y/web/templates/pages/view.html:797
+#: auto_a11y/web/templates/pages/view.html:837
+#: auto_a11y/web/templates/pages/view.html:1145
+#: auto_a11y/web/templates/pages/view.html:1185
+#: auto_a11y/web/templates/pages/view.html:1535
+#: auto_a11y/web/templates/pages/view.html:1556
 msgid "Copy XPath to clipboard"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:795
-#: auto_a11y/web/templates/pages/view.html:1143
+#: auto_a11y/web/templates/pages/view.html:805
+#: auto_a11y/web/templates/pages/view.html:1153
 msgid "CSS State:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:807
-#: auto_a11y/web/templates/pages/view.html:1155
-#: auto_a11y/web/templates/pages/view.html:1590
-#: auto_a11y/web/templates/pages/view.html:1986
-#: auto_a11y/web/templates/pages/view.html:2138
-#: auto_a11y/web/templates/pages/view.html:2301
-#: auto_a11y/web/templates/pages/view.html:2553
-#: auto_a11y/web/templates/pages/view.html:2701
-#: auto_a11y/web/templates/pages/view.html:2947
-#: auto_a11y/web/templates/pages/view.html:3116
+#: auto_a11y/web/templates/pages/view.html:817
+#: auto_a11y/web/templates/pages/view.html:1165
+#: auto_a11y/web/templates/pages/view.html:1600
+#: auto_a11y/web/templates/pages/view.html:1996
+#: auto_a11y/web/templates/pages/view.html:2148
+#: auto_a11y/web/templates/pages/view.html:2311
+#: auto_a11y/web/templates/pages/view.html:2563
+#: auto_a11y/web/templates/pages/view.html:2711
+#: auto_a11y/web/templates/pages/view.html:2957
+#: auto_a11y/web/templates/pages/view.html:3126
 msgid "Code Snippet"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:819
-#: auto_a11y/web/templates/pages/view.html:1167
-#: auto_a11y/web/templates/pages/view.html:1602
+#: auto_a11y/web/templates/pages/view.html:829
+#: auto_a11y/web/templates/pages/view.html:1177
+#: auto_a11y/web/templates/pages/view.html:1612
 msgid "Obscuring element (dialog/overlay):"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:821
-#: auto_a11y/web/templates/pages/view.html:1169
-#: auto_a11y/web/templates/pages/view.html:1604
+#: auto_a11y/web/templates/pages/view.html:831
+#: auto_a11y/web/templates/pages/view.html:1179
+#: auto_a11y/web/templates/pages/view.html:1614
 msgid "Interactive element(s) being obscured:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:942
-#: auto_a11y/web/templates/pages/view.html:1290
-#: auto_a11y/web/templates/pages/view.html:2025
-#: auto_a11y/web/templates/pages/view.html:2592
-#: auto_a11y/web/templates/pages/view.html:2739
-#: auto_a11y/web/templates/pages/view.html:3002
+#: auto_a11y/web/templates/pages/view.html:904
+#: auto_a11y/web/templates/pages/view.html:1252
+#: auto_a11y/web/templates/pages/view.html:1528
+#: auto_a11y/web/templates/pages/view.html:1687
+#, python-format
+msgid "%(count)d element(s) with text smaller than 16px:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:952
+#: auto_a11y/web/templates/pages/view.html:1300
+#: auto_a11y/web/templates/pages/view.html:1736
+#: auto_a11y/web/templates/pages/view.html:2035
+#: auto_a11y/web/templates/pages/view.html:2351
+#: auto_a11y/web/templates/pages/view.html:2408
+#: auto_a11y/web/templates/pages/view.html:2602
+#: auto_a11y/web/templates/pages/view.html:2749
+#: auto_a11y/web/templates/pages/view.html:2795
+#: auto_a11y/web/templates/pages/view.html:3012
+#: auto_a11y/web/templates/pages/view.html:3182
+#: auto_a11y/web/templates/pages/view.html:3229
 msgid "Page Thumbnail (at time of test)"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:945
-#: auto_a11y/web/templates/pages/view.html:1293
-#: auto_a11y/web/templates/pages/view.html:2028
-#: auto_a11y/web/templates/pages/view.html:2595
-#: auto_a11y/web/templates/pages/view.html:2742
-#: auto_a11y/web/templates/pages/view.html:3005
+#: auto_a11y/web/templates/pages/view.html:955
+#: auto_a11y/web/templates/pages/view.html:1303
+#: auto_a11y/web/templates/pages/view.html:2038
+#: auto_a11y/web/templates/pages/view.html:2605
+#: auto_a11y/web/templates/pages/view.html:2752
+#: auto_a11y/web/templates/pages/view.html:3015
 msgid "Thumbnail of"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/view.html:949
-#: auto_a11y/web/templates/pages/view.html:1297
-#: auto_a11y/web/templates/pages/view.html:2032
-#: auto_a11y/web/templates/pages/view.html:2599
-#: auto_a11y/web/templates/pages/view.html:2746
-#: auto_a11y/web/templates/pages/view.html:3009
-msgid "Thumbnail not available"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/view.html:951
-#: auto_a11y/web/templates/pages/view.html:1299
-#: auto_a11y/web/templates/pages/view.html:2034
-#: auto_a11y/web/templates/pages/view.html:2601
-#: auto_a11y/web/templates/pages/view.html:2748
-#: auto_a11y/web/templates/pages/view.html:3011
-msgid "Click to view full size"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/view.html:956
-#: auto_a11y/web/templates/pages/view.html:1304
-msgid "AI Detection Note:"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/view.html:957
-#: auto_a11y/web/templates/pages/view.html:1305
-msgid "This issue was detected through visual analysis."
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:959
 #: auto_a11y/web/templates/pages/view.html:1307
+#: auto_a11y/web/templates/pages/view.html:2042
+#: auto_a11y/web/templates/pages/view.html:2609
+#: auto_a11y/web/templates/pages/view.html:2756
+#: auto_a11y/web/templates/pages/view.html:3019
+msgid "Thumbnail not available"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:961
+#: auto_a11y/web/templates/pages/view.html:1309
+#: auto_a11y/web/templates/pages/view.html:1745
+#: auto_a11y/web/templates/pages/view.html:2044
+#: auto_a11y/web/templates/pages/view.html:2360
+#: auto_a11y/web/templates/pages/view.html:2417
+#: auto_a11y/web/templates/pages/view.html:2611
+#: auto_a11y/web/templates/pages/view.html:2758
+#: auto_a11y/web/templates/pages/view.html:2804
+#: auto_a11y/web/templates/pages/view.html:3021
+#: auto_a11y/web/templates/pages/view.html:3191
+#: auto_a11y/web/templates/pages/view.html:3238
+msgid "Click to view full size"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:966
+#: auto_a11y/web/templates/pages/view.html:1314
+msgid "AI Detection Note:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:967
+#: auto_a11y/web/templates/pages/view.html:1315
+msgid "This issue was detected through visual analysis."
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:969
+#: auto_a11y/web/templates/pages/view.html:1317
 msgid "Confidence:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1517
+#: auto_a11y/web/templates/pages/view.html:1527
 msgid "Affected Elements"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1521
+#: auto_a11y/web/templates/pages/view.html:1531
 msgid "Text size:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1522
+#: auto_a11y/web/templates/pages/view.html:1532
 msgid "Text preview:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1538
+#: auto_a11y/web/templates/pages/view.html:1548
 msgid "Elements Outside Landmarks"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1542
+#: auto_a11y/web/templates/pages/view.html:1552
 msgid "Element"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1543
+#: auto_a11y/web/templates/pages/view.html:1553
 msgid "Content preview:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1559
+#: auto_a11y/web/templates/pages/view.html:1569
 msgid "Missing Accessibility Attributes"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1560
+#: auto_a11y/web/templates/pages/view.html:1570
 msgid "Map container"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1562
+#: auto_a11y/web/templates/pages/view.html:1572
 msgid "containing"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1564
+#: auto_a11y/web/templates/pages/view.html:1574
 msgid "is missing required ARIA attributes:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1566
+#: auto_a11y/web/templates/pages/view.html:1576
 msgid "to identify this as a"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1566
+#: auto_a11y/web/templates/pages/view.html:1576
 msgid "navigable region"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1566
+#: auto_a11y/web/templates/pages/view.html:1576
 msgid "graphic/image"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1567
+#: auto_a11y/web/templates/pages/view.html:1577
 msgid "to describe what the map shows (e.g., \"Office locations map\")"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1569
+#: auto_a11y/web/templates/pages/view.html:1579
 msgid ""
 "Without these attributes, screen readers cannot identify this as a map or"
 " describe its purpose to users."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1576
+#: auto_a11y/web/templates/pages/view.html:1586
 msgid "Silent Focus Trap Details"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1577
+#: auto_a11y/web/templates/pages/view.html:1587
 msgid "This map container has"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1577
+#: auto_a11y/web/templates/pages/view.html:1587
 msgid "but contains"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1577
+#: auto_a11y/web/templates/pages/view.html:1587
 msgid "focusable element(s) that keyboard users can still reach:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1579
+#: auto_a11y/web/templates/pages/view.html:1589
 msgid "button(s)"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1580
+#: auto_a11y/web/templates/pages/view.html:1590
 msgid "link(s)"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1581
+#: auto_a11y/web/templates/pages/view.html:1591
 msgid "form input(s)"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1582
+#: auto_a11y/web/templates/pages/view.html:1592
 msgid "other focusable element(s)"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1584
+#: auto_a11y/web/templates/pages/view.html:1594
 msgid ""
 "Screen reader users navigating by keyboard will have focus move to these "
 "elements but hear nothing, creating confusion about where they are on the"
 " page."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:1777
+#: auto_a11y/web/templates/pages/view.html:1787
 msgid "Potential issues that should be reviewed"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2390
+#: auto_a11y/web/templates/pages/view.html:2400
 msgid "XPath:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2430
+#: auto_a11y/web/templates/pages/view.html:2440
 msgid "Additional information and best practice recommendations"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2540
+#: auto_a11y/web/templates/pages/view.html:2550
 msgid "This is an informational note."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2814
+#: auto_a11y/web/templates/pages/view.html:2824
 msgid "Discovery Items"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2817
+#: auto_a11y/web/templates/pages/view.html:2827
 msgid "Elements found that may need manual review"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2882
-#: auto_a11y/web/templates/pages/view.html:3054
+#: auto_a11y/web/templates/pages/view.html:2892
+#: auto_a11y/web/templates/pages/view.html:3064
 msgid "About this discovery item:"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/view.html:2885
-#: auto_a11y/web/templates/pages/view.html:3057
-msgid "What was found:"
-msgstr ""
-
-#: auto_a11y/web/templates/pages/view.html:2890
-#: auto_a11y/web/templates/pages/view.html:3062
-msgid "Why manual review is needed:"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:2895
 #: auto_a11y/web/templates/pages/view.html:3067
-msgid "Who could be affected:"
+msgid "What was found:"
 msgstr ""
 
 #: auto_a11y/web/templates/pages/view.html:2900
 #: auto_a11y/web/templates/pages/view.html:3072
+msgid "Why manual review is needed:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:2905
+#: auto_a11y/web/templates/pages/view.html:3077
+msgid "Who could be affected:"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:2910
+#: auto_a11y/web/templates/pages/view.html:3082
 msgid "What to check manually:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:2932
+#: auto_a11y/web/templates/pages/view.html:2942
 msgid "This item requires manual inspection."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3104
-#: auto_a11y/web/templates/pages/view.html:3187
+#: auto_a11y/web/templates/pages/view.html:3114
+#: auto_a11y/web/templates/pages/view.html:3197
 msgid "This item requires manual inspection to ensure accessibility."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3252
+#: auto_a11y/web/templates/pages/view.html:3262
 #: auto_a11y/web/templates/testing/result.html:208
 msgid "View Screenshot"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3262
+#: auto_a11y/web/templates/pages/view.html:3272
 msgid ""
 "This page has not been tested yet. Click \"Run Test\" to start "
 "accessibility testing."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3270
+#: auto_a11y/web/templates/pages/view.html:3280
 msgid "Test History"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3277
+#: auto_a11y/web/templates/pages/view.html:3287
 #: auto_a11y/web/templates/projects/view.html:271
 #: auto_a11y/web/templates/websites/view.html:235
 msgid "Date"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3278
+#: auto_a11y/web/templates/pages/view.html:3288
 msgid "User"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3284
+#: auto_a11y/web/templates/pages/view.html:3294
 #: auto_a11y/web/templates/recordings/detail.html:97
 #: auto_a11y/web/templates/testing/dashboard.html:82
 #: auto_a11y/web/templates/testing/result.html:75
@@ -2769,7 +3214,7 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3311
+#: auto_a11y/web/templates/pages/view.html:3321
 #: auto_a11y/web/templates/project_users/list.html:124
 #: auto_a11y/web/templates/projects/list.html:68
 #: auto_a11y/web/templates/projects/view.html:133
@@ -2781,7 +3226,7 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3333
+#: auto_a11y/web/templates/pages/view.html:3343
 #: auto_a11y/web/templates/websites/view.html:344
 #: auto_a11y/web/templates/websites/view.html:584
 #: auto_a11y/web/templates/websites/view.html:588
@@ -2789,16 +3234,16 @@ msgstr ""
 msgid "Screenshot"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3337
+#: auto_a11y/web/templates/pages/view.html:3347
 #: auto_a11y/web/templates/websites/view.html:592
 msgid "Open in New Tab"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3350
+#: auto_a11y/web/templates/pages/view.html:3360
 msgid "Running Test"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3355
+#: auto_a11y/web/templates/pages/view.html:3365
 #: auto_a11y/web/templates/projects/view.html:536
 #: auto_a11y/web/templates/projects/view.html:566
 #: auto_a11y/web/templates/websites/view.html:1531
@@ -2806,47 +3251,47 @@ msgstr ""
 msgid "Testing..."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3357
+#: auto_a11y/web/templates/pages/view.html:3367
 msgid "Running accessibility tests on this page..."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3358
+#: auto_a11y/web/templates/pages/view.html:3368
 msgid "This may take a moment."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3369
+#: auto_a11y/web/templates/pages/view.html:3379
 #: auto_a11y/web/templates/testing/result.html:205
 msgid "Screenshot:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3377
+#: auto_a11y/web/templates/pages/view.html:3387
 msgid "Test Complete"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3378
+#: auto_a11y/web/templates/pages/view.html:3388
 msgid "Refreshing page to show results..."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3379
+#: auto_a11y/web/templates/pages/view.html:3389
 #: auto_a11y/web/templates/websites/view.html:1175
 msgid "Test Cancelled"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3380
+#: auto_a11y/web/templates/pages/view.html:3390
 msgid "The page test has been cancelled."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3381
+#: auto_a11y/web/templates/pages/view.html:3391
 #: auto_a11y/web/templates/websites/view.html:1178
 #: auto_a11y/web/templates/websites/view.html:1185
 msgid "Failed to cancel test"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3382
+#: auto_a11y/web/templates/pages/view.html:3392
 msgid "Failed to cancel test:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3383
+#: auto_a11y/web/templates/pages/view.html:3393
 #: auto_a11y/web/templates/project_participants/list.html:235
 #: auto_a11y/web/templates/project_participants/list.html:257
 #: auto_a11y/web/templates/project_users/list.html:189
@@ -2872,107 +3317,123 @@ msgstr ""
 msgid "Unknown error"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3384
+#: auto_a11y/web/templates/pages/view.html:3394
 msgid "Test started"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3385
+#: auto_a11y/web/templates/pages/view.html:3395
 msgid "The accessibility test is running. The page will refresh when complete."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3386
+#: auto_a11y/web/templates/pages/view.html:3396
 msgid "Test failed:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3387
+#: auto_a11y/web/templates/pages/view.html:3397
 #: auto_a11y/web/templates/websites/view.html:1129
 #: auto_a11y/web/templates/websites/view.html:1134
 msgid "Failed to start test"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3388
+#: auto_a11y/web/templates/pages/view.html:3398
 msgid "Starting Test..."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3389
+#: auto_a11y/web/templates/pages/view.html:3399
 #: auto_a11y/web/templates/projects/view.html:700
 #: auto_a11y/web/templates/websites/view.html:1230
 #: auto_a11y/web/templates/websites/view.html:1506
 msgid "Cancelling..."
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3710
+#: auto_a11y/web/templates/pages/view.html:3400
+msgid "No WCAG criteria found"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3401
+msgid "No touchpoints found"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3402
+msgid "All Touchpoints"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3403
+msgid "All WCAG Criteria"
+msgstr ""
+
+#: auto_a11y/web/templates/pages/view.html:3725
 msgid "Filter Test Results"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3712
+#: auto_a11y/web/templates/pages/view.html:3727
 msgid "Active Filters:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3713
+#: auto_a11y/web/templates/pages/view.html:3728
 msgid "Showing:"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3715
+#: auto_a11y/web/templates/pages/view.html:3730
 msgid "items"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3716
+#: auto_a11y/web/templates/pages/view.html:3731
 msgid "Issue Type"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3721
+#: auto_a11y/web/templates/pages/view.html:3736
 msgid "Impact Level"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3723
+#: auto_a11y/web/templates/pages/view.html:3738
 #: auto_a11y/web/templates/recordings/list.html:112
 msgid "Medium"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3725
+#: auto_a11y/web/templates/pages/view.html:3740
 #: auto_a11y/web/templates/reports/dashboard.html:1335
 msgid "WCAG Criteria"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3726
+#: auto_a11y/web/templates/pages/view.html:3741
 msgid "Touchpoint"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3728
+#: auto_a11y/web/templates/pages/view.html:3743
 msgid "Affected User Groups"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3729
+#: auto_a11y/web/templates/pages/view.html:3744
 msgid "Vision"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3730
+#: auto_a11y/web/templates/pages/view.html:3745
 msgid "Hearing"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3731
+#: auto_a11y/web/templates/pages/view.html:3746
 msgid "Motor"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3732
+#: auto_a11y/web/templates/pages/view.html:3747
 msgid "Cognitive"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3733
+#: auto_a11y/web/templates/pages/view.html:3748
 msgid "Seizure"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3734
+#: auto_a11y/web/templates/pages/view.html:3749
 #: auto_a11y/web/templates/website_users/view.html:3
 msgid "Test User"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3735
+#: auto_a11y/web/templates/pages/view.html:3750
 msgid "Quick Search"
 msgstr ""
 
-#: auto_a11y/web/templates/pages/view.html:3736
+#: auto_a11y/web/templates/pages/view.html:3751
 msgid "Search in issue descriptions, IDs, or code..."
 msgstr ""
 
@@ -3026,15 +3487,6 @@ msgstr ""
 msgid "Full name of the test supervisor"
 msgstr ""
 
-#: auto_a11y/web/templates/project_participants/create_supervisor.html:51
-#: auto_a11y/web/templates/project_participants/create_tester.html:51
-#: auto_a11y/web/templates/project_participants/edit_supervisor.html:52
-#: auto_a11y/web/templates/project_participants/edit_tester.html:52
-#: auto_a11y/web/templates/project_participants/list.html:66
-#: auto_a11y/web/templates/project_participants/list.html:153
-msgid "Email"
-msgstr ""
-
 #: auto_a11y/web/templates/project_participants/create_supervisor.html:53
 #: auto_a11y/web/templates/project_participants/edit_supervisor.html:55
 msgid "e.g., sarah.johnson@example.com"
@@ -3043,12 +3495,6 @@ msgstr ""
 #: auto_a11y/web/templates/project_participants/create_supervisor.html:54
 #: auto_a11y/web/templates/project_participants/edit_supervisor.html:56
 msgid "Contact email for the supervisor (optional)"
-msgstr ""
-
-#: auto_a11y/web/templates/project_participants/create_supervisor.html:58
-#: auto_a11y/web/templates/project_participants/edit_supervisor.html:60
-#: auto_a11y/web/templates/project_participants/list.html:151
-msgid "Role"
 msgstr ""
 
 #: auto_a11y/web/templates/project_participants/create_supervisor.html:60
@@ -3519,13 +3965,6 @@ msgstr ""
 msgid "User Information"
 msgstr ""
 
-#: auto_a11y/web/templates/project_users/create.html:45
-#: auto_a11y/web/templates/project_users/edit.html:45
-#: auto_a11y/web/templates/website_users/create.html:48
-#: auto_a11y/web/templates/website_users/edit.html:48
-msgid "Display Name"
-msgstr ""
-
 #: auto_a11y/web/templates/project_users/create.html:47
 #: auto_a11y/web/templates/project_users/edit.html:48
 #: auto_a11y/web/templates/website_users/create.html:50
@@ -3561,13 +4000,6 @@ msgstr ""
 #: auto_a11y/web/templates/website_users/create.html:58
 #: auto_a11y/web/templates/website_users/edit.html:60
 msgid "Username for login"
-msgstr ""
-
-#: auto_a11y/web/templates/project_users/create.html:59
-#: auto_a11y/web/templates/project_users/edit.html:61
-#: auto_a11y/web/templates/website_users/create.html:62
-#: auto_a11y/web/templates/website_users/edit.html:64
-msgid "Password"
 msgstr ""
 
 #: auto_a11y/web/templates/project_users/create.html:61
@@ -4131,12 +4563,6 @@ msgstr ""
 
 #: auto_a11y/web/templates/project_users/view.html:128
 msgid "Logout Success Indicator:"
-msgstr ""
-
-#: auto_a11y/web/templates/project_users/view.html:178
-#: auto_a11y/web/templates/website_users/view.html:40
-#: auto_a11y/web/templates/website_users/view.html:183
-msgid "Edit User"
 msgstr ""
 
 #: auto_a11y/web/templates/project_users/view.html:191
@@ -4764,11 +5190,6 @@ msgstr ""
 msgid "Edit Project"
 msgstr ""
 
-#: auto_a11y/web/templates/projects/edit.html:71
-#: auto_a11y/web/templates/projects/list.html:22
-msgid "Active"
-msgstr ""
-
 #: auto_a11y/web/templates/projects/edit.html:72
 #: auto_a11y/web/templates/projects/list.html:26
 msgid "Paused"
@@ -5326,10 +5747,6 @@ msgstr ""
 
 #: auto_a11y/web/templates/recordings/detail.html:47
 msgid "Recording ID"
-msgstr ""
-
-#: auto_a11y/web/templates/recordings/detail.html:53
-msgid "Auditor"
 msgstr ""
 
 #: auto_a11y/web/templates/recordings/detail.html:66
@@ -6530,7 +6947,6 @@ msgid "WCAG Level"
 msgstr ""
 
 #: auto_a11y/web/templates/reports/dashboard.html:1017
-#: venv/lib/python3.13/site-packages/click/core.py:1140
 msgid "Options"
 msgstr ""
 
@@ -8011,465 +8427,5 @@ msgstr ""
 
 #: auto_a11y/web/templates/websites/view.html:1583
 msgid "Generating accessibility report in"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:319
-msgid "usage: "
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:827
-msgid ".__call__() not defined"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1122
-#, python-format
-msgid "unknown parser %r (choices: %s)"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1163
-#, python-format
-msgid "argument \"-\" with mode %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1174
-#, python-format
-msgid "can't open '%s': %s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1371
-#, python-format
-msgid "cannot merge actions - two groups are named %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1409
-msgid "'required' is an invalid argument for positionals"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1429
-#, python-format
-msgid "invalid option string %r: must start with a character %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1450
-#, python-format
-msgid "dest= is required for options like %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1467
-#, python-format
-msgid "invalid conflict_resolution value: %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1485
-#, python-format
-msgid "conflicting option string(s): %s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1548
-msgid "mutually exclusive arguments must be optional"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1618
-msgid "positional arguments"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1619
-msgid "optional arguments"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1637
-msgid "show this help message and exit"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1643
-msgid "show program's version number and exit"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1675
-msgid "cannot have multiple subparser arguments"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1727
-#, python-format
-msgid "unrecognized arguments: %s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1821
-#, python-format
-msgid "not allowed with argument %s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1867
-#: venv/lib/python3.13/site-packages/argparse.py:1881
-#, python-format
-msgid "ignored explicit argument %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1971
-msgid "too few arguments"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:1978
-#, python-format
-msgid "argument %s is required"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2003
-#, python-format
-msgid "one of the arguments %s is required"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2049
-msgid "expected one argument"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2050
-msgid "expected at most one argument"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2051
-msgid "expected at least one argument"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2053
-#, python-format
-msgid "expected %s argument(s)"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2110
-#, python-format
-msgid "ambiguous option: %s could match %s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2172
-#, python-format
-msgid "unexpected option string: %s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2273
-#, python-format
-msgid "%r is not callable"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2289
-#, python-format
-msgid "invalid %s value: %r"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2299
-#, python-format
-msgid "invalid choice: %r (choose from %s)"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/argparse.py:2392
-#, python-format
-msgid "%s: error: %s\n"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/_termui_impl.py:600
-#, python-brace-format
-msgid "{editor}: Editing failed"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/_termui_impl.py:604
-#, python-brace-format
-msgid "{editor}: Editing failed: {e}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:1084
-#: venv/lib/python3.13/site-packages/click/core.py:1121
-#, python-brace-format
-msgid "{text} {deprecated_message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:1202
-#, python-brace-format
-msgid "Got unexpected extra argument ({args})"
-msgid_plural "Got unexpected extra arguments ({args})"
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:1221
-#, python-brace-format
-msgid "DeprecationWarning: The command {name!r} is deprecated.{extra_message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:1405
-msgid "Aborted!"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:1779
-msgid "Commands"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:1810
-msgid "Missing command."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:1888
-#, python-brace-format
-msgid "No such command {name!r}."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2303
-msgid "Value must be an iterable."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2324
-#, python-brace-format
-msgid "Takes {nargs} values but 1 was given."
-msgid_plural "Takes {nargs} values but {len} were given."
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2404
-#, python-brace-format
-msgid ""
-"DeprecationWarning: The {param_type} {name!r} is "
-"deprecated.{extra_message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2807
-#, python-brace-format
-msgid "env var: {var}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2810
-#, python-brace-format
-msgid "default: {default}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2814
-msgid "required"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/core.py:2870
-msgid "(dynamic)"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/decorators.py:465
-#, python-format
-msgid "%(prog)s, version %(version)s"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/decorators.py:522
-msgid "Show the version and exit."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/decorators.py:548
-msgid "Show this message and exit."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:50
-#: venv/lib/python3.13/site-packages/click/exceptions.py:89
-#, python-brace-format
-msgid "Error: {message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:81
-#, python-brace-format
-msgid "Try '{command} {option}' for help."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:130
-#, python-brace-format
-msgid "Invalid value: {message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:132
-#, python-brace-format
-msgid "Invalid value for {param_hint}: {message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:190
-msgid "Missing argument"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:192
-msgid "Missing option"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:194
-msgid "Missing parameter"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:196
-#, python-brace-format
-msgid "Missing {param_type}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:203
-#, python-brace-format
-msgid "Missing parameter: {param_name}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:223
-#, python-brace-format
-msgid "No such option: {name}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:235
-#, python-brace-format
-msgid "Did you mean {possibility}?"
-msgid_plural "(Possible options: {possibilities})"
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:282
-msgid "unknown error"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/exceptions.py:289
-#, python-brace-format
-msgid "Could not open file {filename!r}: {message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/formatting.py:156
-msgid "Usage:"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/parser.py:200
-#, python-brace-format
-msgid "Argument {name!r} takes {nargs} values."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/parser.py:383
-#, python-brace-format
-msgid "Option {name!r} does not take a value."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/parser.py:444
-#, python-brace-format
-msgid "Option {name!r} requires an argument."
-msgid_plural "Option {name!r} requires {nargs} arguments."
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/click/shell_completion.py:326
-msgid "Shell completion is not supported for Bash versions older than 4.4."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/shell_completion.py:333
-msgid "Couldn't detect Bash version, shell completion is not supported."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/termui.py:162
-msgid "Repeat for confirmation"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/termui.py:178
-msgid "Error: The value you entered was invalid."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/termui.py:180
-#, python-brace-format
-msgid "Error: {e.message}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/termui.py:191
-msgid "Error: The two entered values do not match."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/termui.py:247
-msgid "Error: invalid input"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/termui.py:866
-msgid "Press any key to continue..."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:332
-#, python-brace-format
-msgid ""
-"Choose from:\n"
-"\t{choices}"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:369
-#, python-brace-format
-msgid "{value!r} is not {choice}."
-msgid_plural "{value!r} is not one of {choices}."
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:460
-#, python-brace-format
-msgid "{value!r} does not match the format {format}."
-msgid_plural "{value!r} does not match the formats {formats}."
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:482
-#, python-brace-format
-msgid "{value!r} is not a valid {number_type}."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:538
-#, python-brace-format
-msgid "{value} is not in the range {range}."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:679
-#, python-brace-format
-msgid "{value!r} is not a valid boolean."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:703
-#, python-brace-format
-msgid "{value!r} is not a valid UUID."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:893
-msgid "file"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:895
-msgid "directory"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:897
-msgid "path"
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:944
-#, python-brace-format
-msgid "{name} {filename!r} does not exist."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:953
-#, python-brace-format
-msgid "{name} {filename!r} is a file."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:961
-#, python-brace-format
-msgid "{name} {filename!r} is a directory."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:970
-#, python-brace-format
-msgid "{name} {filename!r} is not readable."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:979
-#, python-brace-format
-msgid "{name} {filename!r} is not writable."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:988
-#, python-brace-format
-msgid "{name} {filename!r} is not executable."
-msgstr ""
-
-#: venv/lib/python3.13/site-packages/click/types.py:1055
-#, python-brace-format
-msgid "{len_type} values are required, but {len_value} was given."
-msgid_plural "{len_type} values are required, but {len_value} were given."
-msgstr[0] ""
-msgstr[1] ""
-
-#: venv/lib/python3.13/site-packages/mypy/main.py:423
-#, python-format
-msgid "%(prog)s: error: %(message)s\n"
 msgstr ""
 

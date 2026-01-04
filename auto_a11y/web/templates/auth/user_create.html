@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Create User') }} - {{ _('Auto A11y') }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-person-plus"></i> {{ _('Create User') }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.user_create') }}">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">{{ _('Email') }} <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="display_name" class="form-label">{{ _('Display Name') }}</label>
+                        <input type="text" class="form-control" id="display_name" name="display_name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">{{ _('Password') }} <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" id="password" name="password" required minlength="8">
+                        <div class="form-text">{{ _('Minimum 8 characters.') }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">{{ _('Role') }} <span class="text-danger">*</span></label>
+                        <select class="form-select" id="role" name="role" required>
+                            <option value="client">{{ _('Client') }} - {{ _('Can view tests and download reports') }}</option>
+                            <option value="auditor">{{ _('Auditor') }} - {{ _('Can create projects and run tests') }}</option>
+                            <option value="admin">{{ _('Admin') }} - {{ _('Full access including user management') }}</option>
+                        </select>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-person-plus"></i> {{ _('Create User') }}
+                        </button>
+                        <a href="{{ url_for('auth.user_list') }}" class="btn btn-secondary">
+                            {{ _('Cancel') }}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

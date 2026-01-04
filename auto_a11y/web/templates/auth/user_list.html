@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('User Management') }} - {{ _('Auto A11y') }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-people"></i> {{ _('User Management') }}</h2>
+    <a href="{{ url_for('auth.user_create') }}" class="btn btn-primary">
+        <i class="bi bi-person-plus"></i> {{ _('Add User') }}
+    </a>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>{{ _('Email') }}</th>
+                        <th>{{ _('Display Name') }}</th>
+                        <th>{{ _('Role') }}</th>
+                        <th>{{ _('Status') }}</th>
+                        <th>{{ _('Last Login') }}</th>
+                        <th>{{ _('Actions') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.display_name or '-' }}</td>
+                        <td>
+                            {% if user.role.value == 'admin' %}
+                            <span class="badge bg-danger">{{ _('Admin') }}</span>
+                            {% elif user.role.value == 'auditor' %}
+                            <span class="badge bg-primary">{{ _('Auditor') }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ _('Client') }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not user.is_active %}
+                            <span class="badge bg-secondary">{{ _('Inactive') }}</span>
+                            {% elif user.is_locked() %}
+                            <span class="badge bg-warning text-dark">{{ _('Locked') }}</span>
+                            {% else %}
+                            <span class="badge bg-success">{{ _('Active') }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else '-' }}</td>
+                        <td>
+                            <a href="{{ url_for('auth.user_edit', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            {% if user.id != current_user.id %}
+                            <form action="{{ url_for('auth.user_delete', user_id=user.id) }}" method="POST" class="d-inline" onsubmit="return confirm('{{ _('Are you sure you want to delete this user?') }}');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">{{ _('No users found.') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

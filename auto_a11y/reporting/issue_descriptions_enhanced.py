@@ -415,7 +415,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
             'what_generic': "Foreign language text is not marked with lang attribute",
             'why': "Screen readers will mispronounce this text using the wrong language rules, making it incomprehensible",
             'who': "Screen reader users, users who rely on text-to-speech",
-            'impact': ImpactScale.HIGH.value,
+            'impact': ImpactScale.MEDIUM.value,
             'wcag': ['3.1.2'],
             'remediation': "Add lang=\"{detected_language}\" attribute to the element containing \"{text_sample}\" (e.g., <span lang=\"{detected_language}\">{text_sample}</span>)"
         },

@@ -320,171 +320,75 @@
             {% endif %}
 
             {% if pages %}
-            <!-- Desktop Table View -->
-            <div class="table-responsive d-none d-md-block">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th style="width: 80px;">{{ _('Screenshot') }}</th>
-                            <th>URL</th>
-                            <th>{{ _('Status') }}</th>
-                            <th>{{ _('Violations') }}</th>
-                            <th>{{ _('Warnings') }}</th>
-                            <th>{{ _('Last Tested') }}</th>
-                            <th>{{ _('Actions') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for page in pages %}
-                        <tr>
-                            <td>
-                                {% if page.screenshot_path %}
-                                <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=page.screenshot_path) }}', '{{ page.url }}'); return false;">
-                                    <img src="{{ url_for('serve_screenshot', filename=page.screenshot_path) }}"
-                                         alt="{{ _('Screenshot of') }} {{ page.url }}"
-                                         style="width: 60px; height: auto; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;"
-                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                    <span style="display: none; font-size: 0.8em; color: #999;">{{ _('No image') }}</span>
-                                </a>
-                                {% else %}
-                                <span style="font-size: 0.8em; color: #999;">-</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="{{ page.url }}" target="_blank">
+            <!-- Pages as Cards - Responsive for all screen sizes -->
+            {% for page in pages %}
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                        <div class="d-flex align-items-start gap-3 flex-grow-1" style="min-width: 0;">
+                            {% if page.screenshot_path %}
+                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=page.screenshot_path) }}', '{{ page.url }}'); return false;" class="flex-shrink-0">
+                                <img src="{{ url_for('serve_screenshot', filename=page.screenshot_path) }}"
+                                     alt="{{ _('Screenshot of') }} {{ page.url }}"
+                                     style="width: 60px; height: auto; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;"
+                                     onerror="this.style.display='none';">
+                            </a>
+                            {% endif %}
+                            <div style="min-width: 0;">
+                                <a href="{{ page.url }}" target="_blank" class="text-break d-block mb-1">
                                     {{ page.url }}
                                 </a>
-                            </td>
-                            <td class="page-status" data-page-id="{{ page.id }}">
-                                <span class="badge bg-{{ {
-                                    'discovered': 'secondary',
-                                    'queued': 'info',
-                                    'testing': 'warning',
-                                    'tested': 'success',
-                                    'error': 'danger',
-                                    'skipped': 'secondary',
-                                    'discovery_failed': 'dark'
-                                }[page.status.value] }}"
-                                {% if page.error_reason %}title="{{ page.error_reason }}" data-bs-toggle="tooltip"{% endif %}>
-                                    {% if page.status.value == 'queued' %}
-                                        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-                                    {% elif page.status.value == 'testing' %}
-                                        <span class="spinner-border spinner-border-sm me-1" role="status"></span>
-                                    {% elif page.status.value == 'discovery_failed' %}
-                                        <i class="bi bi-exclamation-triangle"></i>
-                                    {% endif %}
-                                    {{ page.status.value|replace('_', ' ')|title }}
-                                </span>
-                            </td>
-                            <td>
-                                {% if page.violation_count > 0 %}
-                                    <span class="text-danger">{{ page.violation_count }}</span>
-                                {% else %}
-                                    <span class="text-success">0</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if page.warning_count > 0 %}
-                                    <span class="text-warning">{{ page.warning_count }}</span>
-                                {% else %}
-                                    <span class="text-muted">0</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {{ page.last_tested.strftime('%Y-%m-%d %H:%M') if page.last_tested else _('Never') }}
-                            </td>
-                            <td>
-                                <a href="{{ url_for('pages.view_page', page_id=page.id) }}"
-                                   class="btn btn-sm btn-primary"
-                                   title="{{ _('View Details') }}">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                {% if page.status.value in ['queued', 'testing'] %}
-                                <button class="btn btn-sm btn-danger page-test-btn" data-page-id="{{ page.id }}" onclick="cancelPageTest('{{ page.id }}')"
-                                        title="{{ _('Cancel Test') }}">
-                                    <i class="bi bi-x-circle"></i>
-                                </button>
-                                {% else %}
-                                <button class="btn btn-sm btn-success page-test-btn" data-page-id="{{ page.id }}" onclick="testPage('{{ page.id }}')"
-                                        title="{{ _('Run Test') }}">
-                                    <i class="bi bi-play"></i>
-                                </button>
-                                {% endif %}
-                                <button class="btn btn-sm btn-outline-danger" onclick="deletePage('{{ page.id }}', '{{ page.url }}')"
-                                        title="{{ _('Delete Page') }}">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            
-            <!-- Mobile Card View -->
-            <div class="d-md-none">
-                {% for page in pages %}
-                <div class="card mb-3 shadow-sm">
-                    <div class="card-body py-3">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <div class="flex-grow-1 me-2">
-                                <a href="{{ url_for('pages.view_page', page_id=page.id) }}" class="text-decoration-none">
-                                    <h6 class="card-title mb-1 text-break" style="font-size: 0.9rem;">
-                                        {{ page.url|replace(website.url, '')|truncate(50) or '/' }}
-                                    </h6>
-                                </a>
                             </div>
-                            <span class="badge bg-{{ {
-                                'discovered': 'secondary',
-                                'queued': 'info',
-                                'testing': 'warning',
-                                'tested': 'success',
-                                'error': 'danger',
-                                'skipped': 'secondary',
-                                'discovery_failed': 'dark'
-                            }[page.status.value] }} page-status-mobile" data-page-id="{{ page.id }}">
-                                {% if page.status.value in ['queued', 'testing'] %}
-                                <span class="spinner-border spinner-border-sm me-1" role="status" style="width: 10px; height: 10px;"></span>
-                                {% endif %}
-                                {{ page.status.value|replace('_', ' ')|title }}
-                            </span>
                         </div>
-                        
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div class="d-flex gap-3">
-                                <span class="{% if page.violation_count > 0 %}text-danger{% else %}text-success{% endif %}">
-                                    <i class="bi bi-x-circle"></i> {{ page.violation_count }}
-                                </span>
-                                <span class="{% if page.warning_count > 0 %}text-warning{% else %}text-muted{% endif %}">
-                                    <i class="bi bi-exclamation-triangle"></i> {{ page.warning_count }}
-                                </span>
-                            </div>
-                            <small class="text-muted">
-                                {{ page.last_tested.strftime('%m/%d %H:%M') if page.last_tested else _('Not tested') }}
-                            </small>
-                        </div>
-                        
-                        <div class="d-flex gap-2">
-                            <a href="{{ url_for('pages.view_page', page_id=page.id) }}" class="btn btn-sm btn-primary flex-grow-1">
-                                <i class="bi bi-eye"></i> {{ _('View') }}
-                            </a>
+                        <span class="badge bg-{{ {
+                            'discovered': 'secondary',
+                            'queued': 'info',
+                            'testing': 'warning',
+                            'tested': 'success',
+                            'error': 'danger',
+                            'skipped': 'secondary',
+                            'discovery_failed': 'dark'
+                        }[page.status.value] }} page-status flex-shrink-0" data-page-id="{{ page.id }}"
+                        {% if page.error_reason %}title="{{ page.error_reason }}" data-bs-toggle="tooltip"{% endif %}>
                             {% if page.status.value in ['queued', 'testing'] %}
-                            <button class="btn btn-sm btn-danger page-test-btn-mobile" data-page-id="{{ page.id }}" onclick="cancelPageTest('{{ page.id }}')">
-                                <i class="bi bi-x-circle"></i>
-                            </button>
-                            {% else %}
-                            <button class="btn btn-sm btn-success page-test-btn-mobile" data-page-id="{{ page.id }}" onclick="testPage('{{ page.id }}')">
-                                <i class="bi bi-play"></i>
-                            </button>
+                            <span class="spinner-border spinner-border-sm me-1" role="status" style="width: 10px; height: 10px;"></span>
+                            {% elif page.status.value == 'discovery_failed' %}
+                            <i class="bi bi-exclamation-triangle"></i>
                             {% endif %}
-                            <button class="btn btn-sm btn-outline-danger" onclick="deletePage('{{ page.id }}', '{{ page.url }}')">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
+                            {{ page.status.value|replace('_', ' ')|title }}
+                        </span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-3 mb-3 small text-muted">
+                        <span class="{% if page.violation_count > 0 %}text-danger{% else %}text-success{% endif %}">
+                            <i class="bi bi-x-circle"></i> {{ page.violation_count }} {{ _('violations') }}
+                        </span>
+                        <span class="{% if page.warning_count > 0 %}text-warning{% else %}text-muted{% endif %}">
+                            <i class="bi bi-exclamation-triangle"></i> {{ page.warning_count }} {{ _('warnings') }}
+                        </span>
+                        <span>
+                            <i class="bi bi-clock"></i> {{ page.last_tested.strftime('%Y-%m-%d %H:%M') if page.last_tested else _('Not tested') }}
+                        </span>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="{{ url_for('pages.view_page', page_id=page.id) }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-eye"></i> {{ _('View') }}
+                        </a>
+                        {% if page.status.value in ['queued', 'testing'] %}
+                        <button class="btn btn-sm btn-danger page-test-btn" data-page-id="{{ page.id }}" onclick="cancelPageTest('{{ page.id }}')">
+                            <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
+                        </button>
+                        {% else %}
+                        <button class="btn btn-sm btn-success page-test-btn" data-page-id="{{ page.id }}" onclick="testPage('{{ page.id }}')">
+                            <i class="bi bi-play"></i> {{ _('Test') }}
+                        </button>
+                        {% endif %}
+                        <button class="btn btn-sm btn-outline-danger" onclick="deletePage('{{ page.id }}', '{{ page.url }}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </div>
                 </div>
-                {% endfor %}
             </div>
+            {% endfor %}
 
             {% if pagination and pagination.total_pages > 1 %}
             <!-- Pagination Controls - Bottom -->

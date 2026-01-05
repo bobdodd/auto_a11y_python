@@ -40,6 +40,19 @@
     .accordion-button > *:first-child {
         margin-left: 0;
     }
+    
+    /* Support flex-column accordion buttons with xpath on separate line */
+    .accordion-button.flex-column {
+        align-items: flex-start !important;
+    }
+    
+    .accordion-button.flex-column::after {
+        top: 1.25rem;
+    }
+    
+    .accordion-button.flex-column > * {
+        margin-left: 0;
+    }
 
     /* State selector button text contrast */
     .state-selector.btn-outline-primary.active small,
@@ -303,9 +316,9 @@
                 </h5>
             </div>
             <div class="card-body">
-                <div class="row g-3">
-                    <div class="col-6 col-md-3">
-                        <div class="text-center">
+                <div class="d-flex flex-wrap gap-3">
+                    <div class="card text-center flex-fill" style="min-width: 140px;">
+                        <div class="card-body py-3">
                             <h6 class="text-danger mb-1">
                                 <i class="bi bi-x-circle"></i> {{ _('Errors') }}
                             </h6>
@@ -313,8 +326,8 @@
                             <small class="text-muted">{{ _('types found') }}</small>
                         </div>
                     </div>
-                    <div class="col-6 col-md-3">
-                        <div class="text-center">
+                    <div class="card text-center flex-fill" style="min-width: 140px;">
+                        <div class="card-body py-3">
                             <h6 class="text-warning mb-1">
                                 <i class="bi bi-exclamation-triangle"></i> {{ _('Warnings') }}
                             </h6>
@@ -322,8 +335,8 @@
                             <small class="text-muted">{{ _('types found') }}</small>
                         </div>
                     </div>
-                    <div class="col-6 col-md-3">
-                        <div class="text-center">
+                    <div class="card text-center flex-fill" style="min-width: 140px;">
+                        <div class="card-body py-3">
                             <h6 class="text-info mb-1">
                                 <i class="bi bi-info-circle"></i> {{ _('Info') }}
                             </h6>
@@ -331,8 +344,8 @@
                             <small class="text-muted">{{ _('types found') }}</small>
                         </div>
                     </div>
-                    <div class="col-6 col-md-3">
-                        <div class="text-center">
+                    <div class="card text-center flex-fill" style="min-width: 140px;">
+                        <div class="card-body py-3">
                             <h6 class="mb-1" style="color: #6f42c1;">
                                 <i class="bi bi-search"></i> {{ _('Discovery') }}
                             </h6>
@@ -672,28 +685,31 @@
                                                             {# INSTANCE_HTML_START - Keep in sync with non-breakpoint path #}
                                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button"
+                                                    <button class="accordion-button collapsed d-flex flex-column align-items-start" type="button"
                                                             data-bs-toggle="collapse"
                                                             data-bs-target="#viol-instance-{{ instance_id }}">
-                                                        <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
-                                                        {% if violation.metadata and violation.metadata.authenticated_user %}
-                                                            <span class="badge bg-secondary ms-2">
-                                                                <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
-                                                                {% if violation.metadata.authenticated_user.roles %}
-                                                                    ({{ violation.metadata.authenticated_user.roles|join(', ') }})
-                                                                {% endif %}
-                                                            </span>
-                                                        {% else %}
-                                                            <span class="badge bg-secondary ms-2">
-                                                                <i class="bi bi-person"></i> {{ _('Guest') }}
-                                                            </span>
-                                                        {% endif %}
-                                                        {% if 'ErrDuplicateNavNames' in violation.id and violation.metadata and violation.metadata.duplicateName %}
-                                                        <span class="ms-2">{{ violation.metadata.duplicateName }}</span>
-                                                        {% elif 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
-                                                        <span class="ms-2">Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}</span>
-                                                        {% elif violation.xpath %}
-                                                        <code class="ms-2">{{ violation.xpath }}</code>
+                                                        <div class="d-flex flex-wrap align-items-center gap-2">
+                                                            <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
+                                                            {% if violation.metadata and violation.metadata.authenticated_user %}
+                                                                <span class="badge bg-secondary">
+                                                                    <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
+                                                                    {% if violation.metadata.authenticated_user.roles %}
+                                                                        ({{ violation.metadata.authenticated_user.roles|join(', ') }})
+                                                                    {% endif %}
+                                                                </span>
+                                                            {% else %}
+                                                                <span class="badge bg-secondary">
+                                                                    <i class="bi bi-person"></i> {{ _('Guest') }}
+                                                                </span>
+                                                            {% endif %}
+                                                            {% if 'ErrDuplicateNavNames' in violation.id and violation.metadata and violation.metadata.duplicateName %}
+                                                            <span>{{ violation.metadata.duplicateName }}</span>
+                                                            {% elif 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
+                                                            <span>Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}</span>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% if violation.xpath and not ('ErrDuplicateNavNames' in violation.id or 'DiscoFontFound' in violation.id) %}
+                                                        <code class="small text-muted text-break mt-1">{{ violation.xpath }}</code>
                                                         {% endif %}
                                                     </button>
                                                 </h2>
@@ -1020,28 +1036,31 @@
                                             {# INSTANCE_HTML_START - Keep in sync with breakpoint path #}
                                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button"
+                                                    <button class="accordion-button collapsed d-flex flex-column align-items-start" type="button"
                                                             data-bs-toggle="collapse"
                                                             data-bs-target="#viol-instance-{{ instance_id }}">
-                                                        <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
-                                                        {% if violation.metadata and violation.metadata.authenticated_user %}
-                                                            <span class="badge bg-secondary ms-2">
-                                                                <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
-                                                                {% if violation.metadata.authenticated_user.roles %}
-                                                                    ({{ violation.metadata.authenticated_user.roles|join(', ') }})
-                                                                {% endif %}
-                                                            </span>
-                                                        {% else %}
-                                                            <span class="badge bg-secondary ms-2">
-                                                                <i class="bi bi-person"></i> {{ _('Guest') }}
-                                                            </span>
-                                                        {% endif %}
-                                                        {% if 'ErrDuplicateNavNames' in violation.id and violation.metadata and violation.metadata.duplicateName %}
-                                                        <span class="ms-2">{{ violation.metadata.duplicateName }}</span>
-                                                        {% elif 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
-                                                        <span class="ms-2">Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}</span>
-                                                        {% elif violation.xpath %}
-                                                        <code class="ms-2">{{ violation.xpath }}</code>
+                                                        <div class="d-flex flex-wrap align-items-center gap-2">
+                                                            <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
+                                                            {% if violation.metadata and violation.metadata.authenticated_user %}
+                                                                <span class="badge bg-secondary">
+                                                                    <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
+                                                                    {% if violation.metadata.authenticated_user.roles %}
+                                                                        ({{ violation.metadata.authenticated_user.roles|join(', ') }})
+                                                                    {% endif %}
+                                                                </span>
+                                                            {% else %}
+                                                                <span class="badge bg-secondary">
+                                                                    <i class="bi bi-person"></i> {{ _('Guest') }}
+                                                                </span>
+                                                            {% endif %}
+                                                            {% if 'ErrDuplicateNavNames' in violation.id and violation.metadata and violation.metadata.duplicateName %}
+                                                            <span>{{ violation.metadata.duplicateName }}</span>
+                                                            {% elif 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
+                                                            <span>Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}</span>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% if violation.xpath and not ('ErrDuplicateNavNames' in violation.id or 'DiscoFontFound' in violation.id) %}
+                                                        <code class="small text-muted text-break mt-1">{{ violation.xpath }}</code>
                                                         {% endif %}
                                                     </button>
                                                 </h2>
@@ -1364,39 +1383,43 @@
                             {% for violation in group_list %}
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button"
+                                    <button class="accordion-button collapsed d-flex flex-column align-items-start" type="button"
                                             data-bs-toggle="collapse"
                                             data-bs-target="#viol-single-{{ viol_counter.value }}">
-                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} me-2 impact-badge">{{ _(violation.impact.value|upper if violation.impact.value else violation.impact|upper) }}</span>
-                                        {% if violation.metadata.ai_detected %}
-                                        <span class="badge bg-info me-2" title="Detected by AI analysis">
-                                            <i class="bi bi-robot"></i> AI
-                                        </span>
-                                        {% endif %}
-                                        {% if violation.metadata and violation.metadata.authenticated_user %}
-                                            <span class="badge bg-secondary me-2">
-                                                <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
-                                                {% if violation.metadata.authenticated_user.roles %}
-                                                    ({{ violation.metadata.authenticated_user.roles|join(', ') }})
-                                                {% endif %}
+                                        <div class="d-flex flex-wrap align-items-center gap-2">
+                                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">{{ _(violation.impact.value|upper if violation.impact.value else violation.impact|upper) }}</span>
+                                            {% if violation.metadata.ai_detected %}
+                                            <span class="badge bg-info" title="Detected by AI analysis">
+                                                <i class="bi bi-robot"></i> AI
                                             </span>
-                                        {% else %}
-                                            <span class="badge bg-secondary me-2">
-                                                <i class="bi bi-person"></i> Guest
+                                            {% endif %}
+                                            {% if violation.metadata and violation.metadata.authenticated_user %}
+                                                <span class="badge bg-secondary">
+                                                    <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
+                                                    {% if violation.metadata.authenticated_user.roles %}
+                                                        ({{ violation.metadata.authenticated_user.roles|join(', ') }})
+                                                    {% endif %}
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">
+                                                    <i class="bi bi-person"></i> Guest
+                                                </span>
+                                            {% endif %}
+                                            {% if show_error_codes %}<code>{{ error_code|error_code_only }}</code>{% endif %}
+                                            <span>
+                                            {% if 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
+                                                Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}
+                                            {% elif violation.metadata and violation.metadata.title %}
+                                                {{ violation.metadata.title }}
+                                            {% elif violation.metadata and violation.metadata.what and violation.metadata.what != "Accessibility issue: " + violation.id.split('_')[1] %}
+                                                {{ violation.metadata.what }}
+                                            {% else %}
+                                                {{ violation.description }}
+                                            {% endif %}
                                             </span>
-                                        {% endif %}
-                                        {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
-                                        {% if 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
-                                            Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}
-                                        {% elif violation.metadata and violation.metadata.title %}
-                                            {{ violation.metadata.title }}
-                                        {% elif violation.metadata and violation.metadata.what and violation.metadata.what != "Accessibility issue: " + violation.id.split('_')[1] %}
-                                            {{ violation.metadata.what }}
-                                        {% else %}
-                                            {{ violation.description }}
-                                        {% endif %}
+                                        </div>
                                         {% if violation.xpath %}
-                                            <span class="text-muted ms-2" style="font-size: 0.9em;">{{ violation.xpath }}</span>
+                                        <code class="small text-muted text-break mt-1">{{ violation.xpath }}</code>
                                         {% endif %}
                                     </button>
                                 </h2>
@@ -1885,12 +1908,14 @@
                                                             {% set warn_instance_id = breakpoint_id ~ '-' ~ loop.index %}
                                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button" 
+                                                    <button class="accordion-button collapsed d-flex flex-column align-items-start" type="button" 
                                                             data-bs-toggle="collapse" 
                                                             data-bs-target="#warn-instance-{{ warn_instance_id }}">
-                                                        <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
+                                                        <div class="d-flex flex-wrap align-items-center gap-2">
+                                                            <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
+                                                        </div>
                                                         {% if warning.xpath %}
-                                                        <code class="ms-2">{{ warning.xpath }}</code>
+                                                        <code class="small text-muted text-break mt-1">{{ warning.xpath }}</code>
                                                         {% endif %}
                                                     </button>
                                                 </h2>
@@ -2091,12 +2116,14 @@
                                             {% set warn_instance_id = warn_counter.value ~ '-' ~ loop.index %}
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header">
-                                                    <button class="accordion-button collapsed" type="button" 
+                                                    <button class="accordion-button collapsed d-flex flex-column align-items-start" type="button" 
                                                             data-bs-toggle="collapse" 
                                                             data-bs-target="#warn-instance-{{ warn_instance_id }}">
-                                                        <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
+                                                        <div class="d-flex flex-wrap align-items-center gap-2">
+                                                            <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
+                                                        </div>
                                                         {% if warning.xpath %}
-                                                        <code class="ms-2">{{ warning.xpath }}</code>
+                                                        <code class="small text-muted text-break mt-1">{{ warning.xpath }}</code>
                                                         {% endif %}
                                                     </button>
                                                 </h2>
@@ -2193,27 +2220,31 @@
                             {% for warning in group_list %}
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" 
+                                    <button class="accordion-button collapsed d-flex flex-column align-items-start" type="button" 
                                             data-bs-toggle="collapse" 
                                             data-bs-target="#warn-single-{{ warn_counter.value }}">
-                                        <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'warning' }} me-2 impact-badge">
-                                            {{ _(warning.impact.value|upper if warning.impact.value else warning.impact|upper) }}
-                                        </span>
-                                        {% if warning.metadata.ai_detected %}
-                                        <span class="badge bg-info me-2" title="Detected by AI analysis">
-                                            <i class="bi bi-robot"></i> AI
-                                        </span>
-                                        {% endif %}
-                                        {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
-                                        {% if warning.metadata and warning.metadata.title %}
-                                            {{ warning.metadata.title }}
-                                        {% elif warning.metadata and warning.metadata.what and warning.metadata.what != "Accessibility issue: " + warning.id.split('_')[1] %}
-                                            {{ warning.metadata.what }}
-                                        {% else %}
-                                            {{ warning.description }}
-                                        {% endif %}
+                                        <div class="d-flex flex-wrap align-items-center gap-2">
+                                            <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'warning' }} impact-badge">
+                                                {{ _(warning.impact.value|upper if warning.impact.value else warning.impact|upper) }}
+                                            </span>
+                                            {% if warning.metadata.ai_detected %}
+                                            <span class="badge bg-info" title="Detected by AI analysis">
+                                                <i class="bi bi-robot"></i> AI
+                                            </span>
+                                            {% endif %}
+                                            {% if show_error_codes %}<code>{{ error_code|error_code_only }}</code>{% endif %}
+                                            <span>
+                                            {% if warning.metadata and warning.metadata.title %}
+                                                {{ warning.metadata.title }}
+                                            {% elif warning.metadata and warning.metadata.what and warning.metadata.what != "Accessibility issue: " + warning.id.split('_')[1] %}
+                                                {{ warning.metadata.what }}
+                                            {% else %}
+                                                {{ warning.description }}
+                                            {% endif %}
+                                            </span>
+                                        </div>
                                         {% if warning.xpath %}
-                                            <span class="text-muted ms-2" style="font-size: 0.9em;">{{ warning.xpath }}</span>
+                                        <code class="small text-muted text-break mt-1">{{ warning.xpath }}</code>
                                         {% endif %}
                                     </button>
                                 </h2>

@@ -17,7 +17,6 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;
     width: 100%;
 }
 
@@ -45,11 +44,21 @@ main {
 .navbar-brand {
     font-weight: bold;
     font-size: 1.3rem;
+    color: #fff !important;
 }
 
 .navbar-brand i {
     font-size: 1.5rem;
     vertical-align: middle;
+}
+
+.navbar-dark .nav-link {
+    color: #fff !important;
+}
+
+.navbar-dark .nav-link:hover,
+.navbar-dark .nav-link:focus {
+    color: #e0e0e0 !important;
 }
 
 /* Card hover effects */

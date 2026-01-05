@@ -16,8 +16,11 @@
    ============================================ */
 
 /* Prevent horizontal scroll */
-html, body {
+html {
     overflow-x: hidden;
+}
+
+body {
     -webkit-overflow-scrolling: touch;
 }
 
@@ -135,6 +138,17 @@ a, button, .btn, input, select, textarea {
         box-shadow: none;
         outline: 2px solid white;
         outline-offset: 2px;
+    }
+}
+
+/* Ensure navbar dropdowns work on desktop */
+@media (min-width: 992px) {
+    .navbar {
+        overflow: visible;
+    }
+    
+    .navbar .dropdown-menu {
+        position: absolute;
     }
 }
 
@@ -885,9 +899,13 @@ a, button, .btn, input, select, textarea {
    Responsive Container Overflow Prevention
    ============================================ */
 
-.container-fluid {
+main .container-fluid {
     max-width: 100%;
     overflow-x: hidden;
+}
+
+.navbar .container-fluid {
+    overflow: visible;
 }
 
 @media (max-width: 991.98px) {

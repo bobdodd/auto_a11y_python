@@ -143,10 +143,10 @@ def create_app(config):
     app.register_blueprint(demo_bp, url_prefix='/demo')
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
-    # Global login requirement - protect all routes except auth, static, and health
+    # Global login requirement - protect all routes except auth, static, demo, and health
     @app.before_request
     def require_login():
-        """Require login for all routes except auth, static, and health endpoints"""
+        """Require login for all routes except auth, static, demo, and health endpoints"""
         allowed_endpoints = [
             'auth.login', 'auth.register', 'auth.logout',
             'static', 'health', 'set_language'
@@ -154,6 +154,8 @@ def create_app(config):
         if request.endpoint and request.endpoint in allowed_endpoints:
             return None
         if request.endpoint and request.endpoint.startswith('static'):
+            return None
+        if request.endpoint and request.endpoint.startswith('demo.'):
             return None
         if not current_user.is_authenticated:
             if request.is_json or request.path.startswith('/api/'):

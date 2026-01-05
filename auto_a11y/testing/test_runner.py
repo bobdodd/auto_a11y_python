@@ -99,31 +99,14 @@ class TestRunner:
                 except Exception as e:
                     logger.warning(f"Could not get project config for wait strategy: {e}")
 
-                # Navigate to page
-                response = await self.browser_manager.goto(
-                    browser_page,
-                    page.url,
-                    wait_until=wait_strategy,
-                    timeout=30000
-                )
-
-                if not response:
-                    raise RuntimeError(f"Failed to load page: {page.url}")
-
-                # Wait for content to be ready
-                await browser_page.waitForSelector('body', {'timeout': 5000})
-
-                # If using domcontentloaded, give the page a moment to stabilize
-                # This prevents the browser from closing the session too early
-                if wait_strategy == 'domcontentloaded':
-                    import asyncio
-                    await asyncio.sleep(2)  # Wait 2 seconds for JS to initialize
-
-                # Perform authentication if user specified
+                # Perform authentication FIRST if user specified
                 authenticated_user = None
                 if website_user_id:
                     logger.warning(f"DEBUG: Testing page {page.url} with user_id: {website_user_id}")
+                    # Try project user first, then website user
                     user = self.db.get_project_user(website_user_id)
+                    if not user:
+                        user = self.db.get_website_user(website_user_id)
                     if user:
                         logger.warning(f"DEBUG: Found user: {user.username} (id: {user.id})")
                         if not user.enabled:
@@ -157,6 +140,27 @@ class TestRunner:
                                     # Continue with testing even if login fails, but record the failure
                     else:
                         logger.warning(f"User ID {website_user_id} not found")
+
+                # Navigate to test page (after authentication if applicable)
+                logger.info(f"Navigating to test page: {page.url}")
+                response = await self.browser_manager.goto(
+                    browser_page,
+                    page.url,
+                    wait_until=wait_strategy,
+                    timeout=30000
+                )
+
+                if not response:
+                    raise RuntimeError(f"Failed to load page: {page.url}")
+
+                # Wait for content to be ready
+                await browser_page.waitForSelector('body', {'timeout': 5000})
+
+                # If using domcontentloaded, give the page a moment to stabilize
+                # This prevents the browser from closing the session too early
+                if wait_strategy == 'domcontentloaded':
+                    import asyncio
+                    await asyncio.sleep(2)  # Wait 2 seconds for JS to initialize
 
                 # Start script session if not already started for this website
                 if self._current_website_id != page.website_id:
@@ -552,44 +556,6 @@ class TestRunner:
             result = await self.test_page(page, take_screenshot, run_ai_analysis, ai_api_key, website_user_id)
             return [result]
 
-        # Start script session if not already started for this website
-        if self._current_website_id != page.website_id:
-            # End previous session if exists
-            if self._current_website_id is not None:
-                self.session_manager.end_session()
-
-            # Start new session for this website
-            self.session_manager.start_session(page.website_id)
-            self._current_website_id = page.website_id
-            logger.info(f"Started script session for website {page.website_id}")
-
-        # Get session ID
-        session_id = self.session_manager.current_session.session_id if self.session_manager.current_session else None
-
-        # Get all applicable scripts for this page
-        scripts_to_execute = self.db.get_scripts_for_page_v2(
-            page_id=page.id,
-            website_id=page.website_id,
-            enabled_only=True
-        )
-
-        # Filter scripts that have multi-state testing configured
-        multi_state_scripts = [
-            script for script in scripts_to_execute
-            if script.test_before_execution or script.test_after_execution
-        ]
-
-        logger.warning(f"DEBUG: Found {len(scripts_to_execute)} scripts, filtering for multi-state")
-        for script in scripts_to_execute:
-            logger.warning(f"DEBUG: Script ID={script.id} '{script.name}' - test_before={script.test_before_execution}, test_after={script.test_after_execution}, clear_cookies={script.clear_cookies_before}, clear_localStorage={script.clear_local_storage_before}")
-
-        if not multi_state_scripts:
-            logger.info(f"No multi-state scripts configured for page {page.url}, using single-state testing")
-            result = await self.test_page(page, take_screenshot, run_ai_analysis, ai_api_key)
-            return [result]
-
-        logger.warning(f"DEBUG: Testing page {page.url} with {len(multi_state_scripts)} multi-state scripts")
-
         # Update page status
         page.status = PageStatus.TESTING
         self.db.update_page(page)
@@ -602,7 +568,7 @@ class TestRunner:
 
         try:
             async with self.browser_manager.get_page() as browser_page:
-                # Navigate to page
+                # Get wait strategy from project config
                 wait_strategy = 'networkidle2'
                 try:
                     website = self.db.get_website(page.website_id)
@@ -613,24 +579,19 @@ class TestRunner:
                 except Exception as e:
                     logger.warning(f"Could not get project config: {e}")
 
-                response = await self.browser_manager.goto(
-                    browser_page,
-                    page.url,
-                    wait_until=wait_strategy,
-                    timeout=30000
-                )
-
-                if not response:
-                    raise RuntimeError(f"Failed to load page: {page.url}")
-
-                await browser_page.waitForSelector('body', {'timeout': 5000})
-
-                # Perform authentication if user specified
+                # STEP 1: Perform authentication FIRST if user specified
                 authenticated_user = None
+                logger.warning(f"DEBUG multi-state: website_user_id={website_user_id}")
                 if website_user_id:
-                    user = self.db.get_website_user(website_user_id)
+                    # Try project user first, then website user
+                    user = self.db.get_project_user(website_user_id)
+                    logger.warning(f"DEBUG multi-state: get_project_user returned: {user}")
+                    if not user:
+                        user = self.db.get_website_user(website_user_id)
+                        logger.warning(f"DEBUG multi-state: get_website_user returned: {user}")
+                    logger.warning(f"DEBUG multi-state: user={user}, user.enabled={user.enabled if user else 'N/A'}")
                     if user and user.enabled:
-                        logger.info(f"Authenticating as user: {user.username} for multi-state testing")
+                        logger.warning(f"DEBUG multi-state: About to authenticate as user: {user.username}")
                         login_result = await self.login_automation.perform_login(
                             browser_page,
                             user,
@@ -643,6 +604,60 @@ class TestRunner:
                             self._logged_in_user = user
                         else:
                             logger.error(f"Authentication failed: {login_result['error']}")
+
+                # STEP 2: Navigate to test page (after authentication)
+                logger.info(f"Navigating to test page: {page.url}")
+                response = await self.browser_manager.goto(
+                    browser_page,
+                    page.url,
+                    wait_until=wait_strategy,
+                    timeout=30000
+                )
+
+                if not response:
+                    raise RuntimeError(f"Failed to load page: {page.url}")
+
+                await browser_page.waitForSelector('body', {'timeout': 5000})
+
+                # STEP 3: Now detect scripts (after we're on the test page, authenticated)
+                # Start script session if not already started for this website
+                if self._current_website_id != page.website_id:
+                    # End previous session if exists
+                    if self._current_website_id is not None:
+                        self.session_manager.end_session()
+
+                    # Start new session for this website
+                    self.session_manager.start_session(page.website_id)
+                    self._current_website_id = page.website_id
+                    logger.info(f"Started script session for website {page.website_id}")
+
+                # Get session ID
+                session_id = self.session_manager.current_session.session_id if self.session_manager.current_session else None
+
+                # Get all applicable scripts for this page
+                scripts_to_execute = self.db.get_scripts_for_page_v2(
+                    page_id=page.id,
+                    website_id=page.website_id,
+                    enabled_only=True
+                )
+
+                # Filter scripts that have multi-state testing configured
+                multi_state_scripts = [
+                    script for script in scripts_to_execute
+                    if script.test_before_execution or script.test_after_execution
+                ]
+
+                logger.warning(f"DEBUG: Found {len(scripts_to_execute)} scripts, filtering for multi-state")
+                for script in scripts_to_execute:
+                    logger.warning(f"DEBUG: Script ID={script.id} '{script.name}' - test_before={script.test_before_execution}, test_after={script.test_after_execution}, clear_cookies={script.clear_cookies_before}, clear_localStorage={script.clear_local_storage_before}")
+
+                if not multi_state_scripts:
+                    logger.info(f"No multi-state scripts configured for page {page.url}, using single-state testing")
+                    # Fall back to single test but we're already authenticated and on the page
+                    result = await self.test_page(page, take_screenshot, run_ai_analysis, ai_api_key, website_user_id)
+                    return [result]
+
+                logger.warning(f"DEBUG: Testing page {page.url} with {len(multi_state_scripts)} multi-state scripts")
 
                 # Create a test function that can be called multiple times
                 async def run_single_test(browser_page, page_id):

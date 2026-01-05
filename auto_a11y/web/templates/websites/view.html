@@ -14,35 +14,30 @@
     </nav>
 
     <!-- Website Header -->
-    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mb-4 gap-3">
-        <div>
+    <div class="mb-4">
+        <div class="mb-3">
             <h1 class="h2">{{ website.display_name }}</h1>
             <p class="text-muted mb-0 text-break">
                 <a href="{{ website.url }}" target="_blank">
-                    <span class="d-none d-md-inline">{{ website.url }}</span>
-                    <span class="d-md-none">{{ website.url|truncate(35) }}</span>
-                    <i class="bi bi-box-arrow-up-right"></i>
+                    {{ website.url }} <i class="bi bi-box-arrow-up-right"></i>
                 </a>
             </p>
         </div>
-        <!-- Desktop Actions -->
-        <div class="d-none d-lg-block">
+        
+        <!-- Action Buttons - flex wrap for all screen sizes -->
+        <div class="d-flex flex-wrap gap-2 mb-3">
             {% if website_users %}
-            <div class="btn-group me-2" role="group">
-                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="discoveryUserSelectionBtn">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="discoveryUserSelectionBtn">
                     <i class="bi bi-person-check"></i> {{ _('Discovery Users') }}: <span id="discoveryUserSelectionCount">{{ _('Guest') }}</span>
                 </button>
                 <ul class="dropdown-menu p-2" style="min-width: 280px;">
-                    <li class="px-2 mb-2">
-                        <strong>{{ _('Select users for discovery:') }}</strong>
-                    </li>
+                    <li class="px-2 mb-2"><strong>{{ _('Select users for discovery:') }}</strong></li>
                     <li><hr class="dropdown-divider"></li>
                     <li class="px-2">
                         <div class="form-check">
                             <input class="form-check-input batch-discovery-user-checkbox" type="checkbox" value="" id="discovery-user-guest" checked>
-                            <label class="form-check-label" for="discovery-user-guest">
-                                <strong>{{ _('Guest') }}</strong> ({{ _('no login') }})
-                            </label>
+                            <label class="form-check-label" for="discovery-user-guest"><strong>{{ _('Guest') }}</strong> ({{ _('no login') }})</label>
                         </div>
                     </li>
                     {% for user in website_users %}
@@ -64,28 +59,24 @@
                 </ul>
             </div>
             {% endif %}
-            <button class="btn btn-success me-2" id="discoverBtn">
+            <button class="btn btn-success" id="discoverBtn">
                 <i class="bi bi-search"></i> {{ _('Discover Pages') }}
             </button>
-            <button class="btn btn-danger me-2" id="cancelDiscoveryBtn" style="display: none;">
-                <i class="bi bi-stop-circle-fill"></i> {{ _('ABORT DISCOVERY') }}
+            <button class="btn btn-danger" id="cancelDiscoveryBtn" style="display: none;">
+                <i class="bi bi-stop-circle-fill"></i> {{ _('Abort') }}
             </button>
             {% if website_users %}
-            <div class="btn-group me-2" role="group">
-                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="userSelectionBtn">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="userSelectionBtn">
                     <i class="bi bi-person-check"></i> {{ _('Test Users') }}: <span id="userSelectionCount">{{ _('Guest') }}</span>
                 </button>
                 <ul class="dropdown-menu p-2" style="min-width: 280px;">
-                    <li class="px-2 mb-2">
-                        <strong>{{ _('Select users to test:') }}</strong>
-                    </li>
+                    <li class="px-2 mb-2"><strong>{{ _('Select users to test:') }}</strong></li>
                     <li><hr class="dropdown-divider"></li>
                     <li class="px-2">
                         <div class="form-check">
                             <input class="form-check-input batch-test-user-checkbox" type="checkbox" value="" id="user-guest" checked>
-                            <label class="form-check-label" for="user-guest">
-                                <strong>{{ _('Guest') }}</strong> ({{ _('no login') }})
-                            </label>
+                            <label class="form-check-label" for="user-guest"><strong>{{ _('Guest') }}</strong> ({{ _('no login') }})</label>
                         </div>
                     </li>
                     {% for user in website_users %}
@@ -107,180 +98,73 @@
                 </ul>
             </div>
             {% endif %}
-            <button class="btn btn-primary me-2" id="testAllBtn">
+            <button class="btn btn-primary" id="testAllBtn">
                 <i class="bi bi-play-fill"></i> {{ _('Test All Pages') }}
             </button>
-            <button class="btn btn-warning me-2" id="cancelTestingBtn" style="display: none;">
-                <i class="bi bi-stop-circle"></i> {{ _('Cancel Testing') }}
+            <button class="btn btn-warning" id="cancelTestingBtn" style="display: none;">
+                <i class="bi bi-stop-circle"></i> {{ _('Cancel') }}
             </button>
-            <a href="{{ url_for('websites.view_discovery_history', website_id=website.id) }}" class="btn btn-outline-info me-2">
+        </div>
+        
+        <!-- Secondary Actions -->
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{{ url_for('websites.view_discovery_history', website_id=website.id) }}" class="btn btn-outline-info">
                 <i class="bi bi-clock-history"></i> {{ _('Discovery History') }}
             </a>
-            <a href="{{ url_for('websites.view_documents', website_id=website.id) }}" class="btn btn-outline-info me-2">
+            <a href="{{ url_for('websites.view_documents', website_id=website.id) }}" class="btn btn-outline-info">
                 <i class="bi bi-file-earmark"></i> {{ _('Documents') }}
             </a>
-            <a href="{{ url_for('scripts.list_website_scripts', website_id=website.id) }}" class="btn btn-outline-primary me-2">
+            <a href="{{ url_for('scripts.list_website_scripts', website_id=website.id) }}" class="btn btn-outline-primary">
                 <i class="bi bi-code-square"></i> {{ _('Setup Scripts') }}
             </a>
-            <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-outline-success me-2">
+            <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-outline-success">
                 <i class="bi bi-people"></i> {{ _('Test Users') }}
             </a>
-            <div class="btn-group me-2">
+            <div class="btn-group">
                 <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="bi bi-file-earmark-text"></i> {{ _('Reports') }}
                 </button>
                 <ul class="dropdown-menu">
                     <li><h6 class="dropdown-header">{{ _('Site Structure') }}</h6></li>
-                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('html')">
-                        <i class="bi bi-filetype-html"></i> HTML</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('json')">
-                        <i class="bi bi-filetype-json"></i> JSON</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('csv')">
-                        <i class="bi bi-filetype-csv"></i> CSV</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('html')"><i class="bi bi-filetype-html"></i> HTML</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('json')"><i class="bi bi-filetype-json"></i> JSON</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('csv')"><i class="bi bi-filetype-csv"></i> CSV</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><h6 class="dropdown-header">{{ _('Accessibility Report') }}</h6></li>
-                    <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('html')">
-                        <i class="bi bi-filetype-html"></i> HTML</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('xlsx')">
-                        <i class="bi bi-filetype-xlsx"></i> Excel</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('html')"><i class="bi bi-filetype-html"></i> HTML</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('xlsx')"><i class="bi bi-filetype-xlsx"></i> Excel</a></li>
                 </ul>
             </div>
             <a href="{{ url_for('websites.edit_website', website_id=website.id) }}" class="btn btn-outline-primary">
                 <i class="bi bi-pencil"></i> {{ _('Edit') }}
             </a>
         </div>
-        <!-- Mobile Actions -->
-        <div class="d-lg-none w-100">
-            <div class="d-flex flex-wrap gap-2 mb-2">
-                <button class="btn btn-success flex-grow-1" id="discoverBtnMobile">
-                    <i class="bi bi-search"></i> {{ _('Discover') }}
-                </button>
-                <button class="btn btn-danger flex-grow-1" id="cancelDiscoveryBtnMobile" style="display: none;">
-                    <i class="bi bi-stop-circle-fill"></i> {{ _('Abort') }}
-                </button>
-                <button class="btn btn-primary flex-grow-1" id="testAllBtnMobile">
-                    <i class="bi bi-play-fill"></i> {{ _('Test All') }}
-                </button>
-                <button class="btn btn-warning flex-grow-1" id="cancelTestingBtnMobile" style="display: none;">
-                    <i class="bi bi-stop-circle"></i> {{ _('Cancel') }}
-                </button>
-            </div>
-            <div class="d-flex flex-wrap gap-2">
-                {% if website_users %}
-                <div class="btn-group flex-grow-1" role="group">
-                    <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle w-100" data-bs-toggle="dropdown" id="discoveryUserSelectionBtnMobile">
-                        <i class="bi bi-person-check"></i> {{ _('Discovery Users') }}
-                    </button>
-                    <ul class="dropdown-menu p-2" style="min-width: 280px;">
-                        <li class="px-2 mb-2"><strong>{{ _('Select users for discovery:') }}</strong></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li class="px-2">
-                            <div class="form-check">
-                                <input class="form-check-input batch-discovery-user-checkbox-mobile" type="checkbox" value="" id="discovery-user-guest-mobile" checked>
-                                <label class="form-check-label" for="discovery-user-guest-mobile"><strong>{{ _('Guest') }}</strong></label>
-                            </div>
-                        </li>
-                        {% for user in website_users %}
-                        <li class="px-2">
-                            <div class="form-check">
-                                <input class="form-check-input batch-discovery-user-checkbox-mobile" type="checkbox" value="{{ user.id }}" id="discovery-user-{{ user.id }}-mobile">
-                                <label class="form-check-label" for="discovery-user-{{ user.id }}-mobile"><strong>{{ user.name_display }}</strong></label>
-                            </div>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="btn-group flex-grow-1" role="group">
-                    <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle w-100" data-bs-toggle="dropdown" id="userSelectionBtnMobile">
-                        <i class="bi bi-person-check"></i> {{ _('Test Users') }}
-                    </button>
-                    <ul class="dropdown-menu p-2" style="min-width: 280px;">
-                        <li class="px-2 mb-2"><strong>{{ _('Select users to test:') }}</strong></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li class="px-2">
-                            <div class="form-check">
-                                <input class="form-check-input batch-test-user-checkbox-mobile" type="checkbox" value="" id="user-guest-mobile" checked>
-                                <label class="form-check-label" for="user-guest-mobile"><strong>{{ _('Guest') }}</strong></label>
-                            </div>
-                        </li>
-                        {% for user in website_users %}
-                        <li class="px-2">
-                            <div class="form-check">
-                                <input class="form-check-input batch-test-user-checkbox-mobile" type="checkbox" value="{{ user.id }}" id="user-{{ user.id }}-mobile">
-                                <label class="form-check-label" for="user-{{ user.id }}-mobile"><strong>{{ user.name_display }}</strong></label>
-                            </div>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-            </div>
-            <div class="d-flex flex-wrap gap-2 mt-2">
-                <a href="{{ url_for('websites.view_discovery_history', website_id=website.id) }}" class="btn btn-outline-info btn-sm">
-                    <i class="bi bi-clock-history"></i>
-                </a>
-                <a href="{{ url_for('websites.view_documents', website_id=website.id) }}" class="btn btn-outline-info btn-sm">
-                    <i class="bi bi-file-earmark"></i>
-                </a>
-                <a href="{{ url_for('scripts.list_website_scripts', website_id=website.id) }}" class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-code-square"></i>
-                </a>
-                <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-outline-success btn-sm">
-                    <i class="bi bi-people"></i>
-                </a>
-                <div class="btn-group">
-                    <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-                        <i class="bi bi-file-earmark-text"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><h6 class="dropdown-header">{{ _('Site Structure') }}</h6></li>
-                        <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('html')">HTML</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('xlsx')">Excel</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><h6 class="dropdown-header">{{ _('Accessibility') }}</h6></li>
-                        <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('html')">HTML</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('xlsx')">Excel</a></li>
-                    </ul>
-                </div>
-                <a href="{{ url_for('websites.edit_website', website_id=website.id) }}" class="btn btn-outline-primary btn-sm">
-                    <i class="bi bi-pencil"></i>
-                </a>
-            </div>
-        </div>
     </div>
 
     <!-- Statistics -->
-    <div class="row mb-4 g-3">
-        <div class="col-6 col-md-3">
-            <div class="card text-center h-100">
-                <div class="card-body py-2 py-md-3">
-                    <h6 class="card-title small mb-1">{{ _('Total Pages') }}</h6>
-                    <p class="display-6 mb-0">{{ stats.total_pages }}</p>
-                </div>
+    <div class="d-flex flex-wrap gap-3 mb-4">
+        <div class="card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <h6 class="card-title text-muted mb-1">{{ _('Total Pages') }}</h6>
+                <p class="display-6 mb-0">{{ stats.total_pages }}</p>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="card text-center h-100">
-                <div class="card-body py-2 py-md-3">
-                    <h6 class="card-title small mb-1">{{ _('Tested') }}</h6>
-                    <p class="display-6 mb-0">{{ stats.tested_pages }}</p>
-                </div>
+        <div class="card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <h6 class="card-title text-muted mb-1">{{ _('Tested') }}</h6>
+                <p class="display-6 mb-0">{{ stats.tested_pages }}</p>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="card text-center h-100">
-                <div class="card-body py-2 py-md-3">
-                    <h6 class="card-title small mb-1 text-danger">{{ _('Violations') }}</h6>
-                    <p class="display-6 mb-0 text-danger">{{ stats.total_violations }}</p>
-                </div>
+        <div class="card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <h6 class="card-title text-danger mb-1">{{ _('Violations') }}</h6>
+                <p class="display-6 mb-0 text-danger">{{ stats.total_violations }}</p>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="card text-center h-100">
-                <div class="card-body py-2 py-md-3">
-                    <h6 class="card-title small mb-1 text-warning">{{ _('Warnings') }}</h6>
-                    <p class="display-6 mb-0 text-warning">{{ stats.total_warnings }}</p>
-                </div>
+        <div class="card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <h6 class="card-title text-warning mb-1">{{ _('Warnings') }}</h6>
+                <p class="display-6 mb-0 text-warning">{{ stats.total_warnings }}</p>
             </div>
         </div>
     </div>

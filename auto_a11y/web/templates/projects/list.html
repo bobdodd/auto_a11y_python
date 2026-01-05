@@ -12,30 +12,28 @@
         </a>
     </div>
 
-    <!-- Filter Buttons - Scrollable on mobile -->
-    <div class="filter-scroll-container mb-3">
-        <div class="btn-group btn-group-sm" role="group">
-            <a href="{{ url_for('projects.list_projects') }}"
-               class="btn btn-outline-secondary {{ 'active' if not request.args.get('status') }}">
-                {{ _('All') }}
-            </a>
-            <a href="{{ url_for('projects.list_projects', status='active') }}"
-               class="btn btn-outline-success {{ 'active' if request.args.get('status') == 'active' }}">
-                {{ _('Active') }}
-            </a>
-            <a href="{{ url_for('projects.list_projects', status='paused') }}"
-               class="btn btn-outline-warning {{ 'active' if request.args.get('status') == 'paused' }}">
-                {{ _('Paused') }}
-            </a>
-            <a href="{{ url_for('projects.list_projects', status='completed') }}"
-               class="btn btn-outline-info {{ 'active' if request.args.get('status') == 'completed' }}">
-                {{ _('Completed') }}
-            </a>
-            <a href="{{ url_for('projects.list_projects', status='archived') }}"
-               class="btn btn-outline-secondary {{ 'active' if request.args.get('status') == 'archived' }}">
-                {{ _('Archived') }}
-            </a>
-        </div>
+    <!-- Filter Buttons - Wrap on smaller screens -->
+    <div class="d-flex flex-wrap gap-2 mb-3">
+        <a href="{{ url_for('projects.list_projects') }}"
+           class="btn btn-sm btn-outline-secondary {{ 'active' if not request.args.get('status') }}">
+            {{ _('All') }}
+        </a>
+        <a href="{{ url_for('projects.list_projects', status='active') }}"
+           class="btn btn-sm btn-outline-success {{ 'active' if request.args.get('status') == 'active' }}">
+            {{ _('Active') }}
+        </a>
+        <a href="{{ url_for('projects.list_projects', status='paused') }}"
+           class="btn btn-sm btn-outline-warning {{ 'active' if request.args.get('status') == 'paused' }}">
+            {{ _('Paused') }}
+        </a>
+        <a href="{{ url_for('projects.list_projects', status='completed') }}"
+           class="btn btn-sm btn-outline-info {{ 'active' if request.args.get('status') == 'completed' }}">
+            {{ _('Completed') }}
+        </a>
+        <a href="{{ url_for('projects.list_projects', status='archived') }}"
+           class="btn btn-sm btn-outline-secondary {{ 'active' if request.args.get('status') == 'archived' }}">
+            {{ _('Archived') }}
+        </a>
     </div>
 
     {% if projects %}
@@ -43,11 +41,11 @@
         {% for project in projects %}
         <div class="col-md-6 col-lg-4 mb-4">
             <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h5 class="card-title">{{ project.name }}</h5>
-                        <div>
-                            <span class="badge bg-secondary me-1">
+                <div class="card-body" style="overflow: hidden;">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                        <h5 class="card-title mb-0 me-2" style="word-break: break-word; min-width: 0; flex: 1 1 auto;">{{ project.name }}</h5>
+                        <div class="d-flex flex-wrap gap-1 flex-shrink-0">
+                            <span class="badge bg-secondary">
                                 <i class="bi bi-{{ {'website': 'globe', 'app': 'phone', 'tangible_device': 'device-hdd', 'nav_and_wayfinding': 'signpost'}[project.project_type.value] }}"></i>
                                 {{ project.project_type_display }}
                             </span>

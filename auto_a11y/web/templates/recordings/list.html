@@ -4,26 +4,26 @@
 
 {% block content %}
 <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2">
-            <i class="bi bi-mic"></i> {{ _('Manual Audit Recordings') }}
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-mic"></i> {{ _('Recordings') }}
         </h1>
-        <a href="{{ url_for('recordings.upload_recording') }}" class="btn btn-primary">
+        <a href="{{ url_for('recordings.upload_recording') }}" class="btn btn-primary w-100 w-sm-auto">
             <i class="bi bi-upload"></i> {{ _('Upload Recording') }}
         </a>
     </div>
 
-    <p class="text-muted">
+    <p class="text-muted d-none d-md-block">
         {{ _('Manual audit recordings from Dictaphone and expert reviews. These complement automated test results with human observations and lived experience findings.') }}
     </p>
 
     <!-- Filters -->
     <div class="card mb-4">
-        <div class="card-body">
-            <form method="get" action="{{ url_for('recordings.list_recordings') }}" class="row g-3">
-                <div class="col-md-6">
-                    <label for="project_id" class="form-label">{{ _('Project') }}</label>
-                    <select name="project_id" id="project_id" class="form-select" onchange="this.form.submit()">
+        <div class="card-body py-2 py-md-3">
+            <form method="get" action="{{ url_for('recordings.list_recordings') }}" class="row g-2 g-md-3">
+                <div class="col-6 col-md-6">
+                    <label for="project_id" class="form-label small">{{ _('Project') }}</label>
+                    <select name="project_id" id="project_id" class="form-select form-select-sm" onchange="this.form.submit()">
                         <option value="">{{ _('All Projects') }}</option>
                         {% for project in projects %}
                         <option value="{{ project.id }}" {{ 'selected' if selected_project_id == project.id }}>
@@ -32,15 +32,15 @@
                         {% endfor %}
                     </select>
                 </div>
-                <div class="col-md-6">
-                    <label for="recording_type" class="form-label">{{ _('Recording Type') }}</label>
-                    <select name="recording_type" id="recording_type" class="form-select" onchange="this.form.submit()">
+                <div class="col-6 col-md-6">
+                    <label for="recording_type" class="form-label small">{{ _('Type') }}</label>
+                    <select name="recording_type" id="recording_type" class="form-select form-select-sm" onchange="this.form.submit()">
                         <option value="">{{ _('All Types') }}</option>
                         <option value="audit" {{ 'selected' if selected_recording_type == 'audit' }}>{{ _('Audit') }}</option>
-                        <option value="lived_experience_website" {{ 'selected' if selected_recording_type == 'lived_experience_website' }}>{{ _('Lived Experience Website') }}</option>
-                        <option value="lived_experience_app" {{ 'selected' if selected_recording_type == 'lived_experience_app' }}>{{ _('Lived Experience App') }}</option>
-                        <option value="lived_experience_tangible_device" {{ 'selected' if selected_recording_type == 'lived_experience_tangible_device' }}>{{ _('Lived Experience Tangible Device') }}</option>
-                        <option value="lived_experience_nav_and_wayfinding" {{ 'selected' if selected_recording_type == 'lived_experience_nav_and_wayfinding' }}>{{ _('Lived Experience Nav and Wayfinding') }}</option>
+                        <option value="lived_experience_website" {{ 'selected' if selected_recording_type == 'lived_experience_website' }}>{{ _('Lived Exp. Website') }}</option>
+                        <option value="lived_experience_app" {{ 'selected' if selected_recording_type == 'lived_experience_app' }}>{{ _('Lived Exp. App') }}</option>
+                        <option value="lived_experience_tangible_device" {{ 'selected' if selected_recording_type == 'lived_experience_tangible_device' }}>{{ _('Lived Exp. Device') }}</option>
+                        <option value="lived_experience_nav_and_wayfinding" {{ 'selected' if selected_recording_type == 'lived_experience_nav_and_wayfinding' }}>{{ _('Lived Exp. Nav') }}</option>
                     </select>
                 </div>
             </form>

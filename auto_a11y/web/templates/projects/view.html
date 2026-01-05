@@ -5,74 +5,67 @@
 {% block content %}
 <div class="container-fluid">
     <!-- Project Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h2">
-                {{ project.name }}
-                <span class="badge bg-{{ {'active': 'success', 'paused': 'warning', 'completed': 'info', 'archived': 'secondary'}[project.status.value] }}">
-                    {{ project.status.value|title }}
-                </span>
-            </h1>
-            <p class="text-muted">{{ project.description or _('No description') }}</p>
-        </div>
-        <div>
-            <div class="btn-group" role="group">
-                <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-people"></i> {{ _('Test Users') }}
-                </a>
-                <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}" class="btn btn-outline-info">
-                    <i class="bi bi-person-badge"></i> {{ _('Participants') }}
-                </a>
-                <a href="{{ url_for('automated_tests.project_automated_tests', project_id=project.id) }}" class="btn btn-outline-primary">
-                    <i class="bi bi-robot"></i> {{ _('Automated Tests') }}
-                </a>
-                <button type="button" class="btn btn-success" onclick="testAllWebsites()">
-                    <i class="bi bi-play-fill"></i> {{ _('Test All Websites') }}
-                </button>
-                <a href="{{ url_for('projects.edit_project', project_id=project.id) }}" class="btn btn-outline-primary">
-                    <i class="bi bi-pencil"></i> {{ _('Edit') }}
-                </a>
-                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                    <i class="bi bi-trash"></i> {{ _('Delete') }}
-                </button>
+    <div class="mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+            <div>
+                <h1 class="h2 mb-2">
+                    {{ project.name }}
+                    <span class="badge bg-{{ {'active': 'success', 'paused': 'warning', 'completed': 'info', 'archived': 'secondary'}[project.status.value] }}">
+                        {{ project.status.value|title }}
+                    </span>
+                </h1>
+                <p class="text-muted mb-0">{{ project.description or _('No description') }}</p>
             </div>
+        </div>
+        <!-- Action Buttons - flex wrap for all screen sizes -->
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            <button type="button" class="btn btn-success" onclick="testAllWebsites()">
+                <i class="bi bi-play-fill"></i> {{ _('Test All Websites') }}
+            </button>
+            <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-people"></i> {{ _('Test Users') }}
+            </a>
+            <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}" class="btn btn-outline-info">
+                <i class="bi bi-person-badge"></i> {{ _('Participants') }}
+            </a>
+            <a href="{{ url_for('automated_tests.project_automated_tests', project_id=project.id) }}" class="btn btn-outline-primary">
+                <i class="bi bi-robot"></i> {{ _('Automated Tests') }}
+            </a>
+            <a href="{{ url_for('projects.edit_project', project_id=project.id) }}" class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> {{ _('Edit') }}
+            </a>
+            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                <i class="bi bi-trash"></i> {{ _('Delete') }}
+            </button>
         </div>
     </div>
 
     <!-- Statistics -->
-    <div class="row mb-4 g-3">
-        <div class="col-6 col-sm-6 col-md-3">
-            <div class="card text-center h-100">
-                <div class="card-body">
-                    <h5 class="card-title fs-6">{{ _('Websites') }}</h5>
-                    <p class="display-6">{{ stats.website_count }}</p>
-                </div>
+    <div class="d-flex flex-wrap gap-3 mb-4">
+        <div class="card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <h6 class="card-title text-muted mb-1">{{ _('Websites') }}</h6>
+                <p class="display-6 mb-0">{{ stats.website_count }}</p>
             </div>
         </div>
-        <div class="col-6 col-sm-6 col-md-3">
-            <div class="card text-center h-100">
-                <div class="card-body">
-                    <h5 class="card-title fs-6">{{ _('Pages') }}</h5>
-                    <p class="display-6">{{ stats.total_pages }}</p>
-                </div>
+        <div class="card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <h6 class="card-title text-muted mb-1">{{ _('Pages') }}</h6>
+                <p class="display-6 mb-0">{{ stats.total_pages }}</p>
             </div>
         </div>
-        <div class="col-6 col-sm-6 col-md-3">
-            <div class="card text-center h-100">
-                <div class="card-body">
-                    <h5 class="card-title fs-6">{{ _('Tested') }}</h5>
-                    <p class="display-6">{{ stats.tested_pages }}</p>
-                    <small class="text-muted">{{ "%.1f"|format(stats.test_coverage) }}% {{ _('coverage') }}</small>
-                </div>
+        <div class="card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <h6 class="card-title text-muted mb-1">{{ _('Tested') }}</h6>
+                <p class="display-6 mb-0">{{ stats.tested_pages }}</p>
+                <small class="text-muted">{{ "%.1f"|format(stats.test_coverage) }}% {{ _('coverage') }}</small>
             </div>
         </div>
-        <div class="col-6 col-sm-6 col-md-3">
-            <div class="card text-center h-100">
-                <div class="card-body">
-                    <h5 class="card-title fs-6">{{ _('Issues') }}</h5>
-                    <p class="display-6 text-danger">{{ stats.total_violations }}</p>
-                    <small class="text-warning">{{ stats.total_warnings }} {{ _('warnings') }}</small>
-                </div>
+        <div class="card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <h6 class="card-title text-muted mb-1">{{ _('Issues') }}</h6>
+                <p class="display-6 mb-0 text-danger">{{ stats.total_violations }}</p>
+                <small class="text-warning">{{ stats.total_warnings }} {{ _('warnings') }}</small>
             </div>
         </div>
     </div>
@@ -87,66 +80,50 @@
         </div>
         <div class="card-body">
             {% if websites %}
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>{{ _('Name') }}</th>
-                            <th>{{ _('URL') }}</th>
-                            <th>{{ _('Pages') }}</th>
-                            <th>{{ _('Last Tested') }}</th>
-                            <th>{{ _('Issues') }}</th>
-                            <th>{{ _('Actions') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for website in websites %}
-                        <tr>
-                            <td>{{ website.display_name }}</td>
-                            <td>
-                                <a href="{{ website.url }}" target="_blank">
-                                    {{ website.url }} <i class="bi bi-box-arrow-up-right"></i>
-                                </a>
-                            </td>
-                            <td>{{ website.page_count }}</td>
-                            <td class="website-status" data-website-id="{{ website.id }}">
-                                <span class="status-content">
-                                    {{ website.last_tested.strftime('%Y-%m-%d %H:%M') if website.last_tested else _('Never') }}
-                                </span>
-                            </td>
-                            <td>
-                                {% set stats = website_stats.get(website.id, {'violations': 0, 'warnings': 0}) %}
-                                {% if stats.violations > 0 or stats.warnings > 0 %}
-                                <span class="badge bg-danger">{{ stats.violations }}</span>
-                                {% if stats.warnings > 0 %}
-                                <small class="text-warning">{{ stats.warnings }} {{ _('warnings') }}</small>
-                                {% endif %}
-                                {% else %}
-                                <span class="text-muted">-</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <a href="{{ url_for('websites.view_website', website_id=website.id) }}"
-                                       class="btn btn-sm btn-primary" title="{{ _('View website') }}">
-                                        <i class="bi bi-eye"></i>
-                                        <span class="d-none d-lg-inline"> {{ _('View') }}</span>
-                                    </a>
-                                    <button class="btn btn-sm btn-success" onclick="discoverPages('{{ website.id }}')" title="{{ _('Discover pages') }}">
-                                        <i class="bi bi-search"></i>
-                                        <span class="d-none d-lg-inline"> {{ _('Discover') }}</span>
-                                    </button>
-                                    <button class="btn btn-sm btn-info" onclick="testWebsite('{{ website.id }}')" title="{{ _('Test website') }}">
-                                        <i class="bi bi-play"></i>
-                                        <span class="d-none d-lg-inline"> {{ _('Test') }}</span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            {% for website in websites %}
+            {% set ws_stats = website_stats.get(website.id, {'violations': 0, 'warnings': 0}) %}
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                        <div class="flex-grow-1" style="min-width: 200px;">
+                            <h6 class="card-title mb-1">{{ website.display_name }}</h6>
+                            <a href="{{ website.url }}" target="_blank" class="small text-muted text-break">
+                                {{ website.url }} <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% if ws_stats.violations > 0 %}
+                            <span class="badge bg-danger">{{ ws_stats.violations }} {{ _('issues') }}</span>
+                            {% endif %}
+                            {% if ws_stats.warnings > 0 %}
+                            <span class="badge bg-warning text-dark">{{ ws_stats.warnings }} {{ _('warnings') }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap gap-3 mb-3 small text-muted">
+                        <span><i class="bi bi-files"></i> {{ website.page_count }} {{ _('pages') }}</span>
+                        <span class="website-status" data-website-id="{{ website.id }}">
+                            <span class="status-content">
+                                <i class="bi bi-clock"></i> {{ website.last_tested.strftime('%Y-%m-%d %H:%M') if website.last_tested else _('Never tested') }}
+                            </span>
+                        </span>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="{{ url_for('websites.view_website', website_id=website.id) }}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-eye"></i> {{ _('View') }}
+                        </a>
+                        <button class="btn btn-sm btn-success" onclick="discoverPages('{{ website.id }}')">
+                            <i class="bi bi-search"></i> {{ _('Discover') }}
+                        </button>
+                        <button class="btn btn-sm btn-info" onclick="testWebsite('{{ website.id }}')">
+                            <i class="bi bi-play"></i> {{ _('Test') }}
+                        </button>
+                    </div>
+                </div>
             </div>
+            {% endfor %}
             {% else %}
             <p class="text-muted">{{ _('No websites added yet. Add a website to start testing.') }}</p>
             {% endif %}
@@ -163,7 +140,8 @@
         </div>
         <div class="card-body">
             {% if discovered_pages %}
-            <div class="table-responsive">
+            <!-- Desktop Table View -->
+            <div class="table-responsive d-none d-lg-block">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -236,6 +214,35 @@
                     </tbody>
                 </table>
             </div>
+            <!-- Mobile Card View -->
+            <div class="d-lg-none">
+                {% for page in discovered_pages %}
+                <div class="card mb-2 shadow-sm">
+                    <div class="card-body py-2 px-3">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <h6 class="mb-0 text-break" style="font-size: 0.9rem;">{{ page.title or _('Untitled') }}</h6>
+                            <div class="d-flex flex-wrap gap-1 ms-2">
+                                {% if page.audited %}
+                                <span class="badge bg-success" style="font-size: 0.7rem;">{{ _('Audited') }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <a href="{{ page.url }}" target="_blank" class="small text-muted text-break d-block mb-2">
+                            {{ page.url|truncate(50) }}
+                        </a>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                {% if page.interested_because %}{{ page.interested_because|length }} {{ _('reasons') }}{% endif %}
+                                {% if page.page_elements %} | {{ page.page_elements|length }} {{ _('elements') }}{% endif %}
+                            </small>
+                            <button class="btn btn-sm btn-outline-primary" onclick="viewPageDetails('{{ page._id }}')">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
             {% else %}
             <div class="alert alert-info">
                 <i class="bi bi-info-circle"></i>
@@ -255,12 +262,13 @@
                 <i class="bi bi-mic"></i> {{ _('Recordings') }}
             </h5>
             <a href="{{ url_for('recordings.upload_recording') }}" class="btn btn-sm btn-primary">
-                <i class="bi bi-plus-circle"></i> {{ _('Add Recording') }}
+                <i class="bi bi-plus-circle"></i> <span class="d-none d-sm-inline">{{ _('Add Recording') }}</span><span class="d-sm-none">{{ _('Add') }}</span>
             </a>
         </div>
         <div class="card-body">
             {% if recordings %}
-            <div class="table-responsive">
+            <!-- Desktop Table View -->
+            <div class="table-responsive d-none d-md-block">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -335,6 +343,40 @@
                         {% endif %}
                     </tbody>
                 </table>
+            </div>
+            <!-- Mobile Card View -->
+            <div class="d-md-none">
+                {% for recording in recordings %}
+                <div class="card mb-2 shadow-sm">
+                    <div class="card-body py-2 px-3">
+                        <div class="d-flex justify-content-between align-items-start mb-1">
+                            <div class="flex-grow-1 me-2">
+                                <h6 class="mb-0 text-break" style="font-size: 0.9rem;">{{ recording.title }}</h6>
+                                <small class="text-muted">{{ recording.recording_id }}</small>
+                            </div>
+                            {% if recording.total_issues > 0 %}
+                            <span class="badge bg-danger">{{ recording.total_issues }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-secondary" style="font-size: 0.7rem;">{{ recording.recording_type.value|replace('_', ' ')|title }}</span>
+                                {% if recording.recorded_date %}
+                                <small class="text-muted ms-1">{{ recording.recorded_date.strftime('%m/%d') }}</small>
+                                {% endif %}
+                            </div>
+                            <a href="{{ url_for('recordings.view_recording', recording_id=recording.id) }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if recordings|length > 1 %}
+                <a href="{{ url_for('recordings.view_combined_recordings', project_id=project.id) }}" class="btn btn-outline-primary w-100 mt-2">
+                    <i class="bi bi-list-ul"></i> {{ _('View All Combined') }}
+                </a>
+                {% endif %}
             </div>
             {% else %}
             <p class="text-muted">{{ _('No recordings added yet.') }} <a href="{{ url_for('recordings.upload_recording') }}">{{ _('Upload a recording') }}</a> {{ _('to track manual accessibility audits.') }}</p>

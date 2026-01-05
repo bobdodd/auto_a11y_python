@@ -1,8 +1,8 @@
-<!-- Drupal Sync Card - Include this in project view -->
+<!-- Access Labs Portal Sync Card - Include this in project view -->
 <div class="card mb-4" id="drupalSyncCard">
-    <div class="card-header d-flex justify-content-between align-items-center">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
         <h5 class="mb-0">
-            <i class="bi bi-cloud-upload"></i> {{ _('Drupal Sync') }}
+            <i class="bi bi-cloud-upload"></i> {{ _('Access Labs Portal Sync') }}
         </h5>
         <div>
             <span class="badge bg-info" id="drupalAuditBadge">
@@ -27,7 +27,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Upload to Drupal') }}</h5>
+                <h5 class="modal-title">{{ _('Upload to Access Labs Portal') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -64,7 +64,7 @@
 
                 <!-- Step 2: Upload Progress -->
                 <div id="uploadStep2" style="display:none;">
-                    <h6>{{ _('Uploading to Drupal...') }}</h6>
+                    <h6>{{ _('Uploading to Access Labs Portal...') }}</h6>
 
                     <div class="progress mb-3" style="height: 30px;">
                         <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated"
@@ -89,21 +89,17 @@
                 <div id="uploadStep3" style="display:none;">
                     <div class="alert alert-success">
                         <h4><i class="bi bi-check-circle"></i> {{ _('Upload Complete!') }}</h4>
-                        <p>{{ _('Successfully uploaded') }} <strong><span id="successCount">0</span></strong> {{ _('items to Drupal.') }}</p>
+                        <p>{{ _('Successfully uploaded') }} <strong><span id="successCount">0</span></strong> {{ _('items to Access Labs Portal.') }}</p>
                     </div>
 
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <div class="stat-card text-center p-3 border rounded">
-                                <h4 id="uploadedPages">0</h4>
-                                <small>{{ _('Discovered Pages') }}</small>
-                            </div>
+                    <div class="d-flex flex-wrap gap-3 mb-3">
+                        <div class="stat-card text-center p-3 border rounded flex-fill" style="min-width: 140px;">
+                            <h4 id="uploadedPages">0</h4>
+                            <small>{{ _('Discovered Pages') }}</small>
                         </div>
-                        <div class="col-md-6">
-                            <div class="stat-card text-center p-3 border rounded">
-                                <h4 id="uploadedRecordings">0</h4>
-                                <small>{{ _('Recordings') }}</small>
-                            </div>
+                        <div class="stat-card text-center p-3 border rounded flex-fill" style="min-width: 140px;">
+                            <h4 id="uploadedRecordings">0</h4>
+                            <small>{{ _('Recordings') }}</small>
                         </div>
                     </div>
 
@@ -155,8 +151,8 @@ function renderSyncStatus() {
     if (!syncStatus.drupal_enabled) {
         document.getElementById('drupalSyncContent').innerHTML = `
             <div class="alert alert-warning">
-                <strong><i class="bi bi-exclamation-triangle"></i> {{ _('Drupal Integration Not Configured') }}</strong>
-                <p class="mb-0">{{ _('Configure Drupal connection in') }} <code>config/drupal.conf</code> {{ _('to enable sync.') }}</p>
+                <strong><i class="bi bi-exclamation-triangle"></i> {{ _('Access Labs Portal Integration Not Configured') }}</strong>
+                <p class="mb-0">{{ _('Configure portal connection in') }} <code>config/drupal.conf</code> {{ _('to enable sync.') }}</p>
             </div>
         `;
         return;
@@ -169,40 +165,34 @@ function renderSyncStatus() {
 
     // Render status
     const content = `
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <div class="stat-box text-center p-3 border rounded">
-                    <div class="stat-label">{{ _('Discovered Pages') }}</div>
-                    <div class="stat-value">
-                        <span class="text-success">${syncStatus.discovered_pages.synced}</span> / ${syncStatus.discovered_pages.total}
-                    </div>
-                    <small class="text-muted">${syncStatus.discovered_pages.pending} {{ _('pending') }}</small>
+        <div class="d-flex flex-wrap gap-3 mb-3">
+            <div class="stat-box text-center p-3 border rounded flex-fill" style="min-width: 140px;">
+                <div class="stat-label">{{ _('Discovered Pages') }}</div>
+                <div class="stat-value">
+                    <span class="text-success">${syncStatus.discovered_pages.synced}</span> / ${syncStatus.discovered_pages.total}
                 </div>
+                <small class="text-muted">${syncStatus.discovered_pages.pending} {{ _('pending') }}</small>
             </div>
-            <div class="col-md-4">
-                <div class="stat-box text-center p-3 border rounded">
-                    <div class="stat-label">{{ _('Recordings') }}</div>
-                    <div class="stat-value">
-                        <span class="text-success">${syncStatus.recordings.synced}</span> / ${syncStatus.recordings.total}
-                    </div>
-                    <small class="text-muted">${syncStatus.recordings.pending} {{ _('pending') }}</small>
+            <div class="stat-box text-center p-3 border rounded flex-fill" style="min-width: 140px;">
+                <div class="stat-label">{{ _('Recordings') }}</div>
+                <div class="stat-value">
+                    <span class="text-success">${syncStatus.recordings.synced}</span> / ${syncStatus.recordings.total}
                 </div>
+                <small class="text-muted">${syncStatus.recordings.pending} {{ _('pending') }}</small>
             </div>
-            <div class="col-md-4">
-                <div class="stat-box text-center p-3 border rounded">
-                    <div class="stat-label">{{ _('Last Sync') }}</div>
-                    <div class="stat-value small">
-                        ${syncStatus.last_sync_time ? new Date(syncStatus.last_sync_time).toLocaleString() : '{{ _("Never") }}'}
-                    </div>
+            <div class="stat-box text-center p-3 border rounded flex-fill" style="min-width: 140px;">
+                <div class="stat-label">{{ _('Last Sync') }}</div>
+                <div class="stat-value small">
+                    ${syncStatus.last_sync_time ? new Date(syncStatus.last_sync_time).toLocaleString() : '{{ _("Never") }}'}
                 </div>
             </div>
         </div>
 
-        <div class="btn-toolbar mb-3">
-            <a href="/drupal/projects/{{ project.id }}/sync" class="btn btn-primary me-2">
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <a href="/drupal/projects/{{ project.id }}/sync" class="btn btn-primary">
                 <i class="bi bi-cloud-arrow-up-down"></i> {{ _('Synchronization Page') }}
             </a>
-            <button type="button" class="btn btn-outline-primary me-2" onclick="openUploadModal()">
+            <button type="button" class="btn btn-outline-primary" onclick="openUploadModal()">
                 <i class="bi bi-arrow-up-circle"></i> {{ _('Quick Upload') }}
             </button>
             <button type="button" class="btn btn-outline-secondary" onclick="loadSyncStatus()">

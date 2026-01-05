@@ -14,16 +14,19 @@
     </nav>
 
     <!-- Website Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mb-4 gap-3">
         <div>
             <h1 class="h2">{{ website.display_name }}</h1>
-            <p class="text-muted">
+            <p class="text-muted mb-0 text-break">
                 <a href="{{ website.url }}" target="_blank">
-                    {{ website.url }} <i class="bi bi-box-arrow-up-right"></i>
+                    <span class="d-none d-md-inline">{{ website.url }}</span>
+                    <span class="d-md-none">{{ website.url|truncate(35) }}</span>
+                    <i class="bi bi-box-arrow-up-right"></i>
                 </a>
             </p>
         </div>
-        <div>
+        <!-- Desktop Actions -->
+        <div class="d-none d-lg-block">
             {% if website_users %}
             <div class="btn-group me-2" role="group">
                 <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" id="discoveryUserSelectionBtn">
@@ -64,7 +67,6 @@
             <button class="btn btn-success me-2" id="discoverBtn">
                 <i class="bi bi-search"></i> {{ _('Discover Pages') }}
             </button>
-            <!-- Prominent cancel button that appears during discovery -->
             <button class="btn btn-danger me-2" id="cancelDiscoveryBtn" style="display: none;">
                 <i class="bi bi-stop-circle-fill"></i> {{ _('ABORT DISCOVERY') }}
             </button>
@@ -108,7 +110,6 @@
             <button class="btn btn-primary me-2" id="testAllBtn">
                 <i class="bi bi-play-fill"></i> {{ _('Test All Pages') }}
             </button>
-            <!-- Cancel testing button that appears during testing -->
             <button class="btn btn-warning me-2" id="cancelTestingBtn" style="display: none;">
                 <i class="bi bi-stop-circle"></i> {{ _('Cancel Testing') }}
             </button>
@@ -148,39 +149,137 @@
                 <i class="bi bi-pencil"></i> {{ _('Edit') }}
             </a>
         </div>
+        <!-- Mobile Actions -->
+        <div class="d-lg-none w-100">
+            <div class="d-flex flex-wrap gap-2 mb-2">
+                <button class="btn btn-success flex-grow-1" id="discoverBtnMobile">
+                    <i class="bi bi-search"></i> {{ _('Discover') }}
+                </button>
+                <button class="btn btn-danger flex-grow-1" id="cancelDiscoveryBtnMobile" style="display: none;">
+                    <i class="bi bi-stop-circle-fill"></i> {{ _('Abort') }}
+                </button>
+                <button class="btn btn-primary flex-grow-1" id="testAllBtnMobile">
+                    <i class="bi bi-play-fill"></i> {{ _('Test All') }}
+                </button>
+                <button class="btn btn-warning flex-grow-1" id="cancelTestingBtnMobile" style="display: none;">
+                    <i class="bi bi-stop-circle"></i> {{ _('Cancel') }}
+                </button>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+                {% if website_users %}
+                <div class="btn-group flex-grow-1" role="group">
+                    <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle w-100" data-bs-toggle="dropdown" id="discoveryUserSelectionBtnMobile">
+                        <i class="bi bi-person-check"></i> {{ _('Discovery Users') }}
+                    </button>
+                    <ul class="dropdown-menu p-2" style="min-width: 280px;">
+                        <li class="px-2 mb-2"><strong>{{ _('Select users for discovery:') }}</strong></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li class="px-2">
+                            <div class="form-check">
+                                <input class="form-check-input batch-discovery-user-checkbox-mobile" type="checkbox" value="" id="discovery-user-guest-mobile" checked>
+                                <label class="form-check-label" for="discovery-user-guest-mobile"><strong>{{ _('Guest') }}</strong></label>
+                            </div>
+                        </li>
+                        {% for user in website_users %}
+                        <li class="px-2">
+                            <div class="form-check">
+                                <input class="form-check-input batch-discovery-user-checkbox-mobile" type="checkbox" value="{{ user.id }}" id="discovery-user-{{ user.id }}-mobile">
+                                <label class="form-check-label" for="discovery-user-{{ user.id }}-mobile"><strong>{{ user.name_display }}</strong></label>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="btn-group flex-grow-1" role="group">
+                    <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle w-100" data-bs-toggle="dropdown" id="userSelectionBtnMobile">
+                        <i class="bi bi-person-check"></i> {{ _('Test Users') }}
+                    </button>
+                    <ul class="dropdown-menu p-2" style="min-width: 280px;">
+                        <li class="px-2 mb-2"><strong>{{ _('Select users to test:') }}</strong></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li class="px-2">
+                            <div class="form-check">
+                                <input class="form-check-input batch-test-user-checkbox-mobile" type="checkbox" value="" id="user-guest-mobile" checked>
+                                <label class="form-check-label" for="user-guest-mobile"><strong>{{ _('Guest') }}</strong></label>
+                            </div>
+                        </li>
+                        {% for user in website_users %}
+                        <li class="px-2">
+                            <div class="form-check">
+                                <input class="form-check-input batch-test-user-checkbox-mobile" type="checkbox" value="{{ user.id }}" id="user-{{ user.id }}-mobile">
+                                <label class="form-check-label" for="user-{{ user.id }}-mobile"><strong>{{ user.name_display }}</strong></label>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            <div class="d-flex flex-wrap gap-2 mt-2">
+                <a href="{{ url_for('websites.view_discovery_history', website_id=website.id) }}" class="btn btn-outline-info btn-sm">
+                    <i class="bi bi-clock-history"></i>
+                </a>
+                <a href="{{ url_for('websites.view_documents', website_id=website.id) }}" class="btn btn-outline-info btn-sm">
+                    <i class="bi bi-file-earmark"></i>
+                </a>
+                <a href="{{ url_for('scripts.list_website_scripts', website_id=website.id) }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-code-square"></i>
+                </a>
+                <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-outline-success btn-sm">
+                    <i class="bi bi-people"></i>
+                </a>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><h6 class="dropdown-header">{{ _('Site Structure') }}</h6></li>
+                        <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('html')">HTML</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('xlsx')">Excel</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header">{{ _('Accessibility') }}</h6></li>
+                        <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('html')">HTML</a></li>
+                        <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('xlsx')">Excel</a></li>
+                    </ul>
+                </div>
+                <a href="{{ url_for('websites.edit_website', website_id=website.id) }}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-pencil"></i>
+                </a>
+            </div>
+        </div>
     </div>
 
     <!-- Statistics -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">{{ _('Total Pages') }}</h5>
-                    <p class="display-6">{{ stats.total_pages }}</p>
+    <div class="row mb-4 g-3">
+        <div class="col-6 col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body py-2 py-md-3">
+                    <h6 class="card-title small mb-1">{{ _('Total Pages') }}</h6>
+                    <p class="display-6 mb-0">{{ stats.total_pages }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">{{ _('Tested') }}</h5>
-                    <p class="display-6">{{ stats.tested_pages }}</p>
+        <div class="col-6 col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body py-2 py-md-3">
+                    <h6 class="card-title small mb-1">{{ _('Tested') }}</h6>
+                    <p class="display-6 mb-0">{{ stats.tested_pages }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">{{ _('Violations') }}</h5>
-                    <p class="display-6 text-danger">{{ stats.total_violations }}</p>
+        <div class="col-6 col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body py-2 py-md-3">
+                    <h6 class="card-title small mb-1 text-danger">{{ _('Violations') }}</h6>
+                    <p class="display-6 mb-0 text-danger">{{ stats.total_violations }}</p>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h5 class="card-title">{{ _('Warnings') }}</h5>
-                    <p class="display-6 text-warning">{{ stats.total_warnings }}</p>
+        <div class="col-6 col-md-3">
+            <div class="card text-center h-100">
+                <div class="card-body py-2 py-md-3">
+                    <h6 class="card-title small mb-1 text-warning">{{ _('Warnings') }}</h6>
+                    <p class="display-6 mb-0 text-warning">{{ stats.total_warnings }}</p>
                 </div>
             </div>
         </div>
@@ -279,16 +378,16 @@
     
     <!-- Pages Table -->
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
             <h5 class="mb-0">{{ _('Pages') }} ({{ pagination.total_items if pagination else stats.total_pages }})</h5>
-            <div>
+            <div class="d-flex align-items-center gap-2">
                 {% if pagination and pagination.total_pages > 1 %}
-                <span class="text-muted me-3">
-                    {{ _('Showing') }} {{ pagination.start_item }}-{{ pagination.end_item }} {{ _('of') }} {{ pagination.total_items }}
+                <span class="text-muted small d-none d-md-inline">
+                    {{ pagination.start_item }}-{{ pagination.end_item }} {{ _('of') }} {{ pagination.total_items }}
                 </span>
                 {% endif %}
                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addPageModal">
-                    <i class="bi bi-plus-circle"></i> {{ _('Add Page') }}
+                    <i class="bi bi-plus-circle"></i> <span class="d-none d-sm-inline">{{ _('Add Page') }}</span><span class="d-sm-none">{{ _('Add') }}</span>
                 </button>
             </div>
         </div>
@@ -337,7 +436,8 @@
             {% endif %}
 
             {% if pages %}
-            <div class="table-responsive">
+            <!-- Desktop Table View -->
+            <div class="table-responsive d-none d-md-block">
                 <table class="table table-hover">
                     <thead>
                         <tr>
@@ -435,6 +535,71 @@
                         {% endfor %}
                     </tbody>
                 </table>
+            </div>
+            
+            <!-- Mobile Card View -->
+            <div class="d-md-none">
+                {% for page in pages %}
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body py-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="flex-grow-1 me-2">
+                                <a href="{{ url_for('pages.view_page', page_id=page.id) }}" class="text-decoration-none">
+                                    <h6 class="card-title mb-1 text-break" style="font-size: 0.9rem;">
+                                        {{ page.url|replace(website.url, '')|truncate(50) or '/' }}
+                                    </h6>
+                                </a>
+                            </div>
+                            <span class="badge bg-{{ {
+                                'discovered': 'secondary',
+                                'queued': 'info',
+                                'testing': 'warning',
+                                'tested': 'success',
+                                'error': 'danger',
+                                'skipped': 'secondary',
+                                'discovery_failed': 'dark'
+                            }[page.status.value] }} page-status-mobile" data-page-id="{{ page.id }}">
+                                {% if page.status.value in ['queued', 'testing'] %}
+                                <span class="spinner-border spinner-border-sm me-1" role="status" style="width: 10px; height: 10px;"></span>
+                                {% endif %}
+                                {{ page.status.value|replace('_', ' ')|title }}
+                            </span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex gap-3">
+                                <span class="{% if page.violation_count > 0 %}text-danger{% else %}text-success{% endif %}">
+                                    <i class="bi bi-x-circle"></i> {{ page.violation_count }}
+                                </span>
+                                <span class="{% if page.warning_count > 0 %}text-warning{% else %}text-muted{% endif %}">
+                                    <i class="bi bi-exclamation-triangle"></i> {{ page.warning_count }}
+                                </span>
+                            </div>
+                            <small class="text-muted">
+                                {{ page.last_tested.strftime('%m/%d %H:%M') if page.last_tested else _('Not tested') }}
+                            </small>
+                        </div>
+                        
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('pages.view_page', page_id=page.id) }}" class="btn btn-sm btn-primary flex-grow-1">
+                                <i class="bi bi-eye"></i> {{ _('View') }}
+                            </a>
+                            {% if page.status.value in ['queued', 'testing'] %}
+                            <button class="btn btn-sm btn-danger page-test-btn-mobile" data-page-id="{{ page.id }}" onclick="cancelPageTest('{{ page.id }}')">
+                                <i class="bi bi-x-circle"></i>
+                            </button>
+                            {% else %}
+                            <button class="btn btn-sm btn-success page-test-btn-mobile" data-page-id="{{ page.id }}" onclick="testPage('{{ page.id }}')">
+                                <i class="bi bi-play"></i>
+                            </button>
+                            {% endif %}
+                            <button class="btn btn-sm btn-outline-danger" onclick="deletePage('{{ page.id }}', '{{ page.url }}')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
 
             {% if pagination and pagination.total_pages > 1 %}

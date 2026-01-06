@@ -26,6 +26,26 @@ logger = logging.getLogger(__name__)
 class ReportGenerator:
     """Generates accessibility reports in multiple formats"""
     
+    # Translations for report filenames and titles
+    TRANSLATIONS = {
+        'en': {
+            'project': 'Project',
+            'all_projects': 'All Projects',
+            'deduplicated': 'Deduplicated',
+            'accessibility_report': 'Accessibility Report',
+            'discovery': 'Discovery',
+            'recordings': 'Recordings',
+        },
+        'fr': {
+            'project': 'Projet',
+            'all_projects': 'Tous les projets',
+            'deduplicated': 'Dédupliqué',
+            'accessibility_report': 'Rapport d\'accessibilité',
+            'discovery': 'Découverte',
+            'recordings': 'Enregistrements',
+        }
+    }
+    
     @staticmethod
     def get_issue_summary(issue_id: str) -> Dict[str, str]:
         """
@@ -46,28 +66,34 @@ class ReportGenerator:
             'wcag': ', '.join(issue['wcag']) if issue['wcag'] else 'N/A'
         }
     
-    def __init__(self, database: Database, config: Dict[str, Any]):
+    def __init__(self, database: Database, config: Dict[str, Any], language: str = 'en'):
         """
         Initialize report generator
         
         Args:
             database: Database connection
             config: Report configuration
+            language: Language code for report names ('en' or 'fr')
         """
         self.db = database
         self.config = config
+        self.language = language if language in self.TRANSLATIONS else 'en'
         self.report_dir = Path(config.get('REPORTS_DIR', 'reports'))
         self.report_dir.mkdir(exist_ok=True, parents=True)
         
-        # Initialize formatters
+        # Initialize formatters with language support
         self.formatters = {
-            'html': HTMLFormatter(config),
-            'json': JSONFormatter(config),
-            'xlsx': ExcelFormatter(config),
-            'excel': ExcelFormatter(config),  # alias
-            'csv': CSVFormatter(config),
-            'pdf': PDFFormatter(config)
+            'html': HTMLFormatter(config, self.language),
+            'json': JSONFormatter(config, self.language),
+            'xlsx': ExcelFormatter(config, self.language),
+            'excel': ExcelFormatter(config, self.language),  # alias
+            'csv': CSVFormatter(config, self.language),
+            'pdf': PDFFormatter(config, self.language)
         }
+    
+    def _t(self, key: str) -> str:
+        """Get translated string for current language"""
+        return self.TRANSLATIONS.get(self.language, self.TRANSLATIONS['en']).get(key, key)
     
     def _sanitize_filename(self, name: str, max_length: int = 50) -> str:
         """
@@ -295,7 +321,7 @@ class ReportGenerator:
         
         # Prepare report data
         report_data = {
-            'title': 'All Projects Accessibility Report',
+            'title': f"{self._t('all_projects')} {self._t('accessibility_report')}",
             'projects': all_projects_data,
             'summary': total_stats,
             'generated_at': datetime.now().isoformat()
@@ -306,9 +332,10 @@ class ReportGenerator:
         if not formatter:
             raise ValueError(f"Unsupported format: {format}")
         
-        # Create filename
+        # Create filename with translated prefix
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"all_projects_{timestamp}.{formatter.extension}"
+        all_projects_name = self._sanitize_filename(self._t('all_projects'))
+        filename = f"{all_projects_name}_{timestamp}.{formatter.extension}"
         filepath = self.report_dir / filename
         
         # Generate content based on format  
@@ -401,11 +428,12 @@ class ReportGenerator:
         if not formatter:
             raise ValueError(f"Unsupported format: {format}")
         
-        # Create filename with project name
+        # Create filename with translated prefix and project name
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         # Create a safe filename from the project name
+        project_prefix = self._sanitize_filename(self._t('project'))
         project_name = self._sanitize_filename(project.name)
-        filename = f"project_{project_name}_{timestamp}.{formatter.extension}"
+        filename = f"{project_prefix}_{project_name}_{timestamp}.{formatter.extension}"
         filepath = self.report_dir / filename
         
         # Generate content

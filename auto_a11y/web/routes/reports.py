@@ -2,7 +2,8 @@
 Report generation routes
 """
 
-from flask import Blueprint, render_template, request, jsonify, send_file, current_app, url_for, flash, redirect, session
+from flask import Blueprint, render_template, request, jsonify, send_file, current_app, url_for, flash, redirect, session, g
+from flask_babel import get_locale
 from auto_a11y.models import PageStatus
 from auto_a11y.reporting import ReportGenerator, PageStructureReport
 from auto_a11y.reporting.discovery_report import DiscoveryReportGenerator
@@ -109,9 +110,10 @@ def generate_report():
         scope_id = website_id
     
     try:
-        # Initialize report generator
+        # Initialize report generator with current language
         from auto_a11y.reporting import ReportGenerator
-        generator = ReportGenerator(current_app.db, current_app.app_config.__dict__)
+        current_language = str(get_locale()) if get_locale() else 'en'
+        generator = ReportGenerator(current_app.db, current_app.app_config.__dict__, language=current_language)
         
         # Generate report based on scope and type
         if report_type == 'excel' or report_type == 'xlsx':

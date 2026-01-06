@@ -304,6 +304,8 @@ class StaticHTMLReportGenerator:
         translations = {
             'en': {
                 # Index page
+                'accessibility_report': 'Accessibility Report',
+                'deduplicated': 'Deduplicated',
                 'deduplicated_report': 'Deduplicated Accessibility Report',
                 'issues_grouped_by_components': 'Issues grouped by common components',
                 'accessibility_score': 'Accessibility Score',
@@ -459,6 +461,8 @@ class StaticHTMLReportGenerator:
             },
             'fr': {
                 # Index page
+                'accessibility_report': 'Rapport_d_accessibilite',
+                'deduplicated': 'Dédupliqué',
                 'deduplicated_report': 'Rapport d\'accessibilité dédupliqué',
                 'issues_grouped_by_components': 'Problèmes regroupés par composants communs',
                 'accessibility_score': 'Score d\'accessibilité',
@@ -1597,7 +1601,10 @@ class StaticHTMLReportGenerator:
 
     def _package_as_zip(self, source_dir: Path, timestamp: str) -> Path:
         """Package report directory as ZIP file"""
-        zip_filename = f'accessibility_report_{timestamp}.zip'
+        all_translations = self._get_translations()
+        t = all_translations[self.language]
+        report_name = t.get('accessibility_report', 'Accessibility_Report').replace(' ', '_')
+        zip_filename = f'{report_name}_{timestamp}.zip'
         zip_path = self.output_dir / zip_filename
 
         with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
@@ -1789,7 +1796,10 @@ class StaticHTMLReportGenerator:
 
             # Package as ZIP
             safe_project_name = project_name.replace(' ', '_')
-            zip_filename = f'{safe_project_name}_deduplicated_{timestamp}.zip'
+            all_translations = self._get_translations()
+            t = all_translations[self.language]
+            deduplicated_word = t.get('deduplicated', 'Deduplicated').replace(' ', '_')
+            zip_filename = f'{safe_project_name}_{deduplicated_word}_{timestamp}.zip'
             zip_path = self.output_dir / zip_filename
 
             with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:

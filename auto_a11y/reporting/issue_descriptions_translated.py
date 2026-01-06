@@ -112,7 +112,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
 
 
 def _apply_metadata(desc: Dict[str, Any], metadata: Dict[str, Any]) -> Dict[str, Any]:
-    """Apply metadata substitution to description fields."""
+    """Apply metadata substitution to description fields using {placeholder} syntax."""
     if not metadata:
         return desc
     
@@ -120,12 +120,85 @@ def _apply_metadata(desc: Dict[str, Any], metadata: Dict[str, Any]) -> Dict[str,
     
     for field in translatable_fields:
         if field in desc and isinstance(desc[field], str):
-            try:
-                text = desc[field]
-                escaped_text = re.sub(r'%(?!\()', '%%', text)
-                desc[field] = escaped_text % metadata
-            except (KeyError, ValueError, TypeError) as e:
-                logger.warning(f"Placeholder substitution failed for field {field}: {e}")
+            text = desc[field]
+            
+            # Special handling for contrast ratio placeholders
+            # The test sends: textColor, backgroundColor, contrastRatio
+            # But descriptions use: {fg}, {bg}, {ratio}
+            if '{ratio}' in text and 'contrastRatio' in metadata:
+                contrast_ratio = metadata.get('contrastRatio', '')
+                if isinstance(contrast_ratio, str) and contrast_ratio.endswith(':1'):
+                    contrast_ratio = contrast_ratio[:-2]
+                text = text.replace('{ratio}', str(contrast_ratio))
+            
+            if '{fg}' in text and 'textColor' in metadata:
+                text = text.replace('{fg}', str(metadata.get('textColor', '')))
+            
+            if '{bg}' in text and 'backgroundColor' in metadata:
+                text = text.replace('{bg}', str(metadata.get('backgroundColor', '')))
+            
+            # Special handling for calculated line height minimum
+            if '{minLineHeight}' in text and 'fontSize' in metadata:
+                font_size = float(metadata.get('fontSize', 16))
+                min_line_height = font_size * 1.5
+                text = text.replace('{minLineHeight}', f"{min_line_height:.2f}")
+            
+            # Handle plural/singular forms
+            if '{sizeCount_singular_size}' in text and 'sizeCount' in metadata:
+                count = metadata.get('sizeCount', 0)
+                text = text.replace('{sizeCount_singular_size}', 'size' if count == 1 else 'different sizes')
+            
+            if '{fieldCount_plural}' in text and 'fieldCount' in metadata:
+                count = metadata.get('fieldCount', 0)
+                text = text.replace('{fieldCount_plural}', 's' if count != 1 else '')
+            
+            # Handle search context placeholders
+            if '{searchContext_title}' in text:
+                text = text.replace('{searchContext_title}', metadata.get('searchContext', {}).get('title', ''))
+            if '{searchContext_remediation}' in text:
+                text = text.replace('{searchContext_remediation}', metadata.get('searchContext', {}).get('remediation', ''))
+            
+            # Handle label descriptions
+            for label_key in ['asideLabel_description', 'footerLabel_description', 'headerLabel_description']:
+                if '{' + label_key + '}' in text:
+                    base_key = label_key.replace('_description', '')
+                    label_data = metadata.get(base_key, {})
+                    if isinstance(label_data, dict):
+                        text = text.replace('{' + label_key + '}', label_data.get('description', ''))
+            
+            # Handle link count plural
+            if '{linkCount_plural}' in text and 'linkCount' in metadata:
+                count = metadata.get('linkCount', 0)
+                text = text.replace('{linkCount_plural}', 's' if count != 1 else '')
+            
+            # Replace standard {key} placeholders from metadata
+            nested_pattern = r'\{([^}]+)\}'
+            
+            def replace_nested(match):
+                path = match.group(1)
+                
+                # Skip special placeholders already handled above
+                if path in ['fontSizes_list', 'sizeCount_plural', 'sizeCount_singular_size', 'fieldCount_plural', 
+                            'fieldTypes_summary', 'searchContext_title', 'searchContext_description', 
+                            'searchContext_remediation', 'minLineHeight', 'ratio', 'fg', 'bg',
+                            'asideLabel_description', 'footerLabel_description', 'headerLabel_description',
+                            'linkCount_plural']:
+                    return match.group(0)
+                
+                parts = path.split('.')
+                
+                # Navigate through nested dict/objects
+                value = metadata
+                for part in parts:
+                    if isinstance(value, dict) and part in value:
+                        value = value[part]
+                    else:
+                        return match.group(0)  # Return original if path not found
+                
+                return str(value) if value is not None else match.group(0)
+            
+            text = re.sub(nested_pattern, replace_nested, text)
+            desc[field] = text
     
     return desc
 

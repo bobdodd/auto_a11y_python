@@ -20,9 +20,10 @@ logger = logging.getLogger(__name__)
 class BaseFormatter:
     """Base class for report formatters"""
     
-    def __init__(self, config: Dict[str, Any]):
+    def __init__(self, config: Dict[str, Any], language: str = 'en'):
         """Initialize formatter with config"""
         self.config = config
+        self.language = language if language in ['en', 'fr'] else 'en'
         self.extension = 'txt'
     
     def format_page_report(self, data: Dict[str, Any]) -> str:
@@ -45,8 +46,8 @@ class BaseFormatter:
 class HTMLFormatter(BaseFormatter):
     """HTML report formatter"""
     
-    def __init__(self, config: Dict[str, Any]):
-        super().__init__(config)
+    def __init__(self, config: Dict[str, Any], language: str = 'en'):
+        super().__init__(config, language)
         self.extension = 'html'
         # Pass Claude API key if available
         claude_api_key = config.get('CLAUDE_API_KEY')
@@ -769,8 +770,8 @@ class HTMLFormatter(BaseFormatter):
 class JSONFormatter(BaseFormatter):
     """JSON report formatter"""
     
-    def __init__(self, config: Dict[str, Any]):
-        super().__init__(config)
+    def __init__(self, config: Dict[str, Any], language: str = 'en'):
+        super().__init__(config, language)
         self.extension = 'json'
     
     def format_page_report(self, data: Dict[str, Any]) -> str:
@@ -793,8 +794,8 @@ class JSONFormatter(BaseFormatter):
 class CSVFormatter(BaseFormatter):
     """CSV report formatter"""
     
-    def __init__(self, config: Dict[str, Any]):
-        super().__init__(config)
+    def __init__(self, config: Dict[str, Any], language: str = 'en'):
+        super().__init__(config, language)
         self.extension = 'csv'
     
     def format_page_report(self, data: Dict[str, Any]) -> str:
@@ -902,10 +903,168 @@ class CSVFormatter(BaseFormatter):
 class ExcelFormatter(BaseFormatter):
     """Excel report formatter"""
     
-    def __init__(self, config: Dict[str, Any]):
-        super().__init__(config)
+    TRANSLATIONS = {
+        'en': {
+            'summary': 'Summary',
+            'website_summary': 'Website Summary',
+            'project_summary': 'Project Summary',
+            'overall_summary': 'Overall Summary',
+            'executive_summary': 'Executive Summary',
+            'page_states': 'Page States',
+            'all_issues': 'All Issues',
+            'violations': 'Violations',
+            'warnings': 'Warnings',
+            'info': 'Info',
+            'discovery': 'Discovery',
+            'ai_findings': 'AI Findings',
+            'passes': 'Passes',
+            'pages': 'Pages',
+            'violation_types': 'Violation Types',
+            'websites': 'Websites',
+            'all_issues_deduplicated': 'All Issues (Deduplicated)',
+            'common_components': 'Common Components',
+            'project': 'Project',
+            'pages_tested': 'Pages Tested',
+            'rule_id': 'Rule ID',
+            'description': 'Description',
+            'impact': 'Impact',
+            'wcag_criteria': 'WCAG Criteria',
+            'elements_affected': 'Elements Affected',
+            'suggested_fix': 'Suggested Fix',
+            'test_user': 'Test User',
+            'user_roles': 'User Roles',
+            'id': 'ID',
+            'category': 'Category',
+            'location': 'Location',
+            'manual_check_required': 'Manual Check Required',
+            'type': 'Type',
+            'severity': 'Severity',
+            'confidence': 'Confidence',
+            'touchpoint': 'Touchpoint',
+            'what': 'What',
+            'why_important': 'Why Important',
+            'who_affected': 'Who Affected',
+            'how_to_remediate': 'How to Remediate',
+            'location_xpath': 'Location (XPath)',
+            'element': 'Element',
+            'page_url': 'Page URL',
+            'breakpoint_px': 'Breakpoint (px)',
+            'pseudoclass': 'Pseudoclass',
+            'page_state': 'Page State',
+            'website': 'Website',
+            'component_type': 'Component Type',
+            'signature': 'Signature',
+            'label': 'Label',
+            'page_count': 'Page Count',
+            'pages_found': 'Pages Found',
+            'example_xpath': 'Example XPath',
+            'last_tested': 'Last Tested',
+            'state_sequence': 'State Sequence',
+            'session_id': 'Session ID',
+            'count': 'Count',
+            'pages_affected': 'Pages Affected',
+            'website_name': 'Website Name',
+            'url': 'URL',
+            'total_violations': 'Total Violations',
+            'total_warnings': 'Total Warnings',
+            'project_name': 'Project Name',
+            'total_pages': 'Total Pages',
+            'tested_pages': 'Tested Pages',
+            'coverage_pct': 'Coverage %',
+            'state_description': 'State Description',
+            'errors': 'Errors',
+            'test_date': 'Test Date',
+            'projects_breakdown': 'Projects Breakdown',
+            'common_component_s': 'Common Component(s)',
+            'pages_with_issue': 'Pages with Issue',
+            'breakpoints': 'Breakpoints',
+            'pseudoclasses': 'Pseudoclasses',
+            'page_states': 'Page States',
+            'test_users': 'Test Users',
+        },
+        'fr': {
+            'summary': 'Résumé',
+            'website_summary': 'Résumé du site web',
+            'project_summary': 'Résumé du projet',
+            'overall_summary': 'Résumé général',
+            'executive_summary': 'Résumé exécutif',
+            'page_states': 'États de la page',
+            'all_issues': 'Tous les problèmes',
+            'violations': 'Violations',
+            'warnings': 'Avertissements',
+            'info': 'Infos',
+            'discovery': 'Découverte',
+            'ai_findings': 'Résultats IA',
+            'passes': 'Réussites',
+            'pages': 'Pages',
+            'violation_types': 'Types de violations',
+            'websites': 'Sites web',
+            'all_issues_deduplicated': 'Problèmes (dédupliqués)',
+            'common_components': 'Composants communs',
+            'project': 'Projet',
+            'pages_tested': 'Pages testées',
+            'rule_id': 'ID de règle',
+            'description': 'Description',
+            'impact': 'Impact',
+            'wcag_criteria': 'Critères WCAG',
+            'elements_affected': 'Éléments affectés',
+            'suggested_fix': 'Correction suggérée',
+            'test_user': 'Utilisateur de test',
+            'user_roles': 'Rôles utilisateur',
+            'id': 'ID',
+            'category': 'Catégorie',
+            'location': 'Emplacement',
+            'manual_check_required': 'Vérification manuelle requise',
+            'type': 'Type',
+            'severity': 'Sévérité',
+            'confidence': 'Confiance',
+            'touchpoint': 'Point de contact',
+            'what': 'Quoi',
+            'why_important': 'Pourquoi c\'est important',
+            'who_affected': 'Qui est affecté',
+            'how_to_remediate': 'Comment corriger',
+            'location_xpath': 'Emplacement (XPath)',
+            'element': 'Élément',
+            'page_url': 'URL de la page',
+            'breakpoint_px': 'Point de rupture (px)',
+            'pseudoclass': 'Pseudoclasse',
+            'page_state': 'État de la page',
+            'website': 'Site web',
+            'component_type': 'Type de composant',
+            'signature': 'Signature',
+            'label': 'Libellé',
+            'page_count': 'Nombre de pages',
+            'pages_found': 'Pages trouvées',
+            'example_xpath': 'XPath exemple',
+            'last_tested': 'Dernier test',
+            'state_sequence': 'Séquence d\'état',
+            'session_id': 'ID de session',
+            'count': 'Nombre',
+            'pages_affected': 'Pages affectées',
+            'website_name': 'Nom du site web',
+            'url': 'URL',
+            'total_violations': 'Total des violations',
+            'total_warnings': 'Total des avertissements',
+            'project_name': 'Nom du projet',
+            'total_pages': 'Total des pages',
+            'tested_pages': 'Pages testées',
+            'coverage_pct': 'Couverture %',
+            'state_description': 'Description de l\'état',
+            'errors': 'Erreurs',
+            'test_date': 'Date de test',
+            'projects_breakdown': 'Détail des projets',
+            'common_component_s': 'Composant(s) commun(s)',
+            'pages_with_issue': 'Pages avec problème',
+            'breakpoints': 'Points de rupture',
+            'pseudoclasses': 'Pseudoclasses',
+            'page_states': 'États de page',
+            'test_users': 'Utilisateurs de test',
+        }
+    }
+    
+    def __init__(self, config: Dict[str, Any], language: str = 'en'):
+        super().__init__(config, language)
         self.extension = 'xlsx'
-        # Import openpyxl here to avoid import errors if not needed
         try:
             from openpyxl import Workbook
             from openpyxl.styles import Font, Fill, PatternFill, Alignment, Border, Side
@@ -922,6 +1081,10 @@ class ExcelFormatter(BaseFormatter):
         except ImportError:
             logger.warning("openpyxl not installed - Excel export will return JSON")
             self.has_openpyxl = False
+    
+    def _t(self, key: str) -> str:
+        """Get translated string for current language"""
+        return self.TRANSLATIONS.get(self.language, self.TRANSLATIONS['en']).get(key, key)
     
     def _get_styles(self):
         """Get common Excel styles"""
@@ -984,47 +1147,47 @@ class ExcelFormatter(BaseFormatter):
         
         # Summary Sheet
         ws_summary = wb.active
-        ws_summary.title = "Summary"
+        ws_summary.title = self._t('summary')
         self._create_summary_sheet(ws_summary, data, styles)
 
         # Multi-State Summary Sheet (if applicable)
         test_result = data.get('test_result', {})
         if test_result and test_result.get('session_id'):
-            ws_states = wb.create_sheet("Page States")
+            ws_states = wb.create_sheet(self._t('page_states'))
             self._create_page_states_sheet(ws_states, data, styles)
 
         # All Issues Sheet (combined view)
-        ws_all_issues = wb.create_sheet("All Issues")
+        ws_all_issues = wb.create_sheet(self._t('all_issues'))
         self._create_all_issues_sheet(ws_all_issues, data, styles)
 
         # Violations Sheet
         if data.get('violations'):
-            ws_violations = wb.create_sheet("Violations")
+            ws_violations = wb.create_sheet(self._t('violations'))
             self._create_violations_sheet(ws_violations, data['violations'], styles)
         
         # Warnings Sheet
         if data.get('warnings'):
-            ws_warnings = wb.create_sheet("Warnings")
+            ws_warnings = wb.create_sheet(self._t('warnings'))
             self._create_warnings_sheet(ws_warnings, data['warnings'], styles)
         
         # Info Sheet
         if data.get('info'):
-            ws_info = wb.create_sheet("Info")
+            ws_info = wb.create_sheet(self._t('info'))
             self._create_info_sheet(ws_info, data['info'], styles)
         
         # Discovery Sheet
         if data.get('discovery'):
-            ws_discovery = wb.create_sheet("Discovery")
+            ws_discovery = wb.create_sheet(self._t('discovery'))
             self._create_discovery_sheet(ws_discovery, data['discovery'], styles)
         
         # AI Findings Sheet
         if data.get('ai_findings'):
-            ws_ai = wb.create_sheet("AI Findings")
+            ws_ai = wb.create_sheet(self._t('ai_findings'))
             self._create_ai_findings_sheet(ws_ai, data['ai_findings'], styles)
         
         # Passes Sheet
         if data.get('passes'):
-            ws_passes = wb.create_sheet("Passes")
+            ws_passes = wb.create_sheet(self._t('passes'))
             self._create_passes_sheet(ws_passes, data['passes'], styles)
         
         # Save to bytes
@@ -1044,17 +1207,17 @@ class ExcelFormatter(BaseFormatter):
         
         # Summary Sheet
         ws_summary = wb.active
-        ws_summary.title = "Website Summary"
+        ws_summary.title = self._t('website_summary')
         self._create_website_summary_sheet(ws_summary, data, styles)
         
         # Pages Sheet
         if data.get('pages'):
-            ws_pages = wb.create_sheet("Pages")
+            ws_pages = wb.create_sheet(self._t('pages'))
             self._create_pages_sheet(ws_pages, data['pages'], styles)
         
         # Violation Types Sheet
         if data.get('violation_types'):
-            ws_types = wb.create_sheet("Violation Types")
+            ws_types = wb.create_sheet(self._t('violation_types'))
             self._create_violation_types_sheet(ws_types, data['violation_types'], styles)
         
         # Save to bytes
@@ -1074,24 +1237,24 @@ class ExcelFormatter(BaseFormatter):
         
         # Project Summary Sheet
         ws_summary = wb.active
-        ws_summary.title = "Project Summary"
+        ws_summary.title = self._t('project_summary')
         self._create_project_summary_sheet(ws_summary, data, styles)
         
         # Websites Sheet
         if data.get('websites'):
-            ws_websites = wb.create_sheet("Websites")
+            ws_websites = wb.create_sheet(self._t('websites'))
             self._create_websites_sheet(ws_websites, data['websites'], styles)
 
         # All Issues Sheet (combined view across all pages)
-        ws_all_issues = wb.create_sheet("All Issues")
+        ws_all_issues = wb.create_sheet(self._t('all_issues'))
         self._create_project_all_issues_sheet(ws_all_issues, data, styles)
 
         # All Issues (Deduplicated) Sheet - groups by common components
-        ws_deduped_issues = wb.create_sheet("All Issues (Deduplicated)")
+        ws_deduped_issues = wb.create_sheet(self._t('all_issues_deduplicated'))
         self._create_project_deduped_issues_sheet(ws_deduped_issues, data, styles)
 
         # Common Components Sheet - shows all identified common components
-        ws_common_components = wb.create_sheet("Common Components")
+        ws_common_components = wb.create_sheet(self._t('common_components'))
         self._create_common_components_sheet(ws_common_components, data, styles)
 
         # Save to bytes
@@ -1111,12 +1274,12 @@ class ExcelFormatter(BaseFormatter):
         
         # Overall Summary Sheet
         ws_summary = wb.active
-        ws_summary.title = "Overall Summary"
+        ws_summary.title = self._t('overall_summary')
         self._create_all_projects_summary_sheet(ws_summary, data, styles)
         
         # Projects Breakdown Sheet
         if data.get('projects'):
-            ws_projects = wb.create_sheet("Projects Breakdown")
+            ws_projects = wb.create_sheet(self._t('projects_breakdown'))
             self._create_projects_breakdown_sheet(ws_projects, data['projects'], styles)
         
         # Save to bytes
@@ -1136,10 +1299,10 @@ class ExcelFormatter(BaseFormatter):
         
         # Executive Summary Sheet
         ws = wb.active
-        ws.title = "Executive Summary"
+        ws.title = self._t('executive_summary')
         
         # Headers
-        headers = ['Project', 'Websites', 'Pages Tested', 'Violations', 'Warnings']
+        headers = [self._t('project'), self._t('websites'), self._t('pages_tested'), self._t('violations'), self._t('warnings')]
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
             self._apply_style(cell, styles['header'])
@@ -1221,7 +1384,7 @@ class ExcelFormatter(BaseFormatter):
     
     def _create_violations_sheet(self, ws, violations, styles):
         """Create violations sheet"""
-        headers = ['Rule ID', 'Description', 'Impact', 'WCAG Criteria', 'Elements Affected', 'Suggested Fix', 'Test User', 'User Roles']
+        headers = [self._t('rule_id'), self._t('description'), self._t('impact'), self._t('wcag_criteria'), self._t('elements_affected'), self._t('suggested_fix'), self._t('test_user'), self._t('user_roles')]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1261,7 +1424,7 @@ class ExcelFormatter(BaseFormatter):
     
     def _create_warnings_sheet(self, ws, warnings, styles):
         """Create warnings sheet"""
-        headers = ['Rule ID', 'Description', 'Elements Affected', 'Test User', 'User Roles']
+        headers = [self._t('rule_id'), self._t('description'), self._t('elements_affected'), self._t('test_user'), self._t('user_roles')]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1293,7 +1456,7 @@ class ExcelFormatter(BaseFormatter):
     
     def _create_info_sheet(self, ws, info_items, styles):
         """Create info sheet"""
-        headers = ['ID', 'Description', 'Category', 'WCAG Criteria', 'Location', 'Test User', 'User Roles']
+        headers = [self._t('id'), self._t('description'), self._t('category'), self._t('wcag_criteria'), self._t('location'), self._t('test_user'), self._t('user_roles')]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1327,7 +1490,7 @@ class ExcelFormatter(BaseFormatter):
     
     def _create_discovery_sheet(self, ws, discovery_items, styles):
         """Create discovery sheet"""
-        headers = ['ID', 'Description', 'Category', 'Location', 'Manual Check Required', 'Test User', 'User Roles']
+        headers = [self._t('id'), self._t('description'), self._t('category'), self._t('location'), self._t('manual_check_required'), self._t('test_user'), self._t('user_roles')]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1367,7 +1530,7 @@ class ExcelFormatter(BaseFormatter):
     
     def _create_ai_findings_sheet(self, ws, findings, styles):
         """Create AI findings sheet"""
-        headers = ['Type', 'Description', 'Severity', 'Confidence', 'Suggested Fix']
+        headers = [self._t('type'), self._t('description'), self._t('severity'), self._t('confidence'), self._t('suggested_fix')]
         
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1395,7 +1558,7 @@ class ExcelFormatter(BaseFormatter):
     
     def _create_passes_sheet(self, ws, passes, styles):
         """Create passes sheet"""
-        headers = ['Rule ID', 'Description']
+        headers = [self._t('rule_id'), self._t('description')]
         
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1416,7 +1579,7 @@ class ExcelFormatter(BaseFormatter):
 
     def _create_all_issues_sheet(self, ws, data, styles):
         """Create a combined sheet with all issues (violations, warnings, info, discovery)"""
-        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected', 'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element', 'Page URL', 'Breakpoint (px)', 'Pseudoclass', 'Page State', 'Test User', 'User Roles']
+        headers = [self._t('type'), self._t('impact'), self._t('rule_id'), self._t('touchpoint'), self._t('what'), self._t('why_important'), self._t('who_affected'), self._t('how_to_remediate'), self._t('wcag_criteria'), self._t('location_xpath'), self._t('element'), self._t('page_url'), self._t('breakpoint_px'), self._t('pseudoclass'), self._t('page_state'), self._t('test_user'), self._t('user_roles')]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1609,7 +1772,7 @@ class ExcelFormatter(BaseFormatter):
 
     def _create_project_all_issues_sheet(self, ws, data, styles):
         """Create a combined sheet with all issues from all pages across all websites"""
-        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected', 'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element', 'Page URL', 'Website', 'Breakpoint (px)', 'Pseudoclass', 'Page State', 'Test User', 'User Roles']
+        headers = [self._t('type'), self._t('impact'), self._t('rule_id'), self._t('touchpoint'), self._t('what'), self._t('why_important'), self._t('who_affected'), self._t('how_to_remediate'), self._t('wcag_criteria'), self._t('location_xpath'), self._t('element'), self._t('page_url'), self._t('website'), self._t('breakpoint_px'), self._t('pseudoclass'), self._t('page_state'), self._t('test_user'), self._t('user_roles')]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -1954,9 +2117,9 @@ class ExcelFormatter(BaseFormatter):
 
     def _create_project_deduped_issues_sheet(self, ws, data, styles):
         """Create a deduplicated issues sheet that groups issues by common components"""
-        headers = ['Type', 'Impact', 'Rule ID', 'Touchpoint', 'What', 'Why Important', 'Who Affected',
-                   'How to Remediate', 'WCAG Criteria', 'Location (XPath)', 'Element',
-                   'Common Component(s)', 'Pages with Issue', 'Page Count', 'Breakpoints', 'Pseudoclasses', 'Page States', 'Test Users', 'User Roles']
+        headers = [self._t('type'), self._t('impact'), self._t('rule_id'), self._t('touchpoint'), self._t('what'), self._t('why_important'), self._t('who_affected'),
+                   self._t('how_to_remediate'), self._t('wcag_criteria'), self._t('location_xpath'), self._t('element'),
+                   self._t('common_component_s'), self._t('pages_with_issue'), self._t('page_count'), self._t('breakpoints'), self._t('pseudoclasses'), self._t('page_states'), self._t('test_users'), self._t('user_roles')]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -2145,7 +2308,7 @@ class ExcelFormatter(BaseFormatter):
 
     def _create_common_components_sheet(self, ws, data, styles):
         """Create a sheet listing all common components identified during deduplication"""
-        headers = ['Component Type', 'Signature', 'Label', 'Page Count', 'Pages Found', 'Example XPath']
+        headers = [self._t('component_type'), self._t('signature'), self._t('label'), self._t('page_count'), self._t('pages_found'), self._t('example_xpath')]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -2245,7 +2408,7 @@ class ExcelFormatter(BaseFormatter):
     
     def _create_pages_sheet(self, ws, pages, styles):
         """Create pages sheet"""
-        headers = ['Page URL', 'Violations', 'Warnings', 'Passes', 'Last Tested', 'Page State', 'State Sequence', 'Session ID']
+        headers = [self._t('page_url'), self._t('violations'), self._t('warnings'), self._t('passes'), self._t('last_tested'), self._t('page_state'), self._t('state_sequence'), self._t('session_id')]
 
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -2289,7 +2452,7 @@ class ExcelFormatter(BaseFormatter):
     
     def _create_violation_types_sheet(self, ws, violation_types, styles):
         """Create violation types sheet"""
-        headers = ['Rule ID', 'Count', 'Description', 'Pages Affected']
+        headers = [self._t('rule_id'), self._t('count'), self._t('description'), self._t('pages_affected')]
         
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -2340,7 +2503,7 @@ class ExcelFormatter(BaseFormatter):
     
     def _create_websites_sheet(self, ws, websites, styles):
         """Create websites sheet"""
-        headers = ['Website Name', 'URL', 'Pages', 'Total Violations', 'Total Warnings']
+        headers = [self._t('website_name'), self._t('url'), self._t('pages'), self._t('total_violations'), self._t('total_warnings')]
         
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -2434,7 +2597,7 @@ class ExcelFormatter(BaseFormatter):
     
     def _create_projects_breakdown_sheet(self, ws, projects, styles):
         """Create projects breakdown sheet"""
-        headers = ['Project Name', 'Description', 'Websites', 'Total Pages', 'Tested Pages', 'Coverage %', 'Violations', 'Warnings']
+        headers = [self._t('project_name'), self._t('description'), self._t('websites'), self._t('total_pages'), self._t('tested_pages'), self._t('coverage_pct'), self._t('violations'), self._t('warnings')]
         
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -2482,7 +2645,7 @@ class ExcelFormatter(BaseFormatter):
 
         # Headers
         row = 3
-        headers = ['State Sequence', 'State Description', 'Errors', 'Warnings', 'Info', 'Discovery', 'Test Date']
+        headers = [self._t('state_sequence'), self._t('state_description'), self._t('errors'), self._t('warnings'), self._t('info'), self._t('discovery'), self._t('test_date')]
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=row, column=col, value=header)
             self._apply_style(cell, styles['header'])
@@ -2571,10 +2734,10 @@ class ExcelFormatter(BaseFormatter):
 class PDFFormatter(BaseFormatter):
     """PDF report formatter (uses HTML + conversion)"""
     
-    def __init__(self, config: Dict[str, Any]):
-        super().__init__(config)
+    def __init__(self, config: Dict[str, Any], language: str = 'en'):
+        super().__init__(config, language)
         self.extension = 'pdf'
-        self.html_formatter = HTMLFormatter(config)
+        self.html_formatter = HTMLFormatter(config, language)
         
         # Try to import weasyprint
         try:

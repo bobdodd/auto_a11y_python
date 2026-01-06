@@ -241,6 +241,8 @@ class ScriptExecutor:
                 try:
                     # Use JavaScript click instead of Pyppeteer click to avoid DevTools protocol issues
                     await page.evaluate('(el) => el.click()', element)
+                    # Allow time for click effects to settle before continuing
+                    await asyncio.sleep(0.3)
                     break
                 except Exception as click_err:
                     last_error = click_err
@@ -254,7 +256,14 @@ class ScriptExecutor:
             else:
                 raise ScriptExecutionError(f"Click failed after {max_retries} attempts: {last_error}")
             
-            await asyncio.sleep(0.5)
+            # Extra stabilization time after click completes
+            await asyncio.sleep(1.0)
+            
+            # Verify connection is still alive after click
+            try:
+                await page.evaluate('() => document.readyState')
+            except Exception as post_click_err:
+                logger.warning(f"Browser connection may be unstable after click: {post_click_err}")
 
         elif action == ActionType.TYPE:
             # Wait for element then type

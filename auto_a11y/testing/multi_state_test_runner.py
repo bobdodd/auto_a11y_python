@@ -36,7 +36,8 @@ class MultiStateTestRunner:
         browser_manager,
         authenticated_user,
         login_automation,
-        page_url: str
+        page_url: str,
+        max_retries: int = 3
     ):
         """
         Prepare browser for a new state: restart, re-authenticate, navigate to test page.
@@ -46,6 +47,7 @@ class MultiStateTestRunner:
             authenticated_user: User to authenticate as (or None)
             login_automation: LoginAutomation instance (or None)
             page_url: URL of page under test
+            max_retries: Maximum retry attempts for browser restart
             
         Returns:
             New page object ready for testing
@@ -53,22 +55,66 @@ class MultiStateTestRunner:
         logger.info("Restarting browser for clean state")
         
         # Give more time for any pending async operations to complete before stopping
-        # This helps prevent "Target closed" errors from in-flight operations
-        await asyncio.sleep(1.0)
+        await asyncio.sleep(1.5)
         
-        await browser_manager.stop()
-        await asyncio.sleep(1.0)
-        await browser_manager.start()
-        await asyncio.sleep(0.5)
-        
-        new_page = await browser_manager.create_page()
+        for attempt in range(max_retries):
+            try:
+                # Force kill any existing browser process
+                if browser_manager.browser:
+                    try:
+                        if hasattr(browser_manager.browser, 'process') and browser_manager.browser.process:
+                            browser_manager.browser.process.kill()
+                            await asyncio.sleep(0.5)
+                    except Exception:
+                        pass
+                
+                await browser_manager.stop()
+                await asyncio.sleep(1.5)
+                
+                # Clear browser reference to ensure fresh start
+                browser_manager.browser = None
+                browser_manager.pages.clear()
+                
+                await browser_manager.start()
+                await asyncio.sleep(1.0)
+                
+                # Verify browser is actually running before creating page
+                if not await browser_manager.is_running():
+                    logger.warning(f"Browser not running after start (attempt {attempt + 1})")
+                    continue
+                
+                new_page = await browser_manager.create_page()
+                
+                # Verify page is usable
+                try:
+                    await asyncio.wait_for(
+                        new_page.evaluate('() => "ready"'),
+                        timeout=5.0
+                    )
+                    logger.info(f"Browser ready after attempt {attempt + 1}")
+                    break
+                except Exception as page_err:
+                    logger.warning(f"Page not usable (attempt {attempt + 1}): {page_err}")
+                    if attempt == max_retries - 1:
+                        raise RuntimeError(f"Failed to create usable page after {max_retries} attempts")
+                    continue
+                    
+            except Exception as e:
+                logger.warning(f"Browser restart attempt {attempt + 1} failed: {e}")
+                if attempt == max_retries - 1:
+                    raise
+                await asyncio.sleep(2.0)
         
         if authenticated_user and login_automation:
             logger.info(f"Authenticating as {authenticated_user.username}")
+            
+            # Add delay before login to let browser stabilize
+            await asyncio.sleep(0.5)
+            
             login_result = await login_automation.perform_login(new_page, authenticated_user, timeout=30000)
             if login_result['success']:
                 logger.info("Authentication successful")
-                # Verify browser connection after login (login can destabilize Pyppeteer)
+                # Verify browser connection after login
                 try:
                     await asyncio.wait_for(
                         new_page.evaluate('() => document.readyState'),
@@ -77,24 +123,23 @@ class MultiStateTestRunner:
                     logger.info("Browser connection verified after login")
                 except Exception as conn_err:
                     logger.error(f"Browser connection lost after login: {conn_err}")
-                    # Try to recover by creating a fresh page
-                    logger.info("Attempting recovery with fresh browser")
-                    await browser_manager.stop()
-                    await asyncio.sleep(1.0)
-                    await browser_manager.start()
-                    await asyncio.sleep(0.5)
-                    new_page = await browser_manager.create_page()
-                    # Re-authenticate
-                    login_result = await login_automation.perform_login(new_page, authenticated_user, timeout=30000)
-                    if not login_result['success']:
-                        raise RuntimeError(f"Recovery login failed: {login_result.get('error')}")
+                    raise RuntimeError(f"Browser died after login: {conn_err}")
             else:
                 logger.error(f"Authentication failed: {login_result.get('error')}")
+        
+        # Verify page is still usable before navigation
+        try:
+            await asyncio.wait_for(
+                new_page.evaluate('() => "ready"'),
+                timeout=3.0
+            )
+        except Exception as pre_nav_err:
+            raise RuntimeError(f"Page died before navigation: {pre_nav_err}")
         
         logger.info(f"Navigating to test page: {page_url}")
         try:
             response = await new_page.goto(page_url, {
-                'waitUntil': 'networkidle2',
+                'waitUntil': 'domcontentloaded',
                 'timeout': 30000
             })
             if response:
@@ -102,18 +147,14 @@ class MultiStateTestRunner:
             else:
                 logger.warning("Navigation returned None")
         except Exception as nav_error:
-            logger.warning(f"Navigation to test page had issue: {nav_error}, trying domcontentloaded")
+            logger.warning(f"Navigation to test page had issue: {nav_error}, trying load")
             try:
-                response = await new_page.goto(page_url, {
-                    'waitUntil': 'domcontentloaded',
-                    'timeout': 30000
-                })
-            except Exception as nav_error2:
-                logger.warning(f"domcontentloaded also failed: {nav_error2}, trying load")
                 response = await new_page.goto(page_url, {
                     'waitUntil': 'load',
                     'timeout': 30000
                 })
+            except Exception as nav_error2:
+                raise RuntimeError(f"Navigation failed: {nav_error2}")
         
         # Final connection verification
         await asyncio.sleep(0.5)
@@ -250,8 +291,42 @@ class MultiStateTestRunner:
 
             scripts_executed_so_far.append(script.id)
 
-            # Wait for page to stabilize
-            await asyncio.sleep(1.0)
+            # Wait for page to stabilize after script (clicks can destabilize Pyppeteer)
+            await asyncio.sleep(2.0)
+            
+            # Verify connection after script execution - scripts with clicks can kill browser
+            try:
+                await asyncio.wait_for(current_page.evaluate('() => document.readyState'), timeout=5.0)
+                logger.warning("DEBUG: Page connection OK after script")
+            except Exception as post_script_err:
+                logger.error(f"Browser died after script execution: {post_script_err}")
+                # Try to recover with fresh browser
+                if browser_manager:
+                    logger.info("Attempting recovery after script killed browser")
+                    try:
+                        current_page = await self._prepare_browser_for_state(
+                            browser_manager,
+                            authenticated_user,
+                            login_automation,
+                            actual_page_url,
+                            max_retries=2
+                        )
+                        # Re-execute the script on fresh browser
+                        logger.info(f"Re-executing script '{script.name}' on fresh browser")
+                        script_result = await self.script_executor.execute_script(
+                            page=current_page,
+                            script=script,
+                            environment_vars=environment_vars
+                        )
+                        if not script_result['success']:
+                            logger.error("Script re-execution failed")
+                            break
+                        await asyncio.sleep(2.0)
+                    except Exception as recovery_err:
+                        logger.error(f"Recovery failed: {recovery_err}")
+                        break
+                else:
+                    break
 
             # Test after script execution if configured
             if script.test_after_execution:

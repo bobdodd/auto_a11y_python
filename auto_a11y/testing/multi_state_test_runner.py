@@ -68,6 +68,26 @@ class MultiStateTestRunner:
             login_result = await login_automation.perform_login(new_page, authenticated_user, timeout=30000)
             if login_result['success']:
                 logger.info("Authentication successful")
+                # Verify browser connection after login (login can destabilize Pyppeteer)
+                try:
+                    await asyncio.wait_for(
+                        new_page.evaluate('() => document.readyState'),
+                        timeout=5.0
+                    )
+                    logger.info("Browser connection verified after login")
+                except Exception as conn_err:
+                    logger.error(f"Browser connection lost after login: {conn_err}")
+                    # Try to recover by creating a fresh page
+                    logger.info("Attempting recovery with fresh browser")
+                    await browser_manager.stop()
+                    await asyncio.sleep(1.0)
+                    await browser_manager.start()
+                    await asyncio.sleep(0.5)
+                    new_page = await browser_manager.create_page()
+                    # Re-authenticate
+                    login_result = await login_automation.perform_login(new_page, authenticated_user, timeout=30000)
+                    if not login_result['success']:
+                        raise RuntimeError(f"Recovery login failed: {login_result.get('error')}")
             else:
                 logger.error(f"Authentication failed: {login_result.get('error')}")
         
@@ -83,12 +103,31 @@ class MultiStateTestRunner:
                 logger.warning("Navigation returned None")
         except Exception as nav_error:
             logger.warning(f"Navigation to test page had issue: {nav_error}, trying domcontentloaded")
-            response = await new_page.goto(page_url, {
-                'waitUntil': 'domcontentloaded',
-                'timeout': 30000
-            })
+            try:
+                response = await new_page.goto(page_url, {
+                    'waitUntil': 'domcontentloaded',
+                    'timeout': 30000
+                })
+            except Exception as nav_error2:
+                logger.warning(f"domcontentloaded also failed: {nav_error2}, trying load")
+                response = await new_page.goto(page_url, {
+                    'waitUntil': 'load',
+                    'timeout': 30000
+                })
         
-        await asyncio.sleep(1.0)
+        # Final connection verification
+        await asyncio.sleep(0.5)
+        try:
+            await asyncio.wait_for(
+                new_page.evaluate('() => document.readyState'),
+                timeout=5.0
+            )
+            logger.info("Browser connection verified before returning page")
+        except Exception as final_conn_err:
+            logger.error(f"Final connection check failed: {final_conn_err}")
+            raise RuntimeError(f"Browser connection unstable after preparation: {final_conn_err}")
+        
+        await asyncio.sleep(0.5)
         return new_page
 
     async def test_page_multi_state(

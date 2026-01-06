@@ -1913,6 +1913,14 @@
                                                             data-bs-target="#warn-instance-{{ warn_instance_id }}">
                                                         <div class="d-flex flex-wrap align-items-center gap-2">
                                                             <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
+                                                            {% if warning.metadata and warning.metadata.authenticated_user %}
+                                                                <span class="badge bg-secondary">
+                                                                    <i class="bi bi-person-fill"></i> {{ warning.metadata.authenticated_user.display_name }}
+                                                                    {% if warning.metadata.authenticated_user.roles %}
+                                                                        ({{ warning.metadata.authenticated_user.roles|join(', ') }})
+                                                                    {% endif %}
+                                                                </span>
+                                                            {% endif %}
                                                         </div>
                                                         {% if warning.xpath %}
                                                         <code class="small text-muted text-break mt-1">{{ warning.xpath }}</code>
@@ -2121,6 +2129,14 @@
                                                             data-bs-target="#warn-instance-{{ warn_instance_id }}">
                                                         <div class="d-flex flex-wrap align-items-center gap-2">
                                                             <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
+                                                            {% if warning.metadata and warning.metadata.authenticated_user %}
+                                                                <span class="badge bg-secondary">
+                                                                    <i class="bi bi-person-fill"></i> {{ warning.metadata.authenticated_user.display_name }}
+                                                                    {% if warning.metadata.authenticated_user.roles %}
+                                                                        ({{ warning.metadata.authenticated_user.roles|join(', ') }})
+                                                                    {% endif %}
+                                                                </span>
+                                                            {% endif %}
                                                         </div>
                                                         {% if warning.xpath %}
                                                         <code class="small text-muted text-break mt-1">{{ warning.xpath }}</code>
@@ -2230,6 +2246,14 @@
                                             {% if warning.metadata.ai_detected %}
                                             <span class="badge bg-info" title="Detected by AI analysis">
                                                 <i class="bi bi-robot"></i> AI
+                                            </span>
+                                            {% endif %}
+                                            {% if warning.metadata and warning.metadata.authenticated_user %}
+                                            <span class="badge bg-secondary">
+                                                <i class="bi bi-person-fill"></i> {{ warning.metadata.authenticated_user.display_name }}
+                                                {% if warning.metadata.authenticated_user.roles %}
+                                                    ({{ warning.metadata.authenticated_user.roles|join(', ') }})
+                                                {% endif %}
                                             </span>
                                             {% endif %}
                                             {% if show_error_codes %}<code>{{ error_code|error_code_only }}</code>{% endif %}
@@ -2543,6 +2567,14 @@
                                                             data-bs-toggle="collapse" 
                                                             data-bs-target="#info-instance-{{ info_instance_id }}">
                                                         <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
+                                                        {% if info.metadata and info.metadata.authenticated_user %}
+                                                            <span class="badge bg-secondary ms-2">
+                                                                <i class="bi bi-person-fill"></i> {{ info.metadata.authenticated_user.display_name }}
+                                                                {% if info.metadata.authenticated_user.roles %}
+                                                                    ({{ info.metadata.authenticated_user.roles|join(', ') }})
+                                                                {% endif %}
+                                                            </span>
+                                                        {% endif %}
                                                         {% if info.xpath %}
                                                         <code class="ms-2">{{ info.xpath }}</code>
                                                         {% endif %}
@@ -2930,6 +2962,14 @@
                                                             data-bs-toggle="collapse" 
                                                             data-bs-target="#disc-instance-{{ disc_instance_id }}">
                                                         <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
+                                                        {% if discovery.metadata and discovery.metadata.authenticated_user %}
+                                                            <span class="badge bg-secondary ms-2">
+                                                                <i class="bi bi-person-fill"></i> {{ discovery.metadata.authenticated_user.display_name }}
+                                                                {% if discovery.metadata.authenticated_user.roles %}
+                                                                    ({{ discovery.metadata.authenticated_user.roles|join(', ') }})
+                                                                {% endif %}
+                                                            </span>
+                                                        {% endif %}
                                                         {% if discovery.xpath %}
                                                         <code class="ms-2">{{ discovery.xpath }}</code>
                                                         {% endif %}

@@ -436,7 +436,7 @@ class TestRunner:
                     test_result.violations.extend(script_violations)
                     test_result.violation_count += len(script_violations)
 
-                # Add authenticated user information to metadata
+                # Add test user information to metadata (Guest or authenticated user)
                 if authenticated_user:
                     user_info = {
                         'user_id': authenticated_user.id,
@@ -444,27 +444,33 @@ class TestRunner:
                         'display_name': authenticated_user.display_name,
                         'roles': authenticated_user.roles
                     }
-
-                    # Add to test result metadata
-                    test_result.metadata['authenticated_user'] = user_info
-
-                    # Add to each violation's metadata
-                    for violation in test_result.violations:
-                        violation.metadata['authenticated_user'] = user_info
-
-                    # Add to each warning's metadata
-                    for warning in test_result.warnings:
-                        warning.metadata['authenticated_user'] = user_info
-
-                    # Add to each info item's metadata
-                    for info in test_result.info:
-                        info.metadata['authenticated_user'] = user_info
-
-                    # Add to each discovery item's metadata
-                    for discovery in test_result.discovery:
-                        discovery.metadata['authenticated_user'] = user_info
-
                     logger.info(f"Test completed as authenticated user: {authenticated_user.username}")
+                else:
+                    user_info = {
+                        'user_id': None,
+                        'username': 'guest',
+                        'display_name': 'Guest',
+                        'roles': []
+                    }
+
+                # Add to test result metadata
+                test_result.metadata['authenticated_user'] = user_info
+
+                # Add to each violation's metadata
+                for violation in test_result.violations:
+                    violation.metadata['authenticated_user'] = user_info
+
+                # Add to each warning's metadata
+                for warning in test_result.warnings:
+                    warning.metadata['authenticated_user'] = user_info
+
+                # Add to each info item's metadata
+                for info in test_result.info:
+                    info.metadata['authenticated_user'] = user_info
+
+                # Add to each discovery item's metadata
+                for discovery in test_result.discovery:
+                    discovery.metadata['authenticated_user'] = user_info
 
                 # Save test result to database
                 result_id = self.db.create_test_result(test_result)
@@ -848,7 +854,7 @@ class TestRunner:
                 login_automation=self.login_automation
             )
 
-            # Add authenticated user information to all results
+            # Add test user information to all results (Guest or authenticated user)
             if authenticated_user:
                 user_info = {
                     'user_id': authenticated_user.id,
@@ -856,28 +862,34 @@ class TestRunner:
                     'display_name': authenticated_user.display_name,
                     'roles': authenticated_user.roles
                 }
-
-                for result in results:
-                    # Add to result metadata
-                    result.metadata['authenticated_user'] = user_info
-
-                    # Add to each violation's metadata
-                    for violation in result.violations:
-                        violation.metadata['authenticated_user'] = user_info
-
-                    # Add to each warning's metadata
-                    for warning in result.warnings:
-                        warning.metadata['authenticated_user'] = user_info
-
-                    # Add to each info item's metadata
-                    for info in result.info:
-                        info.metadata['authenticated_user'] = user_info
-
-                    # Add to each discovery item's metadata
-                    for discovery in result.discovery:
-                        discovery.metadata['authenticated_user'] = user_info
-
                 logger.info(f"Multi-state tests completed as authenticated user: {authenticated_user.username}")
+            else:
+                user_info = {
+                    'user_id': None,
+                    'username': 'guest',
+                    'display_name': 'Guest',
+                    'roles': []
+                }
+
+            for result in results:
+                # Add to result metadata
+                result.metadata['authenticated_user'] = user_info
+
+                # Add to each violation's metadata
+                for violation in result.violations:
+                    violation.metadata['authenticated_user'] = user_info
+
+                # Add to each warning's metadata
+                for warning in result.warnings:
+                    warning.metadata['authenticated_user'] = user_info
+
+                # Add to each info item's metadata
+                for info in result.info:
+                    info.metadata['authenticated_user'] = user_info
+
+                # Add to each discovery item's metadata
+                for discovery in result.discovery:
+                    discovery.metadata['authenticated_user'] = user_info
 
             # Save all results to database
             for result in results:

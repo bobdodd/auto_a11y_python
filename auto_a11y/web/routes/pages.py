@@ -9,6 +9,7 @@ from auto_a11y.reporting.issue_catalog import IssueCatalog
 from auto_a11y.reporting.wcag_mapper import enrich_wcag_criteria
 from datetime import datetime
 import logging
+import re
 
 logger = logging.getLogger(__name__)
 pages_bp = Blueprint('pages', __name__)
@@ -18,6 +19,10 @@ def enrich_test_result_with_catalog(test_result):
     """Enrich test result issues with catalog metadata"""
     if not test_result:
         return test_result
+    
+    # Helper to escape literal % that aren't placeholders (e.g., "200%-400%+" -> "200%%-400%%+")
+    def escape_percent(template):
+        return re.sub(r'%(?!\()', '%%', template)
     
     # Enrich violations
     if hasattr(test_result, 'violations') and test_result.violations:
@@ -94,12 +99,12 @@ def enrich_test_result_with_catalog(test_result):
                 try:
                     # Apply placeholder substitution to title as well
                     if not has_specific_title:
-                        violation.metadata['title'] = title_template % placeholder_values
+                        violation.metadata['title'] = escape_percent(title_template) % placeholder_values
                     # Only overwrite 'what' if it doesn't have specific details already
                     if not has_specific_what:
-                        violation.metadata['what'] = what_template % placeholder_values
-                    violation.metadata['why'] = why_template % placeholder_values
-                    violation.metadata['how'] = how_template % placeholder_values
+                        violation.metadata['what'] = escape_percent(what_template) % placeholder_values
+                    violation.metadata['why'] = escape_percent(why_template) % placeholder_values
+                    violation.metadata['how'] = escape_percent(how_template) % placeholder_values
                 except (KeyError, ValueError, TypeError) as e:
                     # If placeholder replacement fails, use templates as-is
                     logger.warning(f"Placeholder substitution failed for {error_code}: {e}, keys available: {list(placeholder_values.keys())}")
@@ -155,10 +160,10 @@ def enrich_test_result_with_catalog(test_result):
                 
                 # Replace placeholders in templates
                 try:
-                    warning.metadata['title'] = title_template % placeholder_values
-                    warning.metadata['what'] = what_template % placeholder_values
-                    warning.metadata['why'] = why_template % placeholder_values
-                    warning.metadata['how'] = how_template % placeholder_values
+                    warning.metadata['title'] = escape_percent(title_template) % placeholder_values
+                    warning.metadata['what'] = escape_percent(what_template) % placeholder_values
+                    warning.metadata['why'] = escape_percent(why_template) % placeholder_values
+                    warning.metadata['how'] = escape_percent(how_template) % placeholder_values
                 except (KeyError, ValueError, TypeError) as e:
                     logger.warning(f"Placeholder substitution failed for warning {error_code}: {e}, keys available: {list(placeholder_values.keys())}")
                     warning.metadata['title'] = title_template

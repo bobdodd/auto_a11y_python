@@ -286,10 +286,10 @@ class MultiStateTestRunner:
                 await asyncio.wait_for(current_page.evaluate('() => document.readyState'), timeout=5.0)
                 logger.debug("DEBUG: Page connection OK after script")
             except Exception as post_script_err:
-                logger.error(f"Browser died after script execution: {post_script_err}")
+                logger.warning(f"Browser connection lost after script execution: {post_script_err}")
                 # Try to recover with fresh browser
                 if browser_manager:
-                    logger.info("Attempting recovery after script killed browser")
+                    logger.warning("Recovering with fresh browser instance...")
                     try:
                         current_page = await self._prepare_browser_for_state(
                             browser_manager,
@@ -308,6 +308,7 @@ class MultiStateTestRunner:
                         if not script_result['success']:
                             logger.error("Script re-execution failed")
                             break
+                        logger.warning("Recovery successful - continuing with tests")
                         await asyncio.sleep(2.0)
                     except Exception as recovery_err:
                         logger.error(f"Recovery failed: {recovery_err}")

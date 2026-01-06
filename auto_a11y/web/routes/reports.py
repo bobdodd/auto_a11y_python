@@ -22,7 +22,7 @@ def reports_dashboard():
     """Reports dashboard"""
     # Get available reports
     reports_dir = current_app.app_config.REPORTS_DIR
-    report_files = list(reports_dir.glob('*.xlsx')) + list(reports_dir.glob('*.html')) + list(reports_dir.glob('*.json')) + list(reports_dir.glob('*.pdf')) + list(reports_dir.glob('*.zip'))
+    report_files = list(reports_dir.glob('*.xlsx')) + list(reports_dir.glob('*.html')) + list(reports_dir.glob('*.json')) + list(reports_dir.glob('*.pdf')) + list(reports_dir.glob('*.zip')) + list(reports_dir.glob('*.csv'))
     
     reports = []
     for file in sorted(report_files, key=lambda x: x.stat().st_mtime, reverse=True)[:20]:
@@ -399,9 +399,15 @@ def generate_page_structure_report_download(website_id):
 @reports_bp.route('/generate/page-structure', methods=['POST'])
 def generate_page_structure_report():
     """Generate site structure tree report and add to reports list"""
-    data = request.get_json()
-    website_id = data.get('website_id')
-    format = data.get('format', 'html')
+    # Accept both JSON and form data
+    is_json_request = request.is_json
+    if is_json_request:
+        data = request.get_json()
+        website_id = data.get('website_id')
+        format = data.get('format', 'html')
+    else:
+        website_id = request.form.get('website_id')
+        format = request.form.get('format', 'html')
 
     try:
         # Get current language from session
@@ -410,7 +416,10 @@ def generate_page_structure_report():
         # Get website and pages
         website = current_app.db.get_website(website_id)
         if not website:
-            return jsonify({'success': False, 'error': 'Website not found'}), 404
+            if is_json_request:
+                return jsonify({'success': False, 'error': 'Website not found'}), 404
+            flash('Website not found', 'error')
+            return redirect(url_for('reports.reports_dashboard'))
 
         # Get project if available
         project = None
@@ -419,7 +428,10 @@ def generate_page_structure_report():
 
         pages = current_app.db.get_pages(website_id)
         if not pages:
-            return jsonify({'success': False, 'error': 'No pages found for website'}), 404
+            if is_json_request:
+                return jsonify({'success': False, 'error': 'No pages found for website'}), 404
+            flash('No pages found for website', 'error')
+            return redirect(url_for('reports.reports_dashboard'))
 
         # Generate report with project information and language
         report = PageStructureReport(current_app.db, website, pages, project, language=language)
@@ -429,11 +441,19 @@ def generate_page_structure_report():
         report_path = report.save(format)
 
         logger.info(f"Site structure report generated successfully: {report_path}")
-        return jsonify({'success': True, 'path': str(report_path)})
+        
+        if is_json_request:
+            return jsonify({'success': True, 'path': str(report_path)})
+        
+        flash('Site structure report generated successfully!', 'success')
+        return redirect(url_for('reports.reports_dashboard'))
 
     except Exception as e:
         logger.error(f"Failed to generate page structure report: {e}")
-        return jsonify({'success': False, 'error': str(e)}), 500
+        if is_json_request:
+            return jsonify({'success': False, 'error': str(e)}), 500
+        flash(f'Failed to generate report: {str(e)}', 'error')
+        return redirect(url_for('reports.reports_dashboard'))
 
 
 @reports_bp.route('/generate/discovery/website/<website_id>', methods=['POST'])

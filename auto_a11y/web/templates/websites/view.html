@@ -1499,7 +1499,13 @@ function generateSiteStructureReport(format) {
     // Create a form to submit the report request
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = `{{ url_for('reports.generate_page_structure_report', website_id=website.id) }}`;
+    form.action = `{{ url_for('reports.generate_page_structure_report') }}`;
+    
+    const websiteIdInput = document.createElement('input');
+    websiteIdInput.type = 'hidden';
+    websiteIdInput.name = 'website_id';
+    websiteIdInput.value = '{{ website.id }}';
+    form.appendChild(websiteIdInput);
     
     const formatInput = document.createElement('input');
     formatInput.type = 'hidden';

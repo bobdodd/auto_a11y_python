@@ -157,6 +157,8 @@ def create_app(config):
             return None
         if request.endpoint and request.endpoint.startswith('demo.'):
             return None
+        if request.path.startswith('/demo'):
+            return None
         if not current_user.is_authenticated:
             if request.is_json or request.path.startswith('/api/'):
                 return jsonify({'error': 'Authentication required'}), 401

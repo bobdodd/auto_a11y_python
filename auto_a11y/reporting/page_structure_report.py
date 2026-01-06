@@ -134,6 +134,12 @@ class PageStructureReport:
                 'page_with_issues_count': 'page with issues',
                 'total_violations_count': 'total violations',
                 'x_tested': 'tested',
+                'csv_path': 'Path',
+                'csv_url': 'URL',
+                'csv_type': 'Type',
+                'csv_level': 'Level',
+                'csv_directory': 'Directory',
+                'filename_prefix': 'page_structure',
             },
             'fr': {
                 'site_structure_report': 'Rapport de structure du site',
@@ -166,6 +172,12 @@ class PageStructureReport:
                 'page_with_issues_count': 'page avec problèmes',
                 'total_violations_count': 'violations totales',
                 'x_tested': 'testées',
+                'csv_path': 'Chemin',
+                'csv_url': 'URL',
+                'csv_type': 'Type',
+                'csv_level': 'Niveau',
+                'csv_directory': 'Répertoire',
+                'filename_prefix': 'structure_du_site',
             }
         }
         return translations.get(self.language, translations['en'])
@@ -701,28 +713,30 @@ class PageStructureReport:
         if not self.tree_data:
             self.generate()
         
+        t = self._get_translations()
+        
         output = StringIO()
         writer = csv.writer(output)
         
-        # Header
+        # Header - translated
         writer.writerow([
-            'Path',
-            'URL',
-            'Type',
-            'Level',
-            'Total Pages',
-            'Tested Pages',
-            'Pages with Issues',
-            'Violations',
-            'Warnings'
+            t['csv_path'],
+            t['csv_url'],
+            t['csv_type'],
+            t['csv_level'],
+            t['total_pages'],
+            t['tested_pages'],
+            t['pages_with_issues'],
+            t['total_violations'],
+            t['total_warnings']
         ])
         
         # Flatten tree and write rows
-        self._write_csv_node(writer, self.root, '', 0)
+        self._write_csv_node(writer, self.root, '', 0, t)
         
         return output.getvalue()
     
-    def _write_csv_node(self, writer, node: PageNode, path: str, level: int):
+    def _write_csv_node(self, writer, node: PageNode, path: str, level: int, t: Dict[str, str]):
         """
         Write a node and its children to CSV
         
@@ -731,13 +745,14 @@ class PageStructureReport:
             node: Node to write
             path: Current path
             level: Current depth level
+            t: Translation dictionary
         """
         current_path = f"{path}/{node.name}" if path else node.name
         
         writer.writerow([
             current_path,
             node.url or '',
-            'Directory' if node.is_directory else 'Page',
+            t['csv_directory'] if node.is_directory else t['page'],
             level,
             node.stats['total_pages'],
             node.stats['tested_pages'],
@@ -748,7 +763,7 @@ class PageStructureReport:
         
         # Write children
         for child in node.children:
-            self._write_csv_node(writer, child, current_path, level + 1)
+            self._write_csv_node(writer, child, current_path, level + 1, t)
     
     def save(self, format: str = 'html') -> str:
         """
@@ -783,8 +798,9 @@ class PageStructureReport:
         # Ensure directory exists
         reports_dir.mkdir(parents=True, exist_ok=True)
         
+        t = self._get_translations()
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"page_structure_{self.website.id}_{timestamp}.{format}"
+        filename = f"{t['filename_prefix']}_{self.website.id}_{timestamp}.{format}"
         filepath = reports_dir / filename
         
         # Generate content based on format

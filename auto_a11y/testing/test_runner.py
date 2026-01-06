@@ -329,13 +329,9 @@ class TestRunner:
                 screenshot_path = None
                 screenshot_bytes = None
                 if take_screenshot:
-                    screenshot_path = await self._take_screenshot(browser_page, page.id)
-                    # Also get screenshot bytes for AI analysis
-                    screenshot_bytes = await browser_page.screenshot({
-                        'fullPage': True,
-                        'type': 'jpeg',
-                        'quality': 80  # Reduced from 85 to help prevent MongoDB 16MB document limit issues
-                    })
+                    # Take screenshot once and reuse bytes for AI analysis
+                    # Taking two separate screenshots can destabilize Pyppeteer connection
+                    screenshot_path, screenshot_bytes = await self._take_screenshot_with_bytes(browser_page, page.id)
                 
                 # Check if project has AI testing enabled
                 ai_findings = []

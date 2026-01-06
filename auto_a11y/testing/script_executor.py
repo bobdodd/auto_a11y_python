@@ -38,7 +38,10 @@ class ScriptExecutor:
         self,
         page,  # Pyppeteer page object
         script: PageSetupScript,
-        environment_vars: Optional[Dict[str, str]] = None
+        environment_vars: Optional[Dict[str, str]] = None,
+        authenticated_user=None,
+        login_automation=None,
+        page_url: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Execute a page setup script
@@ -47,6 +50,9 @@ class ScriptExecutor:
             page: Pyppeteer page object
             script: PageSetupScript to execute
             environment_vars: Environment variables for ${ENV:VAR_NAME} substitution
+            authenticated_user: User object if testing as authenticated user
+            login_automation: LoginAutomation instance for re-authentication
+            page_url: URL of page under test (for navigation after re-auth)
 
         Returns:
             Execution result dict with success status, duration, and error details
@@ -56,6 +62,25 @@ class ScriptExecutor:
         """
         start_time = time.time()
         logger.info(f"Executing script '{script.name}' with {len(script.steps)} steps")
+        
+        # If script clears cookies/localStorage AND we have an authenticated user, 
+        # re-authenticate and navigate back to test page
+        if (script.clear_cookies_before or script.clear_local_storage_before) and authenticated_user and login_automation:
+            logger.info(f"Script '{script.name}' clears cookies/storage - will re-authenticate after")
+            await self._clear_browser_state(page, script)
+            
+            # Re-authenticate
+            logger.info(f"Re-authenticating as {authenticated_user.username}")
+            login_result = await login_automation.perform_login(page, authenticated_user, timeout=30000)
+            
+            if login_result['success']:
+                logger.info(f"Re-authentication successful")
+                # Navigate back to test page
+                if page_url:
+                    logger.info(f"Navigating back to test page: {page_url}")
+                    await page.goto(page_url, {'waitUntil': 'networkidle2', 'timeout': 30000})
+            else:
+                logger.error(f"Re-authentication failed: {login_result.get('error')}")
 
         env_vars = environment_vars or {}
         execution_log = []

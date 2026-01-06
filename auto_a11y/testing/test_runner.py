@@ -102,26 +102,26 @@ class TestRunner:
                 # Perform authentication FIRST if user specified
                 authenticated_user = None
                 if website_user_id:
-                    logger.warning(f"DEBUG: Testing page {page.url} with user_id: {website_user_id}")
+                    logger.debug(f"DEBUG: Testing page {page.url} with user_id: {website_user_id}")
                     # Try project user first, then website user
                     user = self.db.get_project_user(website_user_id)
                     if not user:
                         user = self.db.get_website_user(website_user_id)
                     if user:
-                        logger.warning(f"DEBUG: Found user: {user.username} (id: {user.id})")
+                        logger.debug(f"DEBUG: Found user: {user.username} (id: {user.id})")
                         if not user.enabled:
                             logger.warning(f"User {user.username} is disabled, skipping authentication")
                         else:
                             # Check if already logged in as this user
                             if self._logged_in_user:
-                                logger.warning(f"DEBUG: Already have logged_in_user: {self._logged_in_user.username} (id: {self._logged_in_user.id})")
+                                logger.debug(f"DEBUG: Already have logged_in_user: {self._logged_in_user.username} (id: {self._logged_in_user.id})")
                                 if self._logged_in_user.id == user.id:
-                                    logger.warning(f"DEBUG: IDs match, reusing session")
+                                    logger.debug(f"DEBUG: IDs match, reusing session")
                                     authenticated_user = self._logged_in_user
                                 else:
-                                    logger.warning(f"DEBUG: IDs don't match ({self._logged_in_user.id} != {user.id}), will re-authenticate")
+                                    logger.debug(f"DEBUG: IDs don't match ({self._logged_in_user.id} != {user.id}), will re-authenticate")
                             else:
-                                logger.warning(f"DEBUG: No logged_in_user set, will authenticate")
+                                logger.debug(f"DEBUG: No logged_in_user set, will authenticate")
 
                             if not authenticated_user:
                                 logger.info(f"Authenticating as user: {user.username} (roles: {user.role_display})")
@@ -380,7 +380,6 @@ class TestRunner:
                         logger.warning(f"Could not get CLAUDE_API_KEY from config: {e}")
                 
                 # Log decision factors
-                logger.warning(f"AI analysis decision - run_ai: {run_ai}, has_api_key: {bool(ai_api_key)}, has_screenshot: {bool(screenshot_bytes)}, tests_to_run: {ai_tests_to_run}")
                 
                 # Run AI analysis if enabled
                 if run_ai and ai_api_key and screenshot_bytes and ai_tests_to_run:
@@ -395,7 +394,7 @@ class TestRunner:
                         analyzer = ClaudeAnalyzer(ai_api_key)
                         
                         # Run only the selected AI tests
-                        logger.warning(f"Running AI accessibility analysis with tests: {ai_tests_to_run}")
+                        logger.info(f"Running AI accessibility analysis with tests: {ai_tests_to_run}")
                         ai_results = await analyzer.analyze_page(
                             screenshot=screenshot_bytes,
                             html=page_html,
@@ -405,10 +404,6 @@ class TestRunner:
                         
                         ai_findings = ai_results.get('findings', [])
                         ai_analysis_results = ai_results.get('raw_results', {})
-                        
-                        logger.warning(f"AI analysis found {len(ai_findings)} issues")
-                        if ai_findings:
-                            logger.warning(f"AI finding IDs: {[f.id if hasattr(f, 'id') else str(f) for f in ai_findings]}")
                         
                     except Exception as e:
                         logger.error(f"AI analysis failed: {e}")
@@ -582,17 +577,17 @@ class TestRunner:
 
             # STEP 1: Perform authentication FIRST if user specified
             authenticated_user = None
-            logger.warning(f"DEBUG multi-state: website_user_id={website_user_id}")
+            logger.debug(f"DEBUG multi-state: website_user_id={website_user_id}")
             if website_user_id:
                 # Try project user first, then website user
                 user = self.db.get_project_user(website_user_id)
-                logger.warning(f"DEBUG multi-state: get_project_user returned: {user}")
+                logger.debug(f"DEBUG multi-state: get_project_user returned: {user}")
                 if not user:
                     user = self.db.get_website_user(website_user_id)
-                    logger.warning(f"DEBUG multi-state: get_website_user returned: {user}")
-                logger.warning(f"DEBUG multi-state: user={user}, user.enabled={user.enabled if user else 'N/A'}")
+                    logger.debug(f"DEBUG multi-state: get_website_user returned: {user}")
+                logger.debug(f"DEBUG multi-state: user={user}, user.enabled={user.enabled if user else 'N/A'}")
                 if user and user.enabled:
-                    logger.warning(f"DEBUG multi-state: About to authenticate as user: {user.username}")
+                    logger.debug(f"DEBUG multi-state: About to authenticate as user: {user.username}")
                     login_result = await self.login_automation.perform_login(
                         browser_page,
                         user,
@@ -648,9 +643,9 @@ class TestRunner:
                 if script.test_before_execution or script.test_after_execution
             ]
 
-            logger.warning(f"DEBUG: Found {len(scripts_to_execute)} scripts, filtering for multi-state")
+            logger.debug(f"DEBUG: Found {len(scripts_to_execute)} scripts, filtering for multi-state")
             for script in scripts_to_execute:
-                logger.warning(f"DEBUG: Script ID={script.id} '{script.name}' - test_before={script.test_before_execution}, test_after={script.test_after_execution}, clear_cookies={script.clear_cookies_before}, clear_localStorage={script.clear_local_storage_before}")
+                logger.debug(f"DEBUG: Script ID={script.id} '{script.name}' - test_before={script.test_before_execution}, test_after={script.test_after_execution}, clear_cookies={script.clear_cookies_before}, clear_localStorage={script.clear_local_storage_before}")
 
             if not multi_state_scripts:
                 logger.info(f"No multi-state scripts configured for page {page.url}, using single-state testing")
@@ -658,7 +653,7 @@ class TestRunner:
                 result = await self.test_page(page, take_screenshot, run_ai_analysis, ai_api_key, website_user_id)
                 return [result]
 
-            logger.warning(f"DEBUG: Testing page {page.url} with {len(multi_state_scripts)} multi-state scripts")
+            logger.debug(f"DEBUG: Testing page {page.url} with {len(multi_state_scripts)} multi-state scripts")
 
             # Create a test function that can be called multiple times
             async def run_single_test(browser_page, page_id):
@@ -669,7 +664,7 @@ class TestRunner:
                         browser_page.evaluate('() => document.readyState'),
                         timeout=5.0
                     )
-                    logger.warning(f"DEBUG run_single_test: page readyState={ready_state}")
+                    logger.debug(f"DEBUG run_single_test: page readyState={ready_state}")
                 except Exception as conn_err:
                     logger.error(f"Browser connection lost at start of run_single_test: {conn_err}")
                     raise
@@ -703,9 +698,9 @@ class TestRunner:
                 self.script_injector.project_config = project_config
 
                 # Inject test scripts
-                logger.warning(f"DEBUG run_single_test: about to inject scripts")
+                logger.debug(f"DEBUG run_single_test: about to inject scripts")
                 await self.script_injector.inject_script_files(browser_page)
-                logger.warning(f"DEBUG run_single_test: scripts injected")
+                logger.debug(f"DEBUG run_single_test: scripts injected")
 
                 # Verify connection still alive after injection
                 try:
@@ -713,33 +708,33 @@ class TestRunner:
                         browser_page.evaluate('() => true'),
                         timeout=2.0
                     )
-                    logger.warning(f"DEBUG run_single_test: connection verified after injection")
+                    logger.debug(f"DEBUG run_single_test: connection verified after injection")
                 except Exception as conn_err:
                     logger.error(f"Connection lost after script injection: {conn_err}")
                     raise
 
                 # Set WCAG level
-                logger.warning(f"DEBUG run_single_test: setting WCAG level")
+                logger.debug(f"DEBUG run_single_test: setting WCAG level")
                 await browser_page.evaluate(f'window.WCAG_LEVEL = "{wcag_level}";')
-                logger.warning(f"DEBUG run_single_test: WCAG level set")
+                logger.debug(f"DEBUG run_single_test: WCAG level set")
 
                 # Store original viewport before running tests (some tests change it)
-                logger.warning(f"DEBUG run_single_test: getting viewport")
+                logger.debug(f"DEBUG run_single_test: getting viewport")
                 original_viewport = await browser_page.evaluate('() => ({ width: window.innerWidth, height: window.innerHeight })')
-                logger.warning(f"DEBUG run_single_test: viewport stored, about to run tests")
+                logger.debug(f"DEBUG run_single_test: viewport stored, about to run tests")
                 logger.debug(f"Stored original viewport: {original_viewport}")
 
                 # Run tests
                 raw_results = await self.script_injector.run_all_tests(browser_page)
                 
                 # Verify browser connection after all tests complete
-                logger.warning("DEBUG run_single_test: all tests complete, verifying connection")
+                logger.debug("DEBUG run_single_test: all tests complete, verifying connection")
                 try:
                     await asyncio.wait_for(
                         browser_page.evaluate('() => document.readyState'),
                         timeout=5.0
                     )
-                    logger.warning("DEBUG run_single_test: connection verified after tests")
+                    logger.debug("DEBUG run_single_test: connection verified after tests")
                 except Exception as conn_err:
                     logger.error(f"Browser connection lost after tests: {conn_err}")
                     raise
@@ -766,7 +761,7 @@ class TestRunner:
                             browser_page.evaluate('() => document.readyState'),
                             timeout=5.0
                         )
-                        logger.warning("DEBUG run_single_test: browser connected, taking screenshot")
+                        logger.debug("DEBUG run_single_test: browser connected, taking screenshot")
                     except Exception as conn_err:
                         logger.error(f"Browser connection lost before screenshot: {conn_err}")
                         raise
@@ -774,7 +769,7 @@ class TestRunner:
                     # Take screenshot once and save to file - also capture bytes for AI analysis
                     # Taking two separate screenshots can destabilize Pyppeteer connection
                     screenshot_path, screenshot_bytes = await self._take_screenshot_with_bytes(browser_page, page_id)
-                    logger.warning(f"DEBUG run_single_test: screenshot done, path={screenshot_path}, bytes={len(screenshot_bytes) if screenshot_bytes else 0}")
+                    logger.debug(f"DEBUG run_single_test: screenshot done, path={screenshot_path}, bytes={len(screenshot_bytes) if screenshot_bytes else 0}")
 
                 # Check if project has AI testing enabled
                 ai_findings = []
@@ -797,7 +792,6 @@ class TestRunner:
                 except Exception as e:
                     logger.warning(f"Could not get CLAUDE_API_KEY: {e}")
                 
-                logger.warning(f"AI analysis decision - run_ai: {run_ai}, has_api_key: {bool(ai_api_key)}, has_screenshot: {bool(screenshot_bytes)}, tests_to_run: {ai_tests_to_run}")
                 
                 # Run AI analysis if enabled
                 if run_ai and ai_api_key and screenshot_bytes and ai_tests_to_run:
@@ -818,10 +812,6 @@ class TestRunner:
                         
                         ai_findings = ai_results.get('findings', [])
                         ai_analysis_results = ai_results.get('raw_results', {})
-                        
-                        logger.warning(f"AI analysis found {len(ai_findings)} issues")
-                        if ai_findings:
-                            logger.warning(f"AI finding IDs: {[f.id if hasattr(f, 'id') else str(f) for f in ai_findings]}")
                         
                     except Exception as e:
                         logger.error(f"AI analysis failed: {e}")

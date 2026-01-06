@@ -142,27 +142,68 @@ class BrowserManager:
         }''')
 
     async def stop(self):
-        """Stop browser instance"""
+        """Stop browser instance completely - ensures process is fully terminated"""
         if not self.browser:
             return
         
-        # Close all pages
+        # Close all pages first
         for page in self.pages:
             try:
                 await page.close()
             except:
                 pass
-        
         self.pages.clear()
         
-        # Close browser
+        # Get process reference before closing
+        browser_process = None
+        pid = None
+        if hasattr(self.browser, 'process') and self.browser.process:
+            browser_process = self.browser.process
+            pid = browser_process.pid
+        
+        # Try graceful close first
         try:
             await self.browser.close()
-            pass  # Browser stopped
-        except Exception as e:
-            logger.error(f"Error stopping browser: {e}")
-        finally:
-            self.browser = None
+        except Exception:
+            pass
+        
+        # Force kill the process if it's still running
+        if browser_process and browser_process.returncode is None:
+            try:
+                browser_process.kill()
+            except Exception:
+                pass
+        
+        # Force kill with OS-level SIGKILL
+        if pid:
+            import os
+            import signal
+            try:
+                os.kill(pid, signal.SIGKILL)
+            except (ProcessLookupError, OSError):
+                pass  # Process already dead
+        
+        # Wait until the process is confirmed dead
+        if pid:
+            self._wait_for_process_death(pid)
+        
+        # Clear all references
+        self.browser = None
+        self._browser_ref = None
+    
+    def _wait_for_process_death(self, pid: int):
+        """Block until process is confirmed dead by the OS"""
+        import os
+        import time
+        
+        while True:
+            try:
+                os.kill(pid, 0)  # Signal 0 just checks if process exists
+                time.sleep(0.1)  # Process still exists, wait
+            except ProcessLookupError:
+                break  # Process is dead
+            except OSError:
+                break  # Process is dead or we don't have permission
     
     @asynccontextmanager
     async def get_page(self):

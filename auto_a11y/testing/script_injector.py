@@ -131,7 +131,7 @@ class ScriptInjector:
                     # Verify connection after each script injection
                     await asyncio.sleep(0.05)
             
-            logger.warning("DEBUG inject_script_files: All scripts injected, setting flag")
+            logger.debug("DEBUG inject_script_files: All scripts injected, setting flag")
             await page.evaluate('() => { window.__a11y_scripts_injected = true; }')
             
             # Brief pause to let injected scripts initialize
@@ -140,7 +140,7 @@ class ScriptInjector:
             # Verify page is still responsive
             try:
                 await asyncio.wait_for(page.evaluate('() => true'), timeout=2.0)
-                logger.warning("DEBUG inject_script_files: Page connection verified after injection")
+                logger.debug("DEBUG inject_script_files: Page connection verified after injection")
             except Exception as verify_err:
                 logger.error(f"Page connection lost after script injection: {verify_err}")
                 return False
@@ -246,7 +246,7 @@ class ScriptInjector:
                 from auto_a11y.testing.touchpoint_tests import TOUCHPOINT_TESTS
                 from auto_a11y.config.touchpoint_tests import get_touchpoint_for_test
                 
-                logger.warning(f"DEBUG run_all_tests: Starting Python touchpoint tests, {len(TOUCHPOINT_TESTS)} tests available")
+                logger.debug(f"DEBUG run_all_tests: Starting Python touchpoint tests, {len(TOUCHPOINT_TESTS)} tests available")
                 test_count = 0
                 import asyncio
                 for touchpoint_id, test_func in TOUCHPOINT_TESTS.items():
@@ -262,7 +262,7 @@ class ScriptInjector:
                             
                             # Run the Python-based test
                             test_count += 1
-                            logger.warning(f"DEBUG run_all_tests: Running test #{test_count}: {touchpoint_id}")
+                            logger.debug(f"DEBUG run_all_tests: Running test #{test_count}: {touchpoint_id}")
                             result = await test_func(page)
                             
                             # Filter results based on individual test settings AND fixture validation

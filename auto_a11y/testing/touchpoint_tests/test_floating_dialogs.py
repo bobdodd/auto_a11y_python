@@ -641,15 +641,6 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
 
             results = await page.evaluate(js_code)
 
-            # Log debug info for troubleshooting
-            if results.get('_debug'):
-                logger.warning(f"DEBUG floating_dialogs at {breakpoint_width}px: {results['_debug']}")
-            if results.get('_dialogDebug'):
-                logger.warning(f"DEBUG dialog details at {breakpoint_width}px: {results['_dialogDebug']}")
-            if results.get('errors'):
-                error_codes = [e.get('err') for e in results['errors']]
-                logger.warning(f"DEBUG floating_dialogs errors at {breakpoint_width}px: {error_codes}")
-
             # Aggregate results from this breakpoint
             if results['applicable']:
                 test_applicable = True

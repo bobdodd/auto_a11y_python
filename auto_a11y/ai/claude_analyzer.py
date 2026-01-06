@@ -189,10 +189,8 @@ class ClaudeAnalyzer:
         issues = result.get('issues', [])
         
         for issue in issues:
-            logger.warning(f"AI issue raw data: {issue}")
             finding = self._create_finding(analysis_type, issue, result, html)
             if finding:
-                logger.warning(f"AI finding metadata: {finding.metadata}")
                 findings.append(finding)
         
         # Special processing for specific analyzers

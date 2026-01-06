@@ -52,63 +52,50 @@ class MultiStateTestRunner:
         Returns:
             New page object ready for testing
         """
-        logger.info("Restarting browser for clean state")
+        logger.info("Starting completely fresh browser instance")
         
-        # Give more time for any pending async operations to complete before stopping
-        await asyncio.sleep(1.5)
+        # Give time for any pending async operations to complete
+        await asyncio.sleep(2.0)
         
+        new_page = None
         for attempt in range(max_retries):
             try:
-                # Force kill any existing browser process
-                if browser_manager.browser:
-                    try:
-                        if hasattr(browser_manager.browser, 'process') and browser_manager.browser.process:
-                            browser_manager.browser.process.kill()
-                            await asyncio.sleep(0.5)
-                    except Exception:
-                        pass
-                
+                # Completely stop and kill the old browser
                 await browser_manager.stop()
-                await asyncio.sleep(1.5)
                 
-                # Clear browser reference to ensure fresh start
-                browser_manager.browser = None
-                browser_manager.pages.clear()
+                # Verify process is truly dead before continuing
+                logger.info("Browser stopped, verifying process is dead")
                 
+                # Start a completely fresh browser from scratch
                 await browser_manager.start()
-                await asyncio.sleep(1.0)
                 
-                # Verify browser is actually running before creating page
+                # Verify browser is actually running
                 if not await browser_manager.is_running():
                     logger.warning(f"Browser not running after start (attempt {attempt + 1})")
                     continue
                 
+                # Create new page
                 new_page = await browser_manager.create_page()
                 
                 # Verify page is usable
-                try:
-                    await asyncio.wait_for(
-                        new_page.evaluate('() => "ready"'),
-                        timeout=5.0
-                    )
-                    logger.info(f"Browser ready after attempt {attempt + 1}")
-                    break
-                except Exception as page_err:
-                    logger.warning(f"Page not usable (attempt {attempt + 1}): {page_err}")
-                    if attempt == max_retries - 1:
-                        raise RuntimeError(f"Failed to create usable page after {max_retries} attempts")
-                    continue
-                    
+                await asyncio.wait_for(
+                    new_page.evaluate('() => "ready"'),
+                    timeout=5.0
+                )
+                
+                logger.info(f"Fresh browser ready (attempt {attempt + 1})")
+                break
+                
             except Exception as e:
-                logger.warning(f"Browser restart attempt {attempt + 1} failed: {e}")
+                logger.warning(f"Browser creation attempt {attempt + 1} failed: {e}")
                 if attempt == max_retries - 1:
-                    raise
-                await asyncio.sleep(2.0)
+                    raise RuntimeError(f"Failed to create fresh browser after {max_retries} attempts: {e}")
+                await asyncio.sleep(1.0)
         
         if authenticated_user and login_automation:
             logger.info(f"Authenticating as {authenticated_user.username}")
             
-            # Add delay before login to let browser stabilize
+            # Let browser stabilize before login
             await asyncio.sleep(0.5)
             
             login_result = await login_automation.perform_login(new_page, authenticated_user, timeout=30000)
@@ -210,7 +197,7 @@ class MultiStateTestRunner:
         Returns:
             List of TestResult objects (one per state tested)
         """
-        logger.warning(f"DEBUG: test_page_multi_state called with {len(scripts)} scripts for page_id={page_id}")
+        logger.debug(f"DEBUG: test_page_multi_state called with {len(scripts)} scripts for page_id={page_id}")
         results = []
         state_sequence = 0
         scripts_executed_so_far = []
@@ -220,7 +207,7 @@ class MultiStateTestRunner:
 
         # Check if we need to test initial state (before any scripts)
         test_initial_state = any(script.test_before_execution for script in scripts)
-        logger.warning(f"DEBUG: test_initial_state={test_initial_state}")
+        logger.debug(f"DEBUG: test_initial_state={test_initial_state}")
 
         # STATE 0: Initial state (before any scripts)
         if test_initial_state:
@@ -236,7 +223,7 @@ class MultiStateTestRunner:
             )
 
             test_result = await test_function(current_page, page_id)
-            logger.warning(f"DEBUG: Initial state tests complete, violations={len(test_result.violations)}")
+            logger.debug(f"DEBUG: Initial state tests complete, violations={len(test_result.violations)}")
 
             test_result.page_state = initial_state.to_dict()
             test_result.state_sequence = state_sequence
@@ -271,7 +258,7 @@ class MultiStateTestRunner:
             # Verify page connection
             try:
                 await asyncio.wait_for(current_page.evaluate('() => document.readyState'), timeout=5.0)
-                logger.warning(f"DEBUG: Page connection OK")
+                logger.debug(f"DEBUG: Page connection OK")
             except Exception as conn_error:
                 logger.error(f"Browser connection lost: {conn_error}")
                 break
@@ -283,7 +270,7 @@ class MultiStateTestRunner:
                 script=script,
                 environment_vars=environment_vars
             )
-            logger.warning(f"DEBUG: Script execution complete - success={script_result['success']}")
+            logger.debug(f"DEBUG: Script execution complete - success={script_result['success']}")
 
             if not script_result['success']:
                 logger.warning(f"Script '{script.name}' failed, skipping tests for this state")
@@ -297,7 +284,7 @@ class MultiStateTestRunner:
             # Verify connection after script execution - scripts with clicks can kill browser
             try:
                 await asyncio.wait_for(current_page.evaluate('() => document.readyState'), timeout=5.0)
-                logger.warning("DEBUG: Page connection OK after script")
+                logger.debug("DEBUG: Page connection OK after script")
             except Exception as post_script_err:
                 logger.error(f"Browser died after script execution: {post_script_err}")
                 # Try to recover with fresh browser
@@ -354,7 +341,7 @@ class MultiStateTestRunner:
                 # Run accessibility tests
                 try:
                     test_result = await test_function(current_page, page_id)
-                    logger.warning(f"DEBUG: Post-script tests complete, violations={len(test_result.violations)}")
+                    logger.debug(f"DEBUG: Post-script tests complete, violations={len(test_result.violations)}")
                 except Exception as test_error:
                     logger.error(f"Post-script test execution failed: {test_error}")
                     test_result = TestResult(
@@ -394,7 +381,7 @@ class MultiStateTestRunner:
         for result in results:
             result.related_result_ids = [rid for rid in result_ids if rid != result.id]
 
-        logger.warning(f"DEBUG: Multi-state testing complete: {len(results)} test results generated")
+        logger.debug(f"DEBUG: Multi-state testing complete: {len(results)} test results generated")
         
         # Final wait to ensure all async operations from the last state complete
         # before the caller potentially closes the browser

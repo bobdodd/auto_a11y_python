@@ -462,11 +462,8 @@ CRITICAL:
         
         try:
             result = await self.client.analyze_with_image_and_html(screenshot, html, prompt)
-            logger.warning(f"Language analysis result: {result}")
             if 'issues' not in result:
                 result['issues'] = []
-            if result.get('issues'):
-                logger.warning(f"Language found {len(result['issues'])} issues")
             return result
         except Exception as e:
             logger.error(f"Language analysis failed: {e}")

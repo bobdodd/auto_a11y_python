@@ -17,6 +17,7 @@ from flask_babel import force_locale, lazy_gettext, pgettext
 
 from auto_a11y.core.database import Database
 from auto_a11y.reporting.issue_catalog import IssueCatalog
+from auto_a11y.reporting.issue_translations_inline import ISSUE_DESCRIPTION_TRANSLATIONS_FR
 from config import config
 
 
@@ -416,7 +417,9 @@ class StaticHTMLReportGenerator:
 
                 # Touchpoints
                 'accessible_names': 'Accessible Names',
+                'animation': 'Animation',
                 'colors': 'Colors',
+                'dialogs': 'Dialogs',
                 'electronic_documents': 'Electronic Documents',
                 'event_handling': 'Event Handling',
                 'fonts': 'Fonts',
@@ -428,11 +431,22 @@ class StaticHTMLReportGenerator:
                 'lists': 'Lists',
                 'page': 'Page',
                 'styles': 'Styles',
+                'tables': 'Tables',
                 'color_contrast': 'Color Contrast',
                 'tabindex': 'Tab Index',
+                'carousels': 'Carousels',
+                'multimedia': 'Multimedia',
+                'keyboard': 'Keyboard',
+                'focus': 'Focus',
+                'focus_management': 'Focus Management',
+                'focus management': 'Focus Management',
 
                 # User roles
                 'no login': 'Guest (no login)',
+
+                # State descriptions
+                'initial_page_state': 'Initial page state (before script execution)',
+                'after_executing_script': 'After executing script:',
 
                 # Misc
                 'language': 'Language',
@@ -575,7 +589,9 @@ class StaticHTMLReportGenerator:
 
                 # Touchpoints
                 'accessible_names': 'Noms accessibles',
+                'animation': 'Animation',
                 'colors': 'Couleurs',
+                'dialogs': 'Dialogues',
                 'electronic_documents': 'Documents électroniques',
                 'event_handling': 'Gestion des événements',
                 'fonts': 'Polices',
@@ -587,11 +603,22 @@ class StaticHTMLReportGenerator:
                 'lists': 'Listes',
                 'page': 'Page',
                 'styles': 'Styles',
+                'tables': 'Tableaux',
                 'color_contrast': 'Contraste des couleurs',
                 'tabindex': 'Index de tabulation',
+                'carousels': 'Carrousels',
+                'multimedia': 'Multimédia',
+                'keyboard': 'Clavier',
+                'focus': 'Focus',
+                'focus_management': 'Gestion du focus',
+                'focus management': 'Gestion du focus',
 
                 # User roles
                 'no login': 'Invité (sans connexion)',
+
+                # State descriptions
+                'initial_page_state': 'État initial de la page (avant exécution du script)',
+                'after_executing_script': 'Après exécution du script :',
 
                 # Misc
                 'language': 'Langue',
@@ -620,6 +647,10 @@ class StaticHTMLReportGenerator:
             }
         }
         return translations
+
+    def _get_issue_description_translations(self) -> Dict[str, str]:
+        """Get inline translations for issue descriptions (EN -> FR mapping)"""
+        return ISSUE_DESCRIPTION_TRANSLATIONS_FR
 
     def _setup_template_filters(self):
         """Setup custom Jinja2 filters"""
@@ -854,6 +885,14 @@ class StaticHTMLReportGenerator:
                     issue_dict['metadata'] = {}
                 # Copy bilingual metadata from original issue (already translated when stored in DB)
                 orig_metadata = violation.metadata if hasattr(violation, 'metadata') and violation.metadata else {}
+                # Title for accordion display
+                issue_dict['metadata']['title_en'] = orig_metadata.get('title_en', enriched_en.get('title', enriched_en.get('description_full', '')))
+                issue_dict['metadata']['title_fr'] = orig_metadata.get('title_fr', enriched_fr.get('title', enriched_fr.get('description_full', '')))
+                # Generic description for grouped issues
+                issue_dict['metadata']['what_generic_en'] = orig_metadata.get('what_generic_en', enriched_en.get('what_generic', enriched_en.get('description_full', '')))
+                issue_dict['metadata']['what_generic_fr'] = orig_metadata.get('what_generic_fr', enriched_fr.get('what_generic', enriched_fr.get('description_full', '')))
+                issue_dict['metadata']['what_generic'] = issue_dict['metadata']['what_generic_en'] if self.language == 'en' else issue_dict['metadata']['what_generic_fr']
+                # Specific what description
                 issue_dict['metadata']['what_en'] = orig_metadata.get('what_en', enriched_en.get('description_full', enriched_en.get('description', '')))
                 issue_dict['metadata']['what_fr'] = orig_metadata.get('what_fr', enriched_fr.get('description_full', enriched_fr.get('description', '')))
                 issue_dict['metadata']['why_en'] = orig_metadata.get('why_en', enriched_en.get('why_it_matters', ''))
@@ -900,7 +939,15 @@ class StaticHTMLReportGenerator:
                 if not issue_dict['metadata']:
                     issue_dict['metadata'] = {}
                 # Copy bilingual metadata from original issue (already translated when stored in DB)
-                orig_metadata = violation.metadata if hasattr(violation, 'metadata') and violation.metadata else {}
+                orig_metadata = warning.metadata if hasattr(warning, 'metadata') and warning.metadata else {}
+                # Title for accordion display
+                issue_dict['metadata']['title_en'] = orig_metadata.get('title_en', enriched_en.get('title', enriched_en.get('description_full', '')))
+                issue_dict['metadata']['title_fr'] = orig_metadata.get('title_fr', enriched_fr.get('title', enriched_fr.get('description_full', '')))
+                # Generic description for grouped issues
+                issue_dict['metadata']['what_generic_en'] = orig_metadata.get('what_generic_en', enriched_en.get('what_generic', enriched_en.get('description_full', '')))
+                issue_dict['metadata']['what_generic_fr'] = orig_metadata.get('what_generic_fr', enriched_fr.get('what_generic', enriched_fr.get('description_full', '')))
+                issue_dict['metadata']['what_generic'] = issue_dict['metadata']['what_generic_en'] if self.language == 'en' else issue_dict['metadata']['what_generic_fr']
+                # Specific what description
                 issue_dict['metadata']['what_en'] = orig_metadata.get('what_en', enriched_en.get('description_full', enriched_en.get('description', '')))
                 issue_dict['metadata']['what_fr'] = orig_metadata.get('what_fr', enriched_fr.get('description_full', enriched_fr.get('description', '')))
                 issue_dict['metadata']['why_en'] = orig_metadata.get('why_en', enriched_en.get('why_it_matters', ''))
@@ -948,6 +995,14 @@ class StaticHTMLReportGenerator:
                     issue_dict['metadata'] = {}
                 # Copy bilingual metadata from original issue (already translated when stored in DB)
                 orig_metadata = info_item.metadata if hasattr(info_item, 'metadata') and info_item.metadata else {}
+                # Title for accordion display
+                issue_dict['metadata']['title_en'] = orig_metadata.get('title_en', enriched_en.get('title', enriched_en.get('description_full', '')))
+                issue_dict['metadata']['title_fr'] = orig_metadata.get('title_fr', enriched_fr.get('title', enriched_fr.get('description_full', '')))
+                # Generic description for grouped issues
+                issue_dict['metadata']['what_generic_en'] = orig_metadata.get('what_generic_en', enriched_en.get('what_generic', enriched_en.get('description_full', '')))
+                issue_dict['metadata']['what_generic_fr'] = orig_metadata.get('what_generic_fr', enriched_fr.get('what_generic', enriched_fr.get('description_full', '')))
+                issue_dict['metadata']['what_generic'] = issue_dict['metadata']['what_generic_en'] if self.language == 'en' else issue_dict['metadata']['what_generic_fr']
+                # Specific what description
                 issue_dict['metadata']['what_en'] = orig_metadata.get('what_en', enriched_en.get('description_full', enriched_en.get('description', '')))
                 issue_dict['metadata']['what_fr'] = orig_metadata.get('what_fr', enriched_fr.get('description_full', enriched_fr.get('description', '')))
                 issue_dict['metadata']['why_en'] = orig_metadata.get('why_en', enriched_en.get('why_it_matters', ''))
@@ -996,6 +1051,14 @@ class StaticHTMLReportGenerator:
                         issue_dict['metadata'] = {}
                     # Copy bilingual metadata from original issue (already translated when stored in DB)
                     orig_metadata = disco_item.metadata if hasattr(disco_item, 'metadata') and disco_item.metadata else {}
+                    # Title for accordion display
+                    issue_dict['metadata']['title_en'] = orig_metadata.get('title_en', enriched_en.get('title', enriched_en.get('description_full', '')))
+                    issue_dict['metadata']['title_fr'] = orig_metadata.get('title_fr', enriched_fr.get('title', enriched_fr.get('description_full', '')))
+                    # Generic description for grouped issues
+                    issue_dict['metadata']['what_generic_en'] = orig_metadata.get('what_generic_en', enriched_en.get('what_generic', enriched_en.get('description_full', '')))
+                    issue_dict['metadata']['what_generic_fr'] = orig_metadata.get('what_generic_fr', enriched_fr.get('what_generic', enriched_fr.get('description_full', '')))
+                    issue_dict['metadata']['what_generic'] = issue_dict['metadata']['what_generic_en'] if self.language == 'en' else issue_dict['metadata']['what_generic_fr']
+                    # Specific what description
                     issue_dict['metadata']['what_en'] = orig_metadata.get('what_en', enriched_en.get('description_full', enriched_en.get('description', '')))
                     issue_dict['metadata']['what_fr'] = orig_metadata.get('what_fr', enriched_fr.get('description_full', enriched_fr.get('description', '')))
                     issue_dict['metadata']['why_en'] = orig_metadata.get('why_en', enriched_en.get('why_it_matters', ''))
@@ -1031,6 +1094,8 @@ class StaticHTMLReportGenerator:
                 for state_result in all_session_results:
                     state_violations = []
                     state_warnings = []
+                    state_informational = []
+                    state_discovery = []
 
                     # Process violations for this state
                     for violation in state_result.violations or []:
@@ -1051,28 +1116,62 @@ class StaticHTMLReportGenerator:
                         with force_locale('fr'):
                             enriched_fr = IssueCatalog.enrich_issue(issue_dict.copy())
 
+                        # Get inline translations for fallback
+                        inline_translations = self._get_issue_description_translations()
+                        
                         # Add bilingual descriptions
-                        issue_dict['description_en'] = enriched_en.get('description_full', enriched_en.get('description', violation.description or violation.id))
-                        issue_dict['description_fr'] = enriched_fr.get('description_full', enriched_fr.get('description', violation.description or violation.id))
+                        desc_en = enriched_en.get('description_full', enriched_en.get('description', violation.description or violation.id))
+                        desc_fr = enriched_fr.get('description_full', enriched_fr.get('description', violation.description or violation.id))
+                        # Apply inline translation if French is same as English (not translated)
+                        if desc_fr == desc_en and desc_en in inline_translations:
+                            desc_fr = inline_translations[desc_en]
+                        issue_dict['description_en'] = desc_en
+                        issue_dict['description_fr'] = desc_fr
 
                         # Merge enriched metadata for bilingual support
                         if not issue_dict['metadata']:
                             issue_dict['metadata'] = {}
-                        enriched_metadata_en = enriched_en.get('metadata', {})
-                        enriched_metadata_fr = enriched_fr.get('metadata', {})
-                        issue_dict['metadata']['what_en'] = enriched_metadata_en.get('what', '')
-                        issue_dict['metadata']['what_fr'] = enriched_metadata_fr.get('what', '')
-                        issue_dict['metadata']['what_generic_en'] = enriched_metadata_en.get('what_generic', '')
-                        issue_dict['metadata']['what_generic_fr'] = enriched_metadata_fr.get('what_generic', '')
-                        issue_dict['metadata']['title_en'] = enriched_metadata_en.get('title', '')
-                        issue_dict['metadata']['title_fr'] = enriched_metadata_fr.get('title', '')
-                        issue_dict['metadata']['why_en'] = enriched_metadata_en.get('why', '')
-                        issue_dict['metadata']['why_fr'] = enriched_metadata_fr.get('why', '')
-                        issue_dict['metadata']['who_en'] = enriched_metadata_en.get('who', '')
-                        issue_dict['metadata']['who_fr'] = enriched_metadata_fr.get('who', '')
-                        issue_dict['metadata']['full_remediation_en'] = enriched_metadata_en.get('full_remediation', '')
-                        issue_dict['metadata']['full_remediation_fr'] = enriched_metadata_fr.get('full_remediation', '')
-                        issue_dict['metadata']['wcag_full'] = enriched_metadata_en.get('wcag_full', [])
+                        # enrich_issue returns top-level keys, not nested 'metadata'
+                        orig_metadata = violation.metadata if hasattr(violation, 'metadata') and violation.metadata else {}
+                        
+                        # Get title with inline translation fallback
+                        title_en = orig_metadata.get('title_en', enriched_en.get('title', enriched_en.get('description_full', '')))
+                        title_fr = orig_metadata.get('title_fr', enriched_fr.get('title', enriched_fr.get('description_full', '')))
+                        if title_fr == title_en and title_en in inline_translations:
+                            title_fr = inline_translations[title_en]
+                        issue_dict['metadata']['title_en'] = title_en
+                        issue_dict['metadata']['title_fr'] = title_fr
+                        
+                        # Get what_generic with inline translation fallback
+                        what_generic_en = orig_metadata.get('what_generic_en', enriched_en.get('what_generic', enriched_en.get('description_full', '')))
+                        what_generic_fr = orig_metadata.get('what_generic_fr', enriched_fr.get('what_generic', enriched_fr.get('description_full', '')))
+                        if what_generic_fr == what_generic_en and what_generic_en in inline_translations:
+                            what_generic_fr = inline_translations[what_generic_en]
+                        issue_dict['metadata']['what_generic_en'] = what_generic_en
+                        issue_dict['metadata']['what_generic_fr'] = what_generic_fr
+                        issue_dict['metadata']['what_generic'] = what_generic_en if self.language == 'en' else what_generic_fr
+                        
+                        # Get what with inline translation fallback
+                        what_en = orig_metadata.get('what_en', enriched_en.get('description_full', enriched_en.get('description', '')))
+                        what_fr = orig_metadata.get('what_fr', enriched_fr.get('description_full', enriched_fr.get('description', '')))
+                        if what_fr == what_en and what_en in inline_translations:
+                            what_fr = inline_translations[what_en]
+                        issue_dict['metadata']['what_en'] = what_en
+                        issue_dict['metadata']['what_fr'] = what_fr
+                        issue_dict['metadata']['why_en'] = orig_metadata.get('why_en', enriched_en.get('why_it_matters', ''))
+                        issue_dict['metadata']['why_fr'] = orig_metadata.get('why_fr', enriched_fr.get('why_it_matters', ''))
+                        issue_dict['metadata']['who_en'] = orig_metadata.get('who_en', enriched_en.get('who_it_affects', ''))
+                        issue_dict['metadata']['who_fr'] = orig_metadata.get('who_fr', enriched_fr.get('who_it_affects', ''))
+                        issue_dict['metadata']['full_remediation_en'] = orig_metadata.get('full_remediation_en', enriched_en.get('how_to_fix', ''))
+                        issue_dict['metadata']['full_remediation_fr'] = orig_metadata.get('full_remediation_fr', enriched_fr.get('how_to_fix', ''))
+                        # Ensure wcag_full is always a list
+                        wcag_full_raw = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
+                        if isinstance(wcag_full_raw, str):
+                            issue_dict['metadata']['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+                        elif isinstance(wcag_full_raw, list):
+                            issue_dict['metadata']['wcag_full'] = wcag_full_raw
+                        else:
+                            issue_dict['metadata']['wcag_full'] = []
 
                         state_violations.append(issue_dict)
 
@@ -1095,30 +1194,145 @@ class StaticHTMLReportGenerator:
                         with force_locale('fr'):
                             enriched_fr = IssueCatalog.enrich_issue(issue_dict.copy())
 
+                        # Get inline translations for fallback
+                        inline_translations = self._get_issue_description_translations()
+                        
                         # Add bilingual descriptions
-                        issue_dict['description_en'] = enriched_en.get('description_full', enriched_en.get('description', warning.description or warning.id))
-                        issue_dict['description_fr'] = enriched_fr.get('description_full', enriched_fr.get('description', warning.description or warning.id))
+                        desc_en = enriched_en.get('description_full', enriched_en.get('description', warning.description or warning.id))
+                        desc_fr = enriched_fr.get('description_full', enriched_fr.get('description', warning.description or warning.id))
+                        if desc_fr == desc_en and desc_en in inline_translations:
+                            desc_fr = inline_translations[desc_en]
+                        issue_dict['description_en'] = desc_en
+                        issue_dict['description_fr'] = desc_fr
 
                         # Merge enriched metadata for bilingual support
                         if not issue_dict['metadata']:
                             issue_dict['metadata'] = {}
-                        enriched_metadata_en = enriched_en.get('metadata', {})
-                        enriched_metadata_fr = enriched_fr.get('metadata', {})
-                        issue_dict['metadata']['what_en'] = enriched_metadata_en.get('what', '')
-                        issue_dict['metadata']['what_fr'] = enriched_metadata_fr.get('what', '')
-                        issue_dict['metadata']['what_generic_en'] = enriched_metadata_en.get('what_generic', '')
-                        issue_dict['metadata']['what_generic_fr'] = enriched_metadata_fr.get('what_generic', '')
-                        issue_dict['metadata']['title_en'] = enriched_metadata_en.get('title', '')
-                        issue_dict['metadata']['title_fr'] = enriched_metadata_fr.get('title', '')
-                        issue_dict['metadata']['why_en'] = enriched_metadata_en.get('why', '')
-                        issue_dict['metadata']['why_fr'] = enriched_metadata_fr.get('why', '')
-                        issue_dict['metadata']['who_en'] = enriched_metadata_en.get('who', '')
-                        issue_dict['metadata']['who_fr'] = enriched_metadata_fr.get('who', '')
-                        issue_dict['metadata']['full_remediation_en'] = enriched_metadata_en.get('full_remediation', '')
-                        issue_dict['metadata']['full_remediation_fr'] = enriched_metadata_fr.get('full_remediation', '')
-                        issue_dict['metadata']['wcag_full'] = enriched_metadata_en.get('wcag_full', [])
+                        # enrich_issue returns top-level keys, not nested 'metadata'
+                        orig_metadata = warning.metadata if hasattr(warning, 'metadata') and warning.metadata else {}
+                        
+                        # Get title with inline translation fallback
+                        title_en = orig_metadata.get('title_en', enriched_en.get('title', enriched_en.get('description_full', '')))
+                        title_fr = orig_metadata.get('title_fr', enriched_fr.get('title', enriched_fr.get('description_full', '')))
+                        if title_fr == title_en and title_en in inline_translations:
+                            title_fr = inline_translations[title_en]
+                        issue_dict['metadata']['title_en'] = title_en
+                        issue_dict['metadata']['title_fr'] = title_fr
+                        
+                        # Get what_generic with inline translation fallback
+                        what_generic_en = orig_metadata.get('what_generic_en', enriched_en.get('what_generic', enriched_en.get('description_full', '')))
+                        what_generic_fr = orig_metadata.get('what_generic_fr', enriched_fr.get('what_generic', enriched_fr.get('description_full', '')))
+                        if what_generic_fr == what_generic_en and what_generic_en in inline_translations:
+                            what_generic_fr = inline_translations[what_generic_en]
+                        issue_dict['metadata']['what_generic_en'] = what_generic_en
+                        issue_dict['metadata']['what_generic_fr'] = what_generic_fr
+                        issue_dict['metadata']['what_generic'] = what_generic_en if self.language == 'en' else what_generic_fr
+                        
+                        # Get what with inline translation fallback
+                        what_en = orig_metadata.get('what_en', enriched_en.get('description_full', enriched_en.get('description', '')))
+                        what_fr = orig_metadata.get('what_fr', enriched_fr.get('description_full', enriched_fr.get('description', '')))
+                        if what_fr == what_en and what_en in inline_translations:
+                            what_fr = inline_translations[what_en]
+                        issue_dict['metadata']['what_en'] = what_en
+                        issue_dict['metadata']['what_fr'] = what_fr
+                        issue_dict['metadata']['why_en'] = orig_metadata.get('why_en', enriched_en.get('why_it_matters', ''))
+                        issue_dict['metadata']['why_fr'] = orig_metadata.get('why_fr', enriched_fr.get('why_it_matters', ''))
+                        issue_dict['metadata']['who_en'] = orig_metadata.get('who_en', enriched_en.get('who_it_affects', ''))
+                        issue_dict['metadata']['who_fr'] = orig_metadata.get('who_fr', enriched_fr.get('who_it_affects', ''))
+                        issue_dict['metadata']['full_remediation_en'] = orig_metadata.get('full_remediation_en', enriched_en.get('how_to_fix', ''))
+                        issue_dict['metadata']['full_remediation_fr'] = orig_metadata.get('full_remediation_fr', enriched_fr.get('how_to_fix', ''))
+                        # Ensure wcag_full is always a list
+                        wcag_full_raw = orig_metadata.get('wcag_full', enriched_en.get('wcag_full', []))
+                        if isinstance(wcag_full_raw, str):
+                            issue_dict['metadata']['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+                        elif isinstance(wcag_full_raw, list):
+                            issue_dict['metadata']['wcag_full'] = wcag_full_raw
+                        else:
+                            issue_dict['metadata']['wcag_full'] = []
 
                         state_warnings.append(issue_dict)
+
+                    # Process informational items for this state
+                    for info_item in state_result.info or []:
+                        issue_dict = {
+                            'id': info_item.id,
+                            'description': info_item.description,
+                            'touchpoint': info_item.touchpoint,
+                            'impact': info_item.impact.value if hasattr(info_item.impact, 'value') else info_item.impact,
+                            'xpath': info_item.xpath,
+                            'html_snippet': info_item.html,
+                            'metadata': info_item.metadata,
+                            'wcag_criteria': info_item.wcag_criteria
+                        }
+
+                        with force_locale('en'):
+                            enriched_en = IssueCatalog.enrich_issue(issue_dict.copy())
+                        with force_locale('fr'):
+                            enriched_fr = IssueCatalog.enrich_issue(issue_dict.copy())
+
+                        inline_translations = self._get_issue_description_translations()
+                        
+                        desc_en = enriched_en.get('description_full', enriched_en.get('description', info_item.description or info_item.id))
+                        desc_fr = enriched_fr.get('description_full', enriched_fr.get('description', info_item.description or info_item.id))
+                        if desc_fr == desc_en and desc_en in inline_translations:
+                            desc_fr = inline_translations[desc_en]
+                        issue_dict['description_en'] = desc_en
+                        issue_dict['description_fr'] = desc_fr
+
+                        if not issue_dict['metadata']:
+                            issue_dict['metadata'] = {}
+                        orig_metadata = info_item.metadata if hasattr(info_item, 'metadata') and info_item.metadata else {}
+                        
+                        what_generic_en = orig_metadata.get('what_generic_en', enriched_en.get('what_generic', enriched_en.get('description_full', '')))
+                        what_generic_fr = orig_metadata.get('what_generic_fr', enriched_fr.get('what_generic', enriched_fr.get('description_full', '')))
+                        if what_generic_fr == what_generic_en and what_generic_en in inline_translations:
+                            what_generic_fr = inline_translations[what_generic_en]
+                        issue_dict['metadata']['what_generic_en'] = what_generic_en
+                        issue_dict['metadata']['what_generic_fr'] = what_generic_fr
+                        issue_dict['metadata']['what_generic'] = what_generic_en if self.language == 'en' else what_generic_fr
+
+                        state_informational.append(issue_dict)
+
+                    # Process discovery items for this state
+                    for disco_item in state_result.discovery or []:
+                        issue_dict = {
+                            'id': disco_item.id,
+                            'description': disco_item.description,
+                            'touchpoint': disco_item.touchpoint,
+                            'impact': disco_item.impact.value if hasattr(disco_item.impact, 'value') else disco_item.impact,
+                            'xpath': disco_item.xpath,
+                            'html_snippet': disco_item.html,
+                            'metadata': disco_item.metadata,
+                            'wcag_criteria': disco_item.wcag_criteria
+                        }
+
+                        with force_locale('en'):
+                            enriched_en = IssueCatalog.enrich_issue(issue_dict.copy())
+                        with force_locale('fr'):
+                            enriched_fr = IssueCatalog.enrich_issue(issue_dict.copy())
+
+                        inline_translations = self._get_issue_description_translations()
+                        
+                        desc_en = enriched_en.get('description_full', enriched_en.get('description', disco_item.description or disco_item.id))
+                        desc_fr = enriched_fr.get('description_full', enriched_fr.get('description', disco_item.description or disco_item.id))
+                        if desc_fr == desc_en and desc_en in inline_translations:
+                            desc_fr = inline_translations[desc_en]
+                        issue_dict['description_en'] = desc_en
+                        issue_dict['description_fr'] = desc_fr
+
+                        if not issue_dict['metadata']:
+                            issue_dict['metadata'] = {}
+                        orig_metadata = disco_item.metadata if hasattr(disco_item, 'metadata') and disco_item.metadata else {}
+                        
+                        what_generic_en = orig_metadata.get('what_generic_en', enriched_en.get('what_generic', enriched_en.get('description_full', '')))
+                        what_generic_fr = orig_metadata.get('what_generic_fr', enriched_fr.get('what_generic', enriched_fr.get('description_full', '')))
+                        if what_generic_fr == what_generic_en and what_generic_en in inline_translations:
+                            what_generic_fr = inline_translations[what_generic_en]
+                        issue_dict['metadata']['what_generic_en'] = what_generic_en
+                        issue_dict['metadata']['what_generic_fr'] = what_generic_fr
+                        issue_dict['metadata']['what_generic'] = what_generic_en if self.language == 'en' else what_generic_fr
+
+                        state_discovery.append(issue_dict)
 
                     # Get state description - handle both object and dict
                     state_description = f"State {state_result.state_sequence if hasattr(state_result, 'state_sequence') else 0}"
@@ -1128,15 +1342,45 @@ class StaticHTMLReportGenerator:
                         elif hasattr(state_result.page_state, 'description'):
                             state_description = state_result.page_state.description
 
+                    # Create bilingual state descriptions
+                    translations = self._get_translations()
+                    state_description_en = state_description
+                    state_description_fr = state_description
+                    
+                    # Translate common state description patterns
+                    if 'Initial page state' in state_description or state_description.startswith('State 0'):
+                        state_description_en = translations['en'].get('initial_page_state', state_description)
+                        state_description_fr = translations['fr'].get('initial_page_state', state_description)
+                    elif 'After executing script:' in state_description:
+                        # Extract script name and translate the prefix
+                        script_name = state_description.replace('After executing script:', '').strip()
+                        state_description_en = f"{translations['en'].get('after_executing_script', 'After executing script:')} {script_name}"
+                        state_description_fr = f"{translations['fr'].get('after_executing_script', 'Après exécution du script :')} {script_name}"
+
+                    # Get script info and auth user from state_result metadata
+                    script_info = None
+                    auth_user_info = None
+                    if hasattr(state_result, 'metadata') and state_result.metadata:
+                        script_info = state_result.metadata.get('script_executed')
+                        auth_user_info = state_result.metadata.get('authenticated_user')
+                    
                     state_data = {
                         'sequence': state_result.state_sequence if hasattr(state_result, 'state_sequence') else 0,
                         'description': state_description,
+                        'description_en': state_description_en,
+                        'description_fr': state_description_fr,
                         'violations': state_violations,
                         'warnings': state_warnings,
+                        'informational': state_informational,
+                        'discovery': state_discovery,
                         'issues': {
                             'errors': len(state_violations),
-                            'warnings': len(state_warnings)
-                        }
+                            'warnings': len(state_warnings),
+                            'info': len(state_informational),
+                            'discovery': len(state_discovery)
+                        },
+                        'script_info': script_info,
+                        'auth_user': auth_user_info
                     }
                     state_results.append(state_data)
 

@@ -2707,8 +2707,12 @@ class IssueCatalog:
         enriched = issue_dict.copy()
         
         # Add enriched fields if not present
+        if 'title' not in enriched or not enriched.get('title'):
+            enriched['title'] = catalog_data.get('title', catalog_data.get('description', ''))
         if 'description_full' not in enriched:
             enriched['description_full'] = catalog_data['description']
+        if 'what_generic' not in enriched:
+            enriched['what_generic'] = catalog_data.get('what_generic') or catalog_data.get('description_generic') or catalog_data.get('description', '')
         if 'why_it_matters' not in enriched:
             enriched['why_it_matters'] = catalog_data['why_it_matters']
         if 'who_it_affects' not in enriched:

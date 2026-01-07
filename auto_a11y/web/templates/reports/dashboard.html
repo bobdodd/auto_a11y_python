@@ -1014,18 +1014,14 @@ function generateDiscoveryReport() {
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">{{ _('Options') }}</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="staticHtmlIncludeScreenshots" checked>
-                            <label class="form-check-label" for="staticHtmlIncludeScreenshots">
-                                {{ _('Include Screenshots') }}
-                            </label>
+                        <label class="form-label d-block">{{ _('Options') }}</label>
+                        <div class="form-check d-flex align-items-center mb-2">
+                            <input class="form-check-input me-2" type="checkbox" id="staticHtmlIncludeScreenshots" checked style="margin-top: 0;">
+                            <label class="form-check-label" for="staticHtmlIncludeScreenshots">{{ _('Include Screenshots') }}</label>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="staticHtmlIncludeDiscovery" checked>
-                            <label class="form-check-label" for="staticHtmlIncludeDiscovery">
-                                {{ _('Include Discovery Items') }}
-                            </label>
+                        <div class="form-check d-flex align-items-center">
+                            <input class="form-check-input me-2" type="checkbox" id="staticHtmlIncludeDiscovery" checked style="margin-top: 0;">
+                            <label class="form-check-label" for="staticHtmlIncludeDiscovery">{{ _('Include Discovery Items') }}</label>
                         </div>
                     </div>
                 </div>

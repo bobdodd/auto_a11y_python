@@ -577,7 +577,7 @@
             </p>
             <div class="btn-group" role="group" aria-label="{{ _('Page states') }}">
                 {% for state_result in state_results %}
-                    {% set raw_state_desc = state_result.page_state.description if state_result.page_state else "" %}
+                    {% set raw_state_desc = state_result.page_state.get('description', '') if state_result.page_state else "" %}
                     {% if raw_state_desc.startswith('Initial page state') %}
                         {% set state_desc = _('Initial page state (before script execution)') %}
                     {% elif raw_state_desc.startswith('After executing script:') %}

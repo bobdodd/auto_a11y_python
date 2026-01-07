@@ -20,9 +20,17 @@ def enrich_test_result_with_catalog(test_result):
     if not test_result:
         return test_result
     
-    # Helper to escape literal % that aren't placeholders (e.g., "200%-400%+" -> "200%%-400%%+")
-    def escape_percent(template):
-        return re.sub(r'%(?!\()', '%%', template)
+    # Helper to substitute {placeholder} style placeholders
+    def substitute_placeholders(template, values):
+        """Replace {key} placeholders in template with values from dict."""
+        if not template or not values:
+            return template
+        
+        def replace_match(match):
+            key = match.group(1)
+            return str(values.get(key, match.group(0)))
+        
+        return re.sub(r'\{([^}]+)\}', replace_match, template)
     
     # Enrich violations
     if hasattr(test_result, 'violations') and test_result.violations:
@@ -96,24 +104,14 @@ def enrich_test_result_with_catalog(test_result):
                     'px', ':1', 'alpha=', '°', '%'
                 ])
                 
-                try:
-                    # Apply placeholder substitution to title as well
-                    if not has_specific_title:
-                        violation.metadata['title'] = escape_percent(title_template) % placeholder_values
-                    # Only overwrite 'what' if it doesn't have specific details already
-                    if not has_specific_what:
-                        violation.metadata['what'] = escape_percent(what_template) % placeholder_values
-                    violation.metadata['why'] = escape_percent(why_template) % placeholder_values
-                    violation.metadata['how'] = escape_percent(how_template) % placeholder_values
-                except (KeyError, ValueError, TypeError) as e:
-                    # If placeholder replacement fails, use templates as-is
-                    logger.warning(f"Placeholder substitution failed for {error_code}: {e}, keys available: {list(placeholder_values.keys())}")
-                    if not has_specific_title:
-                        violation.metadata['title'] = title_template
-                    if not has_specific_what:
-                        violation.metadata['what'] = what_template
-                    violation.metadata['why'] = why_template
-                    violation.metadata['how'] = how_template
+                # Apply placeholder substitution using {key} syntax
+                if not has_specific_title:
+                    violation.metadata['title'] = substitute_placeholders(title_template, placeholder_values)
+                # Only overwrite 'what' if it doesn't have specific details already
+                if not has_specific_what:
+                    violation.metadata['what'] = substitute_placeholders(what_template, placeholder_values)
+                violation.metadata['why'] = substitute_placeholders(why_template, placeholder_values)
+                violation.metadata['how'] = substitute_placeholders(how_template, placeholder_values)
                 
                 violation.metadata['what_generic'] = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
                 violation.metadata['who'] = catalog_info['who_it_affects']
@@ -158,18 +156,11 @@ def enrich_test_result_with_catalog(test_result):
                         if value is not None and not isinstance(value, (dict, list)):
                             placeholder_values[key] = str(value)
                 
-                # Replace placeholders in templates
-                try:
-                    warning.metadata['title'] = escape_percent(title_template) % placeholder_values
-                    warning.metadata['what'] = escape_percent(what_template) % placeholder_values
-                    warning.metadata['why'] = escape_percent(why_template) % placeholder_values
-                    warning.metadata['how'] = escape_percent(how_template) % placeholder_values
-                except (KeyError, ValueError, TypeError) as e:
-                    logger.warning(f"Placeholder substitution failed for warning {error_code}: {e}, keys available: {list(placeholder_values.keys())}")
-                    warning.metadata['title'] = title_template
-                    warning.metadata['what'] = what_template
-                    warning.metadata['why'] = why_template
-                    warning.metadata['how'] = how_template
+                # Apply placeholder substitution using {key} syntax
+                warning.metadata['title'] = substitute_placeholders(title_template, placeholder_values)
+                warning.metadata['what'] = substitute_placeholders(what_template, placeholder_values)
+                warning.metadata['why'] = substitute_placeholders(why_template, placeholder_values)
+                warning.metadata['how'] = substitute_placeholders(how_template, placeholder_values)
                 
                 warning.metadata['what_generic'] = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
                 warning.metadata['who'] = catalog_info['who_it_affects']

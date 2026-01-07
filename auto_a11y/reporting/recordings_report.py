@@ -116,6 +116,20 @@ class RecordingsReportGenerator:
                 'Navigation': 'Navigation',
                 'Page Structure': 'Page Structure',
                 'Typography': 'Typography',
+                'summary': 'Summary',
+                'issues': 'Issues',
+                'title': 'Title',
+                'impact': 'Impact',
+                'remediation': 'Remediation',
+                'wcag': 'WCAG',
+                'id': 'ID',
+                'type': 'Type',
+                'auditor_tester': 'Auditor/Tester',
+                'date': 'Date',
+                'high_impact': 'High Impact',
+                'medium_impact': 'Medium Impact',
+                'low_impact': 'Low Impact',
+                'filename_prefix': 'recordings',
             },
             'fr': {
                 'recordings_report': 'Rapport d\'enregistrements',
@@ -156,6 +170,20 @@ class RecordingsReportGenerator:
                 'Navigation': 'Navigation',
                 'Page Structure': 'Structure de la page',
                 'Typography': 'Typographie',
+                'summary': 'Résumé',
+                'issues': 'Problèmes',
+                'title': 'Titre',
+                'impact': 'Impact',
+                'remediation': 'Remédiation',
+                'wcag': 'WCAG',
+                'id': 'ID',
+                'type': 'Type',
+                'auditor_tester': 'Auditeur/Testeur',
+                'date': 'Date',
+                'high_impact': 'Impact élevé',
+                'medium_impact': 'Impact moyen',
+                'low_impact': 'Impact faible',
+                'filename_prefix': 'enregistrements',
             }
         }
         return translations
@@ -265,7 +293,9 @@ class RecordingsReportGenerator:
                 include_wcag
             )
         elif format == 'xlsx':
-            filename = f"{project_name_safe}_recordings_{timestamp}.xlsx"
+            all_translations = self._get_translations()
+            t = all_translations.get(language, all_translations['en'])
+            filename = f"{project_name_safe}_{t['filename_prefix']}_{timestamp}.xlsx"
             report_path = self.reports_dir / filename
             self._generate_xlsx_report(
                 report_path,
@@ -275,7 +305,8 @@ class RecordingsReportGenerator:
                 issues_by_touchpoint,
                 stats,
                 include_timecodes,
-                include_wcag
+                include_wcag,
+                language
             )
         else:
             raise ValueError(f"Unsupported format: {format}")
@@ -412,42 +443,45 @@ class RecordingsReportGenerator:
         import shutil
         shutil.copy(html_path, output_path.replace('.pdf', '_temp.html'))
 
-    def _generate_xlsx_report(self, output_path, project, recordings, issues, issues_by_touchpoint, stats, include_timecodes, include_wcag):
-        """Generate Excel report (placeholder - would use library like openpyxl)"""
+    def _generate_xlsx_report(self, output_path, project, recordings, issues, issues_by_touchpoint, stats, include_timecodes, include_wcag, language='en'):
+        """Generate Excel report with translations"""
         try:
             import openpyxl
             from openpyxl.styles import Font, PatternFill, Alignment
+
+            all_translations = self._get_translations()
+            t = all_translations.get(language, all_translations['en'])
 
             wb = openpyxl.Workbook()
 
             # Summary sheet
             ws_summary = wb.active
-            ws_summary.title = "Summary"
-            ws_summary['A1'] = "Recordings Report"
+            ws_summary.title = t['summary']
+            ws_summary['A1'] = t['recordings_report']
             ws_summary['A1'].font = Font(size=16, bold=True)
-            ws_summary['A3'] = "Project:"
+            ws_summary['A3'] = f"{t['project']}:"
             ws_summary['B3'] = project.name
-            ws_summary['A4'] = "Generated:"
+            ws_summary['A4'] = f"{t['generated']}:"
             ws_summary['B4'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-            ws_summary['A6'] = "Total Recordings:"
+            ws_summary['A6'] = f"{t['total_recordings']}:"
             ws_summary['B6'] = stats['total_recordings']
-            ws_summary['A7'] = "Total Issues:"
+            ws_summary['A7'] = f"{t['total_issues']}:"
             ws_summary['B7'] = stats['total_issues']
-            ws_summary['A8'] = "High Impact:"
+            ws_summary['A8'] = f"{t['high_impact']}:"
             ws_summary['B8'] = stats['high_count']
-            ws_summary['A9'] = "Medium Impact:"
+            ws_summary['A9'] = f"{t['medium_impact']}:"
             ws_summary['B9'] = stats['medium_count']
-            ws_summary['A10'] = "Low Impact:"
+            ws_summary['A10'] = f"{t['low_impact']}:"
             ws_summary['B10'] = stats['low_count']
 
             # Issues sheet
-            ws_issues = wb.create_sheet("Issues")
-            headers = ['Title', 'Impact', 'Touchpoint', 'What', 'Why', 'Who', 'Remediation']
+            ws_issues = wb.create_sheet(t['issues'])
+            headers = [t['title'], t['impact'], t['touchpoint'], t['what'], t['why'], t['who_affected'], t['remediation']]
             if include_wcag:
-                headers.append('WCAG')
+                headers.append(t['wcag'])
             if include_timecodes:
-                headers.append('Timecodes')
+                headers.append(t['timecodes'])
 
             for col, header in enumerate(headers, 1):
                 cell = ws_issues.cell(1, col, header)
@@ -458,7 +492,8 @@ class RecordingsReportGenerator:
             for row, issue in enumerate(issues, 2):
                 ws_issues.cell(row, 1, issue.title)
                 ws_issues.cell(row, 2, issue.impact.value.upper())
-                ws_issues.cell(row, 3, issue.touchpoint or "General")
+                touchpoint = issue.touchpoint or "General"
+                ws_issues.cell(row, 3, t.get(touchpoint, touchpoint))
                 ws_issues.cell(row, 4, issue.what or "")
                 ws_issues.cell(row, 5, issue.why or "")
                 ws_issues.cell(row, 6, issue.who or "")
@@ -475,8 +510,8 @@ class RecordingsReportGenerator:
                     ws_issues.cell(row, col, tc_str)
 
             # Recordings sheet
-            ws_recordings = wb.create_sheet("Recordings")
-            rec_headers = ['ID', 'Title', 'Type', 'Auditor/Tester', 'Date', 'Total Issues', 'High', 'Medium', 'Low']
+            ws_recordings = wb.create_sheet(t['recordings'])
+            rec_headers = [t['id'], t['title'], t['type'], t['auditor_tester'], t['date'], t['total_issues'], t['high'], t['medium'], t['low']]
             for col, header in enumerate(rec_headers, 1):
                 cell = ws_recordings.cell(1, col, header)
                 cell.font = Font(bold=True)

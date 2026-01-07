@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-01-06 15:13-0500\n"
+"POT-Creation-Date: 2026-01-06 17:02-0500\n"
 "PO-Revision-Date: 2025-11-21 13:16-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fr\n"
@@ -172,6 +172,22 @@ msgstr "La page a été supprimée avec succès"
 #, python-format
 msgid "Failed to save test matrix: %(error)s"
 msgstr "Échec de l'annulation de la découverte :"
+
+#: auto_a11y/web/routes/reports.py:697
+msgid "No Recordings Available"
+msgstr "Aucun enregistrement disponible"
+
+#: auto_a11y/web/routes/reports.py:698
+msgid ""
+"There are no recordings for this project yet. Once recordings have been "
+"added, you can generate a report."
+msgstr ""
+"Il n'y a pas encore d'enregistrements pour ce projet. Une fois les "
+"enregistrements ajoutés, vous pourrez générer un rapport."
+
+#: auto_a11y/web/routes/reports.py:700
+msgid "No recordings found for this project"
+msgstr "Aucun enregistrement trouvé pour ce projet"
 
 #: auto_a11y/web/templates/404.html:3 auto_a11y/web/templates/404.html:10
 msgid "Page Not Found"
@@ -2008,6 +2024,8 @@ msgstr "Découvrir"
 #: auto_a11y/web/templates/pages/edit.html:86
 #: auto_a11y/web/templates/pages/view.html:181
 #: auto_a11y/web/templates/pages/view.html:3486
+#: auto_a11y/web/templates/reports/dashboard.html:1446
+#: auto_a11y/web/templates/reports/dashboard.html:1453
 #: auto_a11y/web/templates/testing/dashboard.html:132
 #: auto_a11y/web/templates/websites/view.html:247
 msgid "Error"
@@ -6759,7 +6777,7 @@ msgstr "Erreur lors du chargement des sites Web"
 
 #: auto_a11y/web/templates/reports/dashboard.html:501
 #: auto_a11y/web/templates/reports/dashboard.html:655
-#: auto_a11y/web/templates/reports/dashboard.html:1381
+#: auto_a11y/web/templates/reports/dashboard.html:1407
 msgid "Generating..."
 msgstr "Génération en cours..."
 
@@ -6772,7 +6790,6 @@ msgstr "Échec de la génération du rapport : "
 #: auto_a11y/web/templates/reports/dashboard.html:681
 #: auto_a11y/web/templates/reports/dashboard.html:1128
 #: auto_a11y/web/templates/reports/dashboard.html:1268
-#: auto_a11y/web/templates/reports/dashboard.html:1406
 msgid "Error generating report: "
 msgstr "Erreur lors de la génération du rapport : "
 
@@ -6827,7 +6844,7 @@ msgid "All websites in the project will be included"
 msgstr "Tester tous les sites web du projet"
 
 #: auto_a11y/web/templates/reports/dashboard.html:815
-#: auto_a11y/web/templates/reports/dashboard.html:1368
+#: auto_a11y/web/templates/reports/dashboard.html:1394
 msgid "Please select a project"
 msgstr "Sélectionnez un projet..."
 
@@ -7057,6 +7074,27 @@ msgstr "Codes temporels :"
 #: auto_a11y/web/templates/reports/dashboard.html:1341
 msgid "Group Issues by Touchpoint"
 msgstr "Regrouper les problèmes par point de contact"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1362
+#: auto_a11y/web/templates/reports/dashboard.html:1442
+#, fuzzy
+msgid "Notice"
+msgstr "Remarque :"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1369
+msgid "OK"
+msgstr ""
+
+#: auto_a11y/web/templates/reports/dashboard.html:1394
+#, fuzzy
+msgid "Validation Error"
+msgstr "Erreurs :"
+
+#: auto_a11y/web/templates/reports/dashboard.html:1432
+#: auto_a11y/web/templates/reports/dashboard.html:1446
+#, fuzzy
+msgid "Failed to generate report"
+msgstr "Échec de la génération du rapport : "
 
 #: auto_a11y/web/templates/scripts/create.html:3
 msgid "Create Page Setup Script - Auto A11y"
@@ -8490,21 +8528,21 @@ msgstr "Aucune tâche de découverte à annuler"
 msgid "Failed to cancel testing"
 msgstr "Échec de l'annulation de la découverte"
 
-#: auto_a11y/web/templates/websites/view.html:1515
-#: auto_a11y/web/templates/websites/view.html:1536
+#: auto_a11y/web/templates/websites/view.html:1521
+#: auto_a11y/web/templates/websites/view.html:1542
 msgid "Report Generation"
 msgstr "Génération de rapport"
 
-#: auto_a11y/web/templates/websites/view.html:1515
+#: auto_a11y/web/templates/websites/view.html:1521
 msgid "Generating site structure report in"
 msgstr "Génération du rapport de structure de site en"
 
-#: auto_a11y/web/templates/websites/view.html:1515
-#: auto_a11y/web/templates/websites/view.html:1536
+#: auto_a11y/web/templates/websites/view.html:1521
+#: auto_a11y/web/templates/websites/view.html:1542
 msgid "format..."
 msgstr "format..."
 
-#: auto_a11y/web/templates/websites/view.html:1536
+#: auto_a11y/web/templates/websites/view.html:1542
 msgid "Generating accessibility report in"
 msgstr "Génération du rapport d'accessibilité en"
 

@@ -3,7 +3,7 @@ Report generation routes
 """
 
 from flask import Blueprint, render_template, request, jsonify, send_file, current_app, url_for, flash, redirect, session, g
-from flask_babel import get_locale
+from flask_babel import get_locale, gettext as _
 from auto_a11y.models import PageStatus
 from auto_a11y.reporting import ReportGenerator, PageStructureReport
 from auto_a11y.reporting.discovery_report import DiscoveryReportGenerator
@@ -672,19 +672,36 @@ def generate_recordings_report(project_id):
     include_timecodes = request.form.get('include_timecodes', 'true') in ['true', 'True', '1', 'on']
     include_wcag = request.form.get('include_wcag', 'true') in ['true', 'True', '1', 'on']
     group_by_touchpoint = request.form.get('group_by_touchpoint', 'true') in ['true', 'True', '1', 'on']
+    
+    is_ajax = (request.headers.get('X-Requested-With') == 'XMLHttpRequest' or 
+               request.headers.get('Sec-Fetch-Mode') == 'cors' or
+               request.headers.get('Accept', '').startswith('application/json') or
+               'fetch' in request.headers.get('User-Agent', '').lower())
 
     try:
         # Get project
         project = current_app.db.get_project(project_id)
         if not project:
+            if is_ajax:
+                return jsonify({'success': False, 'error': 'Project not found'}), 404
             flash('Project not found', 'error')
             return redirect(url_for('reports.reports_dashboard'))
 
         # Get all recordings for this project
         recordings = current_app.db.get_recordings(project_id=project_id)
         if not recordings:
-            flash('No recordings found for this project', 'warning')
+            if is_ajax:
+                return jsonify({
+                    'success': False, 
+                    'info': True,
+                    'title': _('No Recordings Available'),
+                    'message': _('There are no recordings for this project yet. Once recordings have been added, you can generate a report.')
+                }), 200
+            flash(_('No recordings found for this project'), 'warning')
             return redirect(url_for('reports.reports_dashboard'))
+
+        # Get current language from session
+        language = session.get('language', 'en')
 
         # Initialize recordings report generator
         from auto_a11y.reporting.recordings_report import RecordingsReportGenerator
@@ -700,14 +717,20 @@ def generate_recordings_report(project_id):
             include_summary=include_summary,
             include_timecodes=include_timecodes,
             include_wcag=include_wcag,
-            group_by_touchpoint=group_by_touchpoint
+            group_by_touchpoint=group_by_touchpoint,
+            language=language
         )
 
+        if is_ajax:
+            return jsonify({'success': True, 'message': 'Recordings report generated successfully!', 'path': report_path})
+        
         # Flash success message and redirect to dashboard
-        flash(f'Recordings report generated successfully!', 'success')
+        flash('Recordings report generated successfully!', 'success')
         return redirect(url_for('reports.reports_dashboard'))
 
     except Exception as e:
         logger.error(f"Failed to generate recordings report: {e}", exc_info=True)
+        if is_ajax:
+            return jsonify({'success': False, 'error': str(e)}), 500
         flash(f'Failed to generate report: {str(e)}', 'error')
         return redirect(url_for('reports.reports_dashboard'))

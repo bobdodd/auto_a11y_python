@@ -1354,7 +1354,33 @@ if (deduplicatedModal) {
     </div>
 </div>
 
+<!-- Error/Info Dialog Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalTitle">{{ _('Notice') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="messageModalBody"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{ _('OK') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+// Helper function to show a dismissable modal dialog
+function showMessageDialog(title, message) {
+    document.getElementById('messageModalTitle').textContent = title;
+    document.getElementById('messageModalBody').textContent = message;
+    const modal = new bootstrap.Modal(document.getElementById('messageModal'));
+    modal.show();
+}
+
 // Recordings Report Modal Logic
 const recordingsModal = document.getElementById('recordingsModal');
 if (recordingsModal) {
@@ -1365,7 +1391,7 @@ if (recordingsModal) {
         const projectId = document.getElementById('recordingsProject').value;
 
         if (!projectId) {
-            alert({{ _('Please select a project') | tojson }});
+            showMessageDialog({{ _('Validation Error') | tojson }}, {{ _('Please select a project') | tojson }});
             return;
         }
 
@@ -1380,6 +1406,10 @@ if (recordingsModal) {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + {{ _("Generating...") | tojson }};
 
+        // Close the recordings modal first
+        const recordingsModalInstance = bootstrap.Modal.getInstance(recordingsModal);
+        recordingsModalInstance.hide();
+
         // Use FormData to submit as regular form (not JSON)
         const formDataObj = new FormData();
         formDataObj.append('project_id', projectId);
@@ -1391,19 +1421,36 @@ if (recordingsModal) {
 
         fetch('/reports/generate/recordings/' + projectId, {
             method: 'POST',
-            body: formDataObj
+            body: formDataObj,
+            headers: {
+                'Accept': 'application/json'
+            }
         })
         .then(response => {
-            if (response.ok) {
-                // Flask will redirect, so reload the page to see the new report in the list
+            return response.json().then(data => {
+                if (!response.ok) {
+                    throw new Error(data.error || {{ _('Failed to generate report') | tojson }});
+                }
+                return data;
+            });
+        })
+        .then(data => {
+            if (data.success) {
                 window.location.reload();
+            } else if (data.info) {
+                // Informational message, not an error
+                showMessageDialog(data.title || {{ _('Notice') | tojson }}, data.message);
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             } else {
-                throw new Error('Failed to generate report');
+                showMessageDialog({{ _('Error') | tojson }}, data.error || {{ _('Failed to generate report') | tojson }});
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert({{ _('Error generating report: ') | tojson }} + error.message);
+            showMessageDialog({{ _('Error') | tojson }}, error.message);
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
         });

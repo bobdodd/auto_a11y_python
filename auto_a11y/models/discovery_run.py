@@ -4,7 +4,7 @@ Discovery Run model for versioning website discoveries
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from enum import Enum
 from bson import ObjectId
 
@@ -37,6 +37,7 @@ class DiscoveryRun:
     pages_failed: int = 0
     documents_found: int = 0
     external_links_found: int = 0
+    failed_pages_details: List[Dict[str, str]] = field(default_factory=list)  # [{url, error_reason}]
     
     # Comparison with previous run
     pages_added: int = 0  # New pages not in previous discovery
@@ -92,6 +93,7 @@ class DiscoveryRun:
             'pages_failed': self.pages_failed,
             'documents_found': self.documents_found,
             'external_links_found': self.external_links_found,
+            'failed_pages_details': self.failed_pages_details,
             'pages_added': self.pages_added,
             'pages_removed': self.pages_removed,
             'pages_unchanged': self.pages_unchanged,
@@ -121,6 +123,7 @@ class DiscoveryRun:
             pages_failed=data.get('pages_failed', 0),
             documents_found=data.get('documents_found', 0),
             external_links_found=data.get('external_links_found', 0),
+            failed_pages_details=data.get('failed_pages_details', []),
             pages_added=data.get('pages_added', 0),
             pages_removed=data.get('pages_removed', 0),
             pages_unchanged=data.get('pages_unchanged', 0),

@@ -107,8 +107,9 @@ class ScrapingEngine:
         # Initialize queue with starting URL
         self.queued_urls.add(base_url)
         
-        # Track discovered pages
+        # Track discovered pages (successful only) and failed pages (for error reporting)
         discovered_pages = []
+        failed_pages = []  # Track failed discoveries separately - these won't be saved to DB
         
         # Start browser once for entire discovery session
         try:
@@ -319,7 +320,7 @@ class ScrapingEngine:
                                         'javascript:', 'mailto:', 'tel:', '.pdf', '.doc', '.ppt', '.xls']
                     if any(param in url.lower() for param in problematic_params):
                         logger.info(f"Skipping URL with problematic parameters: {url}")
-                        # Still record it as a failed page so user knows it was skipped
+                        # Track as failed for error reporting but don't save to DB
                         failed_page = Page(
                             website_id=website.id,
                             url=url,
@@ -329,7 +330,7 @@ class ScrapingEngine:
                             status=PageStatus.DISCOVERY_FAILED,
                             error_reason="Skipped: URL contains parameters that typically cause problems"
                         )
-                        discovered_pages.append(failed_page)
+                        failed_pages.append(failed_page)  # Track for error reporting only
                         self.discovered_urls.add(url)
                         continue
                     
@@ -355,12 +356,12 @@ class ScrapingEngine:
                         logger.warning(f"[Page {len(discovered_pages)}/{website.scraping_config.max_pages}] NULL RESPONSE - {url}")
                     
                     if page:
-                        discovered_pages.append(page)
                         self.discovered_urls.add(url)
                         pages_since_restart += 1
                         
-                        # Track failures
+                        # Track failures separately - don't add to discovered_pages
                         if page.status == PageStatus.DISCOVERY_FAILED:
+                            failed_pages.append(page)  # Track for error reporting only
                             consecutive_failures += 1
                             total_failures += 1
                             logger.warning(f"Failed pages: {total_failures} total, {consecutive_failures} consecutive")
@@ -371,6 +372,8 @@ class ScrapingEngine:
                                 max_pages_reached = True
                                 break
                         else:
+                            # Only add successful pages to discovered_pages
+                            discovered_pages.append(page)
                             # Reset consecutive counter on success
                             consecutive_failures = 0
                         
@@ -424,12 +427,11 @@ class ScrapingEngine:
             # Check if discovery was cancelled
             was_cancelled = job and job.is_cancelled()
             
-            # Log final statistics
-            successful_pages = len([p for p in discovered_pages if p.status != PageStatus.DISCOVERY_FAILED])
-            failed_pages = len([p for p in discovered_pages if p.status == PageStatus.DISCOVERY_FAILED])
-            logger.info(f"Discovery finished: {successful_pages} successful, {failed_pages} failed, {len(discovered_pages)} total")
+            # Log final statistics (discovered_pages now only contains successful ones)
+            logger.info(f"Discovery finished: {len(discovered_pages)} successful, {len(failed_pages)} failed")
             
             # Save discovered pages to database with discovery run tracking
+            # Only successful pages are saved - failed pages are tracked separately for error reporting
             saved_count = 0
             if discovered_pages:
                 saved_count = self.db.bulk_create_pages_with_discovery(discovered_pages, discovery_run_id)
@@ -450,8 +452,12 @@ class ScrapingEngine:
             # Update discovery run with final results
             discovery_run.completed_at = datetime.now()
             discovery_run.status = DiscoveryStatus.CANCELLED if was_cancelled else DiscoveryStatus.COMPLETED
-            discovery_run.pages_discovered = len([p for p in discovered_pages if p.status != PageStatus.DISCOVERY_FAILED])
-            discovery_run.pages_failed = len([p for p in discovered_pages if p.status == PageStatus.DISCOVERY_FAILED])
+            discovery_run.pages_discovered = len(discovered_pages)  # Only successful pages
+            discovery_run.pages_failed = len(failed_pages)  # Failed pages tracked separately
+            discovery_run.failed_pages_details = [
+                {'url': p.url, 'error_reason': p.error_reason or 'Unknown error'}
+                for p in failed_pages
+            ]
             discovery_run.documents_found = self.db.document_references.count_documents({'website_id': website.id})
             discovery_run.duration_seconds = int((discovery_run.completed_at - discovery_run.started_at).total_seconds())
             self.db.update_discovery_run(discovery_run)
@@ -463,7 +469,7 @@ class ScrapingEngine:
         except Exception as e:
             logger.error(f"Error during discovery: {e}", exc_info=True)
             
-            # Save what we got so far
+            # Save what we got so far (only successful pages)
             if discovered_pages:
                 saved_count = self.db.bulk_create_pages_with_discovery(discovered_pages, discovery_run_id)
                 logger.info(f"Saved {saved_count} pages before error")
@@ -472,8 +478,12 @@ class ScrapingEngine:
             discovery_run.completed_at = datetime.now()
             discovery_run.status = DiscoveryStatus.FAILED
             discovery_run.error_message = str(e)[:500]
-            discovery_run.pages_discovered = len([p for p in discovered_pages if p.status != PageStatus.DISCOVERY_FAILED])
-            discovery_run.pages_failed = len([p for p in discovered_pages if p.status == PageStatus.DISCOVERY_FAILED])
+            discovery_run.pages_discovered = len(discovered_pages)  # Only successful pages
+            discovery_run.pages_failed = len(failed_pages)  # Failed pages tracked separately
+            discovery_run.failed_pages_details = [
+                {'url': p.url, 'error_reason': p.error_reason or 'Unknown error'}
+                for p in failed_pages
+            ]
             discovery_run.duration_seconds = int((discovery_run.completed_at - discovery_run.started_at).total_seconds())
             self.db.update_discovery_run(discovery_run)
             

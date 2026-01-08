@@ -549,8 +549,9 @@ async def test_text_contrast(page) -> Dict[str, Any]:
                         ? [':hover', ':focus', ':visited', ':active', ':link']
                         : [':hover', ':focus', ':active'];
 
-                    // Build element's class selector
-                    const classes = element.className ? element.className.split(' ').filter(c => c.trim()) : [];
+                    // Build element's class selector (handle SVG elements where className is SVGAnimatedString)
+                    const classNameStr = typeof element.className === 'string' ? element.className : (element.className?.baseVal || '');
+                    const classes = classNameStr ? classNameStr.split(' ').filter(c => c.trim()) : [];
                     const idSelector = element.id ? `#${element.id}` : '';
 
                     // Also track styles from prefers-contrast media queries

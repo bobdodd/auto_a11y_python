@@ -2700,7 +2700,12 @@ class IssueCatalog:
             Enriched issue dictionary
         """
         issue_id = issue_dict.get('id', issue_dict.get('err', ''))
-        metadata = issue_dict.get('metadata', {})
+        # Build metadata for placeholder substitution - include root-level fields
+        metadata = issue_dict.get('metadata', {}).copy() if issue_dict.get('metadata') else {}
+        # Add root-level fields that are used in placeholders
+        for field in ('element', 'element_text', 'element_tag', 'xpath', 'tag', 'tagName', 'href', 'src', 'alt', 'title', 'label', 'value', 'text', 'lang', 'role'):
+            if field in issue_dict and field not in metadata:
+                metadata[field] = issue_dict[field]
         catalog_data = cls.get_issue(issue_id, metadata)
         
         # Merge catalog data with existing issue data
@@ -2710,18 +2715,27 @@ class IssueCatalog:
         if 'title' not in enriched or not enriched.get('title'):
             enriched['title'] = catalog_data.get('title', catalog_data.get('description', ''))
         if 'description_full' not in enriched:
-            enriched['description_full'] = catalog_data['description']
+            enriched['description_full'] = catalog_data.get('description', '')
         if 'what_generic' not in enriched:
             enriched['what_generic'] = catalog_data.get('what_generic') or catalog_data.get('description_generic') or catalog_data.get('description', '')
         if 'why_it_matters' not in enriched:
-            enriched['why_it_matters'] = catalog_data['why_it_matters']
+            enriched['why_it_matters'] = catalog_data.get('why_it_matters', '')
         if 'who_it_affects' not in enriched:
-            enriched['who_it_affects'] = catalog_data['who_it_affects']
+            enriched['who_it_affects'] = catalog_data.get('who_it_affects', '')
         if 'how_to_fix' not in enriched:
-            enriched['how_to_fix'] = catalog_data['how_to_fix']
+            enriched['how_to_fix'] = catalog_data.get('how_to_fix', '')
         if 'wcag_full' not in enriched:
-            enriched['wcag_full'] = catalog_data['wcag_full']
+            enriched['wcag_full'] = catalog_data.get('wcag_full', '')
         if 'impact' not in enriched:
-            enriched['impact'] = catalog_data['impact']
+            enriched['impact'] = catalog_data.get('impact', '')
+        # Add translated fields with placeholder substitution applied
+        if 'what' not in enriched:
+            enriched['what'] = catalog_data.get('what', '')
+        if 'why' not in enriched:
+            enriched['why'] = catalog_data.get('why', '')
+        if 'who' not in enriched:
+            enriched['who'] = catalog_data.get('who', '')
+        if 'full_remediation' not in enriched:
+            enriched['full_remediation'] = catalog_data.get('full_remediation', '')
             
         return enriched

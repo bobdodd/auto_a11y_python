@@ -856,11 +856,15 @@ $(document).ready(function() {
 
         // Get selected discovery users from header dropdown
         const selectedDiscoveryUserIds = [];
-        document.querySelectorAll('.batch-discovery-user-checkbox:checked').forEach(checkbox => {
+        const discoveryCheckboxes = document.querySelectorAll('.batch-discovery-user-checkbox:checked');
+        discoveryCheckboxes.forEach(checkbox => {
             selectedDiscoveryUserIds.push(checkbox.value); // empty string for guest, user ID for authenticated
         });
 
-        if (selectedDiscoveryUserIds.length === 0) {
+        // If no website users configured (no checkboxes exist), default to Guest
+        if (document.querySelectorAll('.batch-discovery-user-checkbox').length === 0) {
+            selectedDiscoveryUserIds.push(''); // Guest user (empty string)
+        } else if (selectedDiscoveryUserIds.length === 0) {
             alert('{{ _("Please select at least one user for discovery using the Discovery Users dropdown.") }}');
             return;
         }
@@ -941,11 +945,15 @@ $(document).ready(function() {
 
         // Get selected test users from header dropdown
         const selectedUserIds = [];
-        document.querySelectorAll('.batch-test-user-checkbox:checked').forEach(checkbox => {
+        const testUserCheckboxes = document.querySelectorAll('.batch-test-user-checkbox:checked');
+        testUserCheckboxes.forEach(checkbox => {
             selectedUserIds.push(checkbox.value);
         });
 
-        if (selectedUserIds.length === 0) {
+        // If no website users configured (no checkboxes exist), default to Guest
+        if (document.querySelectorAll('.batch-test-user-checkbox').length === 0) {
+            selectedUserIds.push(''); // Guest user (empty string)
+        } else if (selectedUserIds.length === 0) {
             alert('{{ _("Please select at least one test user using the Test Users dropdown.") }}');
             return;
         }

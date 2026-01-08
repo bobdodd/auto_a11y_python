@@ -2003,6 +2003,7 @@ class StaticHTMLReportGenerator:
             total_violations = 0
             total_warnings = 0
             total_info = 0
+            total_discovery = 0
 
             for component_signature, component_issues in issues_by_component.items():
                 if component_signature != 'unassigned':
@@ -2013,18 +2014,21 @@ class StaticHTMLReportGenerator:
                             total_warnings += 1
                         elif issue['type'] == 'info':
                             total_info += 1
+                        elif issue['type'] == 'discovery':
+                            total_discovery += 1
 
             # Count issues in unassigned (non-component) pages
             for page_data in pages_with_unassigned:
                 total_violations += len(page_data['issues']['violations'])
                 total_warnings += len(page_data['issues']['warnings'])
                 total_info += len(page_data['issues']['info'])
+                total_discovery += len(page_data['issues'].get('discovery', []))
 
             # Generate index page
             self._generate_dedup_index(
                 temp_dir, project, project_name, common_components,
                 issues_by_component, pages_with_unassigned,
-                total_violations, total_warnings, total_info, total_pages,
+                total_violations, total_warnings, total_info, total_discovery, total_pages,
                 overall_accessibility_score, overall_compliance_score
             )
 
@@ -2185,16 +2189,6 @@ class StaticHTMLReportGenerator:
                         else:
                             issue_dict = issue if isinstance(issue, dict) else {}
 
-                        # Enrich with catalog information in both EN and FR for client-side switching
-                        with force_locale('en'):
-                            issue_dict_en = IssueCatalog.enrich_issue(issue_dict)
-
-                        with force_locale('fr'):
-                            issue_dict_fr = IssueCatalog.enrich_issue(issue_dict)
-
-                        # Use the current language version for primary data
-                        issue_dict = issue_dict_en if self.language == 'en' else issue_dict_fr
-
                         rule_id = issue_dict.get('id', '')
                         issue_xpath = issue_dict.get('xpath', '')
 
@@ -2225,21 +2219,34 @@ class StaticHTMLReportGenerator:
 
                         # Initialize or update issue data
                         if dedup_key not in unique_issues:
-                            # Get enriched metadata for both languages
-                            issue_metadata = issue_dict.get('metadata', {})
-                            issue_metadata_en = issue_dict_en.get('metadata', {})
-                            issue_metadata_fr = issue_dict_fr.get('metadata', {})
+                            # Get original metadata which already has translations stored from DB
+                            orig_metadata = issue_dict.get('metadata', {})
 
                             # Ensure wcag_full is a list (split if it's a string)
-                            # Get wcag_full from enriched issue dict root level (not in metadata)
-                            wcag_full_raw = issue_dict_en.get('wcag_full', [])
+                            wcag_full_raw = orig_metadata.get('wcag_full', [])
                             if isinstance(wcag_full_raw, str):
-                                # Split comma-separated string and clean up whitespace
                                 wcag_full = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
                             elif isinstance(wcag_full_raw, list):
                                 wcag_full = wcag_full_raw
                             else:
                                 wcag_full = []
+
+                            # DB stores single-language substituted text - need to get both languages
+                            # The metadata.what/why/who/full_remediation have placeholders substituted
+                            # but are in a single language. We need to re-enrich for both languages.
+                            
+                            # Build metadata with element for placeholder substitution
+                            enrich_metadata = orig_metadata.copy()
+                            enrich_metadata['element'] = issue_dict.get('element', '')
+                            
+                            # Re-enrich to get both language versions with substitution
+                            issue_for_enrich = issue_dict.copy()
+                            issue_for_enrich['metadata'] = enrich_metadata
+                            
+                            with force_locale('en'):
+                                enriched_en = IssueCatalog.enrich_issue(issue_for_enrich)
+                            with force_locale('fr'):
+                                enriched_fr = IssueCatalog.enrich_issue(issue_for_enrich)
 
                             unique_issues[dedup_key] = {
                                 'type': issue_type,
@@ -2254,15 +2261,15 @@ class StaticHTMLReportGenerator:
                                 'component_signature': component_signature,
                                 'component_type': component_type,
                                 'component_label': component_label,
-                                # Enriched content from IssueCatalog - both languages
-                                'description_en': issue_dict_en.get('description', ''),
-                                'description_fr': issue_dict_fr.get('description', ''),
-                                'why_en': issue_metadata_en.get('why', ''),
-                                'why_fr': issue_metadata_fr.get('why', ''),
-                                'who_en': issue_metadata_en.get('who', ''),
-                                'who_fr': issue_metadata_fr.get('who', ''),
-                                'full_remediation_en': issue_metadata_en.get('full_remediation', ''),
-                                'full_remediation_fr': issue_metadata_fr.get('full_remediation', ''),
+                                # Use enriched data which has placeholder substitution
+                                'description_en': enriched_en.get('what') or enriched_en.get('description_full') or issue_dict.get('description', ''),
+                                'description_fr': enriched_fr.get('what') or enriched_fr.get('description_full') or issue_dict.get('description', ''),
+                                'why_en': enriched_en.get('why') or enriched_en.get('why_it_matters', ''),
+                                'why_fr': enriched_fr.get('why') or enriched_fr.get('why_it_matters', ''),
+                                'who_en': enriched_en.get('who') or enriched_en.get('who_it_affects', ''),
+                                'who_fr': enriched_fr.get('who') or enriched_fr.get('who_it_affects', ''),
+                                'full_remediation_en': enriched_en.get('full_remediation') or enriched_en.get('how_to_fix', ''),
+                                'full_remediation_fr': enriched_fr.get('full_remediation') or enriched_fr.get('how_to_fix', ''),
                                 'pages': set(),
                                 'test_users': set(),
                                 'user_roles': set()
@@ -2385,6 +2392,7 @@ class StaticHTMLReportGenerator:
         total_violations: int,
         total_warnings: int,
         total_info: int,
+        total_discovery: int,
         total_pages: int,
         overall_accessibility_score: float,
         overall_compliance_score: float
@@ -2400,6 +2408,7 @@ class StaticHTMLReportGenerator:
             violations = sum(1 for i in issues if i['type'] == 'violation')
             warnings = sum(1 for i in issues if i['type'] == 'warning')
             info_count = sum(1 for i in issues if i['type'] == 'info')
+            discovery_count = sum(1 for i in issues if i['type'] == 'discovery')
 
             # Calculate score for this component
             component_score = self._calculate_dedup_score(issues)
@@ -2417,6 +2426,7 @@ class StaticHTMLReportGenerator:
                 'violations': violations,
                 'warnings': warnings,
                 'info': info_count,
+                'discovery': discovery_count,
                 'total_issues': len(issues),
                 'score': component_score
             })
@@ -2449,6 +2459,7 @@ class StaticHTMLReportGenerator:
                 total_violations=total_violations,
                 total_warnings=total_warnings,
                 total_info=total_info,
+                total_discovery=total_discovery,
                 total_components=len(common_components),
                 total_pages=total_pages,
                 overall_accessibility_score=overall_accessibility_score,
@@ -2839,6 +2850,7 @@ class StaticHTMLReportGenerator:
                 'violations': len(page_violations),  # Use actual filtered non-component issue counts
                 'warnings': len(page_warnings),
                 'info': len(page_info),
+                'discovery': len(page_discovery),
                 'total_issues': len(page_violations) + len(page_warnings) + len(page_info) + len(page_discovery),
                 'issues': {
                     'violations': page_violations,  # Use actual test result issues, not deduplicated

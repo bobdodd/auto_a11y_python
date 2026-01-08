@@ -756,19 +756,29 @@ class ScrapingEngine:
             # Take screenshot during discovery for page preview
             screenshot_path = None
             try:
-                screenshot_path = await self._take_discovery_screenshot(page, website.id, url)
-                if screenshot_path:
-                    logger.debug(f"Discovery screenshot saved: {screenshot_path}")
+                # Check if page/browser is still connected before screenshot
+                if page and await self.browser_manager.is_running():
+                    # Small delay to let page stabilize before screenshot
+                    await asyncio.sleep(0.5)
+                    screenshot_path = await self._take_discovery_screenshot(page, website.id, url)
+                    if screenshot_path:
+                        logger.debug(f"Discovery screenshot saved: {screenshot_path}")
+                else:
+                    logger.warning(f"Page or browser not available for screenshot: {url}")
             except Exception as e:
                 logger.warning(f"Failed to take discovery screenshot for {url}: {e}")
                 # Continue without screenshot rather than failing the whole page
 
             # Close the page now that we're done with it
             try:
-                await page.close()
-                page = None  # Mark as closed
+                if page:
+                    # Small delay before closing to ensure pending operations complete
+                    await asyncio.sleep(0.2)
+                    await page.close()
+                    page = None  # Mark as closed
             except Exception as e:
                 logger.warning(f"Error closing page after successful discovery: {e}")
+                page = None  # Mark as closed anyway to prevent double-close
 
             # Create page object
             page_obj = Page(
@@ -815,7 +825,10 @@ class ScrapingEngine:
             # Close the page if it's still open (only happens on error paths)
             if page:
                 try:
-                    await page.close()
+                    # Check if browser is still connected before trying to close
+                    if await self.browser_manager.is_running():
+                        await asyncio.sleep(0.1)  # Brief delay before close
+                        await page.close()
                 except Exception as e:
                     logger.warning(f"Error closing page: {e}")
     

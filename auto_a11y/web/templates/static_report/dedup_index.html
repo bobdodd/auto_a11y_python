@@ -111,6 +111,7 @@
     .issue-count.violations { background-color: #f8d7da; color: #842029; }
     .issue-count.warnings { background-color: #fff3cd; color: #856404; }
     .issue-count.info { background-color: #cfe2ff; color: #084298; }
+    .issue-count.discovery { background-color: #e2d9f3; color: #432874; }
 
     .no-components {
         text-align: center;
@@ -212,6 +213,12 @@
             <div class="stat-value text-info">{{ total_info }}</div>
             <div class="stat-label" data-i18n="info_items">{{ t['info_items'] }}</div>
         </div>
+        {% if total_discovery is defined and total_discovery > 0 %}
+        <div class="stat-card">
+            <div class="stat-value" style="color: #6f42c1;">{{ total_discovery }}</div>
+            <div class="stat-label" data-i18n="discovery">{{ t.get('discovery', 'Discovery') }}</div>
+        </div>
+        {% endif %}
         <div class="stat-card">
             <div class="stat-value text-primary">{{ total_components }}</div>
             <div class="stat-label" data-i18n="components">{{ t['components'] }}</div>
@@ -258,6 +265,9 @@
                             {% endif %}
                             {% if comp_data.info > 0 %}
                             <span class="issue-count info">{{ comp_data.info }} <span data-i18n="info">{{ t['info'] }}</span></span>
+                            {% endif %}
+                            {% if comp_data.discovery is defined and comp_data.discovery > 0 %}
+                            <span class="issue-count discovery">{{ comp_data.discovery }} <span data-i18n="discovery">{{ t.get('discovery', 'Discovery') }}</span></span>
                             {% endif %}
                             <i class="bi bi-chevron-right"></i>
                         </div>
@@ -314,6 +324,9 @@
                         {% endif %}
                         {% if page_data.info > 0 %}
                         <span class="issue-count info">{{ page_data.info }} <span data-i18n="info">{{ t['info'] }}</span></span>
+                        {% endif %}
+                        {% if page_data.discovery is defined and page_data.discovery > 0 %}
+                        <span class="issue-count discovery">{{ page_data.discovery }} <span data-i18n="discovery">{{ t.get('discovery', 'Discovery') }}</span></span>
                         {% endif %}
                         <i class="bi bi-chevron-right"></i>
                     </div>

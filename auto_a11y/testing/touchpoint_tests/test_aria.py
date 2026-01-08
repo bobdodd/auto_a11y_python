@@ -570,11 +570,15 @@ async def test_aria(page) -> Dict[str, Any]:
                     const isAccessible = (hasProperRole && ariaExpanded) || hasMenuPattern;
 
                     if (!isAccessible) {
+                        const elementText = dropdown.getAttribute('aria-label') || 
+                                           dropdown.querySelector('button')?.textContent?.trim() ||
+                                           dropdown.textContent?.trim()?.substring(0, 50) || '';
                         results.errors.push({
                             err: 'ErrDropdownWithoutARIA',
                             type: 'err',
                             cat: 'accessible_names',
                             element: dropdown.tagName.toLowerCase(),
+                            element_text: elementText,
                             xpath: getFullXPath(dropdown),
                             html: dropdown.outerHTML.substring(0, 200),
                             description: 'Custom dropdown lacks proper ARIA attributes (role="combobox/listbox" with aria-expanded, or role="menu" with aria-haspopup)',

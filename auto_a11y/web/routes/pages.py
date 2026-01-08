@@ -79,6 +79,14 @@ def enrich_test_result_with_catalog(test_result):
 
                 # Fill in placeholders from violation data
                 placeholder_values = {}
+                
+                # First, copy root-level violation attributes that are used in placeholders
+                for field in ('element', 'xpath', 'html'):
+                    if hasattr(violation, field):
+                        val = getattr(violation, field)
+                        if val:
+                            placeholder_values[field] = str(val)
+                
                 if hasattr(violation, 'metadata') and violation.metadata:
                     # Include all metadata fields for placeholder substitution
                     for key, value in violation.metadata.items():

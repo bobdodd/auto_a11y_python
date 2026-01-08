@@ -39,7 +39,7 @@
 
     <!-- Run Summary -->
     <div class="row mb-4">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Status</h6>
@@ -55,7 +55,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Pages Discovered</h6>
@@ -63,7 +63,15 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <div class="card{% if discovery_run.pages_failed > 0 %} border-warning{% endif %}">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">Pages Failed</h6>
+                    <p class="h4 mb-0{% if discovery_run.pages_failed > 0 %} text-warning{% endif %}">{{ discovery_run.pages_failed }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Documents Found</h6>
@@ -71,7 +79,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="card">
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Duration</h6>
@@ -234,6 +242,25 @@
             {% endif %}
         </div>
     </div>
+
+    {% if discovery_run.failed_pages_details %}
+    <!-- Failed Pages -->
+    <div class="card mt-4 border-warning">
+        <div class="card-header bg-warning">
+            <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Discovery Issues ({{ discovery_run.failed_pages_details|length }})</h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted">{{ discovery_run.failed_pages_details|length }} page(s) could not be discovered:</p>
+            <div class="list-group" style="max-height: 300px; overflow-y: auto;">
+                {% for failed in discovery_run.failed_pages_details %}
+                <div class="list-group-item list-group-item-warning">
+                    <strong>{{ failed.url }}</strong>: {{ failed.error_reason }}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
     {% if discovery_run.error_message %}
     <!-- Error Details -->

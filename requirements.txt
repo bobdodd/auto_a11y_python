@@ -2,7 +2,8 @@
 python-dotenv>=1.0.0
 
 # Web automation
-pyppeteer>=1.0.2
+pyppeteer>=1.0.2  # Legacy - kept for fallback during migration
+playwright>=1.40.0  # New browser automation (more stable)
 beautifulsoup4>=4.12.0
 nest-asyncio>=1.5.6  # For async in threads
 

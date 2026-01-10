@@ -45,7 +45,9 @@ class Config:
     CLAUDE_TEMPERATURE: float = float(os.getenv('CLAUDE_TEMPERATURE', 1.0))
     CLAUDE_USE_THINKING: bool = os.getenv('CLAUDE_USE_THINKING', 'True').lower() == 'true'
     
-    # Pyppeteer
+    # Browser Automation
+    # Engine: 'playwright' (recommended, more stable) or 'pyppeteer' (legacy)
+    BROWSER_ENGINE: str = os.getenv('BROWSER_ENGINE', 'playwright')
     BROWSER_HEADLESS: bool = os.getenv('BROWSER_HEADLESS', 'True').lower() == 'true'
     BROWSER_TIMEOUT: int = int(os.getenv('BROWSER_TIMEOUT', 30000))
     BROWSER_VIEWPORT_WIDTH: int = int(os.getenv('BROWSER_VIEWPORT_WIDTH', 1920))

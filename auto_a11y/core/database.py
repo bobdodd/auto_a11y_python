@@ -585,6 +585,9 @@ class Database:
             'page_state': test_result.page_state if hasattr(test_result, 'page_state') else None,
             'related_result_ids': test_result.related_result_ids if hasattr(test_result, 'related_result_ids') else [],
 
+            # Error message (if test failed)
+            'error': test_result.error if hasattr(test_result, 'error') else None,
+
             # Metadata
             '_has_detailed_items': True,
             '_items_collection': 'test_result_items'

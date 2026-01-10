@@ -606,6 +606,16 @@
         {% endif %}
 
         <div class="card-body">
+            <!-- Test Error Message (if test failed) -->
+            {% if latest_result.error %}
+            <div class="alert alert-danger mb-4" role="alert">
+                <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>{{ _('Test Execution Error') }}</h5>
+                <p class="mb-0">{{ _('The accessibility test could not be completed due to an error:') }}</p>
+                <hr>
+                <pre class="mb-0 text-danger" style="white-space: pre-wrap; word-break: break-word;">{{ latest_result.error }}</pre>
+            </div>
+            {% endif %}
+
             <!-- Errors (Violations) -->
             {% if latest_result.violations %}
             <div class="section-panel errors-section mb-4" style="border: 2px solid #dc3545; border-radius: 8px; overflow: hidden;">

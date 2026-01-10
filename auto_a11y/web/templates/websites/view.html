@@ -575,6 +575,7 @@ let testingInProgress = false;
 let testingJobId = null;
 let discoveryStatusInterval = null;
 let discoveryJobId = null;
+let lastSeenFailureCount = 0;  // Track discovery failures for toast notifications
 
 // Multi-user selection functions
 function updateUserSelectionDisplay() {
@@ -1243,10 +1244,13 @@ function cancelDiscovery() {
 
 function startDiscoveryPolling() {
     if (discoveryStatusInterval) return;
-    
+
+    // Reset failure counter for new discovery
+    lastSeenFailureCount = 0;
+
     const btn = $('#discoverBtn');
     const cancelBtn = $('#cancelDiscoveryBtn');
-    
+
     // Show the prominent cancel button
     cancelBtn.show();
     
@@ -1266,7 +1270,25 @@ function startDiscoveryPolling() {
                 // Update discover button with progress
                 const message = data.message || `{{ _("Found") }} ${data.pages_found} {{ _("pages...") }}`;
                 btn.html(`<span class="spinner-border spinner-border-sm"></span> ${message}`);
-                
+
+                // Check for new failures and show toast
+                const currentFailures = data.pages_failed || 0;
+                if (currentFailures > lastSeenFailureCount && data.last_failed_url) {
+                    // New failure detected - show toast
+                    if (window.showNotification) {
+                        const failedUrl = data.last_failed_url;
+                        const failedReason = data.last_failed_reason || '{{ _("Unknown error") }}';
+                        // Truncate URL for display
+                        const displayUrl = failedUrl.length > 60 ? failedUrl.substring(0, 57) + '...' : failedUrl;
+                        showNotification(
+                            '{{ _("Discovery Issue") }}',
+                            `${displayUrl}: ${failedReason}`,
+                            'warning'
+                        );
+                    }
+                    lastSeenFailureCount = currentFailures;
+                }
+
                 // Update page count in statistics if available
                 const pageCountElement = document.querySelector('.card-title:contains("Total Pages") + .display-6');
                 if (pageCountElement) {
@@ -1288,7 +1310,8 @@ function startDiscoveryPolling() {
 
                 // Show completion notification
                 if (window.showNotification) {
-                    showNotification('{{ _("Discovery Complete") }}', `{{ _("Found") }} ${data.pages_found} {{ _("pages. Refreshing...") }}`, 'success');
+                    const failedInfo = data.pages_failed > 0 ? ` (${data.pages_failed} {{ _("failed") }})` : '';
+                    showNotification('{{ _("Discovery Complete") }}', `{{ _("Found") }} ${data.pages_found} {{ _("pages") }}${failedInfo}. {{ _("Refreshing...") }}`, 'success');
                 }
                 
                 // Refresh page to show new pages
@@ -1329,7 +1352,8 @@ function stopDiscoveryPolling() {
         discoveryStatusInterval = null;
     }
     discoveryJobId = null;
-    
+    lastSeenFailureCount = 0;  // Reset failure counter
+
     // Hide the cancel button
     $('#cancelDiscoveryBtn').hide();
     

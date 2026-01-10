@@ -81,32 +81,46 @@ class ScrapingJob:
         pages_processed: int,
         current_depth: int,
         message: str = None,
-        queue_size: int = 0
+        queue_size: int = 0,
+        pages_failed: int = 0,
+        last_failed_url: str = None,
+        last_failed_reason: str = None
     ):
         """
         Update job progress in database
-        
+
         Args:
             pages_found: Number of pages found
             pages_processed: Number of pages processed
             current_depth: Current crawl depth
             message: Optional status message
             queue_size: Number of URLs in queue
+            pages_failed: Number of pages that failed discovery
+            last_failed_url: URL of the most recently failed page
+            last_failed_reason: Reason for the most recent failure
         """
         if not message:
             message = f"Found {pages_found} pages, processed {pages_processed}"
-        
+
+        details = {
+            'pages_found': pages_found,
+            'pages_processed': pages_processed,
+            'current_depth': current_depth,
+            'queue_size': queue_size,
+            'pages_failed': pages_failed
+        }
+
+        # Include last failure info if available
+        if last_failed_url:
+            details['last_failed_url'] = last_failed_url
+            details['last_failed_reason'] = last_failed_reason or 'Unknown error'
+
         self.job_manager.update_job_progress(
             job_id=self.job_id,
             current=pages_processed,
             total=self.max_pages or pages_found,
             message=message,
-            details={
-                'pages_found': pages_found,
-                'pages_processed': pages_processed,
-                'current_depth': current_depth,
-                'queue_size': queue_size
-            }
+            details=details
         )
     
     def set_running(self):
@@ -310,20 +324,24 @@ class ScrapingJob:
     async def _update_progress(self, progress: dict):
         """Update job progress in database"""
         logger.debug(f"ScrapingJob._update_progress called with: {progress}")
-        
+
         # Update database with progress
         pages_found = progress.get('pages_found', 0)
+        pages_failed = progress.get('pages_failed', 0)
         current_url = progress.get('current_url', '')
-        
+
         try:
             self.update_progress(
                 pages_found=pages_found,
-                pages_processed=pages_found,  # For discovery, processed = found
+                pages_processed=pages_found + pages_failed,  # Total processed = found + failed
                 current_depth=progress.get('current_depth', 0),
                 message=current_url,
-                queue_size=progress.get('queue_size', 0)
+                queue_size=progress.get('queue_size', 0),
+                pages_failed=pages_failed,
+                last_failed_url=progress.get('last_failed_url'),
+                last_failed_reason=progress.get('last_failed_reason')
             )
-            logger.debug(f"ScrapingJob progress updated successfully for {pages_found} pages")
+            logger.debug(f"ScrapingJob progress updated: {pages_found} found, {pages_failed} failed")
         except Exception as e:
             logger.error(f"Failed to update progress: {e}", exc_info=True)
     

@@ -381,11 +381,16 @@ class ScrapingEngine:
                         if progress_callback:
                             progress_data = {
                                 'pages_found': len(discovered_pages),
+                                'pages_failed': len(failed_pages),
                                 'current_depth': depth,
                                 'queue_size': len(self.queued_urls),
                                 'current_url': url
                             }
-                            logger.info(f"Starting progress update for page {len(discovered_pages)}")
+                            # Include failure details if this was a failed page
+                            if page.status == PageStatus.DISCOVERY_FAILED:
+                                progress_data['last_failed_url'] = page.url
+                                progress_data['last_failed_reason'] = page.error_reason or 'Unknown error'
+                            logger.info(f"Starting progress update for page {len(discovered_pages)} (failed: {len(failed_pages)})")
                             try:
                                 await progress_callback(progress_data)
                                 logger.info(f"Progress update completed for page {len(discovered_pages)}")

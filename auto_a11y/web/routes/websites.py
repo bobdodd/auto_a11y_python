@@ -399,29 +399,41 @@ def discovery_status(website_id):
     
     # Extract details from progress
     details = progress.get('details', {})
-    
+
     # Build detailed response
     response = {
         'status': status,
         'pages_found': details.get('pages_found', 0),
+        'pages_failed': details.get('pages_failed', 0),
         'current_depth': details.get('current_depth', 0),
         'queue_size': details.get('queue_size', 0),
         'current_url': progress.get('message', ''),  # message contains current URL
         'error': job_status.get('error')
     }
-    
+
+    # Include last failure info if available
+    if details.get('last_failed_url'):
+        response['last_failed_url'] = details.get('last_failed_url')
+        response['last_failed_reason'] = details.get('last_failed_reason', 'Unknown error')
+
     # Create informative message based on status
     if status == 'running':
         pages_found = details.get('pages_found', 0)
+        pages_failed = details.get('pages_failed', 0)
         queue_size = details.get('queue_size', 0)
         current_url = progress.get('message', '')
         if current_url:
             # Don't truncate URLs - users need to see what's being processed
-            response['message'] = f'Found {pages_found} pages. Scanning: {current_url}'
+            failed_info = f' ({pages_failed} failed)' if pages_failed > 0 else ''
+            response['message'] = f'Found {pages_found} pages{failed_info}. Scanning: {current_url}'
         else:
-            response['message'] = f'Found {pages_found} pages...'
+            failed_info = f' ({pages_failed} failed)' if pages_failed > 0 else ''
+            response['message'] = f'Found {pages_found} pages{failed_info}...'
     elif status == 'completed':
-        response['message'] = f'Discovery completed - found {details.get("pages_found", 0)} pages'
+        pages_found = details.get("pages_found", 0)
+        pages_failed = details.get("pages_failed", 0)
+        failed_info = f', {pages_failed} failed' if pages_failed > 0 else ''
+        response['message'] = f'Discovery completed - found {pages_found} pages{failed_info}'
     elif status == 'failed':
         response['message'] = f'Discovery failed: {job_status.get("error", "Unknown error")}'
     elif status == 'cancelled':

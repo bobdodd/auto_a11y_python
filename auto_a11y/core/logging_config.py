@@ -58,7 +58,7 @@ LOGGING_CONFIG = {
             'propagate': False
         },
         # Silence verbose third-party libraries
-        'pyppeteer': {
+        'playwright': {
             'level': 'WARNING',
             'handlers': ['console', 'file'],
             'propagate': False
@@ -91,8 +91,8 @@ def setup_logging():
     logging.config.dictConfig(LOGGING_CONFIG)
     
     # Set specific loggers to reduce noise
-    logging.getLogger('pyppeteer.connection').setLevel(logging.WARNING)
-    logging.getLogger('pyppeteer.launcher').setLevel(logging.WARNING)
+    logging.getLogger('playwright').setLevel(logging.WARNING)
+    logging.getLogger('playwright._impl').setLevel(logging.WARNING)
     logging.getLogger('websockets.client').setLevel(logging.WARNING)
     logging.getLogger('websockets.protocol').setLevel(logging.WARNING)
     

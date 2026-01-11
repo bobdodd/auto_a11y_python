@@ -218,37 +218,40 @@ def discover_pages(website_id):
             max_pages = None
     
     try:
-        # Check if Chromium is available
-        from pyppeteer import chromium_downloader
-        import os
-        
+        # Check if Playwright Chromium is available
+        from pathlib import Path
+
         try:
-            chromium_path = chromium_downloader.chromium_executable()
-            logger.info(f"Chromium path detected: {chromium_path}")
-            
+            # Playwright stores browsers in ~/.cache/ms-playwright on Unix
+            # or ~/Library/Caches/ms-playwright on macOS
+            playwright_cache = Path.home() / '.cache' / 'ms-playwright'
+            if not playwright_cache.exists():
+                # Try macOS location
+                playwright_cache = Path.home() / 'Library' / 'Caches' / 'ms-playwright'
+
+            chromium_path = None
+            if playwright_cache.exists():
+                # Look for chromium installation
+                for item in playwright_cache.iterdir():
+                    if item.is_dir() and 'chromium' in item.name.lower():
+                        chromium_path = item
+                        break
+
             if not chromium_path:
-                logger.warning("Chromium path is None")
+                logger.warning("Playwright Chromium not found")
                 return jsonify({
                     'success': False,
-                    'error': 'Chromium browser not found. Please run: python run.py --download-browser',
+                    'error': 'Playwright Chromium browser not found. Please run: python -m playwright install chromium',
                     'message': 'Browser required for page discovery'
                 }), 500
-                
-            if not os.path.exists(chromium_path):
-                logger.warning(f"Chromium path does not exist: {chromium_path}")
-                return jsonify({
-                    'success': False,
-                    'error': f'Chromium browser not found at {chromium_path}. Please run: python run.py --download-browser',
-                    'message': 'Browser required for page discovery'
-                }), 500
-                
-            logger.info(f"Chromium found and verified at: {chromium_path}")
-            
+
+            logger.info(f"Playwright Chromium found at: {chromium_path}")
+
         except Exception as chrome_error:
-            logger.error(f"Error checking Chromium: {chrome_error}")
+            logger.error(f"Error checking Playwright Chromium: {chrome_error}")
             return jsonify({
                 'success': False,
-                'error': f'Error checking Chromium: {chrome_error}',
+                'error': f'Error checking Playwright browser: {chrome_error}',
                 'message': 'Failed to verify browser installation'
             }), 500
         

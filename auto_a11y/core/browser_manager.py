@@ -1,44 +1,91 @@
 """
-Browser management for Pyppeteer
+Browser management using Playwright
+
+This module provides a Playwright-based browser manager that implements the same
+interface as the Pyppeteer-based BrowserManager, but with improved stability
+for multi-state testing and authenticated user scenarios.
+
+Key improvements over Pyppeteer:
+- Browser context isolation for clean test states
+- Built-in auto-waiting reduces timing issues
+- Storage state API for authentication persistence
+- More stable connection handling
+- Active maintenance by Microsoft
 """
 
 import asyncio
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Union
 from pathlib import Path
 import logging
 from contextlib import asynccontextmanager
-from pyppeteer import launch, browser, page
-from pyppeteer.errors import BrowserError, PageError, TimeoutError
+
+from playwright.async_api import (
+    async_playwright,
+    Browser,
+    BrowserContext,
+    Page,
+    Response,
+    Playwright,
+    Error as PlaywrightError,
+    TimeoutError as PlaywrightTimeoutError
+)
 
 logger = logging.getLogger(__name__)
 
 
 class BrowserManager:
-    """Manages Pyppeteer browser instances"""
-    
+    """
+    Manages Playwright browser instances with context isolation.
+
+    This class provides the same interface as the Pyppeteer BrowserManager
+    but uses Playwright for improved stability, especially for:
+    - Multi-state testing
+    - Authenticated user testing
+    - Multiple viewport changes
+    - Script injection scenarios
+    """
+
     def __init__(self, config: Dict[str, Any]):
         """
         Initialize browser manager
-        
+
         Args:
-            config: Browser configuration
+            config: Browser configuration dictionary with keys:
+                - headless: Run in headless mode (default: True)
+                - timeout: Default timeout in ms (default: 60000)
+                - viewport_width: Viewport width (default: 1920)
+                - viewport_height: Viewport height (default: 1080)
+                - user_agent: User agent string
+                - stealth_mode: Apply anti-detection measures (default: False)
+                - max_concurrent_pages: Max concurrent pages (default: 5)
         """
         self.config = config
-        self.browser: Optional[browser.Browser] = None
-        self.pages: List[page.Page] = []
+        self._playwright: Optional[Playwright] = None
+        self._browser: Optional[Browser] = None
+        self._default_context: Optional[BrowserContext] = None
+        self._contexts: List[BrowserContext] = []
+        self._pages: List[Page] = []
         self._semaphore = asyncio.Semaphore(config.get('max_concurrent_pages', 5))
-        
-    async def start(self):
+
+    @property
+    def pages(self) -> List[Page]:
+        """Get list of open pages (for compatibility)"""
+        return self._pages
+
+    @property
+    def browser(self) -> Optional[Browser]:
+        """Get browser instance (for compatibility)"""
+        return self._browser
+
+    async def start(self) -> None:
         """Start browser instance"""
-        if self.browser and await self.is_running():
-            pass  # Browser already running
-            return
-        
-        # Check if headless mode is requested
-        # Check both uppercase (from Config class) and lowercase (from dict) keys
+        if self._browser and self._browser.is_connected():
+            return  # Browser already running
+
+        # Get headless setting (check both uppercase and lowercase keys)
         is_headless = self.config.get('headless', self.config.get('BROWSER_HEADLESS', True))
 
-        # Build args list
+        # Build args list (similar to Pyppeteer for consistency)
         browser_args = [
             '--no-sandbox',
             '--disable-setuid-sandbox',
@@ -47,15 +94,9 @@ class BrowserManager:
             '--no-first-run',
             '--disable-gpu',
             f'--window-size={self.config.get("viewport_width", 1920)},{self.config.get("viewport_height", 1080)}',
-            '--log-level=3',
-            '--silent',
-            '--disable-logging',
             '--disable-extensions',
             '--disable-background-networking',
             '--disable-blink-features=AutomationControlled',
-            '--exclude-switches=enable-automation',
-            '--disable-infobars',
-            # Stability improvements
             '--disable-features=TranslateUI',
             '--disable-ipc-flooding-protection',
             '--disable-renderer-backgrounding',
@@ -63,55 +104,176 @@ class BrowserManager:
             '--disable-component-update',
         ]
 
-        # Add headless=new mode if headless is requested (Chrome 109+)
-        # This mode is much harder to detect than old headless
-        # Only use new headless mode if stealth is enabled (it's slower)
-        stealth_mode = self.config.get('stealth_mode', False)
-        if is_headless and stealth_mode:
-            browser_args.append('--headless=new')
-        elif is_headless:
-            # Use old headless for speed when stealth not needed
-            browser_args.append('--headless')
-
         launch_options = {
-            'headless': False,  # Don't use old headless, use --headless=new flag instead
-            'handleSIGINT': False,
-            'handleSIGTERM': False,
-            'handleSIGHUP': False,
+            'headless': is_headless,
             'args': browser_args,
-            'dumpio': self.config.get('dumpio', False),  # Disable to reduce console noise
-            'timeout': self.config.get('timeout', 60000),  # Increased to 60 seconds
-            'autoClose': False,  # Prevent automatic closing
-            'ignoreDefaultArgs': ['--enable-automation']  # Don't use automation flag
+            'timeout': self.config.get('timeout', 60000),
         }
-        
-        # Add user data directory if specified
-        if 'user_data_dir' in self.config:
-            launch_options['userDataDir'] = self.config['user_data_dir']
-        
+
+        # Add executable path if specified
+        if self.config.get('executable_path'):
+            launch_options['executable_path'] = self.config['executable_path']
+
         try:
-            self.browser = await launch(**launch_options)
-            pass  # Browser started
-            # Keep a reference to prevent garbage collection
-            self._browser_ref = self.browser
+            self._playwright = await async_playwright().start()
+            self._browser = await self._playwright.chromium.launch(**launch_options)
+            logger.info("Playwright browser started successfully")
         except Exception as e:
             logger.error(f"Failed to start browser: {e}")
-            self.browser = None
+            await self._cleanup_playwright()
             raise
-    
-    async def _apply_stealth(self, page):
+
+    async def _cleanup_playwright(self) -> None:
+        """Clean up Playwright resources"""
+        if self._playwright:
+            try:
+                await self._playwright.stop()
+            except Exception:
+                pass
+            self._playwright = None
+
+    async def stop(self) -> None:
+        """Stop browser instance completely"""
+        # Close all pages
+        for page in self._pages[:]:  # Copy list to avoid modification during iteration
+            try:
+                if not page.is_closed():
+                    await page.close()
+            except Exception:
+                pass
+        self._pages.clear()
+
+        # Close all contexts
+        for context in self._contexts[:]:
+            try:
+                await context.close()
+            except Exception:
+                pass
+        self._contexts.clear()
+
+        # Close default context
+        if self._default_context:
+            try:
+                await self._default_context.close()
+            except Exception:
+                pass
+            self._default_context = None
+
+        # Close browser
+        if self._browser:
+            try:
+                await self._browser.close()
+            except Exception:
+                pass
+            self._browser = None
+
+        # Stop Playwright
+        await self._cleanup_playwright()
+        logger.info("Playwright browser stopped")
+
+    async def create_context(
+        self,
+        storage_state: Optional[str] = None,
+        viewport: Optional[Dict[str, int]] = None,
+        user_agent: Optional[str] = None
+    ) -> BrowserContext:
         """
-        Apply stealth techniques to make the browser harder to detect
+        Create an isolated browser context.
+
+        Browser contexts provide complete isolation:
+        - Separate cookies, localStorage, sessionStorage
+        - Separate cache
+        - Can have different viewports and user agents
+
+        This is the KEY FEATURE that makes Playwright more stable
+        for multi-state and multi-user testing.
 
         Args:
-            page: Page instance to apply stealth to
-        """
-        # Only apply stealth if enabled in config
-        if not self.config.get('stealth_mode', False):
-            return
+            storage_state: Path to saved storage state (for auth persistence)
+            viewport: Custom viewport {width, height}
+            user_agent: Custom user agent string
 
-        # Override navigator properties to hide automation
-        await page.evaluateOnNewDocument('''() => {
+        Returns:
+            BrowserContext instance
+        """
+        if not self._browser:
+            await self.start()
+
+        context_options = {
+            'viewport': viewport or {
+                'width': self.config.get('viewport_width', self.config.get('BROWSER_VIEWPORT_WIDTH', 1920)),
+                'height': self.config.get('viewport_height', self.config.get('BROWSER_VIEWPORT_HEIGHT', 1080))
+            },
+            'user_agent': user_agent or self.config.get('user_agent') or self.config.get('USER_AGENT') or
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
+
+        # Load saved authentication state if provided
+        if storage_state and Path(storage_state).exists():
+            context_options['storage_state'] = storage_state
+            logger.debug(f"Loading storage state from: {storage_state}")
+
+        context = await self._browser.new_context(**context_options)
+
+        # Set default timeouts
+        default_timeout = self.config.get('timeout', 60000)
+        context.set_default_timeout(default_timeout)
+        context.set_default_navigation_timeout(default_timeout)
+
+        # Apply stealth if enabled
+        if self.config.get('stealth_mode', False):
+            await self._apply_stealth(context)
+
+        self._contexts.append(context)
+        logger.debug(f"Created browser context (total: {len(self._contexts)})")
+        return context
+
+    async def close_context(self, context: BrowserContext) -> None:
+        """
+        Close a browser context and all its pages.
+
+        Args:
+            context: BrowserContext to close
+        """
+        try:
+            # Remove pages from tracking
+            for page in context.pages:
+                if page in self._pages:
+                    self._pages.remove(page)
+
+            await context.close()
+
+            if context in self._contexts:
+                self._contexts.remove(context)
+
+            logger.debug(f"Closed browser context (remaining: {len(self._contexts)})")
+        except Exception as e:
+            logger.warning(f"Error closing context: {e}")
+
+    async def save_storage_state(self, context: BrowserContext, path: str) -> None:
+        """
+        Save authentication/storage state to file for reuse.
+
+        This allows you to:
+        1. Login once
+        2. Save the state
+        3. Create new contexts with that state (instant auth)
+
+        Args:
+            context: BrowserContext with authenticated state
+            path: File path to save state to
+        """
+        await context.storage_state(path=path)
+        logger.info(f"Saved storage state to: {path}")
+
+    async def _apply_stealth(self, context: BrowserContext) -> None:
+        """
+        Apply stealth techniques to make the browser harder to detect.
+
+        Args:
+            context: BrowserContext to apply stealth to
+        """
+        stealth_script = '''() => {
             // Overwrite the `navigator.webdriver` property
             Object.defineProperty(navigator, 'webdriver', {
                 get: () => false,
@@ -139,189 +301,114 @@ class BrowserManager:
                     Promise.resolve({ state: Notification.permission }) :
                     originalQuery(parameters)
             );
-        }''')
+        }'''
 
-    async def stop(self):
-        """Stop browser instance completely - ensures process is fully terminated"""
-        if not self.browser:
-            return
-        
-        # Close all pages first
-        for page in self.pages:
-            try:
-                await page.close()
-            except:
-                pass
-        self.pages.clear()
-        
-        # Get process reference before closing
-        browser_process = None
-        pid = None
-        if hasattr(self.browser, 'process') and self.browser.process:
-            browser_process = self.browser.process
-            pid = browser_process.pid
-        
-        # Try graceful close first
-        try:
-            await self.browser.close()
-        except Exception:
-            pass
-        
-        # Force kill the process if it's still running
-        if browser_process and browser_process.returncode is None:
-            try:
-                browser_process.kill()
-            except Exception:
-                pass
-        
-        # Force kill with OS-level SIGKILL
-        if pid:
-            import os
-            import signal
-            try:
-                os.kill(pid, signal.SIGKILL)
-            except (ProcessLookupError, OSError):
-                pass  # Process already dead
-        
-        # Wait until the process is confirmed dead
-        if pid:
-            self._wait_for_process_death(pid)
-        
-        # Clear all references
-        self.browser = None
-        self._browser_ref = None
-    
-    def _wait_for_process_death(self, pid: int):
-        """Block until process is confirmed dead by the OS"""
-        import os
-        import time
-        
-        while True:
-            try:
-                os.kill(pid, 0)  # Signal 0 just checks if process exists
-                time.sleep(0.1)  # Process still exists, wait
-            except ProcessLookupError:
-                break  # Process is dead
-            except OSError:
-                break  # Process is dead or we don't have permission
-    
+        await context.add_init_script(stealth_script)
+
     @asynccontextmanager
-    async def get_page(self):
+    async def get_page(self, context: Optional[BrowserContext] = None):
         """
-        Get a new page with resource management
-        
+        Get a new page with resource management.
+
+        Args:
+            context: Optional BrowserContext to use (creates default if not provided)
+
         Yields:
             Page instance
         """
         async with self._semaphore:
-            if not self.browser:
+            if not self._browser:
                 await self.start()
-            
+
+            # Use provided context or create/use default
+            if context is None:
+                if self._default_context is None:
+                    self._default_context = await self.create_context()
+                context = self._default_context
+
             page = None
             try:
-                page = await self.browser.newPage()
-
-                # Apply stealth techniques
-                await self._apply_stealth(page)
-
-                # Set viewport
-                await page.setViewport({
-                    'width': self.config.get('viewport_width', 1920),
-                    'height': self.config.get('viewport_height', 1080)
-                })
-
-                # Set user agent if specified (check both uppercase and lowercase keys for compatibility)
-                user_agent = (
-                    self.config.get('user_agent') or
-                    self.config.get('USER_AGENT') or
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-                )
-                await page.setUserAgent(user_agent)
-
-                # Set default timeout
-                page.setDefaultNavigationTimeout(self.config.get('timeout', 60000))
-
-                self.pages.append(page)
+                page = await context.new_page()
+                self._pages.append(page)
                 yield page
-                
+
             finally:
-                if page:
+                if page and not page.is_closed():
                     try:
                         await page.close()
-                        if page in self.pages:
-                            self.pages.remove(page)
+                        if page in self._pages:
+                            self._pages.remove(page)
                     except Exception as e:
                         logger.warning(f"Error closing page: {e}")
 
-    async def create_page(self):
+    async def create_page(self, context: Optional[BrowserContext] = None) -> Page:
         """
-        Create a new page without context manager (caller must close it)
-        
+        Create a new page without context manager (caller must close it).
+
+        Args:
+            context: Optional BrowserContext to use
+
         Returns:
             Page instance
         """
-        if not self.browser:
+        if not self._browser:
             await self.start()
-        
-        page = await self.browser.newPage()
-        await self._apply_stealth(page)
-        
-        await page.setViewport({
-            'width': self.config.get('viewport_width', 1920),
-            'height': self.config.get('viewport_height', 1080)
-        })
-        
-        user_agent = (
-            self.config.get('user_agent') or
-            self.config.get('USER_AGENT') or
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        )
-        await page.setUserAgent(user_agent)
-        page.setDefaultNavigationTimeout(self.config.get('timeout', 60000))
-        
-        self.pages.append(page)
+
+        # Use provided context or create/use default
+        if context is None:
+            if self._default_context is None:
+                self._default_context = await self.create_context()
+            context = self._default_context
+
+        page = await context.new_page()
+        self._pages.append(page)
         return page
 
-    async def close_page(self, page):
+    async def close_page(self, page: Page) -> None:
         """
-        Close a page created with create_page()
-        
+        Close a page created with create_page().
+
         Args:
             page: Page instance to close
         """
         try:
-            await page.close()
-            if page in self.pages:
-                self.pages.remove(page)
+            if not page.is_closed():
+                await page.close()
+            if page in self._pages:
+                self._pages.remove(page)
         except Exception as e:
             logger.warning(f"Error closing page: {e}")
-    
+
     async def goto(
-        self, 
-        page: page.Page, 
+        self,
+        page: Page,
         url: str,
-        wait_until: str = 'networkidle2',
+        wait_until: str = 'networkidle',
         timeout: Optional[int] = None,
         capture_css: bool = False
-    ) -> Optional[page.Response]:
+    ) -> Optional[Response]:
         """
-        Navigate to URL with error handling
-        
+        Navigate to URL with error handling.
+
         Args:
             page: Page instance
             url: URL to navigate to
-            wait_until: Wait condition
-            timeout: Navigation timeout
+            wait_until: Wait condition ('load', 'domcontentloaded', 'networkidle')
+            timeout: Navigation timeout in ms
             capture_css: Whether to capture CSS focus rules during navigation
-            
+
         Returns:
             Response object or None if failed
         """
-        options = {
-            'waitUntil': wait_until,
-            'timeout': timeout or self.config.get('timeout', 60000)
+        # Map Pyppeteer wait conditions to Playwright
+        wait_map = {
+            'networkidle0': 'networkidle',
+            'networkidle2': 'networkidle',
+            'load': 'load',
+            'domcontentloaded': 'domcontentloaded',
         }
-        
+        wait_until = wait_map.get(wait_until, wait_until)
+
         css_capture = None
         if capture_css:
             try:
@@ -335,11 +422,15 @@ class BrowserManager:
             except Exception as e:
                 logger.debug(f"CSS capture setup failed: {e}")
                 css_capture = None
-        
+
         try:
-            response = await page.goto(url, options)
+            response = await page.goto(
+                url,
+                wait_until=wait_until,
+                timeout=timeout or self.config.get('timeout', 60000)
+            )
             logger.debug(f"Navigated to: {url}")
-            
+
             if css_capture:
                 try:
                     await css_capture.stop_capture()
@@ -347,67 +438,69 @@ class BrowserManager:
                     logger.debug(f"CSS capture complete: {len(css_capture.cache.focus_rules)} focus rules captured")
                 except Exception as e:
                     logger.debug(f"CSS capture finalization failed: {e}")
-            
+
             return response
-        except TimeoutError:
+
+        except PlaywrightTimeoutError:
             logger.warning(f"Navigation timeout for: {url}")
             if css_capture:
                 try:
                     await css_capture.stop_capture()
-                except:
+                except Exception:
                     pass
             return None
-        except Exception as e:
+
+        except PlaywrightError as e:
             logger.error(f"Navigation error for {url}: {e}")
             if css_capture:
                 try:
                     await css_capture.stop_capture()
-                except:
+                except Exception:
                     pass
             return None
-    
+
     async def take_screenshot(
         self,
-        page: page.Page,
+        page: Page,
         path: Optional[Path] = None,
         full_page: bool = True
     ) -> bytes:
         """
-        Take screenshot of page
-        
+        Take screenshot of page.
+
         Args:
             page: Page instance
             path: Optional path to save screenshot
             full_page: Capture full page
-            
+
         Returns:
             Screenshot bytes
         """
-        options = {
-            'fullPage': full_page,
+        screenshot_options = {
+            'full_page': full_page,
             'type': 'jpeg',
-            'quality': 80  # Reduced from 85 to help prevent MongoDB 16MB document limit issues
+            'quality': 80
         }
-        
+
         if path:
-            options['path'] = str(path)
-        
+            screenshot_options['path'] = str(path)
+
         try:
-            screenshot = await page.screenshot(options)
+            screenshot = await page.screenshot(**screenshot_options)
             logger.debug(f"Screenshot taken{f' and saved to {path}' if path else ''}")
             return screenshot
         except Exception as e:
             logger.error(f"Screenshot error: {e}")
             raise
-    
+
     async def inject_scripts(
         self,
-        page: page.Page,
+        page: Page,
         script_paths: List[Path]
-    ):
+    ) -> None:
         """
-        Inject JavaScript files into page
-        
+        Inject JavaScript files into page.
+
         Args:
             page: Page instance
             script_paths: List of script file paths
@@ -416,26 +509,26 @@ class BrowserManager:
             if not script_path.exists():
                 logger.warning(f"Script not found: {script_path}")
                 continue
-            
+
             try:
-                await page.addScriptTag({'path': str(script_path)})
+                await page.add_script_tag(path=str(script_path))
                 logger.debug(f"Injected script: {script_path.name}")
             except Exception as e:
                 logger.error(f"Failed to inject script {script_path.name}: {e}")
                 raise
-    
+
     async def execute_script(
         self,
-        page: page.Page,
+        page: Page,
         script: str
     ) -> Any:
         """
-        Execute JavaScript in page context
-        
+        Execute JavaScript in page context.
+
         Args:
             page: Page instance
             script: JavaScript code to execute
-            
+
         Returns:
             Script execution result
         """
@@ -445,44 +538,47 @@ class BrowserManager:
         except Exception as e:
             logger.error(f"Script execution error: {e}")
             raise
-    
+
     async def wait_for_selector(
         self,
-        page: page.Page,
+        page: Page,
         selector: str,
-        timeout: Optional[int] = None
+        timeout: Optional[int] = None,
+        state: str = 'visible'
     ) -> bool:
         """
-        Wait for element to appear
-        
+        Wait for element to appear.
+
         Args:
             page: Page instance
-            selector: CSS selector
-            timeout: Wait timeout
-            
+            selector: CSS selector or XPath (auto-detected)
+            timeout: Wait timeout in ms
+            state: Element state to wait for ('visible', 'attached', 'hidden', 'detached')
+
         Returns:
             True if element found, False otherwise
         """
         try:
-            await page.waitForSelector(
+            await page.wait_for_selector(
                 selector,
-                {'timeout': timeout or self.config.get('timeout', 60000)}
+                timeout=timeout or self.config.get('timeout', 60000),
+                state=state
             )
             return True
-        except TimeoutError:
+        except PlaywrightTimeoutError:
             logger.debug(f"Selector not found: {selector}")
             return False
         except Exception as e:
             logger.error(f"Wait for selector error: {e}")
             return False
-    
-    async def get_page_content(self, page: page.Page) -> str:
+
+    async def get_page_content(self, page: Page) -> str:
         """
-        Get page HTML content
-        
+        Get page HTML content.
+
         Args:
             page: Page instance
-            
+
         Returns:
             HTML content
         """
@@ -492,14 +588,14 @@ class BrowserManager:
         except Exception as e:
             logger.error(f"Error getting page content: {e}")
             raise
-    
-    async def get_page_title(self, page: page.Page) -> str:
+
+    async def get_page_title(self, page: Page) -> str:
         """
-        Get page title
-        
+        Get page title.
+
         Args:
             page: Page instance
-            
+
         Returns:
             Page title
         """
@@ -509,14 +605,14 @@ class BrowserManager:
         except Exception as e:
             logger.error(f"Error getting page title: {e}")
             return ""
-    
-    async def extract_links(self, page: page.Page) -> List[str]:
+
+    async def extract_links(self, page: Page) -> List[str]:
         """
-        Extract all links from page
-        
+        Extract all links from page.
+
         Args:
             page: Page instance
-            
+
         Returns:
             List of URLs
         """
@@ -531,51 +627,43 @@ class BrowserManager:
         except Exception as e:
             logger.error(f"Error extracting links: {e}")
             return []
-    
+
     async def is_running(self) -> bool:
-        """Check if browser is running"""
+        """Check if browser is running and connected."""
         try:
-            if not self.browser:
+            if not self._browser:
                 return False
-            # Check if the browser process is still alive
-            if hasattr(self.browser, 'process') and self.browser.process:
-                if self.browser.process.returncode is not None:
-                    logger.warning("Browser process has terminated")
-                    self.browser = None  # Clear dead reference
-                    return False
-            # Try to verify connection is still alive
-            try:
-                # Get browser version to check connection with timeout
-                version_task = self.browser.version()
-                await asyncio.wait_for(version_task, timeout=2.0)
-                return True
-            except asyncio.TimeoutError:
-                logger.warning("Browser connection check timed out")
-                self.browser = None  # Clear dead reference
-                return False
-            except Exception as e:
-                logger.warning(f"Browser connection lost: {e}")
-                self.browser = None  # Clear dead reference
-                return False
+            return self._browser.is_connected()
         except Exception as e:
             logger.error(f"Error checking browser status: {e}")
-            self.browser = None  # Clear on any error
             return False
-    
-    async def ensure_running(self):
-        """Ensure browser is running, restart if needed"""
+
+    async def ensure_running(self) -> None:
+        """Ensure browser is running, restart if needed."""
         if not await self.is_running():
             logger.info("Browser not running, restarting...")
+            await self.stop()  # Clean up any dead resources
             await self.start()
+
+    # Compatibility properties for code that accesses browser directly
+    @property
+    def browser(self) -> Optional[Browser]:
+        """Get the underlying browser instance (for compatibility)."""
+        return self._browser
+
+    @property
+    def pages(self) -> List[Page]:
+        """Get list of open pages (for compatibility)."""
+        return self._pages
 
 
 class BrowserPool:
-    """Pool of browser instances for parallel processing"""
-    
+    """Pool of browser instances for parallel processing."""
+
     def __init__(self, config: Dict[str, Any], pool_size: int = 3):
         """
-        Initialize browser pool
-        
+        Initialize browser pool.
+
         Args:
             config: Browser configuration
             pool_size: Number of browser instances
@@ -584,31 +672,31 @@ class BrowserPool:
         self.pool_size = pool_size
         self.browsers: List[BrowserManager] = []
         self._lock = asyncio.Lock()
-        self._available = asyncio.Queue()
-        
-    async def start(self):
-        """Start browser pool"""
+        self._available: asyncio.Queue = asyncio.Queue()
+
+    async def start(self) -> None:
+        """Start browser pool."""
         for _ in range(self.pool_size):
             browser = BrowserManager(self.config)
             await browser.start()
             self.browsers.append(browser)
             await self._available.put(browser)
-        
+
         logger.info(f"Started browser pool with {self.pool_size} instances")
-    
-    async def stop(self):
-        """Stop browser pool"""
+
+    async def stop(self) -> None:
+        """Stop browser pool."""
         for browser in self.browsers:
             await browser.stop()
-        
+
         self.browsers.clear()
         logger.info("Stopped browser pool")
-    
+
     @asynccontextmanager
     async def acquire(self):
         """
-        Acquire browser from pool
-        
+        Acquire browser from pool.
+
         Yields:
             BrowserManager instance
         """

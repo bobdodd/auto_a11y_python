@@ -1,5 +1,5 @@
 """
-Web scraping engine using Pyppeteer
+Web scraping engine using Playwright browser automation
 """
 
 import asyncio
@@ -12,9 +12,8 @@ from datetime import datetime
 import re
 from io import BytesIO
 
-from pyppeteer import launch
-from pyppeteer.errors import TimeoutError, PageError, NetworkError
 from bs4 import BeautifulSoup
+from playwright.async_api import TimeoutError as PlaywrightTimeout
 
 from auto_a11y.models.page import Page, PageStatus
 from auto_a11y.models.website import Website
@@ -146,30 +145,8 @@ class ScrapingEngine:
                 # Ensure browser is running and connected
                 await self.browser_manager.ensure_running()
 
-                # Create a new page for login
-                browser_page = await self.browser_manager.browser.newPage()
-
-                # Apply stealth techniques
-                await self.browser_manager._apply_stealth(browser_page)
-
-                # Set viewport
-                await browser_page.setViewport({
-                    'width': self.browser_manager.config.get('viewport_width', 1920),
-                    'height': self.browser_manager.config.get('viewport_height', 1080)
-                })
-
-                # Set user agent
-                user_agent = (
-                    self.browser_manager.config.get('user_agent') or
-                    self.browser_manager.config.get('USER_AGENT') or
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-                )
-                await browser_page.setUserAgent(user_agent)
-
-                # Set default timeout
-                browser_page.setDefaultNavigationTimeout(self.browser_manager.config.get('timeout', 60000))
-
-                self.browser_manager.pages.append(browser_page)
+                # Create a new page for login (handles viewport, user agent, stealth)
+                browser_page = await self.browser_manager.create_page()
 
                 # Perform login
                 login_result = await login_automation.perform_login(
@@ -552,9 +529,9 @@ class ScrapingEngine:
             
         page = None
         try:
-            # Check browser connection before creating page
-            if not self.browser_manager.browser:
-                logger.error("Browser instance is None")
+            # Check browser is available
+            if not await self.browser_manager.is_running():
+                logger.error("Browser is not running")
                 return Page(
                     website_id=website.id,
                     url=url,
@@ -564,16 +541,16 @@ class ScrapingEngine:
                     status=PageStatus.DISCOVERY_FAILED,
                     error_reason="Browser instance unavailable"
                 )
-                
-            # Create a new page with error handling
+
+            # Create a new page with error handling (handles viewport, user agent, stealth)
             try:
-                page = await self.browser_manager.browser.newPage()
+                page = await self.browser_manager.create_page()
             except Exception as e:
                 logger.error(f"Failed to create new page: {e}")
                 # Browser might be in bad state, try to restart
                 try:
                     await self.browser_manager.ensure_running()
-                    page = await self.browser_manager.browser.newPage()
+                    page = await self.browser_manager.create_page()
                 except Exception as e2:
                     logger.error(f"Failed to create page even after restart: {e2}")
                     return Page(
@@ -586,35 +563,16 @@ class ScrapingEngine:
                         error_reason=f"Failed to create browser page: {str(e2)[:200]}"
                     )
 
-            # Apply stealth techniques to avoid bot detection
-            await self.browser_manager._apply_stealth(page)
-
-            # Set viewport
-            await page.setViewport({
-                'width': self.browser_manager.config.get('viewport_width', 1920),
-                'height': self.browser_manager.config.get('viewport_height', 1080)
-            })
-
-            # Set user agent (check both uppercase and lowercase keys for compatibility)
-            user_agent = (
-                self.browser_manager.config.get('user_agent') or
-                self.browser_manager.config.get('USER_AGENT') or
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-            )
-            await page.setUserAgent(user_agent)
-
             # Configure timeouts and wait conditions based on stealth mode
             stealth_mode = self.browser_manager.config.get('stealth_mode', False)
 
             if stealth_mode:
                 # Slower, more thorough for Cloudflare-protected sites
-                page.setDefaultNavigationTimeout(45000)  # 45 seconds
-                wait_until = 'networkidle0'  # Wait for all network activity to stop
+                wait_until = 'networkidle'  # Wait for network to settle (Playwright compatible)
                 nav_timeout = 40000  # 40 seconds
                 post_nav_wait = 3  # Wait 3 seconds after navigation
             else:
                 # Faster for normal sites
-                page.setDefaultNavigationTimeout(25000)  # 25 seconds
                 wait_until = 'domcontentloaded'  # Just wait for DOM
                 nav_timeout = 20000  # 20 seconds
                 post_nav_wait = 0  # No extra wait
@@ -724,7 +682,7 @@ class ScrapingEngine:
                             )
                             return failed_page
                             
-            except (TimeoutError, Exception) as e:
+            except Exception as e:
                 logger.warning(f"Navigation failed for {url}: {e}")
                 # IMPORTANT: Close the page to prevent browser hanging
                 if page:
@@ -809,7 +767,7 @@ class ScrapingEngine:
             logger.debug(f"Discovered page: {url} - {title}")
             return page_obj
                 
-        except TimeoutError:
+        except PlaywrightTimeout:
             logger.warning(f"Timeout loading page: {url}")
             # Check browser health after timeout
             if not await self.browser_manager.is_running():

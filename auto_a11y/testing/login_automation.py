@@ -1,5 +1,5 @@
 """
-Login automation for authenticated testing
+Login automation for authenticated testing using Playwright
 """
 
 import logging
@@ -31,7 +31,7 @@ class LoginAutomation:
         Perform automated login for a user
 
         Args:
-            browser_page: Pyppeteer page object
+            browser_page: Playwright page object
             user: WebsiteUser object with credentials and login config
             timeout: Maximum time to wait for login (milliseconds)
 
@@ -87,7 +87,7 @@ class LoginAutomation:
         Perform form-based login
 
         Args:
-            browser_page: Pyppeteer page object
+            browser_page: Playwright page object
             user: WebsiteUser with login configuration
             timeout: Timeout in milliseconds
 
@@ -107,26 +107,24 @@ class LoginAutomation:
         try:
             logger.info(f"Navigating to login page: {config.login_url}")
 
-            # Navigate to login page
-            await browser_page.goto(config.login_url, {
-                'waitUntil': 'networkidle2',
-                'timeout': timeout
-            })
+            # Navigate to login page (Playwright API)
+            await browser_page.goto(config.login_url, wait_until='networkidle', timeout=timeout)
 
-            # Wait for login form to be visible
+            # Wait for login form to be visible (Playwright API)
             logger.info(f"Waiting for username field: {config.username_field_selector}")
-            await browser_page.waitForSelector(
+            await browser_page.wait_for_selector(
                 config.username_field_selector,
-                {'visible': True, 'timeout': timeout}
+                state='visible',
+                timeout=timeout
             )
 
-            # Fill username
+            # Fill username (Playwright API)
             logger.info(f"Entering username: {user.username}")
-            await browser_page.type(config.username_field_selector, user.username, {'delay': 50})
+            await browser_page.fill(config.username_field_selector, user.username)
 
-            # Fill password
+            # Fill password (Playwright API)
             logger.info("Entering password")
-            await browser_page.type(config.password_field_selector, user.password, {'delay': 50})
+            await browser_page.fill(config.password_field_selector, user.password)
 
             # Click submit button if specified
             if config.submit_button_selector:
@@ -137,9 +135,9 @@ class LoginAutomation:
                 logger.info("Pressing Enter to submit")
                 await browser_page.keyboard.press('Enter')
 
-            # Wait for navigation after login
+            # Wait for navigation after login (Playwright API)
             try:
-                await browser_page.waitForNavigation({'timeout': timeout, 'waitUntil': 'networkidle2'})
+                await browser_page.wait_for_load_state('networkidle', timeout=timeout)
             except Exception as nav_error:
                 logger.warning(f"Navigation wait timed out, checking success indicator: {nav_error}")
 
@@ -147,9 +145,10 @@ class LoginAutomation:
             if config.success_indicator_selector:
                 logger.info(f"Checking for success indicator: {config.success_indicator_selector}")
                 try:
-                    await browser_page.waitForSelector(
+                    await browser_page.wait_for_selector(
                         config.success_indicator_selector,
-                        {'visible': True, 'timeout': 5000}
+                        state='visible',
+                        timeout=5000
                     )
                     logger.info("Login success indicator found")
                     return {'success': True, 'error': None}
@@ -176,15 +175,15 @@ class LoginAutomation:
         Perform HTTP Basic Authentication
 
         Args:
-            browser_page: Pyppeteer page object
+            browser_page: Playwright page object
             user: WebsiteUser with credentials
 
         Returns:
             Result dictionary
         """
         try:
-            # Set authentication credentials
-            await browser_page.authenticate({
+            # Set authentication credentials (Playwright API - set on context)
+            await browser_page.context.set_http_credentials({
                 'username': user.username,
                 'password': user.password
             })
@@ -207,7 +206,7 @@ class LoginAutomation:
         Perform automated logout for a user
 
         Args:
-            browser_page: Pyppeteer page object
+            browser_page: Playwright page object
             user: WebsiteUser object with logout configuration
             timeout: Maximum time to wait for logout (milliseconds)
 
@@ -222,8 +221,8 @@ class LoginAutomation:
             # Check if logout is configured
             if not login_config.logout_url and not login_config.logout_button_selector:
                 logger.info(f"No logout configuration for user {user.username}, clearing cookies instead")
-                # Clear all cookies to ensure clean logout
-                await browser_page._client.send('Network.clearBrowserCookies')
+                # Clear all cookies to ensure clean logout (Playwright API)
+                await browser_page.context.clear_cookies()
                 return {
                     'success': True,
                     'error': None,
@@ -233,29 +232,24 @@ class LoginAutomation:
 
             # Perform configured logout
             if login_config.logout_url:
-                # Navigate to logout URL
+                # Navigate to logout URL (Playwright API)
                 logger.info(f"Navigating to logout URL: {login_config.logout_url}")
-                await browser_page.goto(login_config.logout_url, {
-                    'waitUntil': 'networkidle2',
-                    'timeout': timeout
-                })
+                await browser_page.goto(login_config.logout_url, wait_until='networkidle', timeout=timeout)
 
             # Click logout button if specified
             if login_config.logout_button_selector:
                 logger.info(f"Clicking logout button: {login_config.logout_button_selector}")
                 try:
-                    await browser_page.waitForSelector(
+                    await browser_page.wait_for_selector(
                         login_config.logout_button_selector,
-                        {'visible': True, 'timeout': 5000}
+                        state='visible',
+                        timeout=5000
                     )
                     await browser_page.click(login_config.logout_button_selector)
 
-                    # Wait for navigation if logout triggers redirect
+                    # Wait for navigation if logout triggers redirect (Playwright API)
                     try:
-                        await browser_page.waitForNavigation({
-                            'timeout': 5000,
-                            'waitUntil': 'networkidle2'
-                        })
+                        await browser_page.wait_for_load_state('networkidle', timeout=5000)
                     except:
                         pass  # Navigation may not happen for AJAX logouts
 
@@ -266,9 +260,10 @@ class LoginAutomation:
             if login_config.logout_success_indicator_selector:
                 logger.info(f"Checking for logout success indicator: {login_config.logout_success_indicator_selector}")
                 try:
-                    await browser_page.waitForSelector(
+                    await browser_page.wait_for_selector(
                         login_config.logout_success_indicator_selector,
-                        {'visible': True, 'timeout': 5000}
+                        state='visible',
+                        timeout=5000
                     )
                     logger.info("Logout success indicator found")
                 except Exception as e:
@@ -290,9 +285,9 @@ class LoginAutomation:
             error_msg = f"Logout error: {str(e)}"
             logger.error(error_msg)
 
-            # Try to clear cookies as fallback
+            # Try to clear cookies as fallback (Playwright API)
             try:
-                await browser_page._client.send('Network.clearBrowserCookies')
+                await browser_page.context.clear_cookies()
                 logger.info("Cleared cookies as logout fallback")
             except:
                 pass

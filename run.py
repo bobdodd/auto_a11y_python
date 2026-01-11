@@ -66,26 +66,47 @@ def setup_database():
 
 
 def download_browser():
-    """Download Chromium browser for Pyppeteer"""
+    """Download Chromium browser for Playwright"""
     logger = logging.getLogger(__name__)
     try:
-        from pyppeteer import chromium_downloader
-        import os
-        
-        # Check if Chromium is already downloaded
-        chromium_path = chromium_downloader.chromium_executable()
-        if chromium_path and os.path.exists(chromium_path):
-            logger.info(f"Chromium already installed at: {chromium_path}")
+        import subprocess
+
+        # Check if playwright browsers are already installed
+        # Playwright stores browsers in ~/.cache/ms-playwright on Unix
+        playwright_cache = Path.home() / '.cache' / 'ms-playwright'
+        chromium_path = None
+
+        if playwright_cache.exists():
+            # Look for chromium installation
+            for item in playwright_cache.iterdir():
+                if item.is_dir() and 'chromium' in item.name.lower():
+                    chromium_path = item
+                    break
+
+        if chromium_path and chromium_path.exists():
+            logger.info(f"Playwright Chromium already installed at: {chromium_path}")
             return True
-        
-        logger.info("Downloading Chromium browser...")
-        logger.info("This may take 5-10 minutes on first run...")
-        chromium_downloader.download_chromium()
-        logger.info("Chromium browser downloaded successfully")
-        return True
+
+        logger.info("Installing Playwright browsers...")
+        logger.info("This may take a few minutes on first run...")
+
+        # Use playwright install command
+        result = subprocess.run(
+            [sys.executable, '-m', 'playwright', 'install', 'chromium'],
+            capture_output=True,
+            text=True
+        )
+
+        if result.returncode == 0:
+            logger.info("Playwright Chromium browser installed successfully")
+            return True
+        else:
+            logger.warning(f"Playwright install output: {result.stderr}")
+            return False
+
     except Exception as e:
-        logger.warning(f"Could not download Chromium: {e}")
-        logger.warning("You can manually download it by running: python download_chromium.py")
+        logger.warning(f"Could not install Playwright browsers: {e}")
+        logger.warning("You can manually install by running: python -m playwright install chromium")
         return False
 
 

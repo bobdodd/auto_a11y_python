@@ -33,30 +33,25 @@ The demo is served by the autoA11y Flask application:
 - **Issue**: Spinner with `aria-hidden="true"`, no screen reader announcement
 - **WCAG**: 4.1.3 Status Messages (Level AA)
 
-### 5. **ErrInappropriateMenuRole**
-- **Location**: Main navigation `<nav role="menu">`
-- **Issue**: Using `role="menu"` for navigation instead of proper navigation role
-- **WCAG**: 4.1.2 Name, Role, Value (Level A)
-
-### 6. **Interactive Map with aria-hidden**
+### 5. **Interactive Map with aria-hidden**
 
 - **Location**: Google Maps iframe section
 - **Issue**: Interactive elements hidden with `aria-hidden="true"` but still keyboard focusable
 - **WCAG**: 4.1.2 Name, Role, Value (Level A)
 
-### 7. **Language Switcher Accessibility**
+### 6. **Language Switcher Accessibility**
 
 - **Location**: End of navigation menu
 - **Issue**: Language switcher is at the end of a long navigation menu, requiring many tabs to reach
 - **WCAG**: 2.4.3 Focus Order (Level A)
 - **Note**: Users must tab through all menu items before reaching language options
 
-### 8. **Fake Headings (AI Detection)**
+### 7. **Fake Headings (AI Detection)**
 - **Location**: Throughout pages (`.fake-heading` class)
 - **Issue**: Visual headings styled with divs instead of proper `<h2>`, `<h3>` elements
 - **Detection**: AI test for semantic structure
 
-### 9. **Mixed Language Content (AI Detection)**
+### 8. **Mixed Language Content (AI Detection)**
 - **Location**: French pages with unmarked English phrases
 - **Examples**:
   - "We're committed to digital excellence"
@@ -66,7 +61,7 @@ The demo is served by the autoA11y Flask application:
 - **WCAG**: 3.1.2 Language of Parts (Level AA)
 - **Detection**: AI test for dominant language
 
-### 10. **Color Contrast Issues (Desktop Only)**
+### 9. **Color Contrast Issues (Desktop Only)**
 - **Location**: Desktop sidebar (`.desktop-only-sidebar`)
 - **Issue**: Links with insufficient contrast (#999 on #ddd, #aaa on #e5e5e5)
 - **WCAG**: 1.4.3 Contrast (Minimum) (Level AA)

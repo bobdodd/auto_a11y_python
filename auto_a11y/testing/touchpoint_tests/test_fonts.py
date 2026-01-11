@@ -126,9 +126,12 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
             logger.info(f"Using system default font configuration: {len(inaccessible_fonts_list)} fonts")
 
         # Execute JavaScript to analyze fonts and typography
-        # Pass the font configuration to JavaScript
+        # Pass the font configuration to JavaScript as a single object
+        # Playwright's evaluate() accepts only one argument, so we bundle them together
         results = await page.evaluate('''
-            (inaccessibleFontsList, fontCategoriesData) => {
+            (args) => {
+                const inaccessibleFontsList = args.fonts;
+                const fontCategoriesData = args.categories;
                 const results = {
                     applicable: true,
                     errors: [],
@@ -491,7 +494,7 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
 
                 return results;
             }
-        ''', inaccessible_fonts_list, font_categories)
+        ''', {'fonts': inaccessible_fonts_list, 'categories': font_categories})
 
         return results
         

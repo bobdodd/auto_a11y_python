@@ -98,8 +98,8 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
 
         logger.info(f"Testing dialogs at breakpoints: {breakpoints}")
 
-        # Store original viewport (page.viewport is a property, not a method)
-        original_viewport = page.viewport
+        # Store original viewport (Playwright uses viewport_size property)
+        original_viewport = page.viewport_size
 
         # Collect all errors/warnings/passes across all breakpoints
         all_errors = []
@@ -114,7 +114,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
         # Test at each breakpoint
         for breakpoint_width in breakpoints:
             # Set viewport to breakpoint
-            await page.setViewport({
+            await page.set_viewport_size({
                 'width': breakpoint_width,
                 'height': original_viewport.get('height', 1080) if original_viewport else 1080
             })
@@ -668,7 +668,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
 
         # Restore original viewport
         if original_viewport:
-            await page.setViewport(original_viewport)
+            await page.set_viewport_size(original_viewport)
 
         # Return aggregated results
         final_results = {

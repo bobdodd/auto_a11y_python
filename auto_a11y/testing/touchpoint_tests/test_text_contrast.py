@@ -119,9 +119,9 @@ async def test_text_contrast(page) -> Dict[str, Any]:
         for breakpoint in breakpoint_data:
             # Set viewport to this breakpoint
             try:
-                await page.setViewport({'width': breakpoint, 'height': 800})
+                await page.set_viewport_size({'width': breakpoint, 'height': 800})
             except Exception as viewport_err:
-                logger.error(f"setViewport failed for {breakpoint}px: {viewport_err}")
+                logger.error(f"set_viewport_size failed for {breakpoint}px: {viewport_err}")
                 break
 
             # Wait a moment for any dynamic content to adjust

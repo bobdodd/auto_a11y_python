@@ -244,6 +244,7 @@
                             <div class="component-type">
                                 <span class="component-badge {{ comp_data.type|lower }}">{{ comp_data.type }}</span>
                                 {{ comp_data.label }}
+                                <code class="ms-2 small text-muted">{{ comp_data.signature[:8] }}</code>
                             </div>
                             <div class="component-meta">
                                 <span><i class="bi bi-file-earmark"></i> {{ comp_data.page_count }} <span data-i18n="page_s">{{ t['page_s'] }}</span></span>

@@ -520,7 +520,7 @@
                 <button onclick="switchLanguage('fr')" id="lang-fr" class="{{ 'active' if language == 'fr' else '' }}" aria-label="Switch to French">FR</button>
             </div>
         </div>
-        <h1 class="h2 mb-0"><span data-i18n="{{ component_type|lower }}">{{ t.get(component_type|lower, component_type) }}</span>: {{ component_label }}</h1>
+        <h1 class="h2 mb-0"><span data-i18n="{{ component_type|lower }}">{{ t.get(component_type|lower, component_type) }}</span>: {{ component_label }} <code class="h5 text-light opacity-75">{{ component_signature[:8] }}</code></h1>
         <div class="component-meta">
             <span><i class="bi bi-file-earmark"></i> <span data-i18n="found_on">{{ t['found_on'] }}</span> {{ page_count }} <span data-i18n="page_s">{{ t['page_s'] }}</span></span>
             <span><i class="bi bi-bug"></i> {{ total_issues }} <span data-i18n="deduplicated_issue_s">{{ t['deduplicated_issue_s'] }}</span></span>

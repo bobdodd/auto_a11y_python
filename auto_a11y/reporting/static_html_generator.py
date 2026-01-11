@@ -2537,7 +2537,7 @@ class StaticHTMLReportGenerator:
                     asset_path='../assets/',
                     component_type=comp_data['type'],
                     component_label=comp_data['label'],
-                    component_signature=signature,
+                    component_signature=comp_data['signature'],  # Original signature without user context
                     page_count=len(comp_data['pages']),
                     pages=sorted(list(comp_data['pages'])),
                     issues=issues,

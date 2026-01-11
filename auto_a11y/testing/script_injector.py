@@ -1,10 +1,14 @@
 """
 JavaScript test script injection for browser context
+
+Uses Playwright for browser automation.
 """
 
 import logging
 from pathlib import Path
 from typing import List, Optional, Dict, Any
+
+from playwright.async_api import Page
 
 logger = logging.getLogger(__name__)
 
@@ -60,23 +64,23 @@ class ScriptInjector:
         
         return scripts
     
-    async def inject_all_scripts(self, page) -> bool:
+    async def inject_all_scripts(self, page: Page) -> bool:
         """
         Inject all test scripts into a browser page
-        
+
         Args:
-            page: Pyppeteer page object
-            
+            page: Playwright Page object
+
         Returns:
             True if all scripts injected successfully
         """
         try:
-            # Inject scripts in order
+            # Inject scripts in order using Playwright's add_init_script
             for script_path in self.SCRIPT_LOAD_ORDER:
                 if script_path in self.loaded_scripts:
-                    await page.evaluateOnNewDocument(self.loaded_scripts[script_path])
+                    await page.add_init_script(self.loaded_scripts[script_path])
                     # Script injected - silent unless error
-            
+
             # Inject configuration for tests to use
             # Use project_config if available, otherwise use defaults
             title_limit = 60
@@ -91,28 +95,28 @@ class ScriptInjector:
                     headingLengthLimit: {heading_limit}
                 }};
             '''
-            await page.evaluateOnNewDocument(config_js)
+            await page.add_init_script(config_js)
 
             # Add helper function to check if scripts are loaded
-            await page.evaluateOnNewDocument('''
+            await page.add_init_script('''
                 window.a11yTestsLoaded = true;
                 window.a11yTestFunctions = {};
                 // All legacy JS tests removed - replaced by Python touchpoint tests
             ''')
-            
+
             return True
-            
+
         except Exception as e:
             logger.error(f"Failed to inject scripts: {e}")
             return False
     
-    async def inject_script_files(self, page) -> bool:
+    async def inject_script_files(self, page: Page) -> bool:
         """
         Inject scripts using file paths (alternative method)
-        
+
         Args:
-            page: Pyppeteer page object
-            
+            page: Playwright Page object
+
         Returns:
             True if successful
         """
@@ -121,22 +125,22 @@ class ScriptInjector:
             if already_injected:
                 logger.debug("Scripts already injected, skipping re-injection")
                 return True
-            
+
             import asyncio
             for script_path in self.SCRIPT_LOAD_ORDER:
                 full_path = self.SCRIPT_DIR / script_path
                 if full_path.exists():
                     logger.debug(f"Injecting script: {script_path}")
-                    await page.addScriptTag({'path': str(full_path)})
+                    await page.add_script_tag(path=str(full_path))
                     # Verify connection after each script injection
                     await asyncio.sleep(0.05)
-            
+
             logger.debug("DEBUG inject_script_files: All scripts injected, setting flag")
             await page.evaluate('() => { window.__a11y_scripts_injected = true; }')
-            
+
             # Brief pause to let injected scripts initialize
             await asyncio.sleep(0.2)
-            
+
             # Verify page is still responsive
             try:
                 await asyncio.wait_for(page.evaluate('() => true'), timeout=2.0)
@@ -144,21 +148,21 @@ class ScriptInjector:
             except Exception as verify_err:
                 logger.error(f"Page connection lost after script injection: {verify_err}")
                 return False
-            
+
             return True
-            
+
         except Exception as e:
             logger.error(f"Failed to inject script files: {e}")
             return False
     
-    async def run_test(self, page, test_name: str) -> Dict[str, Any]:
+    async def run_test(self, page: Page, test_name: str) -> Dict[str, Any]:
         """
         Run a specific test function on the page
-        
+
         Args:
-            page: Pyppeteer page object
+            page: Playwright Page object
             test_name: Name of test to run
-            
+
         Returns:
             Test results dictionary
         """
@@ -192,13 +196,13 @@ class ScriptInjector:
                 'passes': []
             }
     
-    async def run_all_tests(self, page) -> Dict[str, Dict[str, Any]]:
+    async def run_all_tests(self, page: Page) -> Dict[str, Dict[str, Any]]:
         """
         Run all available tests on the page (JavaScript and Python-based)
-        
+
         Args:
-            page: Pyppeteer page object
-            
+            page: Playwright Page object
+
         Returns:
             Dictionary mapping test names to results
         """

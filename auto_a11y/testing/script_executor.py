@@ -1,5 +1,7 @@
 """
 Script executor for running page setup scripts before accessibility testing
+
+Uses Playwright for browser automation.
 """
 
 import asyncio
@@ -8,6 +10,8 @@ import os
 import time
 from typing import Optional, Dict, Any
 from pathlib import Path
+
+from playwright.async_api import Page, TimeoutError as PlaywrightTimeoutError
 
 from auto_a11y.models import PageSetupScript, ActionType, ExecutionTrigger
 
@@ -36,7 +40,7 @@ class ScriptExecutor:
 
     async def execute_script(
         self,
-        page,  # Pyppeteer page object
+        page: Page,
         script: PageSetupScript,
         environment_vars: Optional[Dict[str, str]] = None,
         authenticated_user=None,
@@ -47,7 +51,7 @@ class ScriptExecutor:
         Execute a page setup script
 
         Args:
-            page: Pyppeteer page object
+            page: Playwright Page object
             script: PageSetupScript to execute
             environment_vars: Environment variables for ${ENV:VAR_NAME} substitution
             authenticated_user: User object if testing as authenticated user
@@ -78,7 +82,7 @@ class ScriptExecutor:
                 # Navigate back to test page
                 if page_url:
                     logger.info(f"Navigating back to test page: {page_url}")
-                    await page.goto(page_url, {'waitUntil': 'networkidle2', 'timeout': 30000})
+                    await page.goto(page_url, wait_until='networkidle', timeout=30000)
             else:
                 logger.error(f"Re-authentication failed: {login_result.get('error')}")
 
@@ -155,54 +159,60 @@ class ScriptExecutor:
                 'error': str(e) if 'e' in locals() else 'Unknown error'
             }
 
-    async def _find_element(self, page, selector: str):
+    async def _find_element(self, page: Page, selector: str):
         """
         Find element by CSS selector or XPath
 
         Args:
-            page: Pyppeteer page object
+            page: Playwright Page object
             selector: CSS selector or XPath (XPath must start with / or //)
 
         Returns:
-            Element handle or None
+            Locator or None if not found
         """
-        if selector.startswith('/'):
-            # XPath selector
-            elements = await page.xpath(selector)
-            return elements[0] if elements else None
-        else:
-            # CSS selector
-            return await page.querySelector(selector)
+        try:
+            if selector.startswith('/'):
+                # XPath selector - Playwright uses xpath= prefix
+                locator = page.locator(f"xpath={selector}")
+            else:
+                # CSS selector
+                locator = page.locator(selector)
 
-    async def _wait_for_selector(self, page, selector: str, timeout: int):
+            # Check if element exists
+            if await locator.count() > 0:
+                return locator.first
+            return None
+        except Exception:
+            return None
+
+    async def _wait_for_selector(self, page: Page, selector: str, timeout: int):
         """
         Wait for element by CSS selector or XPath
 
         Args:
-            page: Pyppeteer page object
+            page: Playwright Page object
             selector: CSS selector or XPath (XPath must start with / or //)
             timeout: Timeout in milliseconds
         """
-        if selector.startswith('/'):
-            # XPath selector - use page.waitForXPath
-            try:
-                await page.waitForXPath(selector, {'timeout': timeout})
-            except Exception as e:
-                raise ScriptExecutionError(
-                    f"Timeout waiting for XPath: {selector}"
-                ) from e
-        else:
-            # CSS selector
-            try:
-                await page.waitForSelector(selector, {'timeout': timeout})
-            except Exception as e:
-                raise ScriptExecutionError(
-                    f"Timeout waiting for selector: {selector}"
-                ) from e
+        try:
+            if selector.startswith('/'):
+                # XPath selector - Playwright uses xpath= prefix
+                await page.wait_for_selector(f"xpath={selector}", timeout=timeout)
+            else:
+                # CSS selector
+                await page.wait_for_selector(selector, timeout=timeout)
+        except PlaywrightTimeoutError as e:
+            raise ScriptExecutionError(
+                f"Timeout waiting for selector: {selector}"
+            ) from e
+        except Exception as e:
+            raise ScriptExecutionError(
+                f"Error waiting for selector: {selector} - {e}"
+            ) from e
 
     async def _execute_step(
         self,
-        page,
+        page: Page,
         step,
         env_vars: Dict[str, str]
     ):
@@ -210,7 +220,7 @@ class ScriptExecutor:
         Execute a single script step
 
         Args:
-            page: Pyppeteer page object
+            page: Playwright Page object
             step: ScriptStep to execute
             env_vars: Environment variables for substitution
         """
@@ -221,60 +231,31 @@ class ScriptExecutor:
 
         if action == ActionType.CLICK:
             timeout_ms = step.timeout or 5000
+            # Get the selector in Playwright format
+            selector = f"xpath={step.selector}" if step.selector.startswith('/') else step.selector
+
             try:
-                await self._wait_for_selector(page, step.selector, timeout_ms)
-            except Exception:
-                pass
-            
-            max_retries = 3
-            last_error = None
-            for attempt in range(max_retries):
-                try:
-                    await page.evaluate('() => document.readyState')
-                except Exception as conn_err:
-                    raise ScriptExecutionError(f"Browser connection lost before click: {conn_err}")
-                
-                element = await self._find_element(page, step.selector)
-                if not element:
-                    raise ScriptExecutionError(f"Element not found: {step.selector}")
-                
-                try:
-                    # Use JavaScript click instead of Pyppeteer click to avoid DevTools protocol issues
-                    await page.evaluate('(el) => el.click()', element)
-                    # Allow time for click effects to settle before continuing
-                    await asyncio.sleep(0.3)
-                    break
-                except Exception as click_err:
-                    last_error = click_err
-                    error_str = str(click_err).lower()
-                    if 'target closed' in error_str or 'session closed' in error_str:
-                        if attempt < max_retries - 1:
-                            logger.warning(f"Click failed (attempt {attempt + 1}), retrying: {click_err}")
-                            await asyncio.sleep(1.0)
-                            continue
-                    raise ScriptExecutionError(f"Click failed: {click_err}")
-            else:
-                raise ScriptExecutionError(f"Click failed after {max_retries} attempts: {last_error}")
-            
-            # Extra stabilization time after click completes
-            await asyncio.sleep(1.0)
-            
-            # Verify connection is still alive after click
-            try:
-                await page.evaluate('() => document.readyState')
-            except Exception as post_click_err:
-                logger.warning(f"Browser connection may be unstable after click: {post_click_err}")
+                # Playwright's click auto-waits for element, so we can use it directly
+                await page.click(selector, timeout=timeout_ms)
+                # Allow time for click effects to settle
+                await asyncio.sleep(0.3)
+            except PlaywrightTimeoutError:
+                raise ScriptExecutionError(f"Timeout waiting for element: {step.selector}")
+            except Exception as click_err:
+                raise ScriptExecutionError(f"Click failed: {click_err}")
 
         elif action == ActionType.TYPE:
-            # Wait for element then type
+            # Get the selector in Playwright format
+            selector = f"xpath={step.selector}" if step.selector.startswith('/') else step.selector
+            timeout_ms = step.timeout or 5000
+
             try:
-                await self._wait_for_selector(page, step.selector, step.timeout or 5000)
-            except Exception:
-                pass
-            element = await self._find_element(page, step.selector)
-            if not element:
-                raise ScriptExecutionError(f"Element not found: {step.selector}")
-            await element.type(value)
+                # Playwright's fill() auto-waits and clears before typing
+                await page.fill(selector, value, timeout=timeout_ms)
+            except PlaywrightTimeoutError:
+                raise ScriptExecutionError(f"Timeout waiting for element: {step.selector}")
+            except Exception as e:
+                raise ScriptExecutionError(f"Type failed: {e}")
 
         elif action == ActionType.WAIT:
             # Wait for duration
@@ -288,36 +269,40 @@ class ScriptExecutor:
         elif action == ActionType.WAIT_FOR_NAVIGATION:
             # Wait for page navigation
             try:
-                await page.waitForNavigation(timeout=step.timeout)
-            except Exception as e:
+                await page.wait_for_load_state('load', timeout=step.timeout)
+            except PlaywrightTimeoutError as e:
                 raise ScriptExecutionError("Navigation timeout") from e
 
         elif action == ActionType.WAIT_FOR_NETWORK_IDLE:
             # Wait for network to be idle
             try:
-                await page.waitForNetworkIdle(timeout=step.timeout)
-            except Exception as e:
+                await page.wait_for_load_state('networkidle', timeout=step.timeout)
+            except PlaywrightTimeoutError as e:
                 raise ScriptExecutionError("Network idle timeout") from e
 
         elif action == ActionType.SCROLL:
-            # Scroll to element
-            element = await self._find_element(page, step.selector)
-            if not element:
-                raise ScriptExecutionError(f"Element not found: {step.selector}")
-            await page.evaluate('(element) => element.scrollIntoView()', element)
+            # Scroll to element - use Playwright locator
+            selector = f"xpath={step.selector}" if step.selector.startswith('/') else step.selector
+            try:
+                await page.locator(selector).scroll_into_view_if_needed()
+            except Exception as e:
+                raise ScriptExecutionError(f"Scroll failed: {e}")
 
         elif action == ActionType.SELECT:
-            # Select dropdown option - Note: XPath not supported for select()
-            if step.selector.startswith('/'):
-                raise ScriptExecutionError("SELECT action does not support XPath selectors, use CSS selector")
-            await page.select(step.selector, value)
+            # Select dropdown option
+            selector = f"xpath={step.selector}" if step.selector.startswith('/') else step.selector
+            try:
+                await page.select_option(selector, value)
+            except Exception as e:
+                raise ScriptExecutionError(f"Select failed: {e}")
 
         elif action == ActionType.HOVER:
             # Hover over element
-            element = await self._find_element(page, step.selector)
-            if not element:
-                raise ScriptExecutionError(f"Element not found: {step.selector}")
-            await element.hover()
+            selector = f"xpath={step.selector}" if step.selector.startswith('/') else step.selector
+            try:
+                await page.hover(selector)
+            except Exception as e:
+                raise ScriptExecutionError(f"Hover failed: {e}")
 
         elif action == ActionType.SCREENSHOT:
             # Take screenshot
@@ -350,12 +335,12 @@ class ScriptExecutor:
 
         return re.sub(pattern, replace_var, value)
 
-    async def _validate_execution(self, page, script: PageSetupScript):
+    async def _validate_execution(self, page: Page, script: PageSetupScript):
         """
         Validate script execution using validation rules
 
         Args:
-            page: Pyppeteer page object
+            page: Playwright Page object
             script: PageSetupScript with validation rules
 
         Raises:
@@ -393,7 +378,7 @@ class ScriptExecutor:
 
     async def _take_debug_screenshot(
         self,
-        page,
+        page: Page,
         script: Optional[PageSetupScript],
         step,
         error: bool = False
@@ -402,7 +387,7 @@ class ScriptExecutor:
         Take a debug screenshot
 
         Args:
-            page: Pyppeteer page object
+            page: Playwright Page object
             script: PageSetupScript (optional)
             step: ScriptStep
             error: Whether this is an error screenshot
@@ -414,14 +399,14 @@ class ScriptExecutor:
             filename = f"{script_name}_step_{step.step_number}_{status}_{timestamp}.png"
             filepath = self.screenshot_dir / filename
 
-            await page.screenshot({'path': str(filepath)})
+            await page.screenshot(path=str(filepath))
             logger.info(f"Debug screenshot saved: {filepath}")
         except Exception as e:
             logger.warning(f"Failed to save debug screenshot: {e}")
 
     async def execute_with_session(
         self,
-        page,
+        page: Page,
         script: PageSetupScript,
         page_id: str,
         session_manager: 'ScriptSessionManager',
@@ -431,7 +416,7 @@ class ScriptExecutor:
         Execute script with session awareness
 
         Args:
-            page: Pyppeteer page object
+            page: Playwright Page object
             script: PageSetupScript to execute
             page_id: Page ID being tested
             session_manager: ScriptSessionManager instance
@@ -494,7 +479,7 @@ class ScriptExecutor:
                 await self._clear_browser_state(page, script)
 
                 # Navigate to same URL again to apply the cleared state
-                await page.goto(current_url, {'waitUntil': 'networkidle2', 'timeout': 30000})
+                await page.goto(current_url, wait_until='networkidle', timeout=30000)
             except Exception as e:
                 logger.error(f"Error during browser state clearing/navigation: {e}")
                 import traceback
@@ -533,12 +518,12 @@ class ScriptExecutor:
 
         return result
 
-    async def _check_condition(self, page, selector: str) -> bool:
+    async def _check_condition(self, page: Page, selector: str) -> bool:
         """
         Check if condition selector exists on page
 
         Args:
-            page: Pyppeteer page object
+            page: Playwright Page object
             selector: CSS selector or XPath to check
 
         Returns:
@@ -551,25 +536,21 @@ class ScriptExecutor:
             logger.debug(f"Error checking condition selector '{selector}': {e}")
             return False
 
-    async def _clear_browser_state(self, page, script: PageSetupScript):
+    async def _clear_browser_state(self, page: Page, script: PageSetupScript):
         """
         Clear cookies and/or localStorage before script execution
 
         Args:
-            page: Pyppeteer page object
+            page: Playwright Page object
             script: PageSetupScript with clear_cookies_before and clear_local_storage_before flags
         """
         try:
             if script.clear_cookies_before:
                 logger.info(f"Clearing cookies for script '{script.name}'")
-                # Get all cookies
-                cookies = await page.cookies()
-                if cookies:
-                    # Delete all cookies
-                    await page.deleteCookie(*cookies)
-                    logger.info(f"Cleared {len(cookies)} cookies")
-                else:
-                    logger.info("No cookies to clear")
+                # In Playwright, cookies are managed at the context level
+                context = page.context
+                await context.clear_cookies()
+                logger.info("Cleared all cookies via context")
 
             if script.clear_local_storage_before:
                 logger.info(f"Clearing localStorage and sessionStorage for script '{script.name}'")

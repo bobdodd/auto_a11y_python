@@ -17,6 +17,7 @@ from .drupal_sync import drupal_sync_bp
 from .discovered_pages import discovered_pages_bp
 from .automated_tests import bp as automated_tests_bp
 from .auth import auth_bp, role_required, admin_required, auditor_required
+from .schedules import schedules_bp
 
 __all__ = [
     'projects_bp',
@@ -36,5 +37,6 @@ __all__ = [
     'auth_bp',
     'role_required',
     'admin_required',
-    'auditor_required'
+    'auditor_required',
+    'schedules_bp'
 ]

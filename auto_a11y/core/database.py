@@ -17,7 +17,8 @@ from auto_a11y.models import (
     DocumentReference, DiscoveryRun,
     PageSetupScript, ScriptExecutionSession,
     WebsiteUser, ProjectUser, DiscoveredPage,
-    TestStateMatrix, AppUser, UserRole
+    TestStateMatrix, AppUser, UserRole,
+    TestSchedule, ScheduleType, ScheduleRunStatus
 )
 
 logger = logging.getLogger(__name__)
@@ -56,6 +57,7 @@ class Database:
         self.drupal_issues: Collection = self.db.drupal_issues  # Track Drupal issue uploads by violation ID
         self.test_state_matrices: Collection = self.db.test_state_matrices  # Multi-state test configuration matrices
         self.app_users: Collection = self.db.app_users  # Application users for authentication
+        self.test_schedules: Collection = self.db.test_schedules  # Scheduled test configurations
 
         # Create indexes
         self._create_indexes()
@@ -187,7 +189,14 @@ class Database:
         self.app_users.create_index("email", unique=True)
         self.app_users.create_index("role")
         self.app_users.create_index("is_active")
-    
+
+        # Test schedules (scheduled testing configuration)
+        self.test_schedules.create_index("website_id")
+        self.test_schedules.create_index("enabled")
+        self.test_schedules.create_index([("website_id", 1), ("enabled", 1)])
+        self.test_schedules.create_index("next_run_at")
+        self.test_schedules.create_index("apscheduler_job_id", unique=True, sparse=True)
+
     def test_connection(self) -> bool:
         """Test database connection"""
         try:
@@ -2427,3 +2436,242 @@ class Database:
     def app_user_exists(self, email: str) -> bool:
         """Check if an app user exists by email"""
         return self.app_users.count_documents({"email": email.lower()}) > 0
+
+    # ==========================================
+    # Test Schedule Methods (Scheduled Testing)
+    # ==========================================
+
+    def create_test_schedule(self, schedule: TestSchedule) -> str:
+        """
+        Create a new test schedule
+
+        Args:
+            schedule: TestSchedule instance
+
+        Returns:
+            Schedule ID (string)
+        """
+        result = self.test_schedules.insert_one(schedule.to_dict())
+        schedule._id = result.inserted_id
+        logger.info(f"Created test schedule: {schedule.name} for website {schedule.website_id}")
+        return str(result.inserted_id)
+
+    def get_test_schedule(self, schedule_id: str) -> Optional[TestSchedule]:
+        """
+        Get test schedule by ID
+
+        Args:
+            schedule_id: Schedule ID
+
+        Returns:
+            TestSchedule instance or None
+        """
+        doc = self.test_schedules.find_one({"_id": ObjectId(schedule_id)})
+        return TestSchedule.from_dict(doc) if doc else None
+
+    def get_test_schedule_by_apscheduler_id(self, apscheduler_job_id: str) -> Optional[TestSchedule]:
+        """
+        Get test schedule by APScheduler job ID
+
+        Args:
+            apscheduler_job_id: APScheduler job ID
+
+        Returns:
+            TestSchedule instance or None
+        """
+        doc = self.test_schedules.find_one({"apscheduler_job_id": apscheduler_job_id})
+        return TestSchedule.from_dict(doc) if doc else None
+
+    def get_test_schedules_for_website(
+        self,
+        website_id: str,
+        enabled_only: bool = False
+    ) -> List[TestSchedule]:
+        """
+        Get all test schedules for a website
+
+        Args:
+            website_id: Website ID
+            enabled_only: If True, only return enabled schedules
+
+        Returns:
+            List of TestSchedule instances
+        """
+        query = {"website_id": website_id}
+        if enabled_only:
+            query["enabled"] = True
+
+        docs = self.test_schedules.find(query).sort("created_at", -1)
+        return [TestSchedule.from_dict(doc) for doc in docs]
+
+    def get_enabled_test_schedules(self) -> List[TestSchedule]:
+        """
+        Get all enabled test schedules across all websites
+
+        Returns:
+            List of enabled TestSchedule instances
+        """
+        docs = self.test_schedules.find({"enabled": True})
+        return [TestSchedule.from_dict(doc) for doc in docs]
+
+    def update_test_schedule(self, schedule: TestSchedule) -> bool:
+        """
+        Update existing test schedule
+
+        Args:
+            schedule: TestSchedule instance with updated data
+
+        Returns:
+            True if updated successfully
+        """
+        if not schedule._id:
+            logger.error("Cannot update schedule without _id")
+            return False
+
+        schedule.update_timestamp()
+        update_data = schedule.to_dict()
+        if '_id' in update_data:
+            del update_data['_id']
+
+        result = self.test_schedules.update_one(
+            {"_id": schedule._id},
+            {"$set": update_data}
+        )
+
+        if result.modified_count > 0:
+            logger.info(f"Updated test schedule: {schedule.name}")
+            return True
+        return False
+
+    def delete_test_schedule(self, schedule_id: str) -> bool:
+        """
+        Delete test schedule
+
+        Args:
+            schedule_id: Schedule ID
+
+        Returns:
+            True if deleted successfully
+        """
+        result = self.test_schedules.delete_one({"_id": ObjectId(schedule_id)})
+        if result.deleted_count > 0:
+            logger.info(f"Deleted test schedule: {schedule_id}")
+            return True
+        return False
+
+    def toggle_test_schedule(self, schedule_id: str, enabled: bool) -> bool:
+        """
+        Enable or disable a test schedule
+
+        Args:
+            schedule_id: Schedule ID
+            enabled: True to enable, False to disable
+
+        Returns:
+            True if updated successfully
+        """
+        result = self.test_schedules.update_one(
+            {"_id": ObjectId(schedule_id)},
+            {
+                "$set": {
+                    "enabled": enabled,
+                    "updated_at": datetime.now()
+                }
+            }
+        )
+
+        if result.modified_count > 0:
+            logger.info(f"{'Enabled' if enabled else 'Disabled'} test schedule: {schedule_id}")
+            return True
+        return False
+
+    def update_test_schedule_run_status(
+        self,
+        schedule_id: str,
+        job_id: str,
+        status: ScheduleRunStatus,
+        next_run_at: Optional[datetime] = None
+    ) -> bool:
+        """
+        Update execution status of a test schedule
+
+        Args:
+            schedule_id: Schedule ID
+            job_id: Testing job ID
+            status: Run status
+            next_run_at: Next scheduled run time
+
+        Returns:
+            True if updated successfully
+        """
+        update_fields = {
+            "last_run_job_id": job_id,
+            "last_run_status": status.value if isinstance(status, ScheduleRunStatus) else status,
+            "updated_at": datetime.now()
+        }
+
+        if status == ScheduleRunStatus.RUNNING:
+            update_fields["last_run_at"] = datetime.now()
+
+        if next_run_at:
+            update_fields["next_run_at"] = next_run_at
+
+        result = self.test_schedules.update_one(
+            {"_id": ObjectId(schedule_id)},
+            {
+                "$set": update_fields,
+                "$inc": {"run_count": 1} if status == ScheduleRunStatus.RUNNING else {}
+            }
+        )
+
+        return result.modified_count > 0
+
+    def set_test_schedule_apscheduler_id(
+        self,
+        schedule_id: str,
+        apscheduler_job_id: str
+    ) -> bool:
+        """
+        Set the APScheduler job ID for a schedule
+
+        Args:
+            schedule_id: Schedule ID
+            apscheduler_job_id: APScheduler job ID
+
+        Returns:
+            True if updated successfully
+        """
+        result = self.test_schedules.update_one(
+            {"_id": ObjectId(schedule_id)},
+            {
+                "$set": {
+                    "apscheduler_job_id": apscheduler_job_id,
+                    "updated_at": datetime.now()
+                }
+            }
+        )
+
+        return result.modified_count > 0
+
+    def count_test_schedules(
+        self,
+        website_id: Optional[str] = None,
+        enabled_only: bool = False
+    ) -> int:
+        """
+        Count test schedules
+
+        Args:
+            website_id: Optional website ID filter
+            enabled_only: If True, only count enabled schedules
+
+        Returns:
+            Number of schedules
+        """
+        query = {}
+        if website_id:
+            query["website_id"] = website_id
+        if enabled_only:
+            query["enabled"] = True
+
+        return self.test_schedules.count_documents(query)

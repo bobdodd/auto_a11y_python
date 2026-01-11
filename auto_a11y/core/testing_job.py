@@ -27,7 +27,9 @@ class TestingJob:
         user_id: Optional[str] = None,
         session_id: Optional[str] = None,
         test_all: bool = False,
-        website_user_id: Optional[str] = None
+        website_user_id: Optional[str] = None,
+        trigger_source: str = "manual",
+        schedule_id: Optional[str] = None
     ):
         """
         Initialize testing job
@@ -41,6 +43,8 @@ class TestingJob:
             session_id: Session ID for tracking
             test_all: Whether to test all pages in the website
             website_user_id: Optional WebsiteUser ID for authenticated testing
+            trigger_source: Source that triggered this job ("manual" or "scheduled")
+            schedule_id: Optional schedule ID if triggered by scheduler
         """
         self.job_manager = job_manager
         self.website_id = website_id
@@ -50,6 +54,8 @@ class TestingJob:
         self.session_id = session_id
         self.test_all = test_all
         self.website_user_id = website_user_id
+        self.trigger_source = trigger_source
+        self.schedule_id = schedule_id
         
         # Create or get existing job in database
         # For multi-user testing, the same job_id is reused for all users
@@ -70,7 +76,9 @@ class TestingJob:
                         'page_ids': page_ids,
                         'test_all': test_all,
                         'total_pages': len(page_ids) if page_ids else 0,
-                        'website_user_id': website_user_id
+                        'website_user_id': website_user_id,
+                        'trigger_source': trigger_source,
+                        'schedule_id': schedule_id
                     }
                 )
                 logger.info(f"Successfully created testing job {job_id} in database for website {website_id}")

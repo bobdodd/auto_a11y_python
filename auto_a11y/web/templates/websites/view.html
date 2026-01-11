@@ -120,6 +120,9 @@
             <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-outline-success">
                 <i class="bi bi-people"></i> {{ _('Test Users') }}
             </a>
+            <a href="{{ url_for('schedules.list_schedules', website_id=website.id) }}" class="btn btn-outline-warning">
+                <i class="bi bi-calendar-event"></i> {{ _('Schedules') }}
+            </a>
             <div class="btn-group">
                 <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
                     <i class="bi bi-file-earmark-text"></i> {{ _('Reports') }}

@@ -1,0 +1,400 @@
+{% extends "base.html" %}
+
+{% block title %}{{ schedule.name }} - {{ _('Schedule') }} - {{ _('Auto A11y') }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Breadcrumb -->
+    <nav aria-label="{{ _('breadcrumb') }}">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('projects.view_project', project_id=project.id) }}">{{ project.name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('websites.view_website', website_id=website.id) }}">{{ website.name }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ url_for('schedules.list_schedules', website_id=website.id) }}">{{ _('Schedules') }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ schedule.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2">
+                <i class="bi bi-calendar-event"></i> {{ schedule.name }}
+                {% if schedule.enabled %}
+                <span class="badge bg-success">{{ _('Enabled') }}</span>
+                {% else %}
+                <span class="badge bg-secondary">{{ _('Disabled') }}</span>
+                {% endif %}
+            </h1>
+            {% if schedule.description %}
+            <p class="text-muted">{{ schedule.description }}</p>
+            {% endif %}
+        </div>
+        <div class="btn-group">
+            <a href="{{ url_for('schedules.edit_schedule', website_id=website.id, schedule_id=schedule.id) }}"
+               class="btn btn-outline-primary">
+                <i class="bi bi-pencil"></i> {{ _('Edit') }}
+            </a>
+            <button type="button" class="btn btn-outline-{% if schedule.enabled %}warning{% else %}success{% endif %}"
+                    onclick="toggleSchedule()">
+                <i class="bi bi-toggle-{% if schedule.enabled %}on{% else %}off{% endif %}"></i>
+                {% if schedule.enabled %}{{ _('Disable') }}{% else %}{{ _('Enable') }}{% endif %}
+            </button>
+            <button type="button" class="btn btn-primary" onclick="runNow()">
+                <i class="bi bi-play-fill"></i> {{ _('Run Now') }}
+            </button>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row">
+        <!-- Left Column - Schedule Details -->
+        <div class="col-lg-6">
+            <!-- Schedule Info -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-clock"></i> {{ _('Schedule Details') }}</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th style="width: 40%;">{{ _('Type') }}</th>
+                            <td><span class="badge bg-info">
+                                {% if schedule.schedule_type.value == 'one_time' %}{{ _('One-time') }}
+                                {% elif schedule.schedule_type.value == 'daily' %}{{ _('Daily') }}
+                                {% elif schedule.schedule_type.value == 'weekly' %}{{ _('Weekly') }}
+                                {% elif schedule.schedule_type.value == 'monthly' %}{{ _('Monthly') }}
+                                {% elif schedule.schedule_type.value == 'cron' %}{{ _('Custom Cron') }}
+                                {% endif %}
+                            </span></td>
+                        </tr>
+                        <tr>
+                            <th>{{ _('Schedule') }}</th>
+                            <td>
+                                {% if schedule.schedule_type.value == 'one_time' %}
+                                    {% if schedule.scheduled_datetime %}
+                                        {{ _('Once at') }} {{ schedule.scheduled_datetime|datetimeformat('yyyy-MM-dd HH:mm') }}
+                                    {% else %}
+                                        {{ _('One-time') }} ({{ _('no date set') }})
+                                    {% endif %}
+                                {% elif schedule.schedule_type.value == 'cron' %}
+                                    {{ _('Cron:') }} {{ schedule.cron_expression or _('Not set') }}
+                                {% elif schedule.schedule_type.value == 'daily' %}
+                                    {{ _('Daily at') }} {{ schedule.preset_config.time }}
+                                {% elif schedule.schedule_type.value == 'weekly' %}
+                                    {% set days = [_('Monday'), _('Tuesday'), _('Wednesday'), _('Thursday'), _('Friday'), _('Saturday'), _('Sunday')] %}
+                                    {{ _('Weekly on') }} {{ days[schedule.preset_config.day_of_week] }} {{ _('at') }} {{ schedule.preset_config.time }}
+                                {% elif schedule.schedule_type.value == 'monthly' %}
+                                    {{ _('Monthly on day') }} {{ schedule.preset_config.day_of_month }} {{ _('at') }} {{ schedule.preset_config.time }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>{{ _('Timezone') }}</th>
+                            <td>{{ schedule.preset_config.timezone }}</td>
+                        </tr>
+                        {% if schedule.cron_expression %}
+                        <tr>
+                            <th>{{ _('Cron Expression') }}</th>
+                            <td><code>{{ schedule.cron_expression }}</code></td>
+                        </tr>
+                        {% endif %}
+                        <tr>
+                            <th>{{ _('Total Runs') }}</th>
+                            <td>{{ schedule.run_count }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Next Runs -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-calendar-week"></i> {{ _('Upcoming Runs') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if next_runs %}
+                    <ul class="list-group list-group-flush">
+                        {% for run_time in next_runs %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>{{ run_time|datetimeformat('EEEE, d MMMM yyyy') }}</span>
+                            <span class="badge bg-primary">{{ run_time|datetimeformat('HH:mm') }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted mb-0">{{ _('No upcoming runs scheduled') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Execution History -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> {{ _('Last Execution') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if schedule.last_run_at %}
+                    <table class="table table-borderless">
+                        <tr>
+                            <th style="width: 40%;">{{ _('Run Time') }}</th>
+                            <td>{{ schedule.last_run_at|datetimeformat('yyyy-MM-dd HH:mm:ss') }}</td>
+                        </tr>
+                        <tr>
+                            <th>{{ _('Status') }}</th>
+                            <td>
+                                {% if schedule.last_run_status.value == 'success' %}
+                                <span class="badge bg-success"><i class="bi bi-check-circle"></i> {{ _('Success') }}</span>
+                                {% elif schedule.last_run_status.value == 'failed' %}
+                                <span class="badge bg-danger"><i class="bi bi-x-circle"></i> {{ _('Failed') }}</span>
+                                {% elif schedule.last_run_status.value == 'running' %}
+                                <span class="badge bg-primary"><i class="bi bi-arrow-repeat"></i> {{ _('Running') }}</span>
+                                {% elif schedule.last_run_status.value == 'cancelled' %}
+                                <span class="badge bg-warning"><i class="bi bi-pause-circle"></i> {{ _('Cancelled') }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% if schedule.last_run_job_id %}
+                        <tr>
+                            <th>{{ _('Job ID') }}</th>
+                            <td><code>{{ schedule.last_run_job_id }}</code></td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                    {% else %}
+                    <p class="text-muted mb-0">{{ _('This schedule has not run yet') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Test Configuration -->
+        <div class="col-lg-6">
+            <!-- Test Configuration -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-gear"></i> {{ _('Test Configuration') }}</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th style="width: 40%;">{{ _('JavaScript Tests') }}</th>
+                            <td>
+                                {% if schedule.test_config.run_javascript_tests %}
+                                <span class="badge bg-success">{{ _('Enabled') }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ _('Disabled') }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>{{ _('Python Tests') }}</th>
+                            <td>
+                                {% if schedule.test_config.run_python_tests %}
+                                <span class="badge bg-success">{{ _('Enabled') }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ _('Disabled') }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>{{ _('Screenshots') }}</th>
+                            <td>
+                                {% if schedule.test_config.take_screenshots %}
+                                <span class="badge bg-success">{{ _('Enabled') }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ _('Disabled') }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- AI Testing Configuration -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-robot"></i> {{ _('AI Testing') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if schedule.test_config.run_ai_tests %}
+                    <table class="table table-borderless">
+                        <tr>
+                            <th style="width: 40%;">{{ _('AI Testing') }}</th>
+                            <td><span class="badge bg-success">{{ _('Enabled') }}</span></td>
+                        </tr>
+                        <tr>
+                            <th>{{ _('Scope') }}</th>
+                            <td>
+                                {% if schedule.test_config.ai_pages_mode.value == 'all' %}
+                                <span class="badge bg-info">{{ _('All Pages') }}</span>
+                                {% elif schedule.test_config.ai_pages_mode.value == 'selected' %}
+                                <span class="badge bg-warning text-dark">{{ _('Selected Pages') }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ _('Disabled') }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% if schedule.test_config.ai_pages_mode.value == 'selected' %}
+                        <tr>
+                            <th>{{ _('Selected Pages') }}</th>
+                            <td>{{ schedule.test_config.ai_page_ids|length }} {{ _('pages') }}</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                    {% else %}
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-robot"></i> {{ _('AI testing is disabled for this schedule') }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Test Users -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-people"></i> {{ _('Test Users') }}</h5>
+                </div>
+                <div class="card-body">
+                    {% if schedule.project_user_ids %}
+                    <ul class="list-group list-group-flush">
+                        {% for user_id in schedule.project_user_ids %}
+                        <li class="list-group-item">
+                            <i class="bi bi-person"></i> {{ user_id }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-person"></i> {{ _('Testing as guest (no login)') }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Scheduler Status -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-cpu"></i> {{ _('Scheduler Status') }}</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th style="width: 40%;">{{ _('Status') }}</th>
+                            <td>
+                                {% if scheduler_status.status == 'registered' %}
+                                <span class="badge bg-success">{{ _('Registered') }}</span>
+                                {% elif scheduler_status.status == 'not_registered' %}
+                                <span class="badge bg-warning">{{ _('Not Registered') }}</span>
+                                {% elif scheduler_status.status == 'scheduler_not_running' %}
+                                <span class="badge bg-danger">{{ _('Scheduler Not Running') }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ scheduler_status.status }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% if scheduler_status.next_run_time %}
+                        <tr>
+                            <th>{{ _('Next Run') }}</th>
+                            <td>{{ scheduler_status.next_run_time|datetimeformat('yyyy-MM-dd HH:mm:ss') }}</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="card border-danger mb-4">
+        <div class="card-header bg-danger text-white">
+            <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> {{ _('Danger Zone') }}</h5>
+        </div>
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ _('Delete this schedule') }}</strong>
+                    <p class="text-muted mb-0">{{ _('Once deleted, this schedule cannot be recovered.') }}</p>
+                </div>
+                <button type="button" class="btn btn-outline-danger" onclick="deleteSchedule()">
+                    <i class="bi bi-trash"></i> {{ _('Delete Schedule') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const websiteId = '{{ website.id }}';
+const scheduleId = '{{ schedule.id }}';
+
+function toggleSchedule() {
+    fetch(`/websites/${websiteId}/schedules/${scheduleId}/toggle`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('{{ _("Error: ") }}' + (data.error || '{{ _("Unknown error") }}'));
+        }
+    })
+    .catch(err => {
+        alert('{{ _("Error toggling schedule: ") }}' + err.message);
+    });
+}
+
+function runNow() {
+    if (!confirm('{{ _("Run this schedule now?") }}')) return;
+
+    fetch(`/websites/${websiteId}/schedules/${scheduleId}/run-now`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            alert('{{ _("Test run started!") }}');
+            location.reload();
+        } else {
+            alert('{{ _("Error: ") }}' + (data.error || '{{ _("Unknown error") }}'));
+        }
+    })
+    .catch(err => {
+        alert('{{ _("Error starting test run: ") }}' + err.message);
+    });
+}
+
+function deleteSchedule() {
+    if (!confirm('{{ _("Are you sure you want to delete this schedule? This action cannot be undone.") }}')) return;
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/websites/${websiteId}/schedules/${scheduleId}/delete`;
+    document.body.appendChild(form);
+    form.submit();
+}
+</script>
+{% endblock %}

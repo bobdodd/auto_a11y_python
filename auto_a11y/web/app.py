@@ -4,9 +4,10 @@ Flask application factory
 
 from flask import Flask, render_template, jsonify, request, session, g, redirect, url_for
 from flask_cors import CORS
-from flask_babel import Babel
+from flask_babel import Babel, format_datetime
 from flask_login import LoginManager, current_user, login_required
 import logging
+import atexit
 
 from auto_a11y.core import Database
 from auto_a11y.web.routes import (
@@ -24,7 +25,8 @@ from auto_a11y.web.routes import (
     drupal_sync_bp,
     discovered_pages_bp,
     automated_tests_bp,
-    auth_bp
+    auth_bp,
+    schedules_bp
 )
 from auto_a11y.web.routes.demo import demo_bp
 
@@ -79,6 +81,14 @@ def create_app(config):
 
     babel = Babel(app, locale_selector=get_locale)
 
+    # Add datetime format filter for templates
+    @app.template_filter('datetimeformat')
+    def datetimeformat_filter(value, format='medium'):
+        """Format datetime using Flask-Babel's locale-aware formatting"""
+        if value is None:
+            return ''
+        return format_datetime(value, format)
+
     # Initialize database connection (needed before Flask-Login)
     app.db = Database(config.MONGODB_URI, config.DATABASE_NAME)
 
@@ -116,7 +126,25 @@ def create_app(config):
     # Start task runner
     from auto_a11y.core.task_runner import task_runner
     task_runner.start()
-    
+
+    # Initialize scheduler for scheduled testing
+    if config.SCHEDULER_ENABLED:
+        from auto_a11y.core.scheduler import SchedulerService
+        app.scheduler = SchedulerService(app.db, config)
+        app.scheduler.start()
+        logger.info("Scheduler service started")
+
+        # Register shutdown handler
+        def shutdown_scheduler():
+            if hasattr(app, 'scheduler') and app.scheduler:
+                logger.info("Shutting down scheduler...")
+                app.scheduler.shutdown()
+
+        atexit.register(shutdown_scheduler)
+    else:
+        app.scheduler = None
+        logger.info("Scheduler is disabled")
+
     # Language switching route
     @app.route('/set-language/<language>')
     def set_language(language):
@@ -142,6 +170,7 @@ def create_app(config):
     app.register_blueprint(automated_tests_bp, url_prefix='/automated_tests')
     app.register_blueprint(demo_bp, url_prefix='/demo')
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(schedules_bp, url_prefix='')
 
     # Global login requirement - protect all routes except auth, static, demo, and health
     @app.before_request

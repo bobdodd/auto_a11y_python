@@ -70,6 +70,13 @@ class Config:
     PAGES_PER_PAGE: int = int(os.getenv('PAGES_PER_PAGE', 100))
     MAX_PAGES_PER_PAGE: int = int(os.getenv('MAX_PAGES_PER_PAGE', 500))
 
+    # Scheduler (APScheduler for scheduled testing)
+    SCHEDULER_ENABLED: bool = os.getenv('SCHEDULER_ENABLED', 'True').lower() == 'true'
+    SCHEDULER_TIMEZONE: str = os.getenv('SCHEDULER_TIMEZONE', 'America/Toronto')
+    SCHEDULER_MAX_INSTANCES: int = int(os.getenv('SCHEDULER_MAX_INSTANCES', 1))
+    SCHEDULER_MISFIRE_GRACE_TIME: int = int(os.getenv('SCHEDULER_MISFIRE_GRACE_TIME', 3600))  # 1 hour
+    SCHEDULER_COALESCE: bool = os.getenv('SCHEDULER_COALESCE', 'True').lower() == 'true'
+
     # Paths
     SCRIPTS_DIR: Path = SCRIPTS_DIR
     DATA_DIR: Path = DATA_DIR

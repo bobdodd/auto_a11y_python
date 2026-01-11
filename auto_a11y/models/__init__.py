@@ -24,6 +24,10 @@ from .recording_issue import RecordingIssue
 from .discovered_page import DiscoveredPage
 from .issue import Issue
 from .app_user import AppUser, UserRole
+from .schedule import (
+    TestSchedule, ScheduleType, AITestMode, ScheduleRunStatus,
+    ScheduleTestConfig, PresetConfig
+)
 
 __all__ = [
     'Project', 'ProjectStatus', 'ProjectType', 'LivedExperienceTester', 'TestSupervisor',
@@ -43,5 +47,7 @@ __all__ = [
     'RecordingIssue',
     'DiscoveredPage',
     'Issue',
-    'AppUser', 'UserRole'
+    'AppUser', 'UserRole',
+    'TestSchedule', 'ScheduleType', 'AITestMode', 'ScheduleRunStatus',
+    'ScheduleTestConfig', 'PresetConfig'
 ]

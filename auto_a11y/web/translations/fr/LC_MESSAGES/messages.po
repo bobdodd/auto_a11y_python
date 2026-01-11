@@ -8546,6 +8546,334 @@ msgstr "format..."
 msgid "Generating accessibility report in"
 msgstr "Génération du rapport d'accessibilité en"
 
+#: auto_a11y/web/routes/schedules.py
+#: auto_a11y/web/templates/schedules/list.html
+#: auto_a11y/web/templates/schedules/form.html
+#: auto_a11y/web/templates/schedules/view.html
+msgid "Schedules"
+msgstr "Horaires"
+
+msgid "Test Schedules"
+msgstr "Horaires de tests"
+
+msgid "Schedule"
+msgstr "Horaire"
+
+msgid "Create Schedule"
+msgstr "Créer un horaire"
+
+msgid "Edit Schedule"
+msgstr "Modifier l'horaire"
+
+msgid "Schedule Name"
+msgstr "Nom de l'horaire"
+
+msgid "Schedule automated accessibility tests for %(name)s"
+msgstr "Planifier des tests d'accessibilité automatisés pour %(name)s"
+
+msgid "Scheduled Testing:"
+msgstr "Tests planifiés :"
+
+msgid "Create schedules to run accessibility tests automatically at specific times or intervals. You can configure which tests run and optionally limit AI testing to specific pages to control costs."
+msgstr "Créez des horaires pour exécuter des tests d'accessibilité automatiquement à des moments ou intervalles spécifiques. Vous pouvez configurer quels tests s'exécutent et optionnellement limiter les tests IA à des pages spécifiques pour contrôler les coûts."
+
+msgid "AI Testing"
+msgstr "Tests IA"
+
+msgid "All Pages"
+msgstr "Toutes les pages"
+
+msgid "pages"
+msgstr "pages"
+
+msgid "Next Run"
+msgstr "Prochaine exécution"
+
+msgid "Last Run"
+msgstr "Dernière exécution"
+
+msgid "Success"
+msgstr "Succès"
+
+msgid "Failed"
+msgstr "Échoué"
+
+msgid "Running"
+msgstr "En cours"
+
+msgid "Run Now"
+msgstr "Exécuter maintenant"
+
+msgid "No schedules yet"
+msgstr "Aucun horaire pour l'instant"
+
+msgid "Create Your First Schedule"
+msgstr "Créer votre premier horaire"
+
+msgid "Run this schedule now?"
+msgstr "Exécuter cet horaire maintenant ?"
+
+msgid "Test run started!"
+msgstr "L'exécution du test a démarré !"
+
+msgid "Are you sure you want to delete this schedule? This action cannot be undone."
+msgstr "Êtes-vous sûr de vouloir supprimer cet horaire ? Cette action est irréversible."
+
+msgid "Basic Information"
+msgstr "Informations de base"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Optional description of this schedule"
+msgstr "Description optionnelle de cet horaire"
+
+msgid "Enable this schedule"
+msgstr "Activer cet horaire"
+
+msgid "Schedule Timing"
+msgstr "Planification"
+
+msgid "Schedule Type"
+msgstr "Type d'horaire"
+
+msgid "One-time"
+msgstr "Une fois"
+
+msgid "Daily"
+msgstr "Quotidien"
+
+msgid "Weekly"
+msgstr "Hebdomadaire"
+
+msgid "Monthly"
+msgstr "Mensuel"
+
+msgid "Custom Cron"
+msgstr "Cron personnalisé"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Time"
+msgstr "Heure"
+
+msgid "Day of Week"
+msgstr "Jour de la semaine"
+
+msgid "Monday"
+msgstr "Lundi"
+
+msgid "Tuesday"
+msgstr "Mardi"
+
+msgid "Wednesday"
+msgstr "Mercredi"
+
+msgid "Thursday"
+msgstr "Jeudi"
+
+msgid "Friday"
+msgstr "Vendredi"
+
+msgid "Saturday"
+msgstr "Samedi"
+
+msgid "Sunday"
+msgstr "Dimanche"
+
+msgid "Day of Month"
+msgstr "Jour du mois"
+
+msgid "Note: For months with fewer days, test runs on the last day"
+msgstr "Note : Pour les mois avec moins de jours, le test s'exécute le dernier jour"
+
+msgid "Cron Expression"
+msgstr "Expression Cron"
+
+msgid "Format: minute hour day month weekday (e.g., \"0 2 * * *\" = daily at 2am)"
+msgstr "Format : minute heure jour mois jour_semaine (ex., \"0 2 * * *\" = tous les jours à 2h)"
+
+msgid "Timezone"
+msgstr "Fuseau horaire"
+
+msgid "Enable AI Testing"
+msgstr "Activer les tests IA"
+
+msgid "AI Testing Scope"
+msgstr "Portée des tests IA"
+
+msgid "Run AI analysis on every page (higher cost)"
+msgstr "Exécuter l'analyse IA sur chaque page (coût plus élevé)"
+
+msgid "Selected Pages Only"
+msgstr "Pages sélectionnées uniquement"
+
+msgid "Choose specific pages for AI analysis"
+msgstr "Choisir des pages spécifiques pour l'analyse IA"
+
+msgid "No AI Testing"
+msgstr "Pas de tests IA"
+
+msgid "Run only automated JavaScript tests"
+msgstr "Exécuter uniquement les tests JavaScript automatisés"
+
+msgid "Select Pages for AI Testing"
+msgstr "Sélectionner les pages pour les tests IA"
+
+msgid "pages available"
+msgstr "pages disponibles"
+
+msgid "Test Settings"
+msgstr "Paramètres de test"
+
+msgid "Run JavaScript Tests"
+msgstr "Exécuter les tests JavaScript"
+
+msgid "Run Python Tests"
+msgstr "Exécuter les tests Python"
+
+msgid "Take Screenshots"
+msgstr "Prendre des captures d'écran"
+
+msgid "Test Users"
+msgstr "Utilisateurs de test"
+
+msgid "Select which users to test with. Leave unchecked to test as guest only."
+msgstr "Sélectionnez les utilisateurs avec lesquels tester. Laissez décoché pour tester en tant qu'invité uniquement."
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Save Changes"
+msgstr "Enregistrer les modifications"
+
+msgid "Schedule Details"
+msgstr "Détails de l'horaire"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Total Runs"
+msgstr "Exécutions totales"
+
+msgid "Upcoming Runs"
+msgstr "Prochaines exécutions"
+
+msgid "No upcoming runs scheduled"
+msgstr "Aucune exécution prochaine planifiée"
+
+msgid "Last Execution"
+msgstr "Dernière exécution"
+
+msgid "Run Time"
+msgstr "Heure d'exécution"
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "Job ID"
+msgstr "ID de tâche"
+
+msgid "This schedule has not run yet"
+msgstr "Cet horaire n'a pas encore été exécuté"
+
+msgid "JavaScript Tests"
+msgstr "Tests JavaScript"
+
+msgid "Python Tests"
+msgstr "Tests Python"
+
+msgid "Screenshots"
+msgstr "Captures d'écran"
+
+msgid "Scope"
+msgstr "Portée"
+
+msgid "Selected Pages"
+msgstr "Pages sélectionnées"
+
+msgid "AI testing is disabled for this schedule"
+msgstr "Les tests IA sont désactivés pour cet horaire"
+
+msgid "Testing as guest (no login)"
+msgstr "Test en tant qu'invité (sans connexion)"
+
+msgid "Scheduler Status"
+msgstr "État du planificateur"
+
+msgid "Registered"
+msgstr "Enregistré"
+
+msgid "Not Registered"
+msgstr "Non enregistré"
+
+msgid "Scheduler Not Running"
+msgstr "Planificateur non actif"
+
+msgid "Danger Zone"
+msgstr "Zone de danger"
+
+msgid "Delete this schedule"
+msgstr "Supprimer cet horaire"
+
+msgid "Once deleted, this schedule cannot be recovered."
+msgstr "Une fois supprimé, cet horaire ne peut pas être récupéré."
+
+msgid "Delete Schedule"
+msgstr "Supprimer l'horaire"
+
+msgid "Cancelled"
+msgstr "Annulé"
+
+msgid "e.g., Nightly Full Scan"
+msgstr "ex., Analyse complète nocturne"
+
+msgid "Schedule deleted"
+msgstr "Horaire supprimé"
+
+msgid "Schedule enabled"
+msgstr "Horaire activé"
+
+msgid "Schedule disabled"
+msgstr "Horaire désactivé"
+
+msgid "Error starting test run: "
+msgstr "Erreur lors du démarrage du test : "
+
+msgid "Error toggling schedule: "
+msgstr "Erreur lors de l'activation/désactivation de l'horaire : "
+
+msgid "Error: "
+msgstr "Erreur : "
+
+msgid "Unknown error"
+msgstr "Erreur inconnue"
+
+msgid "Once at"
+msgstr "Une fois le"
+
+msgid "no date set"
+msgstr "aucune date définie"
+
+msgid "Cron:"
+msgstr "Cron :"
+
+msgid "Not set"
+msgstr "Non défini"
+
+msgid "Daily at"
+msgstr "Tous les jours à"
+
+msgid "Weekly on"
+msgstr "Chaque semaine le"
+
+msgid "at"
+msgstr "à"
+
+msgid "Monthly on day"
+msgstr "Chaque mois le jour"
+
 #~ msgid "usage: "
 #~ msgstr ""
 

@@ -2514,6 +2514,34 @@ class Database:
         docs = self.test_schedules.find({"enabled": True})
         return [TestSchedule.from_dict(doc) for doc in docs]
 
+    def get_all_test_schedules(
+        self,
+        project_id: Optional[str] = None,
+        enabled_only: bool = False
+    ) -> List[TestSchedule]:
+        """
+        Get all test schedules across all websites, optionally filtered by project
+
+        Args:
+            project_id: Optional project ID to filter by
+            enabled_only: If True, only return enabled schedules
+
+        Returns:
+            List of TestSchedule instances
+        """
+        query = {}
+        if enabled_only:
+            query["enabled"] = True
+
+        # If project_id provided, get website IDs for that project first
+        if project_id:
+            websites = self.get_websites(project_id)
+            website_ids = [w.id for w in websites]
+            query["website_id"] = {"$in": website_ids}
+
+        docs = self.test_schedules.find(query).sort("created_at", -1)
+        return [TestSchedule.from_dict(doc) for doc in docs]
+
     def update_test_schedule(self, schedule: TestSchedule) -> bool:
         """
         Update existing test schedule

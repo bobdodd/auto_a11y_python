@@ -44,6 +44,16 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('testing.trends_page') }}">
+                            <i class="bi bi-graph-up-arrow"></i> {{ _('Trends') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('schedules.schedules_dashboard') }}">
+                            <i class="bi bi-calendar-check"></i> {{ _('Schedules') }}
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('recordings.list_recordings') }}">
                             <i class="bi bi-mic"></i> {{ _('Recordings') }}
                         </a>
@@ -177,9 +187,21 @@
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('testing.testing_dashboard') }}" {% if request.endpoint and request.endpoint.startswith('testing.') %}class="active"{% endif %}>
+                <a href="{{ url_for('testing.testing_dashboard') }}" {% if request.endpoint == 'testing.testing_dashboard' %}class="active"{% endif %}>
                     <i class="bi bi-check2-square"></i>
                     <span>{{ _('Testing') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('testing.trends_page') }}" {% if request.endpoint == 'testing.trends_page' %}class="active"{% endif %}>
+                    <i class="bi bi-graph-up-arrow"></i>
+                    <span>{{ _('Trends') }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('schedules.schedules_dashboard') }}" {% if request.endpoint == 'schedules.schedules_dashboard' %}class="active"{% endif %}>
+                    <i class="bi bi-calendar-check"></i>
+                    <span>{{ _('Schedules') }}</span>
                 </a>
             </li>
             <li>

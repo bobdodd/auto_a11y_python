@@ -172,6 +172,626 @@ def get_trend_data(db, project_id=None, website_id=None, days=30):
     return trend_data
 
 
+# ============================================================================
+# Enhanced Trend Analysis Functions
+# ============================================================================
+
+def get_page_ids_for_scope(db, project_id=None, website_id=None):
+    """Get all page IDs for a given project or website scope"""
+    page_ids = set()
+    if website_id:
+        pages = db.get_pages(website_id)
+        page_ids = set(p.id for p in pages)
+    elif project_id:
+        websites = db.get_websites(project_id)
+        for website in websites:
+            pages = db.get_pages(website.id)
+            page_ids.update(p.id for p in pages)
+    return page_ids
+
+
+def aggregate_by_granularity(data_points, granularity='daily'):
+    """Aggregate daily data into weekly or monthly buckets"""
+    if granularity == 'daily':
+        return data_points
+
+    from collections import defaultdict
+
+    buckets = defaultdict(lambda: {'violations': 0, 'warnings': 0, 'tests': 0})
+
+    for point in data_points:
+        date = datetime.strptime(point['date'], '%Y-%m-%d')
+
+        if granularity == 'weekly':
+            # Use ISO week start (Monday)
+            week_start = date - timedelta(days=date.weekday())
+            bucket_key = week_start.strftime('%Y-%m-%d')
+        elif granularity == 'monthly':
+            bucket_key = date.strftime('%Y-%m-01')
+        else:
+            bucket_key = point['date']
+
+        buckets[bucket_key]['violations'] += point['violations']
+        buckets[bucket_key]['warnings'] += point['warnings']
+        buckets[bucket_key]['tests'] += point['tests']
+
+    # Convert to sorted list
+    result = []
+    for period, values in sorted(buckets.items()):
+        result.append({
+            'period': period,
+            'violations': values['violations'],
+            'warnings': values['warnings'],
+            'tests': values['tests']
+        })
+
+    return result
+
+
+def calculate_moving_averages(time_series, windows=[7, 30]):
+    """Add moving averages to time series data
+
+    Args:
+        time_series: List of dicts with 'violations' key
+        windows: List of window sizes (in data points)
+
+    Returns:
+        Time series with moving_avg_Xd fields added
+    """
+    if not time_series:
+        return time_series
+
+    violations = [p.get('violations', 0) for p in time_series]
+
+    for window in windows:
+        key = f'moving_avg_{window}d'
+        for i, point in enumerate(time_series):
+            if i < window - 1:
+                # Not enough data points yet
+                point[key] = None
+            else:
+                # Calculate average of last 'window' points
+                window_data = violations[max(0, i - window + 1):i + 1]
+                point[key] = round(sum(window_data) / len(window_data), 1)
+
+    return time_series
+
+
+def calculate_trend_direction(time_series, threshold_percent=5):
+    """Determine overall trend direction based on time series data
+
+    Compares the average of the most recent third of data to the first third.
+
+    Args:
+        time_series: List of dicts with 'violations' key
+        threshold_percent: Minimum % change to classify as improving/worsening
+
+    Returns:
+        Tuple of (direction: str, change_percent: float)
+        direction is one of: 'improving', 'worsening', 'stable'
+    """
+    if not time_series or len(time_series) < 3:
+        return 'stable', 0.0
+
+    violations = [p.get('violations', 0) for p in time_series]
+
+    # Split into thirds
+    third = len(violations) // 3
+    if third == 0:
+        third = 1
+
+    first_third = violations[:third]
+    last_third = violations[-third:]
+
+    first_avg = sum(first_third) / len(first_third) if first_third else 0
+    last_avg = sum(last_third) / len(last_third) if last_third else 0
+
+    if first_avg == 0:
+        if last_avg == 0:
+            return 'stable', 0.0
+        else:
+            return 'worsening', 100.0
+
+    change_percent = ((last_avg - first_avg) / first_avg) * 100
+
+    if change_percent < -threshold_percent:
+        return 'improving', round(change_percent, 1)
+    elif change_percent > threshold_percent:
+        return 'worsening', round(change_percent, 1)
+    else:
+        return 'stable', round(change_percent, 1)
+
+
+def get_detailed_trend_data(db, project_id=None, website_id=None,
+                            start_date=None, end_date=None,
+                            granularity='daily', include_breakdown=True):
+    """Get comprehensive trend data with statistics and optional breakdowns
+
+    Args:
+        db: Database instance
+        project_id: Optional project filter
+        website_id: Optional website filter
+        start_date: Start date (datetime or None for 30 days ago)
+        end_date: End date (datetime or None for now)
+        granularity: 'daily', 'weekly', or 'monthly'
+        include_breakdown: Whether to include touchpoint/impact breakdowns
+
+    Returns:
+        Dict with summary, time_series, and optional breakdowns
+    """
+    # Default date range
+    if end_date is None:
+        end_date = datetime.now()
+    if start_date is None:
+        start_date = end_date - timedelta(days=30)
+
+    # Get page IDs for the scope
+    page_ids = get_page_ids_for_scope(db, project_id, website_id)
+
+    # Initialize daily buckets
+    daily_data = []
+    current_date = start_date
+    while current_date <= end_date:
+        daily_data.append({
+            'date': current_date.strftime('%Y-%m-%d'),
+            'violations': 0,
+            'warnings': 0,
+            'tests': 0
+        })
+        current_date += timedelta(days=1)
+
+    # Get test results for the period
+    days_diff = (end_date - start_date).days
+    results = db.get_test_results(
+        start_date=start_date,
+        end_date=end_date,
+        limit=max(days_diff * 50, 1000)
+    )
+
+    # Aggregate by day
+    date_to_index = {d['date']: i for i, d in enumerate(daily_data)}
+    result_ids = []
+
+    for result in results:
+        if result.test_date < start_date:
+            continue
+        if page_ids and result.page_id not in page_ids:
+            continue
+
+        result_ids.append(result.id)
+        date_str = result.test_date.strftime('%Y-%m-%d')
+        if date_str in date_to_index:
+            idx = date_to_index[date_str]
+            daily_data[idx]['violations'] += result.violation_count
+            daily_data[idx]['warnings'] += result.warning_count
+            daily_data[idx]['tests'] += 1
+
+    # Apply granularity
+    time_series = aggregate_by_granularity(daily_data, granularity)
+
+    # Add moving averages (for daily data only, makes sense)
+    if granularity == 'daily':
+        time_series = calculate_moving_averages(time_series, windows=[7, 30])
+
+    # Calculate trend direction
+    trend_direction, change_percent = calculate_trend_direction(time_series)
+
+    # Calculate summary statistics
+    total_violations = sum(p.get('violations', 0) for p in time_series)
+    total_warnings = sum(p.get('warnings', 0) for p in time_series)
+    total_tests = sum(p.get('tests', 0) for p in time_series)
+
+    summary = {
+        'total_tests': total_tests,
+        'total_violations': total_violations,
+        'total_warnings': total_warnings,
+        'avg_violations_per_test': round(total_violations / total_tests, 1) if total_tests > 0 else 0,
+        'avg_warnings_per_test': round(total_warnings / total_tests, 1) if total_tests > 0 else 0,
+        'trend_direction': trend_direction,
+        'change_percent': change_percent
+    }
+
+    response = {
+        'period': {
+            'start': start_date.strftime('%Y-%m-%d'),
+            'end': end_date.strftime('%Y-%m-%d'),
+            'granularity': granularity
+        },
+        'summary': summary,
+        'time_series': time_series
+    }
+
+    # Add breakdowns if requested
+    if include_breakdown and result_ids:
+        response['by_touchpoint'] = get_trends_by_touchpoint(db, result_ids)
+        response['by_impact'] = get_trends_by_impact(db, result_ids)
+        response['top_issues'] = get_top_issues(db, result_ids)
+
+    return response
+
+
+def get_trends_by_touchpoint(db, result_ids, limit=10):
+    """Get violation counts grouped by touchpoint using MongoDB aggregation
+
+    Args:
+        db: Database instance
+        result_ids: List of test result IDs to analyze
+        limit: Maximum number of touchpoints to return
+
+    Returns:
+        Dict mapping touchpoint names to counts and metadata
+    """
+    if not result_ids:
+        return {}
+
+    try:
+        # Use MongoDB aggregation pipeline
+        from bson import ObjectId
+
+        # Convert string IDs to ObjectId if needed
+        object_ids = []
+        for rid in result_ids:
+            if isinstance(rid, str):
+                try:
+                    object_ids.append(ObjectId(rid))
+                except:
+                    pass
+            else:
+                object_ids.append(rid)
+
+        pipeline = [
+            {'$match': {
+                'test_result_id': {'$in': object_ids},
+                'item_type': 'violation'
+            }},
+            {'$group': {
+                '_id': '$touchpoint',
+                'count': {'$sum': 1}
+            }},
+            {'$sort': {'count': -1}},
+            {'$limit': limit}
+        ]
+
+        # Execute aggregation
+        if hasattr(db, 'test_result_items'):
+            results = list(db.test_result_items.aggregate(pipeline))
+        else:
+            # Fallback if collection not directly accessible
+            return {}
+
+        # Format results
+        touchpoints = {}
+        for r in results:
+            touchpoint = r['_id'] or 'Unknown'
+            touchpoints[touchpoint] = {
+                'count': r['count'],
+                'trend': 'stable',  # Would need historical comparison for actual trend
+                'change': 0
+            }
+
+        return touchpoints
+
+    except Exception as e:
+        logger.warning(f"Error getting touchpoint trends: {e}")
+        return {}
+
+
+def get_trends_by_impact(db, result_ids):
+    """Get violation counts grouped by impact level
+
+    Args:
+        db: Database instance
+        result_ids: List of test result IDs to analyze
+
+    Returns:
+        Dict with high/medium/low counts and percentages
+    """
+    if not result_ids:
+        return {'high': {'count': 0, 'percent': 0},
+                'medium': {'count': 0, 'percent': 0},
+                'low': {'count': 0, 'percent': 0}}
+
+    try:
+        from bson import ObjectId
+
+        object_ids = []
+        for rid in result_ids:
+            if isinstance(rid, str):
+                try:
+                    object_ids.append(ObjectId(rid))
+                except:
+                    pass
+            else:
+                object_ids.append(rid)
+
+        pipeline = [
+            {'$match': {
+                'test_result_id': {'$in': object_ids},
+                'item_type': 'violation'
+            }},
+            {'$group': {
+                '_id': '$impact',
+                'count': {'$sum': 1}
+            }}
+        ]
+
+        if hasattr(db, 'test_result_items'):
+            results = list(db.test_result_items.aggregate(pipeline))
+        else:
+            return {'high': {'count': 0, 'percent': 0},
+                    'medium': {'count': 0, 'percent': 0},
+                    'low': {'count': 0, 'percent': 0}}
+
+        # Count by impact
+        counts = {'high': 0, 'medium': 0, 'low': 0}
+        for r in results:
+            impact = str(r['_id']).lower() if r['_id'] else 'medium'
+            # Normalize impact values
+            if impact in ['high', 'serious', 'critical']:
+                counts['high'] += r['count']
+            elif impact in ['low', 'minor']:
+                counts['low'] += r['count']
+            else:
+                counts['medium'] += r['count']
+
+        total = sum(counts.values())
+
+        return {
+            'high': {
+                'count': counts['high'],
+                'percent': round(counts['high'] / total * 100, 1) if total > 0 else 0
+            },
+            'medium': {
+                'count': counts['medium'],
+                'percent': round(counts['medium'] / total * 100, 1) if total > 0 else 0
+            },
+            'low': {
+                'count': counts['low'],
+                'percent': round(counts['low'] / total * 100, 1) if total > 0 else 0
+            }
+        }
+
+    except Exception as e:
+        logger.warning(f"Error getting impact trends: {e}")
+        return {'high': {'count': 0, 'percent': 0},
+                'medium': {'count': 0, 'percent': 0},
+                'low': {'count': 0, 'percent': 0}}
+
+
+def get_top_issues(db, result_ids, limit=10):
+    """Get the most common issues (by issue_id) from test results
+
+    Args:
+        db: Database instance
+        result_ids: List of test result IDs to analyze
+        limit: Maximum number of issues to return
+
+    Returns:
+        List of dicts with issue_id, count, and trend
+    """
+    if not result_ids:
+        return []
+
+    try:
+        from bson import ObjectId
+
+        object_ids = []
+        for rid in result_ids:
+            if isinstance(rid, str):
+                try:
+                    object_ids.append(ObjectId(rid))
+                except:
+                    pass
+            else:
+                object_ids.append(rid)
+
+        pipeline = [
+            {'$match': {
+                'test_result_id': {'$in': object_ids},
+                'item_type': 'violation'
+            }},
+            {'$group': {
+                '_id': '$issue_id',
+                'count': {'$sum': 1}
+            }},
+            {'$sort': {'count': -1}},
+            {'$limit': limit}
+        ]
+
+        if hasattr(db, 'test_result_items'):
+            results = list(db.test_result_items.aggregate(pipeline))
+        else:
+            return []
+
+        top_issues = []
+        for r in results:
+            top_issues.append({
+                'issue_id': r['_id'] or 'unknown',
+                'count': r['count'],
+                'trend': 'stable',  # Would need historical comparison
+                'change_percent': 0
+            })
+
+        return top_issues
+
+    except Exception as e:
+        logger.warning(f"Error getting top issues: {e}")
+        return []
+
+
+def compare_periods(db, project_id, website_id, period_a_start, period_a_end,
+                   period_b_start, period_b_end):
+    """Compare two time periods for violations/warnings
+
+    Args:
+        db: Database instance
+        project_id: Optional project filter
+        website_id: Optional website filter
+        period_a_*: First period start/end dates
+        period_b_*: Second period start/end dates
+
+    Returns:
+        Dict with comparison data
+    """
+    page_ids = get_page_ids_for_scope(db, project_id, website_id)
+
+    def get_period_stats(start, end):
+        results = db.get_test_results(start_date=start, end_date=end, limit=5000)
+
+        violations = 0
+        warnings = 0
+        tests = 0
+
+        for result in results:
+            if page_ids and result.page_id not in page_ids:
+                continue
+            violations += result.violation_count
+            warnings += result.warning_count
+            tests += 1
+
+        return {'violations': violations, 'warnings': warnings, 'tests': tests}
+
+    stats_a = get_period_stats(period_a_start, period_a_end)
+    stats_b = get_period_stats(period_b_start, period_b_end)
+
+    def calc_change(old_val, new_val):
+        if old_val == 0:
+            return {'absolute': new_val, 'percent': 100 if new_val > 0 else 0}
+        return {
+            'absolute': new_val - old_val,
+            'percent': round(((new_val - old_val) / old_val) * 100, 1)
+        }
+
+    return {
+        'period_a': {
+            'start': period_a_start.strftime('%Y-%m-%d'),
+            'end': period_a_end.strftime('%Y-%m-%d'),
+            **stats_a
+        },
+        'period_b': {
+            'start': period_b_start.strftime('%Y-%m-%d'),
+            'end': period_b_end.strftime('%Y-%m-%d'),
+            **stats_b
+        },
+        'change': {
+            'violations': calc_change(stats_a['violations'], stats_b['violations']),
+            'warnings': calc_change(stats_a['warnings'], stats_b['warnings']),
+            'tests': calc_change(stats_a['tests'], stats_b['tests'])
+        }
+    }
+
+
+def calculate_progress_metrics(db, project_id=None, website_id=None, days=30):
+    """Calculate progress metrics showing improvement/regression
+
+    Args:
+        db: Database instance
+        project_id: Optional project filter
+        website_id: Optional website filter
+        days: Number of days to analyze
+
+    Returns:
+        Dict with pages_summary, issue_flow, and compliance_score
+    """
+    page_ids = get_page_ids_for_scope(db, project_id, website_id)
+
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=days)
+    mid_date = start_date + timedelta(days=days // 2)
+
+    # Get all pages with their latest and previous test results
+    pages_improving = 0
+    pages_worsening = 0
+    pages_stable = 0
+    total_pages = 0
+
+    # Analyze pages
+    if website_id:
+        pages = db.get_pages(website_id)
+    elif project_id:
+        pages = []
+        for ws in db.get_websites(project_id):
+            pages.extend(db.get_pages(ws.id))
+    else:
+        pages = []
+
+    for page in pages:
+        if page_ids and page.id not in page_ids:
+            continue
+
+        total_pages += 1
+
+        # Get test results for this page in the period
+        page_results = db.get_test_results(page_id=page.id, start_date=start_date, limit=50)
+
+        if len(page_results) < 2:
+            pages_stable += 1
+            continue
+
+        # Compare first and last test
+        first_violations = page_results[-1].violation_count
+        last_violations = page_results[0].violation_count
+
+        if last_violations < first_violations:
+            pages_improving += 1
+        elif last_violations > first_violations:
+            pages_worsening += 1
+        else:
+            pages_stable += 1
+
+    # Calculate issue flow (would need more sophisticated tracking in production)
+    # For now, estimate based on period comparison
+    first_half_results = db.get_test_results(start_date=start_date, end_date=mid_date, limit=2000)
+    second_half_results = db.get_test_results(start_date=mid_date, end_date=end_date, limit=2000)
+
+    first_half_violations = sum(r.violation_count for r in first_half_results
+                                if not page_ids or r.page_id in page_ids)
+    second_half_violations = sum(r.violation_count for r in second_half_results
+                                 if not page_ids or r.page_id in page_ids)
+
+    # Estimate new/resolved (simplified)
+    if second_half_violations < first_half_violations:
+        resolved = first_half_violations - second_half_violations
+        new_issues = 0
+    else:
+        new_issues = second_half_violations - first_half_violations
+        resolved = 0
+
+    # Calculate compliance score (violations per page, inverted)
+    current_violations_per_page = second_half_violations / max(total_pages, 1)
+    target_violations_per_page = 0  # Perfect compliance
+
+    # Score: 100 - (avg violations * 10), capped at 0-100
+    compliance_score = max(0, min(100, 100 - (current_violations_per_page * 2)))
+
+    # Projected days to target (if improving)
+    projected_days = None
+    if pages_improving > pages_worsening and first_half_violations > second_half_violations:
+        improvement_rate = (first_half_violations - second_half_violations) / (days / 2)
+        if improvement_rate > 0:
+            remaining_violations = second_half_violations
+            projected_days = int(remaining_violations / improvement_rate)
+
+    return {
+        'pages_summary': {
+            'total': total_pages,
+            'improving': pages_improving,
+            'worsening': pages_worsening,
+            'stable': pages_stable
+        },
+        'issue_flow': {
+            'new_issues': new_issues,
+            'resolved_issues': resolved,
+            'net_change': resolved - new_issues
+        },
+        'compliance_score': {
+            'current': round(compliance_score, 1),
+            'target': 95.0,
+            'projected_days_to_target': projected_days
+        }
+    }
+
+
 @testing_bp.route('/result/<result_id>')
 def view_result(result_id):
     """View individual test result details"""
@@ -680,6 +1300,204 @@ def api_trends():
         'success': True,
         'trend_data': trend_data
     })
+
+
+@testing_bp.route('/api/trends/detailed')
+@login_required
+def api_trends_detailed():
+    """API endpoint for detailed trend data with breakdowns and statistics"""
+    db = current_app.db
+
+    project_id = request.args.get('project_id')
+    website_id = request.args.get('website_id')
+    granularity = request.args.get('granularity', 'daily')
+    include_breakdown = request.args.get('include_breakdown', 'true').lower() == 'true'
+
+    # Parse dates
+    start_date = None
+    end_date = None
+
+    if request.args.get('start_date'):
+        try:
+            start_date = datetime.strptime(request.args.get('start_date'), '%Y-%m-%d')
+        except ValueError:
+            return jsonify({'error': 'Invalid start_date format. Use YYYY-MM-DD'}), 400
+
+    if request.args.get('end_date'):
+        try:
+            end_date = datetime.strptime(request.args.get('end_date'), '%Y-%m-%d')
+            # Include the full end day
+            end_date = end_date.replace(hour=23, minute=59, second=59)
+        except ValueError:
+            return jsonify({'error': 'Invalid end_date format. Use YYYY-MM-DD'}), 400
+
+    # Validate granularity
+    if granularity not in ['daily', 'weekly', 'monthly']:
+        return jsonify({'error': 'Invalid granularity. Use daily, weekly, or monthly'}), 400
+
+    try:
+        trend_data = get_detailed_trend_data(
+            db,
+            project_id=project_id,
+            website_id=website_id,
+            start_date=start_date,
+            end_date=end_date,
+            granularity=granularity,
+            include_breakdown=include_breakdown
+        )
+
+        return jsonify({
+            'success': True,
+            **trend_data
+        })
+
+    except Exception as e:
+        logger.error(f"Error getting detailed trends: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@testing_bp.route('/api/trends/compare')
+@login_required
+def api_trends_compare():
+    """API endpoint for comparing time periods"""
+    db = current_app.db
+
+    project_id = request.args.get('project_id')
+    website_id = request.args.get('website_id')
+    compare_type = request.args.get('compare_type', 'periods')
+
+    if compare_type == 'periods':
+        # Parse period dates
+        try:
+            period_a_start = datetime.strptime(request.args.get('period_a_start', ''), '%Y-%m-%d')
+            period_a_end = datetime.strptime(request.args.get('period_a_end', ''), '%Y-%m-%d')
+            period_b_start = datetime.strptime(request.args.get('period_b_start', ''), '%Y-%m-%d')
+            period_b_end = datetime.strptime(request.args.get('period_b_end', ''), '%Y-%m-%d')
+        except ValueError:
+            # Default to this week vs last week
+            today = datetime.now()
+            period_b_end = today
+            period_b_start = today - timedelta(days=7)
+            period_a_end = period_b_start - timedelta(days=1)
+            period_a_start = period_a_end - timedelta(days=7)
+
+        comparison = compare_periods(
+            db, project_id, website_id,
+            period_a_start, period_a_end,
+            period_b_start, period_b_end
+        )
+
+        return jsonify({
+            'success': True,
+            'comparison_type': 'periods',
+            'items': [
+                {
+                    'label': f"{comparison['period_a']['start']} to {comparison['period_a']['end']}",
+                    **{k: v for k, v in comparison['period_a'].items() if k not in ['start', 'end']}
+                },
+                {
+                    'label': f"{comparison['period_b']['start']} to {comparison['period_b']['end']}",
+                    **{k: v for k, v in comparison['period_b'].items() if k not in ['start', 'end']}
+                }
+            ],
+            'change': comparison['change']
+        })
+
+    elif compare_type == 'websites':
+        # Compare multiple websites
+        website_ids = request.args.getlist('website_ids[]') or request.args.getlist('website_ids')
+
+        if len(website_ids) < 2:
+            return jsonify({'error': 'At least 2 website_ids required for comparison'}), 400
+
+        items = []
+        for ws_id in website_ids[:5]:  # Limit to 5 websites
+            website = db.get_website(ws_id)
+            if not website:
+                continue
+
+            pages = db.get_pages(ws_id)
+            total_violations = sum(p.violation_count for p in pages)
+            total_warnings = sum(p.warning_count for p in pages)
+            tested_pages = sum(1 for p in pages if p.status == PageStatus.TESTED)
+
+            items.append({
+                'label': website.name,
+                'website_id': ws_id,
+                'violations': total_violations,
+                'warnings': total_warnings,
+                'pages': len(pages),
+                'tested': tested_pages
+            })
+
+        return jsonify({
+            'success': True,
+            'comparison_type': 'websites',
+            'items': items
+        })
+
+    else:
+        return jsonify({'error': 'Invalid compare_type. Use periods or websites'}), 400
+
+
+@testing_bp.route('/api/trends/progress')
+@login_required
+def api_trends_progress():
+    """API endpoint for progress/compliance metrics"""
+    db = current_app.db
+
+    project_id = request.args.get('project_id')
+    website_id = request.args.get('website_id')
+    days = int(request.args.get('days', 30))
+
+    if not project_id and not website_id:
+        return jsonify({'error': 'Either project_id or website_id is required'}), 400
+
+    try:
+        progress = calculate_progress_metrics(db, project_id, website_id, days)
+
+        return jsonify({
+            'success': True,
+            **progress
+        })
+
+    except Exception as e:
+        logger.error(f"Error calculating progress metrics: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@testing_bp.route('/trends')
+@login_required
+def trends_page():
+    """Dedicated trends analysis page"""
+    db = current_app.db
+
+    # Get filter parameters
+    project_id = request.args.get('project_id')
+    website_id = request.args.get('website_id')
+
+    # Get all projects for dropdown
+    projects = db.get_all_projects()
+
+    # Get selected project and its websites
+    selected_project = None
+    websites = []
+    if project_id:
+        selected_project = db.get_project(project_id)
+        if selected_project:
+            websites = db.get_websites(project_id)
+
+    # Get selected website
+    selected_website = None
+    if website_id:
+        selected_website = db.get_website(website_id)
+
+    return render_template('testing/trends.html',
+                         projects=projects,
+                         selected_project=selected_project,
+                         websites=websites,
+                         selected_website=selected_website,
+                         selected_website_id=website_id)
 
 
 @testing_bp.route('/api/websites/<project_id>')

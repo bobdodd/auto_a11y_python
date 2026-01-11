@@ -299,7 +299,12 @@
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0"><i class="bi bi-graph-up"></i> {{ _('Trends') }}</h5>
-                    <small class="text-muted">{{ _('Last 14 days') }}</small>
+                    <div class="d-flex align-items-center gap-2">
+                        <small class="text-muted">{{ _('Last 14 days') }}</small>
+                        <a href="{{ url_for('testing.trends_page') }}{% if selected_project %}?project_id={{ selected_project.id }}{% endif %}{% if selected_website %}&website_id={{ selected_website.id }}{% endif %}" class="btn btn-sm btn-outline-primary" title="{{ _('View Detailed Trends') }}">
+                            <i class="bi bi-graph-up-arrow"></i> {{ _('Details') }}
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <canvas id="trendsChart" height="120"></canvas>

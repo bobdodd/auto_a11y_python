@@ -18,6 +18,78 @@ logger = logging.getLogger(__name__)
 schedules_bp = Blueprint('schedules', __name__)
 
 
+@schedules_bp.route('/schedules')
+def schedules_dashboard():
+    """Global schedules dashboard - shows all schedules across all projects"""
+    # Get filter parameters
+    project_id = request.args.get('project_id')
+
+    # Get all projects for filter dropdown
+    projects = current_app.db.get_projects()
+
+    # Get selected project
+    selected_project = None
+    if project_id:
+        selected_project = current_app.db.get_project(project_id)
+
+    # Get all schedules (optionally filtered by project)
+    schedules = current_app.db.get_all_test_schedules(project_id=project_id)
+
+    # Enrich schedules with website and project info
+    for schedule in schedules:
+        website = current_app.db.get_website(schedule.website_id)
+        if website:
+            schedule._website_name = website.name
+            schedule._website_id = website.id
+            project = current_app.db.get_project(website.project_id)
+            if project:
+                schedule._project_name = project.name
+                schedule._project_id = project.id
+            else:
+                schedule._project_name = 'Unknown'
+                schedule._project_id = None
+        else:
+            schedule._website_name = 'Unknown'
+            schedule._website_id = None
+            schedule._project_name = 'Unknown'
+            schedule._project_id = None
+
+    # Calculate summary stats
+    total_schedules = len(schedules)
+    enabled_schedules = sum(1 for s in schedules if s.enabled)
+    disabled_schedules = total_schedules - enabled_schedules
+
+    # Count by schedule type
+    type_counts = {}
+    for s in schedules:
+        type_name = s.schedule_type.value if hasattr(s.schedule_type, 'value') else str(s.schedule_type)
+        type_counts[type_name] = type_counts.get(type_name, 0) + 1
+
+    # Get upcoming runs (next 24 hours)
+    scheduler = get_scheduler_service()
+    upcoming_runs = []
+    if scheduler:
+        for schedule in schedules:
+            if schedule.enabled and schedule.next_run_at:
+                upcoming_runs.append({
+                    'schedule': schedule,
+                    'next_run': schedule.next_run_at
+                })
+    upcoming_runs.sort(key=lambda x: x['next_run'] if x['next_run'] else datetime.max)
+    upcoming_runs = upcoming_runs[:10]  # Limit to next 10
+
+    return render_template('schedules/dashboard.html',
+                         schedules=schedules,
+                         projects=projects,
+                         selected_project=selected_project,
+                         total_schedules=total_schedules,
+                         enabled_schedules=enabled_schedules,
+                         disabled_schedules=disabled_schedules,
+                         type_counts=type_counts,
+                         upcoming_runs=upcoming_runs,
+                         now=datetime.now())
+
+
 @schedules_bp.route('/websites/<website_id>/schedules')
 def list_schedules(website_id):
     """List all schedules for a website"""

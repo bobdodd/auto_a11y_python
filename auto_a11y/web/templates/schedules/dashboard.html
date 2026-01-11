@@ -1,0 +1,413 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Schedules Dashboard') }} - {{ _('Auto A11y') }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: none;
+        border-radius: 12px;
+    }
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+    .stat-label {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+    .schedule-row:hover {
+        background-color: #f8f9fa;
+    }
+    .upcoming-item {
+        border-left: 3px solid #0d6efd;
+        padding-left: 12px;
+        margin-bottom: 12px;
+    }
+    .upcoming-item.soon {
+        border-left-color: #ffc107;
+    }
+    .type-badge {
+        font-size: 0.75rem;
+        padding: 0.25em 0.6em;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h2">
+                <i class="bi bi-calendar-check"></i> {{ _('Schedules Dashboard') }}
+            </h1>
+            <p class="text-muted mb-0">{{ _('Manage scheduled accessibility tests across all projects') }}</p>
+        </div>
+    </div>
+
+    <!-- Project Filter -->
+    <div class="card mb-4">
+        <div class="card-body py-3">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="project_id" class="form-label">{{ _('Filter by Project') }}</label>
+                    <select name="project_id" id="project_id" class="form-select" onchange="this.form.submit()">
+                        <option value="">{{ _('All Projects') }}</option>
+                        {% for project in projects %}
+                        <option value="{{ project.id }}" {% if selected_project and selected_project.id == project.id %}selected{% endif %}>
+                            {{ project.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    {% if selected_project %}
+                    <a href="{{ url_for('schedules.schedules_dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x"></i> {{ _('Clear Filter') }}
+                    </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Summary Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-primary bg-opacity-10 text-primary me-3">
+                            <i class="bi bi-calendar-event"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value">{{ total_schedules }}</div>
+                            <div class="stat-label">{{ _('Total Schedules') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-success bg-opacity-10 text-success me-3">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value">{{ enabled_schedules }}</div>
+                            <div class="stat-label">{{ _('Active') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-secondary bg-opacity-10 text-secondary me-3">
+                            <i class="bi bi-pause-circle"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value">{{ disabled_schedules }}</div>
+                            <div class="stat-label">{{ _('Paused') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon bg-info bg-opacity-10 text-info me-3">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value">{{ upcoming_runs|length }}</div>
+                            <div class="stat-label">{{ _('Upcoming Runs') }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Schedules Table -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-calendar-event"></i> {{ _('All Schedules') }}
+                        <span class="badge bg-light text-dark ms-2">{{ schedules|length }}</span>
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if schedules %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ _('Name') }}</th>
+                                    <th>{{ _('Project / Website') }}</th>
+                                    <th>{{ _('Type') }}</th>
+                                    <th>{{ _('Status') }}</th>
+                                    <th>{{ _('Next Run') }}</th>
+                                    <th>{{ _('Actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for schedule in schedules %}
+                                <tr class="schedule-row">
+                                    <td>
+                                        <strong>
+                                            <a href="{{ url_for('schedules.view_schedule', website_id=schedule._website_id, schedule_id=schedule.id) }}">
+                                                {{ schedule.name }}
+                                            </a>
+                                        </strong>
+                                        {% if schedule.description %}
+                                        <br><small class="text-muted">{{ schedule.description|truncate(50) }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if schedule._project_id %}
+                                        <a href="{{ url_for('projects.view_project', project_id=schedule._project_id) }}" class="text-decoration-none">
+                                            {{ schedule._project_name }}
+                                        </a>
+                                        {% else %}
+                                        {{ schedule._project_name }}
+                                        {% endif %}
+                                        <br>
+                                        {% if schedule._website_id %}
+                                        <small>
+                                            <a href="{{ url_for('websites.view_website', website_id=schedule._website_id) }}" class="text-muted">
+                                                {{ schedule._website_name }}
+                                            </a>
+                                        </small>
+                                        {% else %}
+                                        <small class="text-muted">{{ schedule._website_name }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% set type_colors = {'daily': 'primary', 'weekly': 'info', 'monthly': 'secondary', 'one_time': 'warning', 'cron': 'dark'} %}
+                                        {% set type_value = schedule.schedule_type.value if schedule.schedule_type.value is defined else schedule.schedule_type %}
+                                        <span class="badge type-badge bg-{{ type_colors.get(type_value, 'secondary') }}">
+                                            {% if type_value == 'one_time' %}{{ _('One-time') }}
+                                            {% elif type_value == 'daily' %}{{ _('Daily') }}
+                                            {% elif type_value == 'weekly' %}{{ _('Weekly') }}
+                                            {% elif type_value == 'monthly' %}{{ _('Monthly') }}
+                                            {% elif type_value == 'cron' %}{{ _('Cron') }}
+                                            {% else %}{{ type_value }}
+                                            {% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if schedule.enabled %}
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle"></i> {{ _('Active') }}
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">
+                                            <i class="bi bi-pause-circle"></i> {{ _('Paused') }}
+                                        </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if schedule.next_run_at %}
+                                        <small>{{ schedule.next_run_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                        {% else %}
+                                        <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ url_for('schedules.view_schedule', website_id=schedule._website_id, schedule_id=schedule.id) }}"
+                                               class="btn btn-outline-primary" title="{{ _('View') }}">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <button type="button"
+                                                    class="btn btn-outline-{% if schedule.enabled %}success{% else %}secondary{% endif %}"
+                                                    onclick="toggleSchedule('{{ schedule._website_id }}', '{{ schedule.id }}')"
+                                                    title="{% if schedule.enabled %}{{ _('Disable') }}{% else %}{{ _('Enable') }}{% endif %}">
+                                                <i class="bi bi-toggle-{% if schedule.enabled %}on{% else %}off{% endif %}"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-info"
+                                                    onclick="runNow('{{ schedule._website_id }}', '{{ schedule.id }}')"
+                                                    title="{{ _('Run Now') }}"
+                                                    {% if not schedule.enabled %}disabled{% endif %}>
+                                                <i class="bi bi-play-fill"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-calendar-x" style="font-size: 3rem; color: #ddd;"></i>
+                        <p class="text-muted mt-3">{{ _('No schedules found') }}</p>
+                        <p class="text-muted small">{{ _('Create schedules from individual website pages') }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Upcoming Runs -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="bi bi-clock"></i> {{ _('Upcoming Runs') }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_runs %}
+                    {% for item in upcoming_runs %}
+                    <div class="upcoming-item {% if item.next_run and (item.next_run - now).total_seconds() < 3600 %}soon{% endif %}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong class="small">{{ item.schedule.name }}</strong>
+                                <br>
+                                <small class="text-muted">{{ item.schedule._website_name }}</small>
+                            </div>
+                            <small class="text-end">
+                                {% if item.next_run %}
+                                {{ item.next_run.strftime('%m/%d %H:%M') }}
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p class="text-muted text-center mb-0">{{ _('No upcoming runs scheduled') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Schedule Types -->
+            <div class="card mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h6 class="mb-0">
+                        <i class="bi bi-pie-chart"></i> {{ _('By Schedule Type') }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if type_counts %}
+                    <ul class="list-group list-group-flush">
+                        {% for type_name, count in type_counts.items() %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            {% if type_name == 'daily' %}{{ _('Daily') }}
+                            {% elif type_name == 'weekly' %}{{ _('Weekly') }}
+                            {% elif type_name == 'monthly' %}{{ _('Monthly') }}
+                            {% elif type_name == 'one_time' %}{{ _('One-time') }}
+                            {% elif type_name == 'cron' %}{{ _('Custom (Cron)') }}
+                            {% else %}{{ type_name }}
+                            {% endif %}
+                            <span class="badge bg-primary rounded-pill">{{ count }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p class="text-muted text-center mb-0">{{ _('No schedules') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="bi bi-link-45deg"></i> {{ _('Quick Links') }}
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('testing.testing_dashboard') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-speedometer2"></i> {{ _('Testing Dashboard') }}
+                        </a>
+                        <a href="{{ url_for('testing.trends_page') }}" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-graph-up-arrow"></i> {{ _('Trend Analysis') }}
+                        </a>
+                        <a href="{{ url_for('projects.list_projects') }}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-folder"></i> {{ _('All Projects') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Make 'now' available for time comparisons
+const now = new Date();
+
+function toggleSchedule(websiteId, scheduleId) {
+    fetch(`/websites/${websiteId}/schedules/${scheduleId}/toggle`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('{{ _("Error: ") }}' + (data.error || '{{ _("Unknown error") }}'));
+        }
+    })
+    .catch(err => {
+        alert('{{ _("Error toggling schedule: ") }}' + err.message);
+    });
+}
+
+function runNow(websiteId, scheduleId) {
+    if (!confirm('{{ _("Run this schedule now?") }}')) return;
+
+    fetch(`/websites/${websiteId}/schedules/${scheduleId}/run-now`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            alert('{{ _("Test run started!") }}');
+            location.reload();
+        } else {
+            alert('{{ _("Error: ") }}' + (data.error || '{{ _("Unknown error") }}'));
+        }
+    })
+    .catch(err => {
+        alert('{{ _("Error starting test run: ") }}' + err.message);
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,1005 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Trend Analysis') }} - {{ _('Auto A11y') }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .stat-icon {
+        font-size: 1.5rem;
+        opacity: 0.7;
+    }
+    .trend-indicator {
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    .trend-improving {
+        color: #198754;
+    }
+    .trend-worsening {
+        color: #dc3545;
+    }
+    .trend-stable {
+        color: #6c757d;
+    }
+    .chart-container {
+        position: relative;
+        height: 300px;
+    }
+    .chart-container-small {
+        position: relative;
+        height: 250px;
+    }
+    .time-range-btn.active {
+        background-color: #0d6efd;
+        color: white;
+    }
+    .top-issues-table th {
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .issue-code {
+        font-family: monospace;
+        font-size: 0.9rem;
+        background: #f8f9fa;
+        padding: 2px 6px;
+        border-radius: 3px;
+    }
+    .empty-state {
+        padding: 2rem;
+        text-align: center;
+        color: #6c757d;
+    }
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    .comparison-card {
+        border-left: 3px solid #6f42c1;
+    }
+    .progress-card {
+        border-left: 3px solid #198754;
+    }
+    .page-loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
+    }
+    .page-loading-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+    }
+    /* Card loading spinner */
+    .card-loading {
+        position: relative;
+        min-height: 150px;
+    }
+    .card-loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+        border-radius: 0.375rem;
+    }
+    .card-loading-overlay.hidden {
+        display: none;
+    }
+    .loading-spinner {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .loading-spinner .spinner-border {
+        width: 2rem;
+        height: 2rem;
+    }
+    .loading-spinner .loading-text {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Loading Overlay -->
+<div id="pageLoadingOverlay" class="page-loading-overlay">
+    <div class="text-center">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">{{ _('Loading...') }}</span>
+        </div>
+        <p class="mt-3 text-muted">{{ _('Loading trend data...') }}</p>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h1 class="h2 mb-1">
+                <i class="bi bi-graph-up-arrow text-primary"></i> {{ _('Trend Analysis') }}
+            </h1>
+            <p class="text-muted mb-0">
+                {% if selected_project %}
+                    <a href="{{ url_for('projects.view_project', project_id=selected_project.id) }}" class="text-muted">{{ selected_project.name }}</a>
+                    {% if selected_website %} &raquo; <a href="{{ url_for('websites.view_website', website_id=selected_website.id) }}" class="text-muted">{{ selected_website.name }}</a>{% endif %}
+                {% else %}
+                    {{ _('All Projects Overview') }}
+                {% endif %}
+            </p>
+        </div>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <!-- Project/Website Selectors -->
+            <div class="input-group" style="width: auto;">
+                <span class="input-group-text"><i class="bi bi-folder"></i></span>
+                <select id="projectSelect" class="form-select" style="min-width: 180px;">
+                    <option value="">{{ _('All Projects') }}</option>
+                    {% for p in projects %}
+                    <option value="{{ p.id }}" {% if selected_project and p.id == selected_project.id %}selected{% endif %}>
+                        {{ p.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="input-group" style="width: auto;">
+                <span class="input-group-text"><i class="bi bi-globe"></i></span>
+                <select id="websiteSelect" class="form-select" style="min-width: 180px;" {% if not selected_project %}disabled{% endif %}>
+                    {% if selected_project %}
+                        <option value="">{{ _('All Websites') }}</option>
+                        {% for w in websites %}
+                        <option value="{{ w.id }}" {% if w.id == selected_website_id %}selected{% endif %}>
+                            {{ w.name }}
+                        </option>
+                        {% endfor %}
+                    {% else %}
+                        <option value="">{{ _('Select a project first') }}</option>
+                    {% endif %}
+                </select>
+            </div>
+            <a href="{{ url_for('testing.testing_dashboard') }}{% if selected_project %}?project_id={{ selected_project.id }}{% endif %}{% if selected_website %}&website_id={{ selected_website.id }}{% endif %}" class="btn btn-outline-secondary" title="{{ _('Back to Dashboard') }}">
+                <i class="bi bi-speedometer2"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Time Range Controls -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body py-3">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <!-- Granularity -->
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted small">{{ _('View:') }}</span>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-primary time-range-btn active" data-granularity="daily">{{ _('Daily') }}</button>
+                        <button type="button" class="btn btn-outline-primary time-range-btn" data-granularity="weekly">{{ _('Weekly') }}</button>
+                        <button type="button" class="btn btn-outline-primary time-range-btn" data-granularity="monthly">{{ _('Monthly') }}</button>
+                    </div>
+                </div>
+
+                <!-- Quick Presets -->
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted small">{{ _('Period:') }}</span>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary preset-btn" data-days="7">{{ _('7 days') }}</button>
+                        <button type="button" class="btn btn-outline-secondary preset-btn active" data-days="30">{{ _('30 days') }}</button>
+                        <button type="button" class="btn btn-outline-secondary preset-btn" data-days="90">{{ _('90 days') }}</button>
+                        <button type="button" class="btn btn-outline-secondary preset-btn" data-days="365">{{ _('1 year') }}</button>
+                    </div>
+                </div>
+
+                <!-- Custom Date Range -->
+                <div class="d-flex align-items-center gap-2">
+                    <input type="date" id="startDate" class="form-control form-control-sm" style="width: 140px;">
+                    <span class="text-muted">{{ _('to') }}</span>
+                    <input type="date" id="endDate" class="form-control form-control-sm" style="width: 140px;">
+                    <button type="button" id="applyDateRange" class="btn btn-sm btn-primary">
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Stats Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title text-muted mb-1">{{ _('Total Violations') }}</h6>
+                            <p class="display-6 mb-0" id="statTotalViolations">-</p>
+                            <div class="trend-indicator" id="trendIndicator">
+                                <span class="trend-direction"></span>
+                                <span class="trend-percent"></span>
+                            </div>
+                        </div>
+                        <i class="bi bi-exclamation-triangle stat-icon text-danger"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title text-muted mb-1">{{ _('Total Warnings') }}</h6>
+                            <p class="display-6 mb-0" id="statTotalWarnings">-</p>
+                        </div>
+                        <i class="bi bi-exclamation-circle stat-icon text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title text-muted mb-1">{{ _('Tests Run') }}</h6>
+                            <p class="display-6 mb-0" id="statTotalTests">-</p>
+                        </div>
+                        <i class="bi bi-check2-all stat-icon text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="card-title text-muted mb-1">{{ _('Avg per Test') }}</h6>
+                            <p class="display-6 mb-0" id="statAvgViolations">-</p>
+                        </div>
+                        <i class="bi bi-calculator stat-icon text-info"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Charts Row -->
+    <div class="row g-4 mb-4">
+        <!-- Main Trend Chart -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> {{ _('Violations & Warnings Over Time') }}</h5>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="showMovingAvg" checked>
+                        <label class="form-check-label small" for="showMovingAvg">{{ _('Show Moving Avg') }}</label>
+                    </div>
+                </div>
+                <div class="card-body card-loading" id="mainChartContainer">
+                    <!-- Loading overlay -->
+                    <div class="card-loading-overlay" id="mainChartLoading">
+                        <div class="loading-spinner">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">{{ _('Loading...') }}</span>
+                            </div>
+                            <span class="loading-text">{{ _('Calculating trends...') }}</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="mainTrendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Impact Breakdown -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-pie-chart"></i> {{ _('By Impact Level') }}</h5>
+                </div>
+                <div class="card-body card-loading" id="impactChartContainer">
+                    <!-- Loading overlay -->
+                    <div class="card-loading-overlay" id="impactChartLoading">
+                        <div class="loading-spinner">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">{{ _('Loading...') }}</span>
+                            </div>
+                            <span class="loading-text">{{ _('Loading...') }}</span>
+                        </div>
+                    </div>
+                    <div class="chart-container-small">
+                        <canvas id="impactChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breakdown Row -->
+    <div class="row g-4 mb-4">
+        <!-- Touchpoint Breakdown -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> {{ _('By Touchpoint') }}</h5>
+                </div>
+                <div class="card-body card-loading" id="touchpointChartContainer">
+                    <!-- Loading overlay -->
+                    <div class="card-loading-overlay" id="touchpointChartLoading">
+                        <div class="loading-spinner">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">{{ _('Loading...') }}</span>
+                            </div>
+                            <span class="loading-text">{{ _('Loading...') }}</span>
+                        </div>
+                    </div>
+                    <div class="chart-container-small">
+                        <canvas id="touchpointChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Issues Table -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-list-ol"></i> {{ _('Top Issues') }}</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover top-issues-table mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ _('Issue') }}</th>
+                                    <th class="text-end">{{ _('Count') }}</th>
+                                    <th class="text-center">{{ _('Trend') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="topIssuesBody">
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">
+                                        <i class="bi bi-hourglass-split"></i> {{ _('Loading...') }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress & Comparison Row -->
+    <div class="row g-4 mb-4">
+        <!-- Progress Metrics -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm progress-card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-arrow-up-right text-success"></i> {{ _('Progress Tracking') }}</h5>
+                </div>
+                <div class="card-body card-loading" id="progressSection">
+                    <!-- Loading overlay -->
+                    <div class="card-loading-overlay" id="progressLoading">
+                        <div class="loading-spinner">
+                            <div class="spinner-border text-success" role="status">
+                                <span class="visually-hidden">{{ _('Loading...') }}</span>
+                            </div>
+                            <span class="loading-text">{{ _('Calculating progress...') }}</span>
+                        </div>
+                    </div>
+                    {% if selected_project or selected_website %}
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1 text-success" id="pagesImproving">-</div>
+                                <small class="text-muted">{{ _('Pages Improving') }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1 text-danger" id="pagesWorsening">-</div>
+                                <small class="text-muted">{{ _('Pages Worsening') }}</small>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="border rounded p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span>{{ _('Compliance Score') }}</span>
+                                    <span class="h4 mb-0" id="complianceScore">-</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" id="complianceBar" style="width: 0%"></div>
+                                </div>
+                                <small class="text-muted" id="complianceProjection"></small>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="bi bi-info-circle"></i>
+                        <p>{{ _('Select a project or website to see progress metrics') }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Period Comparison -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm comparison-card">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-arrow-left-right" style="color: #6f42c1;"></i> {{ _('Period Comparison') }}</h5>
+                    <button class="btn btn-sm btn-outline-secondary" id="refreshComparison">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+                </div>
+                <div class="card-body card-loading" id="comparisonSection">
+                    <!-- Loading overlay -->
+                    <div class="card-loading-overlay" id="comparisonLoading">
+                        <div class="loading-spinner">
+                            <div class="spinner-border" role="status" style="color: #6f42c1;">
+                                <span class="visually-hidden">{{ _('Loading...') }}</span>
+                            </div>
+                            <span class="loading-text">{{ _('Comparing periods...') }}</span>
+                        </div>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="border rounded p-3">
+                                <small class="text-muted d-block mb-1" id="periodALabel">{{ _('Previous Period') }}</small>
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ _('Violations') }}</span>
+                                    <strong id="periodAViolations">-</strong>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ _('Warnings') }}</span>
+                                    <strong id="periodAWarnings">-</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3">
+                                <small class="text-muted d-block mb-1" id="periodBLabel">{{ _('Current Period') }}</small>
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ _('Violations') }}</span>
+                                    <strong id="periodBViolations">-</strong>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ _('Warnings') }}</span>
+                                    <strong id="periodBWarnings">-</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="alert mb-0" id="comparisonAlert">
+                                <i class="bi bi-arrow-down-circle"></i>
+                                <span id="comparisonMessage">{{ _('Loading comparison...') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// ============================================================================
+// State Management
+// ============================================================================
+
+let currentProjectId = {{ (selected_project.id | tojson) if selected_project else 'null' }};
+let currentWebsiteId = {{ (selected_website_id | tojson) if selected_website_id else 'null' }};
+let currentGranularity = 'daily';
+let currentDays = 30;
+
+// Chart instances
+let mainTrendChart = null;
+let impactChart = null;
+let touchpointChart = null;
+
+// ============================================================================
+// Page Loading
+// ============================================================================
+
+const loadingOverlay = document.getElementById('pageLoadingOverlay');
+
+function showLoading() {
+    loadingOverlay.classList.remove('hidden');
+}
+
+function hideLoading() {
+    loadingOverlay.classList.add('hidden');
+}
+
+// Card-level loading spinners
+function showCardLoading(cardId) {
+    const overlay = document.getElementById(cardId);
+    if (overlay) {
+        overlay.classList.remove('hidden');
+    }
+}
+
+function hideCardLoading(cardId) {
+    const overlay = document.getElementById(cardId);
+    if (overlay) {
+        overlay.classList.add('hidden');
+    }
+}
+
+function showAllChartLoading() {
+    showCardLoading('mainChartLoading');
+    showCardLoading('impactChartLoading');
+    showCardLoading('touchpointChartLoading');
+}
+
+function hideAllChartLoading() {
+    hideCardLoading('mainChartLoading');
+    hideCardLoading('impactChartLoading');
+    hideCardLoading('touchpointChartLoading');
+}
+
+// ============================================================================
+// Initialize
+// ============================================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Set default dates
+    const today = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+
+    document.getElementById('endDate').value = today.toISOString().split('T')[0];
+    document.getElementById('startDate').value = thirtyDaysAgo.toISOString().split('T')[0];
+
+    // Load initial data
+    loadTrendData();
+    loadComparison();
+    if (currentProjectId || currentWebsiteId) {
+        loadProgress();
+    } else {
+        // Hide progress spinner immediately if no project/website selected
+        hideCardLoading('progressLoading');
+    }
+
+    hideLoading();
+});
+
+// ============================================================================
+// Event Handlers
+// ============================================================================
+
+// Project/Website selection
+document.getElementById('projectSelect').addEventListener('change', function() {
+    const projectId = this.value;
+    let url = '{{ url_for("testing.trends_page") }}';
+    if (projectId) {
+        url += '?project_id=' + projectId;
+    }
+    showLoading();
+    window.location.href = url;
+});
+
+document.getElementById('websiteSelect').addEventListener('change', function() {
+    const websiteId = this.value;
+    const projectId = document.getElementById('projectSelect').value;
+    let url = '{{ url_for("testing.trends_page") }}';
+    const params = [];
+    if (projectId) params.push('project_id=' + projectId);
+    if (websiteId) params.push('website_id=' + websiteId);
+    if (params.length > 0) url += '?' + params.join('&');
+    showLoading();
+    window.location.href = url;
+});
+
+// Granularity buttons
+document.querySelectorAll('.time-range-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.time-range-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentGranularity = this.dataset.granularity;
+        loadTrendData();
+    });
+});
+
+// Preset buttons
+document.querySelectorAll('.preset-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentDays = parseInt(this.dataset.days);
+
+        // Update date inputs
+        const today = new Date();
+        const startDate = new Date();
+        startDate.setDate(today.getDate() - currentDays);
+
+        document.getElementById('endDate').value = today.toISOString().split('T')[0];
+        document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
+
+        loadTrendData();
+        loadComparison();
+    });
+});
+
+// Custom date range
+document.getElementById('applyDateRange').addEventListener('click', function() {
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    loadTrendData();
+    loadComparison();
+});
+
+// Moving average toggle
+document.getElementById('showMovingAvg').addEventListener('change', function() {
+    if (mainTrendChart) {
+        mainTrendChart.data.datasets[2].hidden = !this.checked;
+        mainTrendChart.data.datasets[3].hidden = !this.checked;
+        mainTrendChart.update();
+    }
+});
+
+// Refresh comparison
+document.getElementById('refreshComparison').addEventListener('click', loadComparison);
+
+// ============================================================================
+// Data Loading
+// ============================================================================
+
+function loadTrendData() {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+
+    // Show loading spinners
+    showAllChartLoading();
+
+    let url = '{{ url_for("testing.api_trends_detailed") }}';
+    const params = ['granularity=' + currentGranularity];
+
+    if (currentProjectId) params.push('project_id=' + currentProjectId);
+    if (currentWebsiteId) params.push('website_id=' + currentWebsiteId);
+    if (startDate) params.push('start_date=' + startDate);
+    if (endDate) params.push('end_date=' + endDate);
+
+    url += '?' + params.join('&');
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateSummaryStats(data.summary);
+                updateMainChart(data.time_series);
+                if (data.by_impact) updateImpactChart(data.by_impact);
+                if (data.by_touchpoint) updateTouchpointChart(data.by_touchpoint);
+                if (data.top_issues) updateTopIssues(data.top_issues);
+            }
+            // Hide loading spinners on success
+            hideAllChartLoading();
+        })
+        .catch(error => {
+            console.error('Error loading trend data:', error);
+            // Hide loading spinners on error too
+            hideAllChartLoading();
+        });
+}
+
+function loadComparison() {
+    // Show loading spinner
+    showCardLoading('comparisonLoading');
+
+    let url = '{{ url_for("testing.api_trends_compare") }}?compare_type=periods';
+
+    if (currentProjectId) url += '&project_id=' + currentProjectId;
+    if (currentWebsiteId) url += '&website_id=' + currentWebsiteId;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateComparison(data);
+            }
+            hideCardLoading('comparisonLoading');
+        })
+        .catch(error => {
+            console.error('Error loading comparison:', error);
+            hideCardLoading('comparisonLoading');
+        });
+}
+
+function loadProgress() {
+    // Show loading spinner
+    showCardLoading('progressLoading');
+
+    let url = '{{ url_for("testing.api_trends_progress") }}?days=' + currentDays;
+
+    if (currentProjectId) url += '&project_id=' + currentProjectId;
+    if (currentWebsiteId) url += '&website_id=' + currentWebsiteId;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateProgress(data);
+            }
+            hideCardLoading('progressLoading');
+        })
+        .catch(error => {
+            console.error('Error loading progress:', error);
+            hideCardLoading('progressLoading');
+        });
+}
+
+// ============================================================================
+// UI Updates
+// ============================================================================
+
+function updateSummaryStats(summary) {
+    document.getElementById('statTotalViolations').textContent = summary.total_violations.toLocaleString();
+    document.getElementById('statTotalWarnings').textContent = summary.total_warnings.toLocaleString();
+    document.getElementById('statTotalTests').textContent = summary.total_tests.toLocaleString();
+    document.getElementById('statAvgViolations').textContent = summary.avg_violations_per_test.toFixed(1);
+
+    // Update trend indicator
+    const indicator = document.getElementById('trendIndicator');
+    const direction = indicator.querySelector('.trend-direction');
+    const percent = indicator.querySelector('.trend-percent');
+
+    indicator.className = 'trend-indicator trend-' + summary.trend_direction;
+
+    if (summary.trend_direction === 'improving') {
+        direction.innerHTML = '<i class="bi bi-arrow-down-circle"></i> ';
+        percent.textContent = summary.change_percent + '%';
+    } else if (summary.trend_direction === 'worsening') {
+        direction.innerHTML = '<i class="bi bi-arrow-up-circle"></i> ';
+        percent.textContent = '+' + Math.abs(summary.change_percent) + '%';
+    } else {
+        direction.innerHTML = '<i class="bi bi-dash-circle"></i> ';
+        percent.textContent = '{{ _("Stable") }}';
+    }
+}
+
+function updateMainChart(timeSeries) {
+    const ctx = document.getElementById('mainTrendChart').getContext('2d');
+
+    const labels = timeSeries.map(d => d.period || d.date);
+    const violations = timeSeries.map(d => d.violations);
+    const warnings = timeSeries.map(d => d.warnings);
+    const movingAvg7 = timeSeries.map(d => d.moving_avg_7d);
+    const movingAvg30 = timeSeries.map(d => d.moving_avg_30d);
+
+    if (mainTrendChart) {
+        mainTrendChart.destroy();
+    }
+
+    mainTrendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: '{{ _("Violations") }}',
+                    data: violations,
+                    borderColor: '#dc3545',
+                    backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: '{{ _("Warnings") }}',
+                    data: warnings,
+                    borderColor: '#ffc107',
+                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: '{{ _("7-day Avg") }}',
+                    data: movingAvg7,
+                    borderColor: '#6f42c1',
+                    borderDash: [5, 5],
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 0,
+                    hidden: !document.getElementById('showMovingAvg').checked
+                },
+                {
+                    label: '{{ _("30-day Avg") }}',
+                    data: movingAvg30,
+                    borderColor: '#20c997',
+                    borderDash: [10, 5],
+                    fill: false,
+                    tension: 0.3,
+                    pointRadius: 0,
+                    hidden: !document.getElementById('showMovingAvg').checked
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top' }
+            },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { maxTicksLimit: 10 }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                }
+            }
+        }
+    });
+}
+
+function updateImpactChart(byImpact) {
+    const ctx = document.getElementById('impactChart').getContext('2d');
+
+    if (impactChart) {
+        impactChart.destroy();
+    }
+
+    impactChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['{{ _("High") }}', '{{ _("Medium") }}', '{{ _("Low") }}'],
+            datasets: [{
+                data: [byImpact.high.count, byImpact.medium.count, byImpact.low.count],
+                backgroundColor: ['#dc3545', '#ffc107', '#6c757d'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+}
+
+function updateTouchpointChart(byTouchpoint) {
+    const ctx = document.getElementById('touchpointChart').getContext('2d');
+
+    const labels = Object.keys(byTouchpoint);
+    const counts = labels.map(k => byTouchpoint[k].count);
+
+    if (touchpointChart) {
+        touchpointChart.destroy();
+    }
+
+    touchpointChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: '{{ _("Violations") }}',
+                data: counts,
+                backgroundColor: '#0d6efd',
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(0,0,0,0.05)' }
+                },
+                y: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+}
+
+function updateTopIssues(topIssues) {
+    const tbody = document.getElementById('topIssuesBody');
+
+    if (!topIssues || topIssues.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-4">{{ _("No issues found") }}</td></tr>';
+        return;
+    }
+
+    let html = '';
+    topIssues.forEach(issue => {
+        let trendIcon = '<i class="bi bi-dash text-muted"></i>';
+        if (issue.trend === 'improving') {
+            trendIcon = '<i class="bi bi-arrow-down text-success"></i>';
+        } else if (issue.trend === 'worsening') {
+            trendIcon = '<i class="bi bi-arrow-up text-danger"></i>';
+        }
+
+        html += `
+            <tr>
+                <td><span class="issue-code">${issue.issue_id}</span></td>
+                <td class="text-end">${issue.count.toLocaleString()}</td>
+                <td class="text-center">${trendIcon}</td>
+            </tr>
+        `;
+    });
+
+    tbody.innerHTML = html;
+}
+
+function updateComparison(data) {
+    const items = data.items;
+    const change = data.change;
+
+    if (items.length >= 2) {
+        document.getElementById('periodALabel').textContent = items[0].label;
+        document.getElementById('periodAViolations').textContent = items[0].violations.toLocaleString();
+        document.getElementById('periodAWarnings').textContent = items[0].warnings.toLocaleString();
+
+        document.getElementById('periodBLabel').textContent = items[1].label;
+        document.getElementById('periodBViolations').textContent = items[1].violations.toLocaleString();
+        document.getElementById('periodBWarnings').textContent = items[1].warnings.toLocaleString();
+
+        // Update comparison alert
+        const alert = document.getElementById('comparisonAlert');
+        const message = document.getElementById('comparisonMessage');
+
+        if (change.violations.percent < 0) {
+            alert.className = 'alert alert-success mb-0';
+            message.innerHTML = `<i class="bi bi-arrow-down-circle me-1"></i> {{ _("Violations decreased by") }} ${Math.abs(change.violations.percent)}%`;
+        } else if (change.violations.percent > 0) {
+            alert.className = 'alert alert-danger mb-0';
+            message.innerHTML = `<i class="bi bi-arrow-up-circle me-1"></i> {{ _("Violations increased by") }} ${change.violations.percent}%`;
+        } else {
+            alert.className = 'alert alert-secondary mb-0';
+            message.innerHTML = `<i class="bi bi-dash-circle me-1"></i> {{ _("No change in violations") }}`;
+        }
+    }
+}
+
+function updateProgress(data) {
+    document.getElementById('pagesImproving').textContent = data.pages_summary.improving;
+    document.getElementById('pagesWorsening').textContent = data.pages_summary.worsening;
+
+    const score = data.compliance_score.current;
+    document.getElementById('complianceScore').textContent = score.toFixed(1) + '%';
+    document.getElementById('complianceBar').style.width = score + '%';
+
+    const projection = document.getElementById('complianceProjection');
+    if (data.compliance_score.projected_days_to_target) {
+        projection.textContent = '{{ _("Estimated") }} ' + data.compliance_score.projected_days_to_target + ' {{ _("days to target") }}';
+    } else {
+        projection.textContent = '';
+    }
+}
+</script>
+{% endblock %}

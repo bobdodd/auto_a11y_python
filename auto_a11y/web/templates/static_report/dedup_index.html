@@ -238,7 +238,7 @@
         <div class="card-body">
             {% if components_with_issues %}
                 {% for comp_data in components_with_issues %}
-                <a href="components/{{ comp_data.safe_signature }}.html" class="text-decoration-none">
+                <a href="components/{{ comp_data.safe_signature }}.html" class="text-decoration-none component-link" data-component-lang="{{ comp_data.lang }}">
                     <div class="component-card">
                         <div class="component-info">
                             <div class="component-type">
@@ -385,11 +385,31 @@ function switchLanguage(lang) {
     if (translations[lang] && translations[lang]['deduplicated_report']) {
         document.title = translations[lang]['deduplicated_report'];
     }
+
+    // Filter components by language
+    filterComponentsByLanguage(lang);
+}
+
+// Function to filter components by language
+function filterComponentsByLanguage(lang) {
+    const componentLinks = document.querySelectorAll('.component-link');
+    componentLinks.forEach(link => {
+        const componentLang = link.getAttribute('data-component-lang');
+        // Show component if its language matches current lang, or if lang is not specified
+        if (!componentLang || componentLang === lang) {
+            link.style.display = '';
+        } else {
+            link.style.display = 'none';
+        }
+    });
 }
 
 // Apply saved language on page load
 if (currentLang !== '{{ language }}') {
     switchLanguage(currentLang);
+} else {
+    // Filter components for initial language
+    filterComponentsByLanguage(currentLang);
 }
 
 // Simple page search filter

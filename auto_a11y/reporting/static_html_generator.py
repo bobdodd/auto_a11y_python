@@ -2125,18 +2125,32 @@ class StaticHTMLReportGenerator:
                         label = metadata.get('headerLabel', 'Header')
 
                     if signature and signature != 'unknown':
-                        if signature not in common_components:
-                            common_components[signature] = {
+                        # Get component language (default to 'en' if not specified)
+                        component_lang = metadata.get('pageLang', 'en')
+
+                        # Get user context - components seen by different users are separate
+                        # This handles cases where nav content varies by authentication state
+                        auth_user = metadata.get('authenticated_user', {})
+                        user_context = auth_user.get('display_name', 'Guest') if auth_user else 'Guest'
+
+                        # Create composite key: signature + user context
+                        # This ensures "guest nav" and "Marie Tremblay nav" are separate components
+                        component_key = f"{signature}|{user_context}"
+
+                        if component_key not in common_components:
+                            common_components[component_key] = {
                                 'type': component_type,
                                 'label': label,
-                                'signature': signature,
+                                'signature': signature,  # Keep original signature for display
                                 'xpaths_by_page': {},
-                                'pages': set()
+                                'pages': set(),
+                                'lang': component_lang,  # Store the component's language
+                                'user_context': user_context  # Store user context for display
                             }
 
                         xpath = d_dict.get('xpath', '') or metadata.get('xpath', '')
-                        common_components[signature]['xpaths_by_page'][page_url] = xpath
-                        common_components[signature]['pages'].add(page_url)
+                        common_components[component_key]['xpaths_by_page'][page_url] = xpath
+                        common_components[component_key]['pages'].add(page_url)
 
         # Filter to only include components that appear on 2+ pages
         filtered_components = {
@@ -2199,13 +2213,19 @@ class StaticHTMLReportGenerator:
                         user_roles = auth_user.get('roles', []) if auth_user else []
 
                         # Find which common component contains this issue
+                        # Must match both xpath containment AND user context
                         component_signature = None
                         component_type = None
                         component_label = None
 
+                        # Get issue's user context for matching
+                        issue_user_context = auth_user.get('display_name', 'Guest') if auth_user else 'Guest'
+
                         for signature, comp_data in common_components.items():
                             comp_xpath = comp_data['xpaths_by_page'].get(page_url)
-                            if comp_xpath and self._xpath_is_within(issue_xpath, comp_xpath):
+                            comp_user_context = comp_data.get('user_context', 'Guest')
+                            # Match both xpath AND user context
+                            if comp_xpath and self._xpath_is_within(issue_xpath, comp_xpath) and comp_user_context == issue_user_context:
                                 component_signature = signature
                                 component_type = comp_data['type']
                                 component_label = comp_data['label']
@@ -2428,7 +2448,8 @@ class StaticHTMLReportGenerator:
                 'info': info_count,
                 'discovery': discovery_count,
                 'total_issues': len(issues),
-                'score': component_score
+                'score': component_score,
+                'lang': comp_data.get('lang', 'en')  # Component language for filtering
             })
 
         # Sort by type then by violation count

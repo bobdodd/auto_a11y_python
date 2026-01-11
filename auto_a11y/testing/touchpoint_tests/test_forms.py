@@ -73,7 +73,12 @@ async def test_forms(page) -> Dict[str, Any]:
                     test_name: 'forms',
                     checks: []
                 };
-                
+
+                // Detect page language for component tagging
+                // Default to 'en' if no lang attribute is found
+                const htmlElement = document.documentElement;
+                const pageLang = (htmlElement.getAttribute('lang') || 'en').substring(0, 2).toLowerCase();
+
                 // Function to generate XPath for elements
                 function getFullXPath(element) {
                     if (!element) return '';
@@ -739,7 +744,8 @@ async def test_forms(page) -> Dict[str, Any]:
                         fieldCount: Object.values(fieldCounts).reduce((a, b) => a + b, 0),
                         fieldTypes: fieldCounts,
                         isSearchForm: isSearchForm,
-                        searchContext: isSearchRole ? 'has role="search"' : (isWithinSearch ? 'within search landmark' : 'not a search form')
+                        searchContext: isSearchRole ? 'has role="search"' : (isWithinSearch ? 'within search landmark' : 'not a search form'),
+                        pageLang: pageLang
                     });
                 });
 

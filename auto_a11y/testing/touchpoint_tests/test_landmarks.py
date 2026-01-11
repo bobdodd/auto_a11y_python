@@ -79,7 +79,12 @@ async def test_landmarks(page) -> Dict[str, Any]:
                     test_name: 'landmarks',
                     checks: []
                 };
-                
+
+                // Detect page language for component tagging
+                // Default to 'en' if no lang attribute is found
+                const htmlElement = document.documentElement;
+                const pageLang = (htmlElement.getAttribute('lang') || 'en').substring(0, 2).toLowerCase();
+
                 // Function to generate XPath for elements
                 function getFullXPath(element) {
                     if (!element) return '';
@@ -770,7 +775,8 @@ async def test_landmarks(page) -> Dict[str, Any]:
                         description: description,
                         navSignature: navSignature,
                         linkCount: linkCount,
-                        navLabel: navLabel
+                        navLabel: navLabel,
+                        pageLang: pageLang
                     });
                 });
 
@@ -813,7 +819,8 @@ async def test_landmarks(page) -> Dict[str, Any]:
                         html: aside.outerHTML.substring(0, 500),
                         description: description,
                         asideSignature: asideSignature,
-                        asideLabel: asideLabel
+                        asideLabel: asideLabel,
+                        pageLang: pageLang
                     });
                 });
 
@@ -856,7 +863,8 @@ async def test_landmarks(page) -> Dict[str, Any]:
                         html: section.outerHTML.substring(0, 500),
                         description: description,
                         sectionSignature: sectionSignature,
-                        sectionLabel: sectionLabel
+                        sectionLabel: sectionLabel,
+                        pageLang: pageLang
                     });
                 });
 
@@ -904,7 +912,8 @@ async def test_landmarks(page) -> Dict[str, Any]:
                             html: header.outerHTML.substring(0, 500),
                             description: description,
                             headerSignature: headerSignature,
-                            headerLabel: headerLabel
+                            headerLabel: headerLabel,
+                            pageLang: pageLang
                         });
                     }
                 });
@@ -953,7 +962,8 @@ async def test_landmarks(page) -> Dict[str, Any]:
                             html: footer.outerHTML.substring(0, 500),
                             description: description,
                             footerSignature: footerSignature,
-                            footerLabel: footerLabel
+                            footerLabel: footerLabel,
+                            pageLang: pageLang
                         });
                     }
                 });
@@ -997,7 +1007,8 @@ async def test_landmarks(page) -> Dict[str, Any]:
                         html: search.outerHTML.substring(0, 500),
                         description: description,
                         searchSignature: searchSignature,
-                        searchLabel: searchLabel
+                        searchLabel: searchLabel,
+                        pageLang: pageLang
                     });
                 });
 

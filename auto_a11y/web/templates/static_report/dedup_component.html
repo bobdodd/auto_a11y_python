@@ -562,6 +562,34 @@
             </div>
             {% endif %}
         </div>
+
+        <!-- Component Pages List -->
+        <div class="component-pages mt-3">
+            <strong>
+                <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get('found_on', 'Found on') }}:</span>
+                <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('found_on', 'Trouvé sur') }} :</span>
+            </strong>
+            {% if pages %}
+                {% if page_count == 1 %}
+                    <code class="ms-2">{{ pages[0] }}</code>
+                {% else %}
+                    <code class="ms-2">{{ pages[0] }}</code>
+                    <details class="d-inline-block ms-2">
+                        <summary class="btn btn-sm btn-outline-secondary py-0">
+                            <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">+ {{ page_count - 1 }} more</span>
+                            <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">+ {{ page_count - 1 }} autre(s)</span>
+                        </summary>
+                        <div class="mt-2 p-2 bg-light rounded">
+                            {% for page_url in pages[1:] %}
+                            <div class="mb-1">
+                                <i class="bi bi-file-earmark-text text-muted"></i> <code>{{ page_url }}</code>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </details>
+                {% endif %}
+            {% endif %}
+        </div>
     </div>
 
     <!-- Filter Panel -->

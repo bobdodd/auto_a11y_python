@@ -1,172 +1,889 @@
 {% extends "base.html" %}
 
-{% block title %}{{ _('Testing Dashboard - Auto A11y') }}{% endblock %}
+{% block title %}{{ _('Testing Dashboard') }} - {{ _('Auto A11y') }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .stat-icon {
+        font-size: 1.5rem;
+        opacity: 0.7;
+    }
+    .progress-thin {
+        height: 4px;
+    }
+    .active-test-item {
+        border-left: 3px solid #0d6efd;
+        background: #f8f9fa;
+    }
+    .schedule-item {
+        border-left: 3px solid #6f42c1;
+    }
+    .filter-badge {
+        font-size: 0.75rem;
+    }
+    .table-results th {
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .truncate-url {
+        max-width: 250px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+        vertical-align: middle;
+    }
+    .empty-state {
+        padding: 2rem;
+        text-align: center;
+        color: #6c757d;
+    }
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+    .breadcrumb-link {
+        text-decoration: underline;
+        color: #0d6efd !important;
+    }
+    .breadcrumb-link:hover {
+        color: #0a58ca !important;
+    }
+    /* Page loading overlay */
+    .page-loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.3s ease;
+    }
+    .page-loading-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+        visibility: hidden;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
+<!-- Loading Overlay - inline styles ensure immediate visibility -->
+<div id="pageLoadingOverlay" class="page-loading-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;display:flex;justify-content:center;align-items:center;z-index:9999;">
+    <div class="text-center">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">{{ _('Loading...') }}</span>
+        </div>
+        <p class="mt-3 text-muted">{{ _('Loading dashboard data...') }}</p>
+    </div>
+</div>
+
 <div class="container-fluid">
-    <h1 class="h2 mb-4">{{ _('Testing Dashboard') }}</h1>
-
-    <!-- Status Cards -->
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card bg-warning text-dark">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2">{{ _('Active Tests') }}</h6>
-                    <h3 class="card-title mb-0">{{ stats.active_tests }}</h3>
-                </div>
+    <!-- Header with Project/Website Selectors -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h1 class="h2 mb-1">
+                <i class="bi bi-speedometer2 text-primary"></i> {{ _('Testing Dashboard') }}
+            </h1>
+            <p class="text-muted mb-0">
+                {% if selected_project %}
+                    <a href="{{ url_for('projects.view_project', project_id=selected_project.id) }}" class="text-muted breadcrumb-link">{{ selected_project.name }}</a>
+                    {% if selected_website %} &raquo; <a href="{{ url_for('websites.view_website', website_id=selected_website.id) }}" class="text-muted breadcrumb-link">{{ selected_website.name }}</a>{% endif %}
+                {% else %}
+                    {{ _('All Projects Overview') }}
+                {% endif %}
+            </p>
+        </div>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <div class="input-group" style="width: auto;">
+                <span class="input-group-text"><i class="bi bi-folder"></i></span>
+                <select id="projectSelect" class="form-select" style="min-width: 200px;">
+                    <option value="">{{ _('All Projects') }}</option>
+                    {% for p in projects %}
+                    <option value="{{ p.id }}" {% if selected_project and p.id == selected_project.id %}selected{% endif %}>
+                        {{ p.name }}
+                    </option>
+                    {% endfor %}
+                </select>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2">{{ _('Queued Tests') }}</h6>
-                    <h3 class="card-title mb-0">{{ stats.queued_tests }}</h3>
-                </div>
+            <div class="input-group" style="width: auto;">
+                <span class="input-group-text"><i class="bi bi-globe"></i></span>
+                <select id="websiteSelect" class="form-select" style="min-width: 200px;" {% if not selected_project %}disabled{% endif %}>
+                    {% if selected_project %}
+                        <option value="">{{ _('All Websites') }}</option>
+                        {% for w in websites %}
+                        <option value="{{ w.id }}" {% if w.id == selected_website_id %}selected{% endif %}>
+                            {{ w.display_name }} ({{ w.page_count }} {{ _('pages') }})
+                        </option>
+                        {% endfor %}
+                    {% else %}
+                        <option value="">{{ _('Select a project first...') }}</option>
+                    {% endif %}
+                </select>
             </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2">{{ _('Completed Today') }}</h6>
-                    <h3 class="card-title mb-0">{{ stats.completed_today }}</h3>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card bg-danger text-white">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2">{{ _('Failed Tests') }}</h6>
-                    <h3 class="card-title mb-0">{{ stats.failed_tests }}</h3>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Quick Test -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">{{ _('Quick Test') }}</h5>
-        </div>
-        <div class="card-body">
-            <form id="quickTestForm" class="row g-3">
-                <div class="col-md-8">
-                    <label for="testUrl" class="visually-hidden">{{ _('URL to test') }}</label>
-                    <input type="url" class="form-control" id="testUrl"
-                           placeholder="{{ _('Enter URL to test (e.g., https://example.com)') }}">
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-play-circle"></i> {{ _('Run Test') }}
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Recent Test Results -->
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">{{ _('Recent Test Results') }}</h5>
-            <a href="{{ url_for('testing.configure_testing') }}" class="btn btn-sm btn-outline-primary">
-                <i class="bi bi-gear"></i> {{ _('Configure') }}
+            <a href="{{ url_for('testing.configure_testing') }}" class="btn btn-outline-secondary" title="{{ _('Configure Testing') }}">
+                <i class="bi bi-gear"></i>
             </a>
         </div>
-        <div class="card-body">
-            {% if recent_results %}
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>{{ _('Page') }}</th>
-                            <th>{{ _('Test Date') }}</th>
-                            <th>{{ _('Duration') }}</th>
-                            <th>{{ _('Errors') }}</th>
-                            <th>{{ _('Warnings') }}</th>
-                            <th>{{ _('Info') }}</th>
-                            <th>{{ _('Discovery') }}</th>
-                            <th>{{ _('Status') }}</th>
-                            <th>{{ _('Actions') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for result in recent_results %}
-                        <tr>
-                            <td>
-                                <a href="{{ url_for('pages.view_page', page_id=result.page_id) }}"
-                                   title="{{ _('View page details') }}">
-                                    {{ _('Page') }} {{ result.page_id[:8] }}...
-                                </a>
-                            </td>
-                            <td>{{ result.test_date.strftime('%Y-%m-%d %H:%M') }}</td>
-                            <td>{{ result.duration_ms }}ms</td>
-                            <td>
-                                {% if result.violation_count > 0 %}
-                                <span class="badge bg-danger">{{ result.violation_count }}</span>
-                                {% else %}
-                                <span class="badge bg-light text-dark">0</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if result.warning_count > 0 %}
-                                <span class="badge bg-warning text-dark">{{ result.warning_count }}</span>
-                                {% else %}
-                                <span class="badge bg-light text-dark">0</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if result.info_count > 0 %}
-                                <span class="badge bg-info">{{ result.info_count }}</span>
-                                {% else %}
-                                <span class="badge bg-light text-dark">0</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if result.discovery_count > 0 %}
-                                <span class="badge" style="background-color: #6f42c1;">{{ result.discovery_count }}</span>
-                                {% else %}
-                                <span class="badge bg-light text-dark">0</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if result.error %}
-                                    <span class="badge bg-danger">{{ _('Error') }}</span>
-                                {% else %}
-                                    <span class="badge bg-success">{{ _('Complete') }}</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="{{ url_for('pages.view_page', page_id=result.page_id) }}" 
-                                   class="btn btn-sm btn-primary">
-                                    <i class="bi bi-eye"></i> {{ _('View') }}
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    </div>
+
+    <!-- Stats Cards Row -->
+    <div class="d-flex flex-wrap gap-3 mb-4">
+        <div class="card stat-card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="text-start">
+                        <h6 class="card-title text-muted mb-1">{{ _('Pages') }}</h6>
+                        <p class="display-6 mb-0" id="statTotalPages">{{ stats.total_pages }}</p>
+                    </div>
+                    <i class="bi bi-file-earmark stat-icon text-primary"></i>
+                </div>
             </div>
-            {% else %}
-            <p class="text-muted">{{ _('No recent test results') }}</p>
-            {% endif %}
+        </div>
+        <div class="card stat-card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="text-start">
+                        <h6 class="card-title text-muted mb-1">{{ _('Tested') }}</h6>
+                        <p class="display-6 mb-0" id="statTestedPages">{{ stats.tested_pages }}</p>
+                        <small class="text-success" id="statCoverage">{{ "%.1f"|format(stats.test_coverage) }}% {{ _('coverage') }}</small>
+                    </div>
+                    <i class="bi bi-check2-circle stat-icon text-success"></i>
+                </div>
+            </div>
+        </div>
+        <div class="card stat-card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="text-start">
+                        <h6 class="card-title text-muted mb-1">{{ _('Violations') }}</h6>
+                        <p class="display-6 mb-0 text-danger" id="statViolations">{{ stats.total_violations }}</p>
+                    </div>
+                    <i class="bi bi-exclamation-triangle stat-icon text-danger"></i>
+                </div>
+            </div>
+        </div>
+        <div class="card stat-card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="text-start">
+                        <h6 class="card-title text-muted mb-1">{{ _('Warnings') }}</h6>
+                        <p class="display-6 mb-0 text-warning" id="statWarnings">{{ stats.total_warnings }}</p>
+                    </div>
+                    <i class="bi bi-exclamation-circle stat-icon text-warning"></i>
+                </div>
+            </div>
+        </div>
+        <div class="card stat-card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="text-start">
+                        <h6 class="card-title text-muted mb-1">{{ _('Active') }}</h6>
+                        <p class="display-6 mb-0 text-info" id="statActiveTests">{{ stats.active_tests }}</p>
+                    </div>
+                    <i class="bi bi-activity stat-icon text-info"></i>
+                </div>
+            </div>
+        </div>
+        <div class="card stat-card text-center flex-fill" style="min-width: 140px;">
+            <div class="card-body py-3">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="text-start">
+                        <h6 class="card-title text-muted mb-1">{{ _('Queued') }}</h6>
+                        <p class="display-6 mb-0" id="statQueuedTests">{{ stats.queued_tests }}</p>
+                    </div>
+                    <i class="bi bi-hourglass-split stat-icon text-secondary"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Row -->
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+            <!-- Test Actions Card -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-play-circle text-success"></i> {{ _('Test Actions') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <!-- Action Buttons -->
+                        <div class="col-md-4">
+                            <div class="d-flex flex-column gap-2">
+                                <button class="btn btn-success" id="testAllBtn" {% if not selected_project and not selected_website %}disabled{% endif %}>
+                                    <i class="bi bi-play-fill"></i> {{ _('Test All Pages') }}
+                                </button>
+                                <button class="btn btn-outline-primary" id="testUntestedBtn" {% if not selected_project and not selected_website %}disabled{% endif %}>
+                                    <i class="bi bi-skip-forward"></i> {{ _('Test Untested Only') }}
+                                </button>
+                            </div>
+                            {% if not selected_project and not selected_website %}
+                            <small class="text-muted d-block mt-2">
+                                <i class="bi bi-info-circle"></i> {{ _('Select a project or website to run tests') }}
+                            </small>
+                            {% endif %}
+                        </div>
+
+                        <!-- Tester Selection -->
+                        <div class="col-md-5">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-people"></i> {{ _('Test As') }}
+                            </label>
+                            <div class="border rounded p-2" style="max-height: 120px; overflow-y: auto;">
+                                <div class="form-check">
+                                    <input class="form-check-input tester-checkbox" type="checkbox" id="testerGuest" value="guest" checked>
+                                    <label class="form-check-label" for="testerGuest">
+                                        <i class="bi bi-person-slash text-muted"></i> {{ _('Guest (No Login)') }}
+                                    </label>
+                                </div>
+                                {% if project_users %}
+                                    {% for user in project_users %}
+                                    <div class="form-check">
+                                        <input class="form-check-input tester-checkbox" type="checkbox" id="tester{{ user.id }}" value="{{ user.id }}">
+                                        <label class="form-check-label" for="tester{{ user.id }}">
+                                            <i class="bi bi-person-fill text-primary"></i> {{ user.name_display }}
+                                            {% if user.roles %}
+                                            <small class="text-muted">({{ user.role_display }})</small>
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                {% elif selected_project %}
+                                    <small class="text-muted">
+                                        <i class="bi bi-info-circle"></i> {{ _('No test users configured') }}
+                                        <a href="{{ url_for('project_users.list_users', project_id=selected_project.id) }}">{{ _('Add users') }}</a>
+                                    </small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Options -->
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-gear"></i> {{ _('Options') }}
+                            </label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="includeScreenshots" checked>
+                                <label class="form-check-label" for="includeScreenshots">
+                                    {{ _('Take Screenshots') }}
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="runAiAnalysis">
+                                <label class="form-check-label" for="runAiAnalysis">
+                                    {{ _('Run AI Analysis') }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Results Table -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> {{ _('Recent Test Results') }}</h5>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-outline-secondary active" data-filter="all">{{ _('All') }}</button>
+                        <button type="button" class="btn btn-outline-danger" data-filter="errors">{{ _('Errors Only') }}</button>
+                        <button type="button" class="btn btn-outline-secondary" data-filter="today">{{ _('Today') }}</button>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    {% if recent_results %}
+                    <div class="table-responsive">
+                        <table class="table table-hover table-results mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ _('Page') }}</th>
+                                    <th>{{ _('Project / Website') }}</th>
+                                    <th class="text-center">{{ _('Date') }}</th>
+                                    <th class="text-center">{{ _('Errors') }}</th>
+                                    <th class="text-center">{{ _('Warnings') }}</th>
+                                    <th class="text-center">{{ _('Status') }}</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in recent_results %}
+                                <tr data-violations="{{ item.result.violation_count }}" data-date="{{ item.result.test_date.strftime('%Y-%m-%d') }}">
+                                    <td>
+                                        <a href="{{ url_for('pages.view_page', page_id=item.result.page_id) }}" class="text-decoration-none" title="{{ item.page.url if item.page else '' }}">
+                                            {% if item.page %}
+                                                <span class="truncate-url">{{ item.page.title or item.page.url }}</span>
+                                            {% else %}
+                                                <span class="text-muted">{{ _('Page') }} {{ item.result.page_id[:8] }}...</span>
+                                            {% endif %}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            {% if item.project %}{{ item.project.name }}{% endif %}
+                                            {% if item.website %}<br>{{ item.website.name }}{% endif %}
+                                        </small>
+                                    </td>
+                                    <td class="text-center">
+                                        <small>{{ item.result.test_date.strftime('%Y-%m-%d %H:%M') }}</small>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if item.result.violation_count > 0 %}
+                                        <span class="badge bg-danger">{{ item.result.violation_count }}</span>
+                                        {% else %}
+                                        <span class="badge bg-light text-dark">0</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if item.result.warning_count > 0 %}
+                                        <span class="badge bg-warning text-dark">{{ item.result.warning_count }}</span>
+                                        {% else %}
+                                        <span class="badge bg-light text-dark">0</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if item.result.error %}
+                                        <span class="badge bg-danger">{{ _('Error') }}</span>
+                                        {% else %}
+                                        <span class="badge bg-success">{{ _('Complete') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('pages.view_page', page_id=item.result.page_id) }}" class="btn btn-sm btn-outline-primary" title="{{ _('View Details') }}">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <i class="bi bi-inbox"></i>
+                        <p>{{ _('No recent test results') }}</p>
+                        <small class="text-muted">{{ _('Run some tests to see results here') }}</small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Trends Chart -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> {{ _('Trends') }}</h5>
+                    <small class="text-muted">{{ _('Last 14 days') }}</small>
+                </div>
+                <div class="card-body">
+                    <canvas id="trendsChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <!-- Active Tests Panel -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-activity text-primary"></i> {{ _('Active Tests') }}</h5>
+                    <span class="badge bg-primary" id="activeTestsCount">{{ active_jobs|length }}</span>
+                </div>
+                <div class="card-body" id="activeTestsPanel">
+                    {% if active_jobs %}
+                        {% for job in active_jobs %}
+                        <div class="active-test-item p-2 mb-2 rounded">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <strong class="small">{{ job.get('website_name', 'Unknown') }}</strong>
+                                <span class="badge bg-info">{{ job.get('progress', 0) }}%</span>
+                            </div>
+                            <div class="progress progress-thin mb-1">
+                                <div class="progress-bar" role="progressbar" style="width: {{ job.get('progress', 0) }}%"></div>
+                            </div>
+                            <small class="text-muted">
+                                {{ job.get('pages_completed', 0) }}/{{ job.get('pages_total', 0) }} {{ _('pages') }}
+                            </small>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="empty-state py-4">
+                        <i class="bi bi-pause-circle"></i>
+                        <p class="mb-0">{{ _('No active tests') }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Scheduled Tests Panel -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="bi bi-calendar-check" style="color: #6f42c1;"></i> {{ _('Scheduled Tests') }}</h5>
+                    <span class="badge" style="background-color: #6f42c1;">{{ schedules|length }}</span>
+                </div>
+                <div class="card-body">
+                    {% if schedules %}
+                        {% for schedule in schedules[:5] %}
+                        <div class="schedule-item p-2 mb-2 rounded bg-light">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong class="small">{{ schedule.name }}</strong>
+                                    {% if schedule._website_name %}
+                                    <br><small class="text-muted">{{ schedule._website_name }}</small>
+                                    {% endif %}
+                                </div>
+                                <span class="badge {% if schedule.enabled %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {{ _('Active') if schedule.enabled else _('Paused') }}
+                                </span>
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-clock"></i> {{ schedule.schedule_summary }}
+                            </small>
+                            {% if schedule.next_run_at %}
+                            <br><small class="text-primary">
+                                <i class="bi bi-arrow-right"></i> {{ _('Next:') }} {{ schedule.next_run_at.strftime('%Y-%m-%d %H:%M') }}
+                            </small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        {% if schedules|length > 5 %}
+                        <a href="{{ url_for('schedules.list_schedules') }}" class="btn btn-sm btn-outline-primary w-100 mt-2">
+                            {{ _('View All') }} ({{ schedules|length }})
+                        </a>
+                        {% endif %}
+                    {% else %}
+                    <div class="empty-state py-4">
+                        <i class="bi bi-calendar-x"></i>
+                        <p class="mb-0">{{ _('No scheduled tests') }}</p>
+                        {% if selected_website %}
+                        <a href="{{ url_for('schedules.create_schedule', website_id=selected_website.id) }}" class="btn btn-sm btn-outline-primary mt-2">
+                            <i class="bi bi-plus"></i> {{ _('Create Schedule') }}
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Stats Summary -->
+            <div class="card mt-4 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> {{ _('Summary') }}</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted">{{ _('Websites') }}</span>
+                            <strong>{{ stats.website_count }}</strong>
+                        </li>
+                        <li class="d-flex justify-content-between py-2 border-bottom">
+                            <span class="text-muted">{{ _('Untested Pages') }}</span>
+                            <strong>{{ stats.untested_pages }}</strong>
+                        </li>
+                        <li class="d-flex justify-content-between py-2">
+                            <span class="text-muted">{{ _('Completed Today') }}</span>
+                            <strong>{{ stats.completed_today }}</strong>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- Toast Container for Notifications -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="notificationToast" class="toast" role="alert">
+        <div class="toast-header">
+            <i class="bi bi-bell me-2"></i>
+            <strong class="me-auto" id="toastTitle">{{ _('Notification') }}</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
+        </div>
+        <div class="toast-body" id="toastBody"></div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-$('#quickTestForm').submit(function(e) {
-    e.preventDefault();
-    
-    const url = $('#testUrl').val();
-    if (!url) {
-        alert({{ _("Please enter a URL to test") | tojson }});
+// ============================================================================
+// Page Loading Overlay
+// ============================================================================
+
+const loadingOverlay = document.getElementById('pageLoadingOverlay');
+
+function showLoading() {
+    loadingOverlay.classList.remove('hidden');
+}
+
+function hideLoading() {
+    loadingOverlay.classList.add('hidden');
+}
+
+// Hide loading overlay only after page is FULLY loaded (including all resources)
+window.addEventListener('load', function() {
+    hideLoading();
+});
+
+// Show spinner when page is about to unload (refresh, navigation, etc.)
+window.addEventListener('beforeunload', function() {
+    showLoading();
+});
+
+// Show spinner when user navigates via back/forward buttons
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        // Page was loaded from cache (back/forward navigation)
+        hideLoading();
+    }
+});
+
+// Current filter state
+let currentProjectId = {{ (selected_project.id | tojson) if selected_project else 'null' }};
+let currentWebsiteId = {{ (selected_website_id | tojson) if selected_website_id else 'null' }};
+
+// ============================================================================
+// Project/Website Selection
+// ============================================================================
+
+document.getElementById('projectSelect').addEventListener('change', function() {
+    const projectId = this.value;
+    const websiteSelect = document.getElementById('websiteSelect');
+
+    // Update current filter state
+    currentProjectId = projectId || null;
+    currentWebsiteId = null;
+
+    // Reset website selection
+    websiteSelect.value = '';
+
+    if (projectId) {
+        // Load websites for this project via AJAX
+        websiteSelect.innerHTML = '<option value="">' + {{ _("Loading websites...") | tojson }} + '</option>';
+        websiteSelect.disabled = true;
+
+        fetch('{{ url_for("testing.api_project_websites", project_id="PLACEHOLDER") }}'.replace('PLACEHOLDER', projectId))
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    websiteSelect.innerHTML = '<option value="">' + {{ _("All Websites") | tojson }} + '</option>';
+                    if (data.websites && data.websites.length > 0) {
+                        data.websites.forEach(website => {
+                            const option = document.createElement('option');
+                            option.value = website.id;
+                            option.textContent = website.name + ' (' + website.page_count + ' ' + {{ _("pages") | tojson }} + ')';
+                            websiteSelect.appendChild(option);
+                        });
+                        websiteSelect.disabled = false;
+                    } else {
+                        websiteSelect.innerHTML = '<option value="">' + {{ _("No websites in this project") | tojson }} + '</option>';
+                    }
+                } else {
+                    websiteSelect.innerHTML = '<option value="">' + {{ _("Error loading websites") | tojson }} + '</option>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading websites:', error);
+                websiteSelect.innerHTML = '<option value="">' + {{ _("Error loading websites") | tojson }} + '</option>';
+            });
+
+        // Show loading and redirect to update dashboard with project filter
+        showLoading();
+        window.location.href = '{{ url_for("testing.testing_dashboard") }}?project_id=' + projectId;
+    } else {
+        // No project selected - show all projects view
+        websiteSelect.innerHTML = '<option value="">' + {{ _("Select a project first...") | tojson }} + '</option>';
+        websiteSelect.disabled = true;
+        showLoading();
+        window.location.href = '{{ url_for("testing.testing_dashboard") }}';
+    }
+});
+
+document.getElementById('websiteSelect').addEventListener('change', function() {
+    const websiteId = this.value;
+    const projectId = document.getElementById('projectSelect').value;
+
+    let url = '{{ url_for("testing.testing_dashboard") }}';
+    const params = [];
+
+    if (projectId) params.push('project_id=' + projectId);
+    if (websiteId) params.push('website_id=' + websiteId);
+
+    if (params.length > 0) {
+        url += '?' + params.join('&');
+    }
+
+    showLoading();
+    window.location.href = url;
+});
+
+// ============================================================================
+// Test Actions
+// ============================================================================
+
+document.getElementById('testAllBtn').addEventListener('click', function() {
+    runTests(false);
+});
+
+document.getElementById('testUntestedBtn').addEventListener('click', function() {
+    runTests(true);
+});
+
+function runTests(untestedOnly) {
+    const btn = untestedOnly ? document.getElementById('testUntestedBtn') : document.getElementById('testAllBtn');
+    const originalText = btn.innerHTML;
+
+    // Collect selected testers
+    const selectedTesters = [];
+    document.querySelectorAll('.tester-checkbox:checked').forEach(checkbox => {
+        selectedTesters.push(checkbox.value);
+    });
+
+    // Validate at least one tester is selected
+    if (selectedTesters.length === 0) {
+        showToast({{ _("Error") | tojson }}, {{ _("Please select at least one tester") | tojson }}, 'danger');
         return;
     }
-    
-    // In production, this would create a temporary page and test it
-    alert({{ _("Quick test functionality will be implemented") | tojson }});
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>' + {{ _("Starting...") | tojson }};
+
+    const data = {
+        untested_only: untestedOnly,
+        include_screenshots: document.getElementById('includeScreenshots').checked,
+        run_ai_analysis: document.getElementById('runAiAnalysis').checked,
+        tester_ids: selectedTesters
+    };
+
+    if (currentWebsiteId) {
+        data.website_id = currentWebsiteId;
+    } else if (currentProjectId) {
+        data.project_id = currentProjectId;
+    }
+
+    fetch('{{ url_for("testing.api_run_tests") }}', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showToast({{ _("Tests Started") | tojson }}, result.message, 'success');
+            // Refresh stats
+            refreshStats();
+        } else {
+            showToast({{ _("Error") | tojson }}, result.error || result.message, 'danger');
+        }
+    })
+    .catch(error => {
+        showToast({{ _("Error") | tojson }}, error.message, 'danger');
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    });
+}
+
+// ============================================================================
+// Polling for Active Tests
+// ============================================================================
+
+function refreshActiveTests() {
+    fetch('{{ url_for("testing.api_active_tests") }}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateActiveTestsPanel(data.active_tests);
+                document.getElementById('activeTestsCount').textContent = data.count;
+                document.getElementById('statActiveTests').textContent = data.count;
+            }
+        })
+        .catch(error => console.error('Error refreshing active tests:', error));
+}
+
+function updateActiveTestsPanel(activeTests) {
+    const panel = document.getElementById('activeTestsPanel');
+
+    if (activeTests.length === 0) {
+        panel.innerHTML = `
+            <div class="empty-state py-4">
+                <i class="bi bi-pause-circle"></i>
+                <p class="mb-0">` + {{ _("No active tests") | tojson }} + `</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '';
+    activeTests.forEach(job => {
+        html += `
+            <div class="active-test-item p-2 mb-2 rounded">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <strong class="small">${job.website_name}</strong>
+                    <span class="badge bg-info">${job.progress}%</span>
+                </div>
+                <div class="progress progress-thin mb-1">
+                    <div class="progress-bar" role="progressbar" style="width: ${job.progress}%"></div>
+                </div>
+                <small class="text-muted">
+                    ${job.pages_completed}/${job.pages_total} ` + {{ _("pages") | tojson }} + `
+                </small>
+            </div>
+        `;
+    });
+
+    panel.innerHTML = html;
+}
+
+function refreshStats() {
+    let url = '{{ url_for("testing.api_stats") }}';
+    const params = [];
+    if (currentProjectId) params.push('project_id=' + currentProjectId);
+    if (currentWebsiteId) params.push('website_id=' + currentWebsiteId);
+    if (params.length > 0) url += '?' + params.join('&');
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const stats = data.stats;
+                document.getElementById('statTotalPages').textContent = stats.total_pages;
+                document.getElementById('statTestedPages').textContent = stats.tested_pages;
+                document.getElementById('statCoverage').textContent = stats.test_coverage.toFixed(1) + '% ' + {{ _("coverage") | tojson }};
+                document.getElementById('statViolations').textContent = stats.total_violations;
+                document.getElementById('statWarnings').textContent = stats.total_warnings;
+                document.getElementById('statActiveTests').textContent = stats.active_tests;
+                document.getElementById('statQueuedTests').textContent = stats.queued_tests;
+            }
+        })
+        .catch(error => console.error('Error refreshing stats:', error));
+}
+
+// Poll every 5 seconds
+setInterval(function() {
+    refreshActiveTests();
+    refreshStats();
+}, 5000);
+
+// ============================================================================
+// Table Filtering
+// ============================================================================
+
+document.querySelectorAll('[data-filter]').forEach(btn => {
+    btn.addEventListener('click', function() {
+        // Update active state
+        document.querySelectorAll('[data-filter]').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        const filter = this.dataset.filter;
+        const today = new Date().toISOString().split('T')[0];
+
+        document.querySelectorAll('.table-results tbody tr').forEach(row => {
+            const violations = parseInt(row.dataset.violations) || 0;
+            const date = row.dataset.date;
+
+            let show = true;
+
+            if (filter === 'errors' && violations === 0) show = false;
+            if (filter === 'today' && date !== today) show = false;
+
+            row.style.display = show ? '' : 'none';
+        });
+    });
 });
+
+// ============================================================================
+// Chart.js Trends
+// ============================================================================
+
+const trendData = {{ trend_data | tojson }};
+
+const ctx = document.getElementById('trendsChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: trendData.map(d => d.date),
+        datasets: [
+            {
+                label: {{ _("Violations") | tojson }},
+                data: trendData.map(d => d.violations),
+                borderColor: '#dc3545',
+                backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                fill: true,
+                tension: 0.3
+            },
+            {
+                label: {{ _("Warnings") | tojson }},
+                data: trendData.map(d => d.warnings),
+                borderColor: '#ffc107',
+                backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                fill: true,
+                tension: 0.3
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+            }
+        },
+        scales: {
+            x: {
+                display: true,
+                grid: {
+                    display: false
+                },
+                ticks: {
+                    maxTicksLimit: 7
+                }
+            },
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: 'rgba(0,0,0,0.05)'
+                }
+            }
+        }
+    }
+});
+
+// ============================================================================
+// Toast Notifications
+// ============================================================================
+
+function showToast(title, message, type = 'info') {
+    const toast = document.getElementById('notificationToast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastBody = document.getElementById('toastBody');
+
+    toastTitle.textContent = title;
+    toastBody.textContent = message;
+
+    // Set color based on type
+    toast.classList.remove('bg-success', 'bg-danger', 'bg-warning', 'bg-info');
+    if (type === 'success') toast.classList.add('text-bg-success');
+    else if (type === 'danger') toast.classList.add('text-bg-danger');
+    else if (type === 'warning') toast.classList.add('text-bg-warning');
+
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+}
 </script>
 {% endblock %}

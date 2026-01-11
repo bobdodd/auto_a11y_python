@@ -571,9 +571,9 @@
             </strong>
             {% if pages %}
                 {% if page_count == 1 %}
-                    <code class="ms-2">{{ pages[0] }}</code>
+                    <code class="ms-2 bg-light text-dark px-2 py-1 rounded">{{ pages[0] }}</code>
                 {% else %}
-                    <code class="ms-2">{{ pages[0] }}</code>
+                    <code class="ms-2 bg-light text-dark px-2 py-1 rounded">{{ pages[0] }}</code>
                     <details class="d-inline-block ms-2">
                         <summary class="btn btn-sm btn-primary py-0">
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">+ {{ page_count - 1 }} more</span>

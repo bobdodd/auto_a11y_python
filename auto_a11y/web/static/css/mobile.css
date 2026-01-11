@@ -29,6 +29,13 @@ a, button, .btn, input, select, textarea {
     min-height: var(--touch-target-min);
 }
 
+/* Exclude checkboxes and switches from min-height - they have their own touch target via label */
+input[type="checkbox"],
+input[type="radio"],
+.form-check-input {
+    min-height: auto;
+}
+
 /* Prevent content overflow in cards */
 .card {
     overflow: hidden;

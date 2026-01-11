@@ -145,9 +145,14 @@
 
 /* Help Icons */
 .help-icon {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 20px;
     height: 20px;
+    min-width: 20px;
+    min-height: 20px;
+    padding: 0;
     border-radius: 50%;
     background-color: #3498db;
     color: white;
@@ -155,6 +160,7 @@
     cursor: pointer;
     font-size: 12px;
     font-weight: bold;
+    line-height: 1;
     margin-left: 5px;
     vertical-align: middle;
     transition: background-color 0.2s, transform 0.2s;

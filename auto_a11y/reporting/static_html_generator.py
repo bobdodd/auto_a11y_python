@@ -352,6 +352,7 @@ class StaticHTMLReportGenerator:
                 'filter_test_results': 'Filter Test Results',
                 'clear_all_filters': 'Clear All Filters',
                 'active_filters': 'Active Filters',
+                'no_filters_active': 'No filters active',
                 'showing': 'Showing',
                 'of': 'of',
                 'items': 'items',
@@ -414,6 +415,8 @@ class StaticHTMLReportGenerator:
                 'aside': 'Aside',
                 'section': 'Section',
                 'header': 'Header',
+                'footer': 'Footer',
+                'fields': 'fields',
 
                 # Touchpoints
                 'accessible_names': 'Accessible Names',
@@ -523,6 +526,7 @@ class StaticHTMLReportGenerator:
                 'filter_test_results': 'Filtrer les résultats',
                 'clear_all_filters': 'Effacer tous les filtres',
                 'active_filters': 'Filtres actifs',
+                'no_filters_active': 'Aucun filtre actif',
                 'showing': 'Affichage',
                 'of': 'sur',
                 'items': 'éléments',
@@ -586,6 +590,8 @@ class StaticHTMLReportGenerator:
                 'aside': 'Aparté',
                 'section': 'Section',
                 'header': 'En-tête',
+                'footer': 'Pied de page',
+                'fields': 'champs',
 
                 # Touchpoints
                 'accessible_names': 'Noms accessibles',
@@ -2106,7 +2112,7 @@ class StaticHTMLReportGenerator:
                         signature = metadata.get('formSignature')
                         component_type = 'Form'
                         field_count = metadata.get('fieldCount', 0)
-                        label = f"Form ({field_count} fields)"
+                        label = f"({field_count})"  # Just the count - template adds translated text
                     elif issue_id in ['DiscoNavFound', 'landmarks_DiscoNavFound']:
                         signature = metadata.get('navSignature')
                         component_type = 'Navigation'

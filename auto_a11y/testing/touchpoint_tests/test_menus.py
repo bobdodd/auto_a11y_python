@@ -52,7 +52,7 @@ async def test_menus(page) -> Dict[str, Any]:
     Test proper implementation of menus and navigation
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

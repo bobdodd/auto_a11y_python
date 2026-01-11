@@ -35,7 +35,7 @@ async def test_aria(page) -> Dict[str, Any]:
     users from activating the element.
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
 
     Returns:
         Dictionary containing test results with errors and warnings

@@ -38,7 +38,7 @@ async def test_styles(page) -> Dict[str, Any]:
     Test inline style attributes for proper separation of concerns
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
 
     Returns:
         Dictionary containing test results with errors and warnings

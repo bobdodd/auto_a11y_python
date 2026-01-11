@@ -211,7 +211,7 @@ async def test_links(page) -> Dict[str, Any]:
     to avoid expensive runtime stylesheet iteration.
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
 
     Returns:
         dict: Test results with errors, warnings, and passes

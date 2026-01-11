@@ -66,7 +66,7 @@ async def test_event_handlers(page) -> Dict[str, Any]:
     Test event handlers and tab order accessibility requirements
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

@@ -59,7 +59,7 @@ async def test_landmarks(page) -> Dict[str, Any]:
     Test page landmark structure and requirements
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

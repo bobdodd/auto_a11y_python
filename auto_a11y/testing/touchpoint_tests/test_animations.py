@@ -45,7 +45,7 @@ async def test_animations(page) -> Dict[str, Any]:
     Test CSS animations for accessibility requirements
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

@@ -46,7 +46,7 @@ async def test_images(page) -> Dict[str, Any]:
     Test images for proper alt text and role attributes
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

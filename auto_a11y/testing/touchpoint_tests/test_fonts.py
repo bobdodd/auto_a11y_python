@@ -102,7 +102,7 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
     Test fonts and typography for accessibility requirements
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         project_config: Optional project configuration dict for project-specific font settings
 
     Returns:

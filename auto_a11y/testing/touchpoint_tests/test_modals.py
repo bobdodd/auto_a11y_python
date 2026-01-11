@@ -52,7 +52,7 @@ async def test_modals(page) -> Dict[str, Any]:
     Test modal dialogs for accessibility requirements including proper headings
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
 
     Returns:
         Dictionary containing test results with errors and warnings

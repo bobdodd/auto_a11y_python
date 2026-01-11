@@ -151,7 +151,7 @@ async def test_language(page) -> Dict[str, Any]:
     Test language declarations and attributes.
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
 
     Returns:
         Dictionary containing test results

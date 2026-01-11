@@ -66,7 +66,7 @@ async def test_maps(page) -> Dict[str, Any]:
     - Structural requirements for div maps
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
 
     Returns:
         Dictionary containing test results with errors, warnings, and discoveries

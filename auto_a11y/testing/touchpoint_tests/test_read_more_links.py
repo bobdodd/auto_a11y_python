@@ -45,7 +45,7 @@ async def test_read_more_links(page) -> Dict[str, Any]:
     Test 'read more' type links and buttons for proper accessible names
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

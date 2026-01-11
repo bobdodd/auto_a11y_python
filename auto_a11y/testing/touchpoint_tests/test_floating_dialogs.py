@@ -52,7 +52,7 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
     Test floating dialogs for proper implementation and content obscuring
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

@@ -60,7 +60,7 @@ async def test_accessible_names(page) -> Dict[str, Any]:
     Uses the W3C accessible name computation algorithm.
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

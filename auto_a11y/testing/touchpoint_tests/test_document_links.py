@@ -45,7 +45,7 @@ async def test_document_links(page) -> Dict[str, Any]:
     Test for links to electronic documents (PDF, DOC, DOCX, XLS, XLSX, etc.)
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

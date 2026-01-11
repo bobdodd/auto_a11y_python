@@ -52,7 +52,7 @@ async def test_tables(page) -> Dict[str, Any]:
     Test HTML tables for accessibility requirements
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

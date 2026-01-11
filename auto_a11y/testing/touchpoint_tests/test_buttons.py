@@ -30,7 +30,7 @@ async def test_buttons(page) -> Dict[str, Any]:
     Test button focus indicators for keyboard accessibility
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
 
     Returns:
         Dictionary containing test results with errors and warnings

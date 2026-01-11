@@ -52,7 +52,7 @@ async def test_focus_management(page) -> Dict[str, Any]:
     Test focus management and interactive element styling
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

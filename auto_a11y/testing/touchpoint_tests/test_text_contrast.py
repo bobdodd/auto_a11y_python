@@ -56,7 +56,7 @@ async def test_text_contrast(page) -> Dict[str, Any]:
     z-index floating elements, text overflow, pseudoclasses, and media queries.
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
 
     Returns:
         Dictionary containing test results with errors and warnings

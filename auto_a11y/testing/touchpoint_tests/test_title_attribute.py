@@ -30,7 +30,7 @@ async def test_title_attribute(page) -> Dict[str, Any]:
     Test proper usage of title attribute - should only be used on iframes
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
 
     Returns:
         Dictionary containing test results with errors and warnings

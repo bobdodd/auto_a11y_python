@@ -49,7 +49,7 @@ async def test_timers(page) -> Dict[str, Any]:
     from inline scripts and external script tags.
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
 
     Returns:
         Dictionary containing test results with errors and warnings

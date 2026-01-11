@@ -48,9 +48,9 @@ class CSSFocusCapture:
         """
         Start capturing CSS responses on the page.
         Call this BEFORE navigating to the page.
-        
+
         Args:
-            page: Pyppeteer page object
+            page: Playwright Page object
         """
         self._page = page
         self.cache = CSSFocusCache()
@@ -105,9 +105,9 @@ class CSSFocusCapture:
         """
         Capture focus rules from inline <style> tags.
         Call this AFTER the page has loaded.
-        
+
         Args:
-            page: Pyppeteer page object
+            page: Playwright Page object
         """
         try:
             inline_styles = await asyncio.wait_for(

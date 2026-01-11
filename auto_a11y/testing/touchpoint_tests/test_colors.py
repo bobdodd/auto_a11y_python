@@ -30,7 +30,7 @@ async def test_colors(page) -> Dict[str, Any]:
     Test color usage and contrast requirements across the page
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

@@ -34,7 +34,7 @@ async def test_semantic_structure(page) -> Dict[str, Any]:
     - Future: Other semantic structure issues
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
 
     Returns:
         Dictionary containing test results

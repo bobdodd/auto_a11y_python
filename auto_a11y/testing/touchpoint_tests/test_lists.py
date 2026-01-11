@@ -52,7 +52,7 @@ async def test_lists(page) -> Dict[str, Any]:
     Test proper implementation of lists and their styling
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

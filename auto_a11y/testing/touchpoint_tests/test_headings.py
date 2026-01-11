@@ -44,7 +44,7 @@ async def test_headings(page) -> Dict[str, Any]:
     Test headings for proper hierarchy and structure
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

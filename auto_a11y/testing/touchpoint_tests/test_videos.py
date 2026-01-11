@@ -52,7 +52,7 @@ async def test_videos(page) -> Dict[str, Any]:
     Test for presence of videos and their accessibility features
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

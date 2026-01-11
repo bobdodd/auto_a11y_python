@@ -52,7 +52,7 @@ async def test_maps(page) -> Dict[str, Any]:
     Test for embedded digital maps and their accessibility attributes
     
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
         
     Returns:
         Dictionary containing test results with errors and warnings

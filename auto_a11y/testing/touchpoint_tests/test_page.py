@@ -37,7 +37,7 @@ async def test_page(page) -> Dict[str, Any]:
     Test page-level accessibility including page title and responsive breakpoints
 
     Args:
-        page: Pyppeteer page object
+        page: Playwright Page object
 
     Returns:
         Dictionary containing test results

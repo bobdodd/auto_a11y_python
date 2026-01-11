@@ -154,7 +154,7 @@ class TestRunner:
                     raise RuntimeError(f"Failed to load page: {page.url}")
 
                 # Wait for content to be ready
-                await browser_page.waitForSelector('body', {'timeout': 5000})
+                await browser_page.wait_for_selector('body', timeout=5000)
 
                 # If using domcontentloaded, give the page a moment to stabilize
                 # This prevents the browser from closing the session too early
@@ -314,7 +314,7 @@ class TestRunner:
                 # This is critical because some tests change viewport for responsive breakpoint testing
                 if original_viewport:
                     try:
-                        await browser_page.setViewport({
+                        await browser_page.set_viewport_size({
                             'width': original_viewport['width'],
                             'height': original_viewport['height']
                         })
@@ -330,7 +330,6 @@ class TestRunner:
                 screenshot_bytes = None
                 if take_screenshot:
                     # Take screenshot once and reuse bytes for AI analysis
-                    # Taking two separate screenshots can destabilize Pyppeteer connection
                     screenshot_path, screenshot_bytes = await self._take_screenshot_with_bytes(browser_page, page.id)
                 
                 # Check if project has AI testing enabled
@@ -619,7 +618,7 @@ class TestRunner:
             if not response:
                 raise RuntimeError(f"Failed to load page: {page.url}")
 
-            await browser_page.waitForSelector('body', {'timeout': 5000})
+            await browser_page.wait_for_selector('body', timeout=5000)
 
             # STEP 3: Now detect scripts (after we're on the test page, authenticated)
             # Start script session if not already started for this website
@@ -748,7 +747,7 @@ class TestRunner:
                 # Restore original viewport after tests complete
                 if original_viewport:
                     try:
-                        await browser_page.setViewport({
+                        await browser_page.set_viewport_size({
                             'width': original_viewport['width'],
                             'height': original_viewport['height']
                         })
@@ -773,7 +772,6 @@ class TestRunner:
                         raise
                     
                     # Take screenshot once and save to file - also capture bytes for AI analysis
-                    # Taking two separate screenshots can destabilize Pyppeteer connection
                     screenshot_path, screenshot_bytes = await self._take_screenshot_with_bytes(browser_page, page_id)
                     logger.debug(f"DEBUG run_single_test: screenshot done, path={screenshot_path}, bytes={len(screenshot_bytes) if screenshot_bytes else 0}")
 
@@ -1084,7 +1082,7 @@ class TestRunner:
         Take screenshot of page
 
         Args:
-            browser_page: Pyppeteer page object
+            browser_page: Playwright Page object
             page_id: Page ID for filename
 
         Returns:
@@ -1121,12 +1119,9 @@ class TestRunner:
     async def _take_screenshot_with_bytes(self, browser_page, page_id: str) -> tuple:
         """
         Take screenshot of page and return both path and bytes.
-        
-        This method takes a single screenshot to avoid destabilizing the Pyppeteer
-        connection that can occur when taking multiple screenshots in succession.
 
         Args:
-            browser_page: Pyppeteer page object
+            browser_page: Playwright Page object
             page_id: Page ID for filename
 
         Returns:
@@ -1137,13 +1132,13 @@ class TestRunner:
             filename = f"page_{page_id}_{timestamp}.jpg"
             filepath = self.screenshot_dir / filename
 
-            # Take screenshot once - Pyppeteer returns bytes and saves to file if path provided
-            screenshot_bytes = await browser_page.screenshot({
-                'path': str(filepath),
-                'fullPage': True,
-                'type': 'jpeg',
-                'quality': 80
-            })
+            # Take screenshot - Playwright returns bytes and saves to file if path provided
+            screenshot_bytes = await browser_page.screenshot(
+                path=str(filepath),
+                full_page=True,
+                type='jpeg',
+                quality=80
+            )
 
             # Return relative path for Flask static serving
             import os

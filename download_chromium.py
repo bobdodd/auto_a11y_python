@@ -1,31 +1,51 @@
 #!/usr/bin/env python
 """
-Manually download Chromium for Pyppeteer
+Download/install Chromium browser for Playwright
 """
 
-import asyncio
-from pyppeteer import chromium_downloader
+import subprocess
 import sys
+from pathlib import Path
 
-async def download():
-    """Download Chromium with better error handling"""
+
+def download():
+    """Install Playwright Chromium browser"""
     try:
-        print("Starting Chromium download...")
-        print(f"Download URL: {chromium_downloader.get_url()}")
-        print(f"Download path: {chromium_downloader.DOWNLOADS_FOLDER}")
-        
-        # This should handle the download better
-        chromium_downloader.download_chromium()
-        
-        print("\n✓ Chromium downloaded successfully!")
-        print(f"Location: {chromium_downloader.DOWNLOADS_FOLDER}")
-        
+        print("Installing Playwright Chromium browser...")
+        print("This may take a few minutes on first run...\n")
+
+        # Use playwright install command
+        result = subprocess.run(
+            [sys.executable, '-m', 'playwright', 'install', 'chromium'],
+            capture_output=False,  # Show output in real-time
+            text=True
+        )
+
+        if result.returncode == 0:
+            print("\n✓ Playwright Chromium installed successfully!")
+
+            # Show installation location
+            playwright_cache = Path.home() / '.cache' / 'ms-playwright'
+            if not playwright_cache.exists():
+                # Try macOS location
+                playwright_cache = Path.home() / 'Library' / 'Caches' / 'ms-playwright'
+
+            if playwright_cache.exists():
+                print(f"Location: {playwright_cache}")
+        else:
+            print(f"\n✗ Installation failed with return code: {result.returncode}")
+            sys.exit(1)
+
+    except FileNotFoundError:
+        print("\n✗ Playwright not found. Please install it first:")
+        print("   pip install playwright")
+        sys.exit(1)
     except Exception as e:
-        print(f"\n✗ Download failed: {e}")
-        print("\nAlternative: You can manually download Chromium:")
-        print(f"1. Download from: {chromium_downloader.get_url()}")
-        print(f"2. Extract to: {chromium_downloader.DOWNLOADS_FOLDER}")
+        print(f"\n✗ Installation failed: {e}")
+        print("\nAlternative: You can manually install Playwright browsers:")
+        print("   python -m playwright install chromium")
         sys.exit(1)
 
+
 if __name__ == "__main__":
-    asyncio.run(download())
+    download()

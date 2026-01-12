@@ -107,10 +107,44 @@ def create_app(config):
     # Make get_locale, config, and current_user available to all templates
     @app.context_processor
     def inject_globals():
+        # Dynamic translations that pybabel keeps marking as obsolete
+        # These are used in templates for dynamically generated strings
+        dynamic_translations = {
+            'en': {
+                # Impact levels
+                'CRITICAL': 'Critical',
+                'HIGH': 'High',
+                'MEDIUM': 'Medium',
+                'LOW': 'Low',
+                # Lowercase versions
+                'critical': 'Critical',
+                'high': 'High',
+                'medium': 'Medium',
+                'low': 'Low',
+            },
+            'fr': {
+                # Impact levels
+                'CRITICAL': 'Critique',
+                'HIGH': 'Élevé',
+                'MEDIUM': 'Moyen',
+                'LOW': 'Faible',
+                # Lowercase versions
+                'critical': 'Critique',
+                'high': 'Élevé',
+                'medium': 'Moyen',
+                'low': 'Faible',
+            }
+        }
+
+        current_locale = get_locale()
+        t = dynamic_translations.get(current_locale, dynamic_translations['en'])
+
         return dict(
             get_locale=get_locale,
             show_error_codes=config.SHOW_ERROR_CODES,
-            current_user=current_user
+            current_user=current_user,
+            t=t,  # Translation dictionary for dynamic strings
+            translations=dynamic_translations  # Full translations dict for JS
         )
     
     # Store config for access in routes

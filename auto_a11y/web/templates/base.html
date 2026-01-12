@@ -28,62 +28,71 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
+                    <!-- Dashboard - standalone -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('dashboard') }}">
                             <i class="bi bi-speedometer2"></i> {{ _('Dashboard') }}
                         </a>
                     </li>
+                    <!-- Projects - standalone -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('projects.list_projects') }}">
                             <i class="bi bi-folder"></i> {{ _('Projects') }}
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('testing.testing_dashboard') }}">
+                    <!-- Testing dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="testingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-check2-square"></i> {{ _('Testing') }}
                         </a>
+                        <ul class="dropdown-menu" aria-labelledby="testingDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('testing.testing_dashboard') }}">
+                                <i class="bi bi-speedometer2"></i> {{ _('Testing Dashboard') }}
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('testing.trends_page') }}">
+                                <i class="bi bi-graph-up-arrow"></i> {{ _('Trend Analysis') }}
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('schedules.schedules_dashboard') }}">
+                                <i class="bi bi-calendar-check"></i> {{ _('Schedules') }}
+                            </a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('testing.trends_page') }}">
-                            <i class="bi bi-graph-up-arrow"></i> {{ _('Trends') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('schedules.schedules_dashboard') }}">
-                            <i class="bi bi-calendar-check"></i> {{ _('Schedules') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('recordings.list_recordings') }}">
-                            <i class="bi bi-mic"></i> {{ _('Recordings') }}
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('reports.reports_dashboard') }}">
+                    <!-- Reports dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-file-earmark-text"></i> {{ _('Reports') }}
                         </a>
+                        <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('reports.reports_dashboard') }}">
+                                <i class="bi bi-file-earmark-bar-graph"></i> {{ _('Reports Dashboard') }}
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('recordings.list_recordings') }}">
+                                <i class="bi bi-mic"></i> {{ _('Recordings') }}
+                            </a></li>
+                        </ul>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
+                    <!-- Language selector - compact -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-translate"></i> <span id="current-language">{{ get_locale().upper() }}</span>
+                        <a class="nav-link dropdown-toggle py-2 px-2" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ _('Language') }}">
+                            <i class="bi bi-translate"></i> <span class="d-none d-lg-inline" id="current-language">{{ get_locale().upper() }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item language-switch" href="#" data-lang="en">English</a></li>
                             <li><a class="dropdown-item language-switch" href="#" data-lang="fr">Français</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('help') }}">
-                            <i class="bi bi-question-circle"></i> {{ _('Help') }}
-                        </a>
-                    </li>
+                    <!-- Settings dropdown - includes Help -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-gear"></i> {{ _('Settings') }}
+                        <a class="nav-link dropdown-toggle py-2 px-2" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-label="{{ _('Settings') }}">
+                            <i class="bi bi-gear"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('help') }}">
+                                <i class="bi bi-question-circle"></i> {{ _('Help') }}
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('testing.configure_testing') }}">
                                 <i class="bi bi-sliders"></i> {{ _('Configuration') }}
                             </a></li>

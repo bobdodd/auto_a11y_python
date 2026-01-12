@@ -818,7 +818,8 @@ class Database:
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None,
         limit: int = 100,
-        skip: int = 0
+        skip: int = 0,
+        summary_only: bool = False
     ) -> List[TestResult]:
         """Get test results with optional filtering
 
@@ -829,6 +830,7 @@ class Database:
             end_date: Filter results on or before this date
             limit: Maximum results to return
             skip: Number of results to skip (for pagination)
+            summary_only: If True, skip loading detailed items (much faster for trend analysis)
         """
         query = {}
         if page_id:
@@ -847,7 +849,8 @@ class Database:
         results = []
         for doc in docs:
             # Check if this uses the new schema (split items)
-            if doc.get('_has_detailed_items'):
+            # Skip loading detailed items if summary_only=True (for trend analysis)
+            if doc.get('_has_detailed_items') and not summary_only:
                 # Load items from test_result_items collection
                 test_result_id = doc['_id']
                 items = self._get_test_result_items(test_result_id)

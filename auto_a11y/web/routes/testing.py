@@ -139,7 +139,8 @@ def get_trend_data(db, project_id=None, website_id=None, days=30):
         current_date += timedelta(days=1)
 
     # Get test results for the period (limit based on days to reduce load)
-    results = db.get_test_results(limit=min(days * 20, 500))
+    # Use summary_only=True since we only need counts, not detailed items
+    results = db.get_test_results(limit=min(days * 20, 500), summary_only=True)
 
     # Filter by date range and optionally by project/website
     page_ids = None
@@ -463,11 +464,13 @@ def get_detailed_trend_data(db, project_id=None, website_id=None,
     else:
         limit = max(days_diff * 50, 1000)
 
+    # Use summary_only=True - we only need counts, breakdowns query test_result_items directly
     results = db.get_test_results(
         page_ids=page_ids if page_ids else None,
         start_date=start_date,
         end_date=end_date,
-        limit=limit
+        limit=limit,
+        summary_only=True
     )
 
     # Aggregate by day
@@ -865,11 +868,13 @@ def compare_periods(db, project_id, website_id, period_a_start, period_a_end,
     def get_period_stats(start, end):
         # Filter at database level for efficiency
         limit = min(len(page_ids) * 10, 500) if page_ids else 2000
+        # Use summary_only=True - we only need counts for comparison
         results = db.get_test_results(
             page_ids=page_ids if page_ids else None,
             start_date=start,
             end_date=end,
-            limit=limit
+            limit=limit,
+            summary_only=True
         )
 
         violations = 0
@@ -961,7 +966,8 @@ def calculate_progress_metrics(db, project_id=None, website_id=None, days=30):
         analyzed_count += 1
 
         # Get test results for this page in the period - limit queries
-        page_results = db.get_test_results(page_id=page.id, start_date=start_date, limit=10)
+        # Use summary_only=True - we only need counts for comparison
+        page_results = db.get_test_results(page_id=page.id, start_date=start_date, limit=10, summary_only=True)
 
         if len(page_results) < 2:
             pages_stable += 1
@@ -983,17 +989,20 @@ def calculate_progress_metrics(db, project_id=None, website_id=None, days=30):
 
     # Calculate issue flow - filter at database level for efficiency
     limit = min(len(page_ids) * 10, 500) if page_ids else 2000
+    # Use summary_only=True - we only need counts for issue flow calculation
     first_half_results = db.get_test_results(
         page_ids=page_ids if page_ids else None,
         start_date=start_date,
         end_date=mid_date,
-        limit=limit
+        limit=limit,
+        summary_only=True
     )
     second_half_results = db.get_test_results(
         page_ids=page_ids if page_ids else None,
         start_date=mid_date,
         end_date=end_date,
-        limit=limit
+        limit=limit,
+        summary_only=True
     )
 
     first_half_violations = sum(r.violation_count for r in first_half_results)

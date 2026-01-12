@@ -122,6 +122,51 @@
         font-size: 0.85rem;
         color: #6c757d;
     }
+    /* Filter chip styles */
+    .filter-chip {
+        transition: all 0.2s ease;
+    }
+    .filter-chip.active {
+        background-color: #0d6efd !important;
+        border-color: #0d6efd !important;
+        color: white !important;
+    }
+    .filter-chip.active .badge {
+        background-color: rgba(255,255,255,0.9) !important;
+        color: #0d6efd !important;
+    }
+    .filter-chip:hover:not(.active) {
+        background-color: #f0f0f0;
+    }
+    #filterPanel .form-select {
+        font-size: 0.875rem;
+    }
+    #filterToggleIcon {
+        transition: transform 0.3s ease;
+    }
+    #filterPanel.show ~ .card-header #filterToggleIcon,
+    .card-header[aria-expanded="true"] #filterToggleIcon {
+        transform: rotate(180deg);
+    }
+    .filter-tag {
+        display: inline-flex;
+        align-items: center;
+        background: #0d6efd;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        margin-right: 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+    .filter-tag .remove-filter {
+        margin-left: 0.25rem;
+        cursor: pointer;
+        opacity: 0.8;
+    }
+    .filter-tag .remove-filter:hover {
+        opacity: 1;
+    }
 </style>
 {% endblock %}
 
@@ -219,6 +264,106 @@
                     <button type="button" id="applyDateRange" class="btn btn-sm btn-primary">
                         <i class="bi bi-arrow-right"></i>
                     </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Panel (Collapsible) -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-white py-2" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#filterPanel" aria-expanded="true">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                    <i class="bi bi-funnel"></i> {{ _('Filter Trends') }}
+                    <span id="activeFilterCount" class="badge bg-primary ms-2" style="display: none;">0</span>
+                </h6>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="clearAllFilters" onclick="event.stopPropagation();">
+                        <i class="bi bi-x-circle"></i> {{ _('Clear All') }}
+                    </button>
+                    <i class="bi bi-chevron-up" id="filterToggleIcon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="collapse show" id="filterPanel">
+            <div class="card-body">
+                <!-- Active Filters Display -->
+                <div id="activeFiltersDisplay" class="mb-3" style="display: none;">
+                    <div class="p-2 rounded" style="background: #e7f3ff;">
+                        <strong class="small">{{ _('Active Filters:') }}</strong>
+                        <div id="activeFilterTags" class="mt-2"></div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Issue Type Filter -->
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label fw-bold small">{{ _('Issue Type') }}</label>
+                        <div class="filter-chips">
+                            <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2 active" data-filter-type="issue_type" data-filter-value="violation">
+                                {{ _('Violations') }} <span class="badge bg-danger ms-1" id="violationCount">-</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2 active" data-filter-type="issue_type" data-filter-value="warning">
+                                {{ _('Warnings') }} <span class="badge bg-warning text-dark ms-1" id="warningCount">-</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Impact Level Filter -->
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label fw-bold small">{{ _('Impact Level') }}</label>
+                        <div class="filter-chips">
+                            <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="impact" data-filter-value="high">
+                                {{ _('High') }} <span class="badge bg-danger ms-1" id="highImpactCount">-</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="impact" data-filter-value="medium">
+                                {{ _('Medium') }} <span class="badge bg-warning text-dark ms-1" id="mediumImpactCount">-</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="impact" data-filter-value="low">
+                                {{ _('Low') }} <span class="badge bg-info ms-1" id="lowImpactCount">-</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- WCAG Criteria Filter -->
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label fw-bold small">{{ _('WCAG Criteria') }}</label>
+                        <select class="form-select form-select-sm" id="wcagFilter" multiple style="height: 90px;">
+                            <option value="" disabled>{{ _('Loading...') }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Touchpoint Filter -->
+                    <div class="col-md-6 col-lg-3">
+                        <label class="form-label fw-bold small">{{ _('Touchpoint') }}</label>
+                        <select class="form-select form-select-sm" id="touchpointFilter" multiple style="height: 90px;">
+                            <option value="" disabled>{{ _('Loading...') }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Affected User Groups Filter -->
+                <div class="row g-3 mt-2">
+                    <div class="col-12">
+                        <label class="form-label fw-bold small">{{ _('Affected User Groups') }}</label>
+                        <div class="filter-chips">
+                            <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user_group" data-filter-value="vision">
+                                <i class="bi bi-eye-slash me-1"></i>{{ _('Vision') }}
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user_group" data-filter-value="hearing">
+                                <i class="bi bi-ear me-1"></i>{{ _('Hearing') }}
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user_group" data-filter-value="motor">
+                                <i class="bi bi-hand-index me-1"></i>{{ _('Motor') }}
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user_group" data-filter-value="cognitive">
+                                <i class="bi bi-brain me-1"></i>{{ _('Cognitive') }}
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user_group" data-filter-value="seizure">
+                                <i class="bi bi-lightning me-1"></i>{{ _('Seizure') }}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -519,10 +664,80 @@ let currentWebsiteId = {{ (selected_website_id | tojson) if selected_website_id 
 let currentGranularity = 'daily';
 let currentDays = 30;
 
+// Filter state
+let activeFilters = {
+    issue_types: ['violation', 'warning'],  // Default: both selected
+    impact_levels: [],
+    touchpoints: [],
+    wcag_criteria: [],
+    user_groups: []
+};
+
+// Touchpoint to user group mapping (for affected user groups filter)
+const touchpointUserMapping = {
+    'images': ['vision'],
+    'colors_contrast': ['vision'],
+    'focus_management': ['motor', 'vision'],
+    'keyboard_navigation': ['motor'],
+    'forms': ['vision', 'motor', 'cognitive'],
+    'headings': ['vision', 'cognitive'],
+    'landmarks': ['vision', 'motor', 'cognitive'],
+    'media': ['hearing', 'vision'],
+    'animation': ['seizure', 'cognitive'],
+    'language': ['vision', 'cognitive'],
+    'navigation': ['cognitive', 'motor'],
+    'buttons': ['motor', 'vision'],
+    'links': ['motor', 'vision'],
+    'dialogs': ['vision', 'motor', 'cognitive'],
+    'aria': ['vision'],
+    'semantic_structure': ['vision', 'cognitive'],
+    'tables': ['vision', 'cognitive'],
+    'timing': ['motor', 'cognitive']
+};
+
+// Touchpoint display names mapping
+const touchpointDisplayNames = {
+    'accessible_names': '{{ _("Accessible Names") }}',
+    'animation': '{{ _("Animation") }}',
+    'aria': '{{ _("ARIA") }}',
+    'buttons': '{{ _("Buttons") }}',
+    'colors_contrast': '{{ _("Colors & Contrast") }}',
+    'dialogs': '{{ _("Dialogs & Modals") }}',
+    'documents': '{{ _("Documents") }}',
+    'event_handling': '{{ _("Event Handling") }}',
+    'focus_management': '{{ _("Focus Management") }}',
+    'forms': '{{ _("Forms") }}',
+    'headings': '{{ _("Headings") }}',
+    'iframes': '{{ _("Iframes") }}',
+    'styles': '{{ _("Inline Styles") }}',
+    'images': '{{ _("Images") }}',
+    'keyboard_navigation': '{{ _("Keyboard Navigation") }}',
+    'landmarks': '{{ _("Landmarks") }}',
+    'language': '{{ _("Language") }}',
+    'links': '{{ _("Links") }}',
+    'lists': '{{ _("Lists") }}',
+    'maps': '{{ _("Maps") }}',
+    'media': '{{ _("Media") }}',
+    'navigation': '{{ _("Navigation") }}',
+    'page': '{{ _("Page") }}',
+    'reading_order': '{{ _("Reading Order") }}',
+    'semantic_structure': '{{ _("Semantic Structure") }}',
+    'tables': '{{ _("Tables") }}',
+    'timing': '{{ _("Timing") }}',
+    'title_attributes': '{{ _("Title Attributes") }}',
+    'fonts': '{{ _("Fonts") }}',
+    'other': '{{ _("Other") }}'
+};
+
 // Chart instances
 let mainTrendChart = null;
 let impactChart = null;
 let touchpointChart = null;
+
+// AbortControllers for canceling in-flight requests
+let trendDataAbortController = null;
+let comparisonAbortController = null;
+let progressAbortController = null;
 
 // ============================================================================
 // Page Loading
@@ -578,6 +793,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('endDate').value = today.toISOString().split('T')[0];
     document.getElementById('startDate').value = thirtyDaysAgo.toISOString().split('T')[0];
 
+    // Initialize filters
+    initializeFilters();
+
     // Load initial data
     loadTrendData();
     loadComparison();
@@ -595,6 +813,22 @@ document.addEventListener('DOMContentLoaded', function() {
 // Event Handlers
 // ============================================================================
 
+// Cancel all in-flight requests (call before navigation)
+function abortAllRequests() {
+    if (trendDataAbortController) {
+        trendDataAbortController.abort();
+        trendDataAbortController = null;
+    }
+    if (comparisonAbortController) {
+        comparisonAbortController.abort();
+        comparisonAbortController = null;
+    }
+    if (progressAbortController) {
+        progressAbortController.abort();
+        progressAbortController = null;
+    }
+}
+
 // Project/Website selection
 document.getElementById('projectSelect').addEventListener('change', function() {
     const projectId = this.value;
@@ -602,6 +836,8 @@ document.getElementById('projectSelect').addEventListener('change', function() {
     if (projectId) {
         url += '?project_id=' + projectId;
     }
+    // Cancel any in-flight requests before navigating
+    abortAllRequests();
     showLoading();
     window.location.href = url;
 });
@@ -614,6 +850,8 @@ document.getElementById('websiteSelect').addEventListener('change', function() {
     if (projectId) params.push('project_id=' + projectId);
     if (websiteId) params.push('website_id=' + websiteId);
     if (params.length > 0) url += '?' + params.join('&');
+    // Cancel any in-flight requests before navigating
+    abortAllRequests();
     showLoading();
     window.location.href = url;
 });
@@ -672,6 +910,12 @@ document.getElementById('refreshComparison').addEventListener('click', loadCompa
 // ============================================================================
 
 function loadTrendData() {
+    // Cancel any in-flight request
+    if (trendDataAbortController) {
+        trendDataAbortController.abort();
+    }
+    trendDataAbortController = new AbortController();
+
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
 
@@ -686,29 +930,70 @@ function loadTrendData() {
     if (startDate) params.push('start_date=' + startDate);
     if (endDate) params.push('end_date=' + endDate);
 
+    // Add filter parameters
+    if (activeFilters.issue_types.length > 0 && activeFilters.issue_types.length < 2) {
+        activeFilters.issue_types.forEach(t => params.push('issue_types[]=' + t));
+    }
+    if (activeFilters.impact_levels.length > 0) {
+        activeFilters.impact_levels.forEach(l => params.push('impact_levels[]=' + l));
+    }
+    if (activeFilters.touchpoints.length > 0) {
+        activeFilters.touchpoints.forEach(t => params.push('touchpoints[]=' + t));
+    }
+    if (activeFilters.wcag_criteria.length > 0) {
+        activeFilters.wcag_criteria.forEach(w => params.push('wcag_criteria[]=' + w));
+    }
+
     url += '?' + params.join('&');
 
-    fetch(url)
-        .then(response => response.json())
+    fetch(url, { signal: trendDataAbortController.signal })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 updateSummaryStats(data.summary);
                 updateMainChart(data.time_series);
-                if (data.by_impact) updateImpactChart(data.by_impact);
-                if (data.by_touchpoint) updateTouchpointChart(data.by_touchpoint);
-                if (data.top_issues) updateTopIssues(data.top_issues);
+                if (data.by_impact) {
+                    updateImpactChart(data.by_impact);
+                    updateImpactFilterCounts(data.by_impact);
+                }
+                if (data.by_touchpoint) {
+                    updateTouchpointChart(data.by_touchpoint);
+                    updateTouchpointFilterOptions(data.by_touchpoint);
+                }
+                if (data.top_issues) {
+                    updateTopIssues(data.top_issues);
+                    updateWcagFilterOptions(data.top_issues);
+                }
+                // Update violation/warning counts in filter panel
+                updateIssueTypeCounts(data.summary);
+            } else {
+                console.warn('Trend data request returned success=false:', data.error);
             }
             // Hide loading spinners on success
             hideAllChartLoading();
         })
         .catch(error => {
+            // Ignore abort errors - they're intentional
+            if (error.name === 'AbortError') {
+                return;
+            }
             console.error('Error loading trend data:', error);
-            // Hide loading spinners on error too
             hideAllChartLoading();
         });
 }
 
 function loadComparison() {
+    // Cancel any in-flight request
+    if (comparisonAbortController) {
+        comparisonAbortController.abort();
+    }
+    comparisonAbortController = new AbortController();
+
     // Show loading spinner
     showCardLoading('comparisonLoading');
 
@@ -717,8 +1002,13 @@ function loadComparison() {
     if (currentProjectId) url += '&project_id=' + currentProjectId;
     if (currentWebsiteId) url += '&website_id=' + currentWebsiteId;
 
-    fetch(url)
-        .then(response => response.json())
+    fetch(url, { signal: comparisonAbortController.signal })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 updateComparison(data);
@@ -726,12 +1016,21 @@ function loadComparison() {
             hideCardLoading('comparisonLoading');
         })
         .catch(error => {
+            if (error.name === 'AbortError') {
+                return;
+            }
             console.error('Error loading comparison:', error);
             hideCardLoading('comparisonLoading');
         });
 }
 
 function loadProgress() {
+    // Cancel any in-flight request
+    if (progressAbortController) {
+        progressAbortController.abort();
+    }
+    progressAbortController = new AbortController();
+
     // Show loading spinner
     showCardLoading('progressLoading');
 
@@ -740,8 +1039,13 @@ function loadProgress() {
     if (currentProjectId) url += '&project_id=' + currentProjectId;
     if (currentWebsiteId) url += '&website_id=' + currentWebsiteId;
 
-    fetch(url)
-        .then(response => response.json())
+    fetch(url, { signal: progressAbortController.signal })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 updateProgress(data);
@@ -749,9 +1053,356 @@ function loadProgress() {
             hideCardLoading('progressLoading');
         })
         .catch(error => {
+            if (error.name === 'AbortError') {
+                return;
+            }
             console.error('Error loading progress:', error);
             hideCardLoading('progressLoading');
         });
+}
+
+// ============================================================================
+// Filter Management
+// ============================================================================
+
+function initializeFilters() {
+    // Initialize filter chip event listeners
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', function() {
+            toggleFilterChip(this);
+        });
+    });
+
+    // Initialize WCAG filter select
+    const wcagFilter = document.getElementById('wcagFilter');
+    if (wcagFilter) {
+        wcagFilter.addEventListener('change', function() {
+            activeFilters.wcag_criteria = Array.from(this.selectedOptions).map(o => o.value);
+            updateFilterDisplay();
+            loadTrendData();
+        });
+    }
+
+    // Initialize touchpoint filter select
+    const touchpointFilter = document.getElementById('touchpointFilter');
+    if (touchpointFilter) {
+        touchpointFilter.addEventListener('change', function() {
+            activeFilters.touchpoints = Array.from(this.selectedOptions).map(o => o.value);
+            updateFilterDisplay();
+            loadTrendData();
+        });
+    }
+
+    // Clear all filters button
+    document.getElementById('clearAllFilters').addEventListener('click', function() {
+        clearAllFilters();
+    });
+
+    // Toggle icon on collapse
+    const filterPanel = document.getElementById('filterPanel');
+    filterPanel.addEventListener('shown.bs.collapse', function() {
+        document.getElementById('filterToggleIcon').style.transform = 'rotate(180deg)';
+    });
+    filterPanel.addEventListener('hidden.bs.collapse', function() {
+        document.getElementById('filterToggleIcon').style.transform = 'rotate(0deg)';
+    });
+}
+
+function toggleFilterChip(chip) {
+    const filterType = chip.dataset.filterType;
+    const filterValue = chip.dataset.filterValue;
+
+    if (filterType === 'issue_type') {
+        // Issue type filter (toggle on/off)
+        const index = activeFilters.issue_types.indexOf(filterValue);
+        if (index > -1) {
+            // Don't allow both to be deselected
+            if (activeFilters.issue_types.length > 1) {
+                activeFilters.issue_types.splice(index, 1);
+                chip.classList.remove('active');
+            }
+        } else {
+            activeFilters.issue_types.push(filterValue);
+            chip.classList.add('active');
+        }
+    } else if (filterType === 'impact') {
+        // Impact level filter
+        const index = activeFilters.impact_levels.indexOf(filterValue);
+        if (index > -1) {
+            activeFilters.impact_levels.splice(index, 1);
+            chip.classList.remove('active');
+        } else {
+            activeFilters.impact_levels.push(filterValue);
+            chip.classList.add('active');
+        }
+    } else if (filterType === 'user_group') {
+        // User group filter - maps to touchpoints
+        const index = activeFilters.user_groups.indexOf(filterValue);
+        if (index > -1) {
+            activeFilters.user_groups.splice(index, 1);
+            chip.classList.remove('active');
+        } else {
+            activeFilters.user_groups.push(filterValue);
+            chip.classList.add('active');
+        }
+        // Update touchpoint filter based on user groups
+        updateTouchpointsByUserGroups();
+    }
+
+    updateFilterDisplay();
+    loadTrendData();
+}
+
+function updateTouchpointsByUserGroups() {
+    // If user groups are selected, filter touchpoints by those affecting the selected groups
+    if (activeFilters.user_groups.length === 0) {
+        return;
+    }
+
+    // Get touchpoints that affect any of the selected user groups
+    const relevantTouchpoints = [];
+    for (const [touchpoint, groups] of Object.entries(touchpointUserMapping)) {
+        if (activeFilters.user_groups.some(g => groups.includes(g))) {
+            relevantTouchpoints.push(touchpoint);
+        }
+    }
+
+    // Update touchpoint select to highlight relevant ones
+    const touchpointFilter = document.getElementById('touchpointFilter');
+    if (touchpointFilter) {
+        Array.from(touchpointFilter.options).forEach(option => {
+            if (relevantTouchpoints.includes(option.value.toLowerCase())) {
+                option.style.fontWeight = 'bold';
+            } else {
+                option.style.fontWeight = 'normal';
+            }
+        });
+    }
+}
+
+function clearAllFilters() {
+    // Reset filter state
+    activeFilters.issue_types = ['violation', 'warning'];
+    activeFilters.impact_levels = [];
+    activeFilters.touchpoints = [];
+    activeFilters.wcag_criteria = [];
+    activeFilters.user_groups = [];
+
+    // Reset UI
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        const filterType = chip.dataset.filterType;
+        if (filterType === 'issue_type') {
+            chip.classList.add('active');
+        } else {
+            chip.classList.remove('active');
+        }
+    });
+
+    // Reset select elements
+    const wcagFilter = document.getElementById('wcagFilter');
+    if (wcagFilter) wcagFilter.selectedIndex = -1;
+
+    const touchpointFilter = document.getElementById('touchpointFilter');
+    if (touchpointFilter) touchpointFilter.selectedIndex = -1;
+
+    updateFilterDisplay();
+    loadTrendData();
+}
+
+function updateFilterDisplay() {
+    // Count active filters (excluding default issue types)
+    let filterCount = 0;
+    if (activeFilters.issue_types.length < 2) filterCount++;
+    filterCount += activeFilters.impact_levels.length;
+    filterCount += activeFilters.touchpoints.length;
+    filterCount += activeFilters.wcag_criteria.length;
+    filterCount += activeFilters.user_groups.length;
+
+    // Update badge
+    const badge = document.getElementById('activeFilterCount');
+    if (filterCount > 0) {
+        badge.textContent = filterCount;
+        badge.style.display = 'inline';
+    } else {
+        badge.style.display = 'none';
+    }
+
+    // Update active filters display
+    const display = document.getElementById('activeFiltersDisplay');
+    const tagsContainer = document.getElementById('activeFilterTags');
+
+    if (filterCount > 0) {
+        display.style.display = 'block';
+        tagsContainer.innerHTML = '';
+
+        // Issue types
+        if (activeFilters.issue_types.length < 2) {
+            activeFilters.issue_types.forEach(t => {
+                tagsContainer.innerHTML += createFilterTag('Issue Type', t, 'issue_type', t);
+            });
+        }
+
+        // Impact levels
+        activeFilters.impact_levels.forEach(l => {
+            tagsContainer.innerHTML += createFilterTag('Impact', l, 'impact', l);
+        });
+
+        // Touchpoints
+        activeFilters.touchpoints.forEach(t => {
+            tagsContainer.innerHTML += createFilterTag('Touchpoint', t, 'touchpoint', t);
+        });
+
+        // WCAG criteria
+        activeFilters.wcag_criteria.forEach(w => {
+            tagsContainer.innerHTML += createFilterTag('WCAG', w, 'wcag', w);
+        });
+
+        // User groups
+        activeFilters.user_groups.forEach(g => {
+            tagsContainer.innerHTML += createFilterTag('User Group', g, 'user_group', g);
+        });
+    } else {
+        display.style.display = 'none';
+    }
+}
+
+function createFilterTag(label, value, type, filterValue) {
+    // Use display name for touchpoints
+    let displayValue = value;
+    if (type === 'touchpoint') {
+        displayValue = touchpointDisplayNames[value] || value.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    }
+    return `<span class="filter-tag">
+        ${label}: ${displayValue}
+        <span class="remove-filter" onclick="removeFilter('${type}', '${filterValue}')">&times;</span>
+    </span>`;
+}
+
+function removeFilter(type, value) {
+    if (type === 'issue_type') {
+        // Can't remove if it's the only one
+        if (activeFilters.issue_types.length > 1) {
+            const index = activeFilters.issue_types.indexOf(value);
+            if (index > -1) activeFilters.issue_types.splice(index, 1);
+            // Update chip
+            document.querySelector(`.filter-chip[data-filter-type="issue_type"][data-filter-value="${value}"]`)?.classList.remove('active');
+        }
+    } else if (type === 'impact') {
+        const index = activeFilters.impact_levels.indexOf(value);
+        if (index > -1) activeFilters.impact_levels.splice(index, 1);
+        document.querySelector(`.filter-chip[data-filter-type="impact"][data-filter-value="${value}"]`)?.classList.remove('active');
+    } else if (type === 'touchpoint') {
+        const index = activeFilters.touchpoints.indexOf(value);
+        if (index > -1) activeFilters.touchpoints.splice(index, 1);
+        // Update select
+        const touchpointFilter = document.getElementById('touchpointFilter');
+        if (touchpointFilter) {
+            Array.from(touchpointFilter.options).forEach(o => {
+                if (o.value === value) o.selected = false;
+            });
+        }
+    } else if (type === 'wcag') {
+        const index = activeFilters.wcag_criteria.indexOf(value);
+        if (index > -1) activeFilters.wcag_criteria.splice(index, 1);
+        // Update select
+        const wcagFilter = document.getElementById('wcagFilter');
+        if (wcagFilter) {
+            Array.from(wcagFilter.options).forEach(o => {
+                if (o.value === value) o.selected = false;
+            });
+        }
+    } else if (type === 'user_group') {
+        const index = activeFilters.user_groups.indexOf(value);
+        if (index > -1) activeFilters.user_groups.splice(index, 1);
+        document.querySelector(`.filter-chip[data-filter-type="user_group"][data-filter-value="${value}"]`)?.classList.remove('active');
+    }
+
+    updateFilterDisplay();
+    loadTrendData();
+}
+
+function updateIssueTypeCounts(summary) {
+    document.getElementById('violationCount').textContent = summary.total_violations.toLocaleString();
+    document.getElementById('warningCount').textContent = summary.total_warnings.toLocaleString();
+}
+
+function updateImpactFilterCounts(byImpact) {
+    document.getElementById('highImpactCount').textContent = byImpact.high?.count || 0;
+    document.getElementById('mediumImpactCount').textContent = byImpact.medium?.count || 0;
+    document.getElementById('lowImpactCount').textContent = byImpact.low?.count || 0;
+}
+
+function updateTouchpointFilterOptions(byTouchpoint) {
+    const select = document.getElementById('touchpointFilter');
+    if (!select) return;
+
+    // Preserve current selection
+    const currentSelection = Array.from(select.selectedOptions).map(o => o.value);
+
+    select.innerHTML = '';
+
+    // Sort touchpoints by display name
+    const touchpoints = Object.keys(byTouchpoint).sort((a, b) => {
+        const nameA = touchpointDisplayNames[a] || a;
+        const nameB = touchpointDisplayNames[b] || b;
+        return nameA.localeCompare(nameB);
+    });
+
+    touchpoints.forEach(tp => {
+        const option = document.createElement('option');
+        option.value = tp;
+        // Use display name if available, otherwise format the key
+        const displayName = touchpointDisplayNames[tp] || tp.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        option.textContent = `${displayName} (${byTouchpoint[tp].count})`;
+        if (currentSelection.includes(tp)) option.selected = true;
+        select.appendChild(option);
+    });
+}
+
+// Natural sort comparator for WCAG criteria (e.g., 1.4.2 before 1.4.10)
+function wcagNaturalSort(a, b) {
+    const partsA = a.split('.').map(Number);
+    const partsB = b.split('.').map(Number);
+
+    for (let i = 0; i < Math.max(partsA.length, partsB.length); i++) {
+        const numA = partsA[i] || 0;
+        const numB = partsB[i] || 0;
+        if (numA !== numB) return numA - numB;
+    }
+    return 0;
+}
+
+function updateWcagFilterOptions(topIssues) {
+    // Extract WCAG criteria from top issues (would need to be passed from API)
+    // For now, populate with common WCAG criteria
+    const select = document.getElementById('wcagFilter');
+    if (!select || select.options.length > 1) return;  // Only populate once
+
+    const wcagCriteria = [
+        '1.1.1', '1.2.1', '1.2.2', '1.2.3', '1.2.4', '1.2.5',
+        '1.3.1', '1.3.2', '1.3.3', '1.3.4', '1.3.5',
+        '1.4.1', '1.4.2', '1.4.3', '1.4.4', '1.4.5', '1.4.10', '1.4.11', '1.4.12', '1.4.13',
+        '2.1.1', '2.1.2', '2.1.4',
+        '2.2.1', '2.2.2',
+        '2.3.1',
+        '2.4.1', '2.4.2', '2.4.3', '2.4.4', '2.4.5', '2.4.6', '2.4.7',
+        '2.5.1', '2.5.2', '2.5.3', '2.5.4',
+        '3.1.1', '3.1.2',
+        '3.2.1', '3.2.2', '3.2.3', '3.2.4',
+        '3.3.1', '3.3.2', '3.3.3', '3.3.4',
+        '4.1.1', '4.1.2', '4.1.3'
+    ];
+
+    // Sort using natural sort
+    const sortedCriteria = wcagCriteria.sort(wcagNaturalSort);
+
+    select.innerHTML = '';
+    sortedCriteria.forEach(criterion => {
+        const option = document.createElement('option');
+        option.value = criterion;
+        option.textContent = `WCAG ${criterion}`;
+        select.appendChild(option);
+    });
 }
 
 // ============================================================================

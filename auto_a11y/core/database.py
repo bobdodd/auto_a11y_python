@@ -814,15 +814,28 @@ class Database:
     def get_test_results(
         self,
         page_id: Optional[str] = None,
+        page_ids: Optional[set] = None,
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None,
         limit: int = 100,
         skip: int = 0
     ) -> List[TestResult]:
-        """Get test results with optional filtering"""
+        """Get test results with optional filtering
+
+        Args:
+            page_id: Single page ID to filter by
+            page_ids: Set of page IDs to filter by (filters at database level for efficiency)
+            start_date: Filter results on or after this date
+            end_date: Filter results on or before this date
+            limit: Maximum results to return
+            skip: Number of results to skip (for pagination)
+        """
         query = {}
         if page_id:
             query["page_id"] = page_id
+        elif page_ids:
+            # Filter by multiple page IDs at the database level - much more efficient
+            query["page_id"] = {"$in": list(page_ids)}
         if start_date or end_date:
             query["test_date"] = {}
             if start_date:

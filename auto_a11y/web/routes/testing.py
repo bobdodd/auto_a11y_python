@@ -302,9 +302,117 @@ def calculate_trend_direction(time_series, threshold_percent=5):
         return 'stable', round(change_percent, 1)
 
 
+def get_filtered_item_counts(db, result_ids, result_date_map, filters, issue_types):
+    """Get filtered violation/warning counts from test_result_items collection
+
+    Args:
+        db: Database instance
+        result_ids: List of test result IDs
+        result_date_map: Dict mapping result_id to date string
+        filters: Dict with filter criteria
+        issue_types: List of item types to include ('violation', 'warning')
+
+    Returns:
+        Dict mapping date strings to {violations: count, warnings: count}
+    """
+    from bson import ObjectId
+
+    # Limit the number of result IDs to process to avoid slow queries
+    MAX_RESULT_IDS = 500
+    if len(result_ids) > MAX_RESULT_IDS:
+        result_ids = result_ids[:MAX_RESULT_IDS]
+        logger.warning(f"Limiting filtered item counts to {MAX_RESULT_IDS} results for performance")
+
+    # Convert string IDs to ObjectId
+    object_ids = []
+    for rid in result_ids:
+        if isinstance(rid, str):
+            try:
+                object_ids.append(ObjectId(rid))
+            except:
+                pass
+        else:
+            object_ids.append(rid)
+
+    if not object_ids:
+        return {}
+
+    # Build match criteria
+    match_criteria = {'test_result_id': {'$in': object_ids}}
+
+    # Filter by item type
+    if issue_types:
+        match_criteria['item_type'] = {'$in': issue_types}
+
+    # Filter by impact levels
+    if filters.get('impact_levels'):
+        impact_values = []
+        for level in filters['impact_levels']:
+            # Handle both string and enum values
+            impact_values.append(level.lower())
+            impact_values.append(level.capitalize())
+            if level.lower() == 'high':
+                impact_values.extend(['critical', 'Critical'])
+            elif level.lower() == 'medium':
+                impact_values.extend(['moderate', 'Moderate'])
+            elif level.lower() == 'low':
+                impact_values.extend(['minor', 'Minor'])
+        match_criteria['impact'] = {'$in': impact_values}
+
+    # Filter by touchpoints - use simple $in instead of regex for performance
+    if filters.get('touchpoints'):
+        match_criteria['touchpoint'] = {'$in': filters['touchpoints']}
+
+    # Filter by WCAG criteria
+    if filters.get('wcag_criteria'):
+        match_criteria['wcag_criteria'] = {'$in': filters['wcag_criteria']}
+
+    try:
+        # Query with aggregation to get counts per result_id and item_type
+        pipeline = [
+            {'$match': match_criteria},
+            {'$group': {
+                '_id': {
+                    'result_id': '$test_result_id',
+                    'item_type': '$item_type'
+                },
+                'count': {'$sum': 1}
+            }}
+        ]
+
+        if hasattr(db, 'test_result_items'):
+            results = list(db.test_result_items.aggregate(pipeline, maxTimeMS=10000))  # 10 second timeout
+        else:
+            return {}
+
+        # Aggregate counts by date
+        date_counts = {}
+        for r in results:
+            result_id = str(r['_id']['result_id'])
+            item_type = r['_id']['item_type']
+            count = r['count']
+
+            date_str = result_date_map.get(result_id)
+            if date_str:
+                if date_str not in date_counts:
+                    date_counts[date_str] = {'violations': 0, 'warnings': 0}
+
+                if item_type == 'violation':
+                    date_counts[date_str]['violations'] += count
+                elif item_type == 'warning':
+                    date_counts[date_str]['warnings'] += count
+
+        return date_counts
+
+    except Exception as e:
+        logger.error(f"Error getting filtered item counts: {e}")
+        return {}
+
+
 def get_detailed_trend_data(db, project_id=None, website_id=None,
                             start_date=None, end_date=None,
-                            granularity='daily', include_breakdown=True):
+                            granularity='daily', include_breakdown=True,
+                            filters=None):
     """Get comprehensive trend data with statistics and optional breakdowns
 
     Args:
@@ -315,10 +423,16 @@ def get_detailed_trend_data(db, project_id=None, website_id=None,
         end_date: End date (datetime or None for now)
         granularity: 'daily', 'weekly', or 'monthly'
         include_breakdown: Whether to include touchpoint/impact breakdowns
+        filters: Optional dict with filter criteria:
+            - issue_types: list of 'violation', 'warning'
+            - impact_levels: list of 'high', 'medium', 'low'
+            - touchpoints: list of touchpoint names
+            - wcag_criteria: list of WCAG criteria like '2.4.1'
 
     Returns:
         Dict with summary, time_series, and optional breakdowns
     """
+    filters = filters or {}
     # Default date range
     if end_date is None:
         end_date = datetime.now()
@@ -340,31 +454,66 @@ def get_detailed_trend_data(db, project_id=None, website_id=None,
         })
         current_date += timedelta(days=1)
 
-    # Get test results for the period
+    # Get test results for the period - filter by page_ids at database level for efficiency
     days_diff = (end_date - start_date).days
+    # Adjust limit based on scope - if filtering to specific pages, we need fewer results
+    if page_ids:
+        # Estimate: ~10 results per page per period should be plenty
+        limit = min(len(page_ids) * 10, 500)
+    else:
+        limit = max(days_diff * 50, 1000)
+
     results = db.get_test_results(
+        page_ids=page_ids if page_ids else None,
         start_date=start_date,
         end_date=end_date,
-        limit=max(days_diff * 50, 1000)
+        limit=limit
     )
 
     # Aggregate by day
     date_to_index = {d['date']: i for i, d in enumerate(daily_data)}
     result_ids = []
+    result_date_map = {}  # Map result_id to date string
+
+    # Check if we have active filters that require item-level filtering
+    has_item_filters = bool(
+        filters.get('impact_levels') or
+        filters.get('touchpoints') or
+        filters.get('wcag_criteria')
+    )
+    issue_types = filters.get('issue_types', ['violation', 'warning'])
 
     for result in results:
         if result.test_date < start_date:
             continue
-        if page_ids and result.page_id not in page_ids:
-            continue
+        # No need to filter by page_ids here - already filtered at database level
 
         result_ids.append(result.id)
         date_str = result.test_date.strftime('%Y-%m-%d')
+        result_date_map[str(result.id)] = date_str
+
         if date_str in date_to_index:
             idx = date_to_index[date_str]
-            daily_data[idx]['violations'] += result.violation_count
-            daily_data[idx]['warnings'] += result.warning_count
             daily_data[idx]['tests'] += 1
+
+            # If no item-level filters, use pre-computed counts
+            if not has_item_filters:
+                if 'violation' in issue_types:
+                    daily_data[idx]['violations'] += result.violation_count
+                if 'warning' in issue_types:
+                    daily_data[idx]['warnings'] += result.warning_count
+
+    # If we have item-level filters, query test_result_items for accurate counts
+    if has_item_filters and result_ids:
+        filtered_counts = get_filtered_item_counts(
+            db, result_ids, result_date_map, filters, issue_types
+        )
+        # Apply filtered counts to daily data
+        for date_str, counts in filtered_counts.items():
+            if date_str in date_to_index:
+                idx = date_to_index[date_str]
+                daily_data[idx]['violations'] = counts.get('violations', 0)
+                daily_data[idx]['warnings'] = counts.get('warnings', 0)
 
     # Apply granularity
     time_series = aggregate_by_granularity(daily_data, granularity)
@@ -403,26 +552,34 @@ def get_detailed_trend_data(db, project_id=None, website_id=None,
 
     # Add breakdowns if requested
     if include_breakdown and result_ids:
-        response['by_touchpoint'] = get_trends_by_touchpoint(db, result_ids)
-        response['by_impact'] = get_trends_by_impact(db, result_ids)
-        response['top_issues'] = get_top_issues(db, result_ids)
+        response['by_touchpoint'] = get_trends_by_touchpoint(db, result_ids, filters=filters)
+        response['by_impact'] = get_trends_by_impact(db, result_ids, filters=filters)
+        response['top_issues'] = get_top_issues(db, result_ids, filters=filters)
 
     return response
 
 
-def get_trends_by_touchpoint(db, result_ids, limit=10):
+def get_trends_by_touchpoint(db, result_ids, limit=10, filters=None):
     """Get violation counts grouped by touchpoint using MongoDB aggregation
 
     Args:
         db: Database instance
         result_ids: List of test result IDs to analyze
         limit: Maximum number of touchpoints to return
+        filters: Optional filter dict with impact_levels, wcag_criteria, etc.
 
     Returns:
         Dict mapping touchpoint names to counts and metadata
     """
+    filters = filters or {}
     if not result_ids:
         return {}
+
+    # Limit result IDs to prevent slow queries
+    MAX_RESULT_IDS = 500
+    if len(result_ids) > MAX_RESULT_IDS:
+        result_ids = result_ids[:MAX_RESULT_IDS]
+        logger.warning(f"Limiting touchpoint trends to {MAX_RESULT_IDS} results for performance")
 
     try:
         # Use MongoDB aggregation pipeline
@@ -439,11 +596,31 @@ def get_trends_by_touchpoint(db, result_ids, limit=10):
             else:
                 object_ids.append(rid)
 
+        # Build match criteria
+        match_criteria = {
+            'test_result_id': {'$in': object_ids},
+            'item_type': 'violation'
+        }
+
+        # Apply filters
+        if filters.get('impact_levels'):
+            impact_values = []
+            for level in filters['impact_levels']:
+                impact_values.append(level.lower())
+                impact_values.append(level.capitalize())
+                if level.lower() == 'high':
+                    impact_values.extend(['critical', 'Critical'])
+                elif level.lower() == 'medium':
+                    impact_values.extend(['moderate', 'Moderate'])
+                elif level.lower() == 'low':
+                    impact_values.extend(['minor', 'Minor'])
+            match_criteria['impact'] = {'$in': impact_values}
+
+        if filters.get('wcag_criteria'):
+            match_criteria['wcag_criteria'] = {'$in': filters['wcag_criteria']}
+
         pipeline = [
-            {'$match': {
-                'test_result_id': {'$in': object_ids},
-                'item_type': 'violation'
-            }},
+            {'$match': match_criteria},
             {'$group': {
                 '_id': '$touchpoint',
                 'count': {'$sum': 1}
@@ -452,9 +629,9 @@ def get_trends_by_touchpoint(db, result_ids, limit=10):
             {'$limit': limit}
         ]
 
-        # Execute aggregation
+        # Execute aggregation with timeout
         if hasattr(db, 'test_result_items'):
-            results = list(db.test_result_items.aggregate(pipeline))
+            results = list(db.test_result_items.aggregate(pipeline, maxTimeMS=10000))
         else:
             # Fallback if collection not directly accessible
             return {}
@@ -472,24 +649,32 @@ def get_trends_by_touchpoint(db, result_ids, limit=10):
         return touchpoints
 
     except Exception as e:
-        logger.warning(f"Error getting touchpoint trends: {e}")
+        logger.warning(f"Error getting touchpoint trends (may have timed out): {e}")
         return {}
 
 
-def get_trends_by_impact(db, result_ids):
+def get_trends_by_impact(db, result_ids, filters=None):
     """Get violation counts grouped by impact level
 
     Args:
         db: Database instance
         result_ids: List of test result IDs to analyze
+        filters: Optional filter dict with touchpoints, wcag_criteria, etc.
 
     Returns:
         Dict with high/medium/low counts and percentages
     """
+    filters = filters or {}
     if not result_ids:
         return {'high': {'count': 0, 'percent': 0},
                 'medium': {'count': 0, 'percent': 0},
                 'low': {'count': 0, 'percent': 0}}
+
+    # Limit result IDs to prevent slow queries
+    MAX_RESULT_IDS = 500
+    if len(result_ids) > MAX_RESULT_IDS:
+        result_ids = result_ids[:MAX_RESULT_IDS]
+        logger.warning(f"Limiting impact trends to {MAX_RESULT_IDS} results for performance")
 
     try:
         from bson import ObjectId
@@ -504,11 +689,21 @@ def get_trends_by_impact(db, result_ids):
             else:
                 object_ids.append(rid)
 
+        # Build match criteria
+        match_criteria = {
+            'test_result_id': {'$in': object_ids},
+            'item_type': 'violation'
+        }
+
+        # Apply filters - use simple $in for performance instead of regex
+        if filters.get('touchpoints'):
+            match_criteria['touchpoint'] = {'$in': filters['touchpoints']}
+
+        if filters.get('wcag_criteria'):
+            match_criteria['wcag_criteria'] = {'$in': filters['wcag_criteria']}
+
         pipeline = [
-            {'$match': {
-                'test_result_id': {'$in': object_ids},
-                'item_type': 'violation'
-            }},
+            {'$match': match_criteria},
             {'$group': {
                 '_id': '$impact',
                 'count': {'$sum': 1}
@@ -516,7 +711,7 @@ def get_trends_by_impact(db, result_ids):
         ]
 
         if hasattr(db, 'test_result_items'):
-            results = list(db.test_result_items.aggregate(pipeline))
+            results = list(db.test_result_items.aggregate(pipeline, maxTimeMS=10000))
         else:
             return {'high': {'count': 0, 'percent': 0},
                     'medium': {'count': 0, 'percent': 0},
@@ -552,25 +747,33 @@ def get_trends_by_impact(db, result_ids):
         }
 
     except Exception as e:
-        logger.warning(f"Error getting impact trends: {e}")
+        logger.warning(f"Error getting impact trends (may have timed out): {e}")
         return {'high': {'count': 0, 'percent': 0},
                 'medium': {'count': 0, 'percent': 0},
                 'low': {'count': 0, 'percent': 0}}
 
 
-def get_top_issues(db, result_ids, limit=10):
+def get_top_issues(db, result_ids, limit=10, filters=None):
     """Get the most common issues (by issue_id) from test results
 
     Args:
         db: Database instance
         result_ids: List of test result IDs to analyze
         limit: Maximum number of issues to return
+        filters: Optional filter dict with impact_levels, touchpoints, wcag_criteria
 
     Returns:
         List of dicts with issue_id, count, and trend
     """
+    filters = filters or {}
     if not result_ids:
         return []
+
+    # Limit result IDs to prevent slow queries
+    MAX_RESULT_IDS = 500
+    if len(result_ids) > MAX_RESULT_IDS:
+        result_ids = result_ids[:MAX_RESULT_IDS]
+        logger.warning(f"Limiting top issues to {MAX_RESULT_IDS} results for performance")
 
     try:
         from bson import ObjectId
@@ -585,11 +788,35 @@ def get_top_issues(db, result_ids, limit=10):
             else:
                 object_ids.append(rid)
 
+        # Build match criteria
+        match_criteria = {
+            'test_result_id': {'$in': object_ids},
+            'item_type': 'violation'
+        }
+
+        # Apply filters
+        if filters.get('impact_levels'):
+            impact_values = []
+            for level in filters['impact_levels']:
+                impact_values.append(level.lower())
+                impact_values.append(level.capitalize())
+                if level.lower() == 'high':
+                    impact_values.extend(['critical', 'Critical'])
+                elif level.lower() == 'medium':
+                    impact_values.extend(['moderate', 'Moderate'])
+                elif level.lower() == 'low':
+                    impact_values.extend(['minor', 'Minor'])
+            match_criteria['impact'] = {'$in': impact_values}
+
+        # Use simple $in for performance instead of regex
+        if filters.get('touchpoints'):
+            match_criteria['touchpoint'] = {'$in': filters['touchpoints']}
+
+        if filters.get('wcag_criteria'):
+            match_criteria['wcag_criteria'] = {'$in': filters['wcag_criteria']}
+
         pipeline = [
-            {'$match': {
-                'test_result_id': {'$in': object_ids},
-                'item_type': 'violation'
-            }},
+            {'$match': match_criteria},
             {'$group': {
                 '_id': '$issue_id',
                 'count': {'$sum': 1}
@@ -599,7 +826,7 @@ def get_top_issues(db, result_ids, limit=10):
         ]
 
         if hasattr(db, 'test_result_items'):
-            results = list(db.test_result_items.aggregate(pipeline))
+            results = list(db.test_result_items.aggregate(pipeline, maxTimeMS=10000))
         else:
             return []
 
@@ -615,7 +842,7 @@ def get_top_issues(db, result_ids, limit=10):
         return top_issues
 
     except Exception as e:
-        logger.warning(f"Error getting top issues: {e}")
+        logger.warning(f"Error getting top issues (may have timed out): {e}")
         return []
 
 
@@ -636,15 +863,21 @@ def compare_periods(db, project_id, website_id, period_a_start, period_a_end,
     page_ids = get_page_ids_for_scope(db, project_id, website_id)
 
     def get_period_stats(start, end):
-        results = db.get_test_results(start_date=start, end_date=end, limit=5000)
+        # Filter at database level for efficiency
+        limit = min(len(page_ids) * 10, 500) if page_ids else 2000
+        results = db.get_test_results(
+            page_ids=page_ids if page_ids else None,
+            start_date=start,
+            end_date=end,
+            limit=limit
+        )
 
         violations = 0
         warnings = 0
         tests = 0
 
         for result in results:
-            if page_ids and result.page_id not in page_ids:
-                continue
+            # No need to filter by page_ids - already done at database level
             violations += result.violation_count
             warnings += result.warning_count
             tests += 1
@@ -705,7 +938,9 @@ def calculate_progress_metrics(db, project_id=None, website_id=None, days=30):
     pages_stable = 0
     total_pages = 0
 
-    # Analyze pages
+    # Analyze pages - limit to avoid slow queries
+    MAX_PAGES_TO_ANALYZE = 50
+
     if website_id:
         pages = db.get_pages(website_id)
     elif project_id:
@@ -715,14 +950,18 @@ def calculate_progress_metrics(db, project_id=None, website_id=None, days=30):
     else:
         pages = []
 
-    for page in pages:
+    # Limit pages analyzed for performance
+    pages_to_analyze = pages[:MAX_PAGES_TO_ANALYZE] if len(pages) > MAX_PAGES_TO_ANALYZE else pages
+    analyzed_count = 0
+
+    for page in pages_to_analyze:
         if page_ids and page.id not in page_ids:
             continue
 
-        total_pages += 1
+        analyzed_count += 1
 
-        # Get test results for this page in the period
-        page_results = db.get_test_results(page_id=page.id, start_date=start_date, limit=50)
+        # Get test results for this page in the period - limit queries
+        page_results = db.get_test_results(page_id=page.id, start_date=start_date, limit=10)
 
         if len(page_results) < 2:
             pages_stable += 1
@@ -739,15 +978,26 @@ def calculate_progress_metrics(db, project_id=None, website_id=None, days=30):
         else:
             pages_stable += 1
 
-    # Calculate issue flow (would need more sophisticated tracking in production)
-    # For now, estimate based on period comparison
-    first_half_results = db.get_test_results(start_date=start_date, end_date=mid_date, limit=2000)
-    second_half_results = db.get_test_results(start_date=mid_date, end_date=end_date, limit=2000)
+    # Total pages is the full count, analyzed is the sample
+    total_pages = len(pages) if pages else 0
 
-    first_half_violations = sum(r.violation_count for r in first_half_results
-                                if not page_ids or r.page_id in page_ids)
-    second_half_violations = sum(r.violation_count for r in second_half_results
-                                 if not page_ids or r.page_id in page_ids)
+    # Calculate issue flow - filter at database level for efficiency
+    limit = min(len(page_ids) * 10, 500) if page_ids else 2000
+    first_half_results = db.get_test_results(
+        page_ids=page_ids if page_ids else None,
+        start_date=start_date,
+        end_date=mid_date,
+        limit=limit
+    )
+    second_half_results = db.get_test_results(
+        page_ids=page_ids if page_ids else None,
+        start_date=mid_date,
+        end_date=end_date,
+        limit=limit
+    )
+
+    first_half_violations = sum(r.violation_count for r in first_half_results)
+    second_half_violations = sum(r.violation_count for r in second_half_results)
 
     # Estimate new/resolved (simplified)
     if second_half_violations < first_half_violations:
@@ -1335,6 +1585,29 @@ def api_trends_detailed():
     if granularity not in ['daily', 'weekly', 'monthly']:
         return jsonify({'error': 'Invalid granularity. Use daily, weekly, or monthly'}), 400
 
+    # Parse filter parameters
+    filters = {}
+
+    # Issue types (violation, warning)
+    issue_types = request.args.getlist('issue_types[]') or request.args.getlist('issue_types')
+    if issue_types:
+        filters['issue_types'] = issue_types
+
+    # Impact levels (high, medium, low)
+    impact_levels = request.args.getlist('impact_levels[]') or request.args.getlist('impact_levels')
+    if impact_levels:
+        filters['impact_levels'] = impact_levels
+
+    # Touchpoints
+    touchpoints = request.args.getlist('touchpoints[]') or request.args.getlist('touchpoints')
+    if touchpoints:
+        filters['touchpoints'] = touchpoints
+
+    # WCAG criteria
+    wcag_criteria = request.args.getlist('wcag_criteria[]') or request.args.getlist('wcag_criteria')
+    if wcag_criteria:
+        filters['wcag_criteria'] = wcag_criteria
+
     try:
         trend_data = get_detailed_trend_data(
             db,
@@ -1343,7 +1616,8 @@ def api_trends_detailed():
             start_date=start_date,
             end_date=end_date,
             granularity=granularity,
-            include_breakdown=include_breakdown
+            include_breakdown=include_breakdown,
+            filters=filters if filters else None
         )
 
         return jsonify({

@@ -40,6 +40,7 @@ ISSUE_DESCRIPTION_TRANSLATIONS_FR = {
     "Modal has no visible way to close it": "La modale n'a pas de moyen visible de la fermer",
     "Modal or dialog does not properly trap focus": "La modale ou le dialogue ne capture pas correctement le focus",
     "Modal or dialog has no heading to identify its purpose": "La modale ou le dialogue n'a pas de titre pour identifier son objectif",
+    "Modal or dialog has no heading": "La modale ou le dialogue n'a pas de titre",
     "La modale ne peut pas être fermée avec la touche Échap": "La modale ne peut pas être fermée avec la touche Échap",
     
     # Carousels/Sliders

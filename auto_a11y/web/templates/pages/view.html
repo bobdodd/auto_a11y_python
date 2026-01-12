@@ -651,18 +651,15 @@
                                             {{ t.get(first_violation.impact.value|upper if first_violation.impact.value else first_violation.impact|upper, first_violation.impact.value|upper if first_violation.impact.value else first_violation.impact|upper) }}
                                         </span>
                                         {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
-                                        {% if group_list|length > 1 %}
-                                            {# For grouped issues, use generic description from catalog (never specific description from instance) #}
-                                            {{ (first_violation.metadata.what_generic if first_violation.metadata and first_violation.metadata.what_generic else (first_violation.metadata.what if first_violation.metadata and first_violation.metadata.what else error_code|error_code_only))|translate_issue }}
+                                        {# Always prefer what_generic for accordion headers since it's translatable #}
+                                        {% if first_violation.metadata and first_violation.metadata.what_generic %}
+                                            {{ first_violation.metadata.what_generic|translate_issue }}
+                                        {% elif first_violation.metadata and first_violation.metadata.title %}
+                                            {{ first_violation.metadata.title|translate_issue }}
+                                        {% elif first_violation.metadata and first_violation.metadata.what %}
+                                            {{ first_violation.metadata.what|translate_issue }}
                                         {% else %}
-                                            {# For single issues, show full specific description #}
-                                            {% if first_violation.metadata and first_violation.metadata.title %}
-                                                {{ first_violation.metadata.title|translate_issue }}
-                                            {% elif first_violation.metadata and first_violation.metadata.what %}
-                                                {{ first_violation.metadata.what|translate_issue }}
-                                            {% else %}
-                                                {{ first_violation.description|translate_issue }}
-                                            {% endif %}
+                                            {{ first_violation.description|translate_issue }}
                                         {% endif %}
                                     </button>
                                 </h2>
@@ -1875,18 +1872,15 @@
                                             {{ t.get(first_warning.impact.value|upper if first_warning.impact.value else first_warning.impact|upper, first_warning.impact.value|upper if first_warning.impact.value else first_warning.impact|upper) }}
                                         </span>
                                         {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
-                                        {% if group_list|length > 1 %}
-                                            {# For grouped warnings, use generic description from catalog (never specific description from instance) #}
-                                            {{ (first_warning.metadata.what_generic if first_warning.metadata and first_warning.metadata.what_generic else (first_warning.metadata.what if first_warning.metadata and first_warning.metadata.what else error_code|error_code_only))|translate_issue }}
+                                        {# Always prefer what_generic for accordion headers since it's translatable #}
+                                        {% if first_warning.metadata and first_warning.metadata.what_generic %}
+                                            {{ first_warning.metadata.what_generic|translate_issue }}
+                                        {% elif first_warning.metadata and first_warning.metadata.title %}
+                                            {{ first_warning.metadata.title|translate_issue }}
+                                        {% elif first_warning.metadata and first_warning.metadata.what %}
+                                            {{ first_warning.metadata.what|translate_issue }}
                                         {% else %}
-                                            {# For single warnings, show full specific description #}
-                                            {% if first_warning.metadata and first_warning.metadata.title %}
-                                                {{ first_warning.metadata.title|translate_issue }}
-                                            {% elif first_warning.metadata and first_warning.metadata.what %}
-                                                {{ first_warning.metadata.what|translate_issue }}
-                                            {% else %}
-                                                {{ first_warning.description|translate_issue }}
-                                            {% endif %}
+                                            {{ first_warning.description|translate_issue }}
                                         {% endif %}
                                     </button>
                                 </h2>

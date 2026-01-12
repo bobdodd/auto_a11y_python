@@ -653,15 +653,15 @@
                                         {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                                         {% if group_list|length > 1 %}
                                             {# For grouped issues, use generic description from catalog (never specific description from instance) #}
-                                            {{ first_violation.metadata.what_generic if first_violation.metadata and first_violation.metadata.what_generic else (first_violation.metadata.what if first_violation.metadata and first_violation.metadata.what else error_code|error_code_only) }}
+                                            {{ (first_violation.metadata.what_generic if first_violation.metadata and first_violation.metadata.what_generic else (first_violation.metadata.what if first_violation.metadata and first_violation.metadata.what else error_code|error_code_only))|translate_issue }}
                                         {% else %}
                                             {# For single issues, show full specific description #}
                                             {% if first_violation.metadata and first_violation.metadata.title %}
-                                                {{ first_violation.metadata.title }}
+                                                {{ first_violation.metadata.title|translate_issue }}
                                             {% elif first_violation.metadata and first_violation.metadata.what %}
-                                                {{ first_violation.metadata.what }}
+                                                {{ first_violation.metadata.what|translate_issue }}
                                             {% else %}
-                                                {{ first_violation.description }}
+                                                {{ first_violation.description|translate_issue }}
                                             {% endif %}
                                         {% endif %}
                                     </button>
@@ -731,17 +731,17 @@
                                                         {% if violation.metadata and violation.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-danger mb-3">
-                                                            <h6 class="alert-heading">{{ violation.metadata.what if violation.metadata.what else violation.description }}</h6>
+                                                            <h6 class="alert-heading">{{ (violation.metadata.what if violation.metadata.what else violation.description)|translate_issue }}</h6>
                                                         </div>
-                                                        
+
                                                         <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What the issue is:') }}</strong>
                                                             {% if 'ErrLinkAccessibleNameMismatch' in violation.id and violation.description %}
-                                                            <p>{{ violation.description }}</p>
+                                                            <p>{{ violation.description|translate_issue }}</p>
                                                             {% else %}
-                                                            <p>{{ violation.metadata.what|default(violation.description) }}</p>
+                                                            <p>{{ violation.metadata.what|default(violation.description)|translate_issue }}</p>
                                                             {% endif %}
                                                         </div>
                                                         
@@ -787,7 +787,7 @@
                                                         {% else %}
                                                         <!-- Standard description -->
                                                         <p><strong>{{ _('Rule:') }}</strong> {{ violation.rule_id|default(violation.id) }}</p>
-                                                        <p><strong>{{ _('Help:') }}</strong> {{ violation.help_text|default(violation.description) }}</p>
+                                                        <p><strong>{{ _('Help:') }}</strong> {{ violation.help_text|default(violation.description)|translate_issue }}</p>
                                                         {% if violation.failure_summary %}
                                                         <p><strong>{{ _('How to fix:') }}</strong> {{ violation.failure_summary }}</p>
                                                         {% endif %}
@@ -1082,17 +1082,17 @@
                                                         {% if violation.metadata and violation.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-danger mb-3">
-                                                            <h6 class="alert-heading">{{ violation.metadata.what if violation.metadata.what else violation.description }}</h6>
+                                                            <h6 class="alert-heading">{{ (violation.metadata.what if violation.metadata.what else violation.description)|translate_issue }}</h6>
                                                         </div>
-                                                        
+
                                                         <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What the issue is:') }}</strong>
                                                             {% if 'ErrLinkAccessibleNameMismatch' in violation.id and violation.description %}
-                                                            <p>{{ violation.description }}</p>
+                                                            <p>{{ violation.description|translate_issue }}</p>
                                                             {% else %}
-                                                            <p>{{ violation.metadata.what|default(violation.description) }}</p>
+                                                            <p>{{ violation.metadata.what|default(violation.description)|translate_issue }}</p>
                                                             {% endif %}
                                                         </div>
                                                         
@@ -1138,7 +1138,7 @@
                                                         {% else %}
                                                         <!-- Standard description -->
                                                         <p><strong>{{ _('Rule:') }}</strong> {{ violation.rule_id|default(violation.id) }}</p>
-                                                        <p><strong>{{ _('Help:') }}</strong> {{ violation.help_text|default(violation.description) }}</p>
+                                                        <p><strong>{{ _('Help:') }}</strong> {{ violation.help_text|default(violation.description)|translate_issue }}</p>
                                                         {% if violation.failure_summary %}
                                                         <p><strong>{{ _('How to fix:') }}</strong> {{ violation.failure_summary }}</p>
                                                         {% endif %}
@@ -1420,11 +1420,11 @@
                                             {% if 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
                                                 Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}
                                             {% elif violation.metadata and violation.metadata.title %}
-                                                {{ violation.metadata.title }}
+                                                {{ violation.metadata.title|translate_issue }}
                                             {% elif violation.metadata and violation.metadata.what and violation.metadata.what != "Accessibility issue: " + violation.id.split('_')[1] %}
-                                                {{ violation.metadata.what }}
+                                                {{ violation.metadata.what|translate_issue }}
                                             {% else %}
-                                                {{ violation.description }}
+                                                {{ violation.description|translate_issue }}
                                             {% endif %}
                                             </span>
                                         </div>
@@ -1440,17 +1440,17 @@
                             {% if violation.metadata and violation.metadata.title %}
                             <!-- Enhanced description available -->
                             <div class="alert alert-danger mb-3">
-                                <h6 class="alert-heading">{{ violation.metadata.title }}</h6>
+                                <h6 class="alert-heading">{{ violation.metadata.title|translate_issue }}</h6>
                             </div>
-                            
+
                             <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('What the issue is:') }}</strong>
                                 {% if 'ErrLinkAccessibleNameMismatch' in violation.id and violation.description %}
-                                <p>{{ violation.description }}</p>
+                                <p>{{ violation.description|translate_issue }}</p>
                                 {% else %}
-                                <p>{{ violation.metadata.what|default(violation.description) }}</p>
+                                <p>{{ violation.metadata.what|default(violation.description)|translate_issue }}</p>
                                 {% endif %}
                             </div>
                             
@@ -1496,7 +1496,7 @@
                             {% else %}
                             <!-- Standard description -->
                             <p><strong>Rule:</strong> {{ violation.rule_id|default(violation.id) }}</p>
-                            <p><strong>Help:</strong> {{ violation.help_text|default(violation.description) }}</p>
+                            <p><strong>Help:</strong> {{ violation.help_text|default(violation.description)|translate_issue }}</p>
                             {% if violation.failure_summary %}
                             <p><strong>How to fix:</strong> {{ violation.failure_summary }}</p>
                             {% endif %}
@@ -1877,15 +1877,15 @@
                                         {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                                         {% if group_list|length > 1 %}
                                             {# For grouped warnings, use generic description from catalog (never specific description from instance) #}
-                                            {{ first_warning.metadata.what_generic if first_warning.metadata and first_warning.metadata.what_generic else (first_warning.metadata.what if first_warning.metadata and first_warning.metadata.what else error_code|error_code_only) }}
+                                            {{ (first_warning.metadata.what_generic if first_warning.metadata and first_warning.metadata.what_generic else (first_warning.metadata.what if first_warning.metadata and first_warning.metadata.what else error_code|error_code_only))|translate_issue }}
                                         {% else %}
                                             {# For single warnings, show full specific description #}
                                             {% if first_warning.metadata and first_warning.metadata.title %}
-                                                {{ first_warning.metadata.title }}
+                                                {{ first_warning.metadata.title|translate_issue }}
                                             {% elif first_warning.metadata and first_warning.metadata.what %}
-                                                {{ first_warning.metadata.what }}
+                                                {{ first_warning.metadata.what|translate_issue }}
                                             {% else %}
-                                                {{ first_warning.description }}
+                                                {{ first_warning.description|translate_issue }}
                                             {% endif %}
                                         {% endif %}
                                     </button>
@@ -1945,14 +1945,14 @@
                                                         {% if warning.metadata and warning.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-warning mb-3">
-                                                            <h6 class="alert-heading">{{ warning.metadata.what if warning.metadata.what else warning.description }}</h6>
+                                                            <h6 class="alert-heading">{{ (warning.metadata.what if warning.metadata.what else warning.description)|translate_issue }}</h6>
                                                         </div>
-                                                        
+
                                                         <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What the issue is:') }}</strong>
-                                                            <p>{{ warning.metadata.what|default(warning.description) }}</p>
+                                                            <p>{{ warning.metadata.what|default(warning.description)|translate_issue }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
@@ -1997,7 +1997,7 @@
                                                         {% else %}
                                                         <!-- Standard description -->
                                                         <p><strong>{{ _('Rule:') }}</strong> {{ warning.rule_id|default(warning.id) }}</p>
-                                                        <p><strong>{{ _('Help:') }}</strong> {{ warning.help_text|default(warning.description) }}</p>
+                                                        <p><strong>{{ _('Help:') }}</strong> {{ warning.help_text|default(warning.description)|translate_issue }}</p>
                                                         {% if warning.failure_summary %}
                                                         <p><strong>{{ _('How to fix:') }}</strong> {{ warning.failure_summary }}</p>
                                                         {% endif %}
@@ -2161,14 +2161,14 @@
                                                         {% if warning.metadata and warning.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-warning mb-3">
-                                                            <h6 class="alert-heading">{{ warning.metadata.what if warning.metadata.what else warning.description }}</h6>
+                                                            <h6 class="alert-heading">{{ (warning.metadata.what if warning.metadata.what else warning.description)|translate_issue }}</h6>
                                                         </div>
-                                                        
+
                                                         <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What the issue is:') }}</strong>
-                                                            <p>{{ warning.metadata.what|default(warning.description) }}</p>
+                                                            <p>{{ warning.metadata.what|default(warning.description)|translate_issue }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
@@ -2213,7 +2213,7 @@
                                                         {% else %}
                                                         <!-- Standard description -->
                                                         <p><strong>{{ _('Rule:') }}</strong> {{ warning.rule_id|default(warning.id) }}</p>
-                                                        <p><strong>{{ _('Help:') }}</strong> {{ warning.help_text|default(warning.description) }}</p>
+                                                        <p><strong>{{ _('Help:') }}</strong> {{ warning.help_text|default(warning.description)|translate_issue }}</p>
                                                         {% if warning.failure_summary %}
                                                         <p><strong>{{ _('How to fix:') }}</strong> {{ warning.failure_summary }}</p>
                                                         {% endif %}
@@ -2269,11 +2269,11 @@
                                             {% if show_error_codes %}<code>{{ error_code|error_code_only }}</code>{% endif %}
                                             <span>
                                             {% if warning.metadata and warning.metadata.title %}
-                                                {{ warning.metadata.title }}
+                                                {{ warning.metadata.title|translate_issue }}
                                             {% elif warning.metadata and warning.metadata.what and warning.metadata.what != "Accessibility issue: " + warning.id.split('_')[1] %}
-                                                {{ warning.metadata.what }}
+                                                {{ warning.metadata.what|translate_issue }}
                                             {% else %}
-                                                {{ warning.description }}
+                                                {{ warning.description|translate_issue }}
                                             {% endif %}
                                             </span>
                                         </div>
@@ -2282,21 +2282,21 @@
                                         {% endif %}
                                     </button>
                                 </h2>
-                                <div id="warn-single-{{ warn_counter.value }}" 
-                         class="accordion-collapse collapse" 
+                                <div id="warn-single-{{ warn_counter.value }}"
+                         class="accordion-collapse collapse"
                          data-bs-parent="#warningsAccordion">
                         <div class="accordion-body">
                             {% if warning.metadata and warning.metadata.title %}
                             <!-- Enhanced description available -->
                             <div class="alert alert-warning mb-3">
-                                <h6 class="alert-heading">{{ warning.metadata.title }}</h6>
+                                <h6 class="alert-heading">{{ warning.metadata.title|translate_issue }}</h6>
                             </div>
-                            
+
                             <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('What the issue is:') }}</strong>
-                                <p>{{ warning.metadata.what|default(warning.description) }}</p>
+                                <p>{{ warning.metadata.what|default(warning.description)|translate_issue }}</p>
                             </div>
                             
                             <div class="mb-3">
@@ -2562,7 +2562,7 @@
                                         {% endif %}
                                         {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                                         {# For grouped info items, use generic description from catalog (never specific description from instance) #}
-                                        {{ first_info.metadata.what_generic if first_info.metadata and first_info.metadata.what_generic else (first_info.metadata.what if first_info.metadata and first_info.metadata.what else error_code|error_code_only) }}
+                                        {{ (first_info.metadata.what_generic if first_info.metadata and first_info.metadata.what_generic else (first_info.metadata.what if first_info.metadata and first_info.metadata.what else error_code|error_code_only))|translate_issue }}
                                     </button>
                                 </h2>
                                 <div id="info-group-{{ info_counter.value }}" 
@@ -2598,14 +2598,14 @@
                                                         {% if info.metadata and info.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-info mb-3">
-                                                            <h6 class="alert-heading">{{ info.metadata.what if info.metadata.what else info.description }}</h6>
+                                                            <h6 class="alert-heading">{{ (info.metadata.what if info.metadata.what else info.description)|translate_issue }}</h6>
                                                         </div>
-                                                        
+
                                                         <h6 class="text-info mb-2">{{ _('About this issue:') }}</h6>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What the issue is:') }}</strong>
-                                                            <p>{{ info.metadata.what|default(info.description) }}</p>
+                                                            <p>{{ info.metadata.what|default(info.description)|translate_issue }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
@@ -2732,32 +2732,32 @@
                                             data-bs-target="#info-single-{{ info_counter.value }}">
                             {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                             {% if info.metadata and info.metadata.title %}
-                                {{ info.metadata.title }}
+                                {{ info.metadata.title|translate_issue }}
                             {% elif info.metadata and info.metadata.what and info.metadata.what != "Accessibility issue: " + info.id.split('_')[1] %}
-                                {{ info.metadata.what }}
+                                {{ info.metadata.what|translate_issue }}
                             {% else %}
-                                {{ info.description }}
+                                {{ info.description|translate_issue }}
                             {% endif %}
                             {% if info.xpath %}
                                 <span class="text-muted ms-2" style="font-size: 0.9em;">{{ info.xpath }}</span>
                             {% endif %}
                                     </button>
                                 </h2>
-                                <div id="info-single-{{ info_counter.value }}" 
-                         class="accordion-collapse collapse" 
+                                <div id="info-single-{{ info_counter.value }}"
+                         class="accordion-collapse collapse"
                          data-bs-parent="#infoAccordion">
                         <div class="accordion-body">
                             {% if info.metadata and info.metadata.title %}
                             <!-- Enhanced description available -->
                             <div class="alert alert-info mb-3">
-                                <h6 class="alert-heading">{{ info.metadata.title }}</h6>
+                                <h6 class="alert-heading">{{ info.metadata.title|translate_issue }}</h6>
                             </div>
-                            
+
                             <h6 class="text-info mb-2">{{ _('About this issue:') }}</h6>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('What the issue is:') }}</strong>
-                                <p>{{ info.metadata.what|default(info.description) }}</p>
+                                <p>{{ info.metadata.what|default(info.description)|translate_issue }}</p>
                             </div>
                             
                             <div class="mb-3">
@@ -2957,7 +2957,7 @@
                                         {% endif %}
                                         {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                                         {# For grouped discoveries, use generic description from catalog (never specific description from instance) #}
-                                        {{ first_discovery.metadata.what_generic if first_discovery.metadata and first_discovery.metadata.what_generic else (first_discovery.metadata.what if first_discovery.metadata and first_discovery.metadata.what else error_code|error_code_only) }}
+                                        {{ (first_discovery.metadata.what_generic if first_discovery.metadata and first_discovery.metadata.what_generic else (first_discovery.metadata.what if first_discovery.metadata and first_discovery.metadata.what else error_code|error_code_only))|translate_issue }}
                                     </button>
                                 </h2>
                                 <div id="disc-group-{{ disc_counter.value }}" 
@@ -2998,14 +2998,14 @@
                                                         {% if discovery.metadata and discovery.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert mb-3" style="background-color: #f3f0ff; border-color: #6f42c1;">
-                                                            <h6 class="alert-heading" style="color: #6f42c1;">{{ discovery.metadata.what if discovery.metadata.what else discovery.description }}</h6>
+                                                            <h6 class="alert-heading" style="color: #6f42c1;">{{ (discovery.metadata.what if discovery.metadata.what else discovery.description)|translate_issue }}</h6>
                                                         </div>
-                                                        
+
                                                         <h6 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h6>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What was found:') }}</strong>
-                                                            <p>{{ discovery.metadata.what|default(discovery.description) }}</p>
+                                                            <p>{{ discovery.metadata.what|default(discovery.description)|translate_issue }}</p>
                                                         </div>
                                                         
                                                         <div class="mb-3">
@@ -3152,39 +3152,39 @@
                             {% if 'DiscoFontFound' in discovery.id and discovery.metadata.fontName %}
                                 Font '{{ discovery.metadata.fontName }}' at {{ discovery.metadata.sizeCount }} size{{ 's' if discovery.metadata.sizeCount != 1 else '' }}: {{ discovery.metadata.fontSizes|join(', ') }}
                             {% elif discovery.metadata and discovery.metadata.title %}
-                                {{ discovery.metadata.title }}
+                                {{ discovery.metadata.title|translate_issue }}
                             {% elif discovery.metadata and discovery.metadata.what and discovery.metadata.what != "Accessibility issue: " + discovery.id.split('_')[1] %}
-                                {{ discovery.metadata.what }}
+                                {{ discovery.metadata.what|translate_issue }}
                             {% else %}
-                                {{ discovery.description }}
+                                {{ discovery.description|translate_issue }}
                             {% endif %}
                             {% if discovery.xpath %}
                                 <span class="text-muted ms-2" style="font-size: 0.9em;">{{ discovery.xpath }}</span>
                             {% endif %}
                                     </button>
                                 </h2>
-                                <div id="disc-single-{{ disc_counter.value }}" 
-                         class="accordion-collapse collapse" 
+                                <div id="disc-single-{{ disc_counter.value }}"
+                         class="accordion-collapse collapse"
                          data-bs-parent="#discoveryAccordion">
                         <div class="accordion-body">
                             {% if discovery.metadata and discovery.metadata.title %}
                             <!-- Enhanced description available -->
                             <div class="alert mb-3" style="background-color: #f3f0ff; border-color: #6f42c1;">
-                                <h6 class="alert-heading" style="color: #6f42c1;">{{ discovery.metadata.title }}</h6>
+                                <h6 class="alert-heading" style="color: #6f42c1;">{{ discovery.metadata.title|translate_issue }}</h6>
                             </div>
                             
                             <h6 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h6>
                             
                             <div class="mb-3">
                                 <strong>{{ _('What was found:') }}</strong>
-                                <p>{{ discovery.metadata.what|default(discovery.description) }}</p>
+                                <p>{{ discovery.metadata.what|default(discovery.description)|translate_issue }}</p>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('Why manual review is needed:') }}</strong>
                                 <p>{{ discovery.metadata.why }}</p>
                             </div>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('Who could be affected:') }}</strong>
                                 <p>{{ discovery.metadata.who }}</p>

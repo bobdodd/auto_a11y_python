@@ -29,6 +29,7 @@ from auto_a11y.web.routes import (
     schedules_bp
 )
 from auto_a11y.web.routes.demo import demo_bp
+from auto_a11y.reporting.issue_translations_inline import ISSUE_DESCRIPTION_TRANSLATIONS_FR
 
 logger = logging.getLogger(__name__)
 
@@ -236,6 +237,7 @@ def create_app(config):
         current_locale = get_locale()
         t = dynamic_translations.get(current_locale, dynamic_translations['en'])
         wcag_fr = WCAG_TRANSLATIONS_FR if current_locale == 'fr' else {}
+        issue_fr = ISSUE_DESCRIPTION_TRANSLATIONS_FR if current_locale == 'fr' else {}
 
         return dict(
             get_locale=get_locale,
@@ -243,7 +245,8 @@ def create_app(config):
             current_user=current_user,
             t=t,  # Translation dictionary for dynamic strings
             translations=dynamic_translations,  # Full translations dict for JS
-            wcag_fr=wcag_fr  # French WCAG translations
+            wcag_fr=wcag_fr,  # French WCAG translations
+            issue_fr=issue_fr  # French issue description translations
         )
     
     # Store config for access in routes
@@ -385,6 +388,20 @@ def create_app(config):
             return english_name
 
         return criterion
+
+    @app.template_filter('translate_issue')
+    def translate_issue(text):
+        """Translate issue description text to French if in French locale.
+
+        Falls back to original text if no translation is found.
+        """
+        if not text:
+            return text
+
+        current_locale = get_locale()
+        if current_locale == 'fr':
+            return ISSUE_DESCRIPTION_TRANSLATIONS_FR.get(text, text)
+        return text
 
     # Main routes
     @app.route('/')

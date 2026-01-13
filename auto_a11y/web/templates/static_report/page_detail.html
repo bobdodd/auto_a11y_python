@@ -1161,8 +1161,8 @@
 
                     {# Informational items for this state #}
                     {% if state.informational %}
-                    <div class="section-panel info-section mb-4" style="border: 2px solid #0dcaf0; border-radius: 8px; overflow: hidden;">
-                        <div class="section-header" style="background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
+                    <div class="section-panel info-section mb-4" style="border: 2px solid #0e7490; border-radius: 8px; overflow: hidden;">
+                        <div class="section-header" style="background: linear-gradient(135deg, #0e7490 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
                             <h5 class="mb-0">
                                 <i class="bi bi-info-circle-fill me-2"></i>
                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['info'] }}</span>
@@ -1178,7 +1178,7 @@
                     <div class="accordion mb-4" id="informationalAccordion_{{ loop.index0 }}">
                         {% set info_counter = namespace(value=0) %}
                         {% for touchpoint, touchpoint_info in state.informational|groupby('touchpoint') %}
-                            <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #0dcaf0;">
+                            <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #0e7490;">
                                 <strong>
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'Général') }}</span>
@@ -1598,8 +1598,8 @@
 
             <!-- Informational Items -->
             {% if informational %}
-            <div class="section-panel info-section mb-4" style="border: 2px solid #0dcaf0; border-radius: 8px; overflow: hidden;">
-                <div class="section-header" style="background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
+            <div class="section-panel info-section mb-4" style="border: 2px solid #0e7490; border-radius: 8px; overflow: hidden;">
+                <div class="section-header" style="background: linear-gradient(135deg, #0e7490 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
                     <h5 class="mb-0">
                         <i class="bi bi-info-circle-fill me-2"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['info'] }}</span>
@@ -1615,7 +1615,7 @@
             <div class="accordion" id="informationalAccordion">
                 {% set info_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_info in informational|groupby('touchpoint') %}
-                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #0dcaf0;">
+                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #0e7490;">
                         <strong>
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>

@@ -843,7 +843,7 @@
     <div class="accordion mb-4" id="infoAccordion">
         {% set info_counter = namespace(value=0) %}
         {% for touchpoint, touchpoint_info in info|groupby('touchpoint') %}
-            <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #0dcaf0;">
+            <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #0e7490;">
                 <strong>
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>

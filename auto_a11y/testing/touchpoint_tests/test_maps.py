@@ -622,7 +622,6 @@ async def test_maps(page) -> Dict[str, Any]:
                             element: 'iframe',
                             xpath: xpath,
                             html: element.outerHTML.substring(0, 200),
-                            description: 'Map iframe lacks accessible name (title, aria-label, or aria-labelledby)',
                             wcag: '4.1.2',
                             provider: provider
                         });

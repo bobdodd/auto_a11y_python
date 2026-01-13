@@ -167,7 +167,6 @@ async def test_document_links(page) -> Dict[str, Any]:
                                 element: 'A',
                                 xpath: getFullXPath(link),
                                 html: link.outerHTML.substring(0, 200),
-                                description: `Document link could benefit from additional metadata (file size, etc.)`,
                                 linkText: text,
                                 fileType: fileType.toUpperCase()
                             });

@@ -335,7 +335,6 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
                                 element: tag,
                                 xpath: getFullXPath(element),
                                 html: element.outerHTML.substring(0, 200),
-                                description: `Bold non-heading text (${fontSize}px) is larger than smallest heading (${smallestHeading}px)`,
                                 fontSize: fontSize,
                                 smallestHeading: smallestHeading,
                                 text: text
@@ -360,7 +359,6 @@ async def test_fonts(page, project_config: Optional[Dict[str, Any]] = None) -> D
                         type: 'err',
                         cat: 'fonts',
                         element: 'text',
-                        description: `${smallTextInstances.length} element(s) have text smaller than the recommended minimum of 16px (smallest: ${smallestSize}px)`,
                         metadata: {
                             fontSize: smallestSize,
                             instanceCount: smallTextInstances.length,

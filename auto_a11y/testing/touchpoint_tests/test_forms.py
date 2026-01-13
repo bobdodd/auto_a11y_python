@@ -1372,7 +1372,7 @@ async def test_forms(page) -> Dict[str, Any]:
                                       'a': float(shadow_color_match.group(4)) if shadow_color_match.group(4) else 1.0}
                         # Check transparency
                         if shadow_color['a'] < 0.5:
-                            issues_found.append(('WarnInputTransparentFocus', f'Input focus box-shadow is semi-transparent (alpha={shadow_color["a"]:.2f})'))
+                            issues_found.append(('WarnInputTransparentFocus', None, {'alpha': shadow_color['a']}))
                         # Check contrast
                         contrast = get_contrast_ratio(shadow_color, bg_color)
                         if contrast < 3.0:
@@ -1382,27 +1382,46 @@ async def test_forms(page) -> Dict[str, Any]:
                 # Warn if NO custom focus styles are defined (relying on browser defaults)
                 # has_outline=False means no custom :focus outline/border/box-shadow rules found
                 if not has_outline and not outline_is_none and not border_color_changed and not box_shadow_changed:
-                    issues_found.append(('WarnInputDefaultFocus', 'Input relies on default browser focus styles (inconsistent across browsers)'))
+                    issues_found.append(('WarnInputDefaultFocus', None, {}))
 
                 # Report all issues found for this field
-                for error_code, violation_reason in issues_found:
+                for issue in issues_found:
+                    # Handle both old tuple format and new format
+                    if len(issue) == 3:
+                        error_code, violation_reason, extra_metadata = issue
+                    else:
+                        error_code, violation_reason = issue
+                        extra_metadata = {}
+
                     result_type = 'warn' if error_code.startswith('Warn') else 'err'
                     result_list = results['warnings'] if result_type == 'warn' else results['errors']
-                    result_list.append({
+
+                    metadata_dict = {
+                        'element_type': f"{field['tag']}[type='{field['type']}']",
+                        'identifier': element_id
+                    }
+                    # Add extra metadata if provided
+                    if extra_metadata:
+                        metadata_dict.update(extra_metadata)
+                    # Only add 'what' if violation_reason is provided
+                    if violation_reason:
+                        metadata_dict['what'] = violation_reason
+
+                    issue_dict = {
                         'err': error_code,
                         'type': result_type,
                         'cat': 'forms',
                         'element': field['tag'],
                         'xpath': field.get('xpath', ''),
                         'html': field.get('html', ''),
-                        'description': violation_reason,
                         'selector': element_id,
-                        'metadata': {
-                            'what': violation_reason,
-                            'element_type': f"{field['tag']}[type='{field['type']}']",
-                            'identifier': element_id
-                        }
-                    })
+                        'metadata': metadata_dict
+                    }
+                    # Only add description if provided
+                    if violation_reason:
+                        issue_dict['description'] = violation_reason
+
+                    result_list.append(issue_dict)
 
         return results
         

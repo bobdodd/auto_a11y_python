@@ -241,9 +241,9 @@ async def test_menus(page) -> Dict[str, Any]:
                                 element: nav.tagName.toLowerCase(),
                                 xpath: getFullXPath(nav),
                                 html: nav.outerHTML.substring(0, 200),
-                                description: 'Navigation lacks aria-current="page" indicator, forcing screen reader users through entire menu to discover current location',
                                 accessibleName: accessibleName,
-                                itemCount: items.length
+                                itemCount: items.length,
+                                fpTempId: 'fp_nav_' + Date.now()
                             });
                             results.elements_failed++;
                         }

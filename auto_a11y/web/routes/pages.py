@@ -85,13 +85,6 @@ def enrich_test_result_with_catalog(test_result):
         issue.metadata['what_fr'] = enriched_fr.get('description_full', enriched_fr.get('description', ''))
         issue.metadata['what_generic_en'] = enriched_en.get('what_generic', enriched_en.get('description', ''))
         issue.metadata['what_generic_fr'] = enriched_fr.get('what_generic', enriched_fr.get('description', ''))
-
-        # Debug: log what_generic values for forms
-        if 'DiscoFormOnPage' in issue_id:
-            logger.warning(f"DEBUG DiscoFormOnPage enrichment:")
-            logger.warning(f"  what_generic_en: {issue.metadata['what_generic_en']}")
-            logger.warning(f"  what_generic_fr: {issue.metadata['what_generic_fr']}")
-
         issue.metadata['why_en'] = enriched_en.get('why_it_matters', '')
         issue.metadata['why_fr'] = enriched_fr.get('why_it_matters', '')
         issue.metadata['who_en'] = enriched_en.get('who_it_affects', '')
@@ -138,9 +131,7 @@ def enrich_test_result_with_catalog(test_result):
 
     # Enrich discovery items - use bilingual enrichment pattern
     if hasattr(test_result, 'discovery') and test_result.discovery:
-        logger.warning(f"DEBUG: Enriching {len(test_result.discovery)} discovery items")
         for discovery in test_result.discovery:
-            logger.warning(f"DEBUG: Enriching discovery with id: {discovery.id}")
             enrich_issue_bilingual(discovery)
 
     return test_result
@@ -277,25 +268,6 @@ def view_page(page_id):
         'video': lazy_gettext('Media'),
         'other': lazy_gettext('Other')
     }
-
-    # Debug: check discovery metadata before rendering
-    if test_result and test_result.discovery:
-        for disc in test_result.discovery:
-            if 'DiscoFormOnPage' in disc.id:
-                logger.warning(f"DEBUG Before render - DiscoFormOnPage:")
-                logger.warning(f"  has what_generic_en: {'what_generic_en' in disc.metadata}")
-                logger.warning(f"  has what_generic_fr: {'what_generic_fr' in disc.metadata}")
-                logger.warning(f"  has what_en: {'what_en' in disc.metadata}")
-                logger.warning(f"  has what_fr: {'what_fr' in disc.metadata}")
-                if 'what_generic_en' in disc.metadata:
-                    logger.warning(f"  what_generic_en value: {disc.metadata['what_generic_en']}")
-                if 'what_generic_fr' in disc.metadata:
-                    logger.warning(f"  what_generic_fr value: {disc.metadata['what_generic_fr']}")
-                if 'what_en' in disc.metadata:
-                    logger.warning(f"  what_en value: {disc.metadata['what_en'][:100]}")
-                if 'what_fr' in disc.metadata:
-                    logger.warning(f"  what_fr value: {disc.metadata['what_fr'][:100]}")
-                break
 
     return render_template('pages/view.html',
                          page=page,

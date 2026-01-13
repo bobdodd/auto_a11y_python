@@ -493,7 +493,6 @@ async def test_aria(page) -> Dict[str, Any]:
                             element: carousel.tagName.toLowerCase(),
                             xpath: getFullXPath(carousel),
                             html: carousel.outerHTML.substring(0, 200),
-                            description: 'Carousel lacks proper ARIA attributes (role="region", aria-label, and aria-live for slide changes)',
                             wcag: '1.3.1, 2.1.1, 4.1.2'
                         });
                         results.elements_failed++;

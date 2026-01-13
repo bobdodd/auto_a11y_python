@@ -583,7 +583,6 @@ async def test_floating_dialogs(page) -> Dict[str, Any]:
                             element: dialog.tagName,
                             xpath: getFullXPath(dialog),
                             html: dialog.outerHTML.substring(0, 200),
-                            description: `Non-modal floating element obscures ${overlappingElements.length} interactive element(s) at ${breakpointWidth}px viewport. Unlike modal dialogs, this element does not trap focus, so users may try to interact with obscured content.`,
                             metadata: {
                                 obscuredCount: overlappingElements.length,
                                 obscuredElements: overlappingElements,

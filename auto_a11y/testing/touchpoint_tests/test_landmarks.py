@@ -808,8 +808,6 @@ async def test_landmarks(page) -> Dict[str, Any]:
                     }
                     const asideSignature = Math.abs(hash).toString(16).padStart(8, '0');
 
-                    const description = `Complementary region detected (signature: ${asideSignature}) - requires manual accessibility review`;
-
                     results.warnings.push({
                         err: 'DiscoAsideFound',
                         type: 'disco',
@@ -817,7 +815,6 @@ async def test_landmarks(page) -> Dict[str, Any]:
                         element: aside.tagName.toLowerCase(),
                         xpath: asideXPath,
                         html: aside.outerHTML.substring(0, 500),
-                        description: description,
                         asideSignature: asideSignature,
                         asideLabel: asideLabel,
                         pageLang: pageLang

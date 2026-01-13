@@ -335,7 +335,6 @@ async def test_animations(page) -> Dict[str, Any]:
                                     element: item.tag,
                                     xpath: item.xpath,
                                     html: item.element.outerHTML.substring(0, 200),
-                                    description: `Animation appears to be a loading/busy spinner but runs infinitely without controls`,
                                     animationCSS: cssLines,
                                     animationName: item.animation.name
                                 });

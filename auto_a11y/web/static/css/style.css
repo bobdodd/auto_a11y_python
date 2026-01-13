@@ -301,3 +301,48 @@ textarea:focus {
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+/* WCAG AA Contrast Overrides */
+/* Override Bootstrap info color for WCAG AA contrast (4.5:1 minimum) */
+:root {
+    --bs-info: #0e7490;
+    --bs-info-rgb: 14, 116, 144;
+}
+.bg-info {
+    background-color: #0e7490 !important;
+}
+.text-info {
+    color: #0e7490 !important;
+}
+.border-info {
+    border-color: #0e7490 !important;
+}
+
+/* Override Bootstrap warning colors for WCAG AA contrast */
+/* Keep bright yellow background but ensure dark text */
+.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important; /* Dark text on yellow background */
+}
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+.alert-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+.progress-bar.bg-warning {
+    background-color: #ffc107 !important;
+    color: #212529 !important;
+}
+
+/* Override text-warning for contrast on white backgrounds */
+.text-warning {
+    color: #856404 !important; /* Dark yellow/brown with 4.6:1 contrast on white */
+}
+
+/* Ensure progress bar gray has sufficient contrast with yellow (3:1 for non-text) */
+.progress-bar.bg-secondary {
+    background-color: #495057 !important; /* Darker gray for 3:1 contrast with #ffc107 */
+}

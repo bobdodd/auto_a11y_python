@@ -88,24 +88,33 @@
         border-color: #0e7490 !important;
     }
 
-    /* Override Bootstrap warning color to use dark text for contrast */
+    /* Override Bootstrap warning colors for WCAG AA contrast */
+    /* Keep bright yellow background but ensure dark text */
     .bg-warning {
+        background-color: #ffc107 !important;
         color: #212529 !important; /* Dark text on yellow background */
     }
     .badge.bg-warning {
+        background-color: #ffc107 !important;
         color: #212529 !important;
     }
     .alert-warning {
+        background-color: #ffc107 !important;
+        color: #212529 !important;
+    }
+    .progress-bar.bg-warning {
+        background-color: #ffc107 !important;
         color: #212529 !important;
     }
 
-    /* Override Bootstrap warning text color for WCAG AA contrast on white */
+    /* Override text-warning for contrast on white backgrounds */
     .text-warning {
         color: #856404 !important; /* Dark yellow/brown with 4.6:1 contrast on white */
     }
-    :root {
-        --bs-warning: #856404;
-        --bs-warning-rgb: 133, 100, 4;
+
+    /* Ensure progress bar gray has sufficient contrast with yellow (3:1 for non-text) */
+    .progress-bar.bg-secondary {
+        background-color: #495057 !important; /* Darker gray for 3:1 contrast with #ffc107 */
     }
 </style>
 {% endblock %}

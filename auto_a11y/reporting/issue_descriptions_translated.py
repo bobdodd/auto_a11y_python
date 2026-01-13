@@ -91,23 +91,23 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         return desc
 
     translated_desc = desc.copy()
-    
+
     lang = _get_current_locale()
-    
+
     if lang == 'en':
         return _apply_metadata(translated_desc, metadata)
-    
+
     translations = _load_translations(lang)
     error_type = _extract_error_type(issue_code)
-    
+
     if error_type in translations:
         issue_trans = translations[error_type]
         translatable_fields = ('title', 'what', 'what_generic', 'why', 'who', 'remediation')
-        
+
         for field in translatable_fields:
             if field in issue_trans and issue_trans[field]:
                 translated_desc[field] = issue_trans[field]
-    
+
     return _apply_metadata(translated_desc, metadata)
 
 
@@ -121,21 +121,26 @@ def _apply_metadata(desc: Dict[str, Any], metadata: Dict[str, Any]) -> Dict[str,
     for field in translatable_fields:
         if field in desc and isinstance(desc[field], str):
             text = desc[field]
-            
+
             # Special handling for contrast ratio placeholders
             # The test sends: textColor, backgroundColor, contrastRatio
-            # But descriptions use: {fg}, {bg}, {ratio}
-            if '{ratio}' in text and 'contrastRatio' in metadata:
+            # Descriptions use: {fg}, {bg}, {ratio} OR %(fg)s, %(bg)s, %(ratio)s
+            if ('{ratio}' in text or '%(ratio)s' in text) and 'contrastRatio' in metadata:
                 contrast_ratio = metadata.get('contrastRatio', '')
                 if isinstance(contrast_ratio, str) and contrast_ratio.endswith(':1'):
                     contrast_ratio = contrast_ratio[:-2]
                 text = text.replace('{ratio}', str(contrast_ratio))
-            
-            if '{fg}' in text and 'textColor' in metadata:
-                text = text.replace('{fg}', str(metadata.get('textColor', '')))
-            
-            if '{bg}' in text and 'backgroundColor' in metadata:
-                text = text.replace('{bg}', str(metadata.get('backgroundColor', '')))
+                text = text.replace('%(ratio)s', str(contrast_ratio))
+
+            if ('{fg}' in text or '%(fg)s' in text) and 'textColor' in metadata:
+                fg = str(metadata.get('textColor', ''))
+                text = text.replace('{fg}', fg)
+                text = text.replace('%(fg)s', fg)
+
+            if ('{bg}' in text or '%(bg)s' in text) and 'backgroundColor' in metadata:
+                bg = str(metadata.get('backgroundColor', ''))
+                text = text.replace('{bg}', bg)
+                text = text.replace('%(bg)s', bg)
             
             # Special handling for calculated line height minimum
             if '{minLineHeight}' in text and 'fontSize' in metadata:
@@ -143,20 +148,53 @@ def _apply_metadata(desc: Dict[str, Any], metadata: Dict[str, Any]) -> Dict[str,
                 min_line_height = font_size * 1.5
                 text = text.replace('{minLineHeight}', f"{min_line_height:.2f}")
             
-            # Handle plural/singular forms
-            if '{sizeCount_singular_size}' in text and 'sizeCount' in metadata:
+            # Handle plural/singular forms for font sizes
+            if ('{sizeCount_singular_size}' in text or '%(sizeCount_singular_size)s' in text) and 'sizeCount' in metadata:
                 count = metadata.get('sizeCount', 0)
-                text = text.replace('{sizeCount_singular_size}', 'size' if count == 1 else 'different sizes')
+                locale = _get_current_locale()
+                if locale == 'fr':
+                    singular_size_text = 'taille' if count == 1 else 'tailles différentes'
+                else:
+                    singular_size_text = 'size' if count == 1 else 'different sizes'
+                text = text.replace('{sizeCount_singular_size}', singular_size_text)
+                text = text.replace('%(sizeCount_singular_size)s', singular_size_text)
+
+            # Handle font sizes list
+            if ('{fontSizes_list}' in text or '%(fontSizes_list)s' in text) and 'fontSizes' in metadata:
+                sizes = metadata.get('fontSizes', [])
+                sizes_list = ', '.join(sizes) if isinstance(sizes, list) else str(sizes)
+                text = text.replace('{fontSizes_list}', sizes_list)
+                text = text.replace('%(fontSizes_list)s', sizes_list)
             
             if '{fieldCount_plural}' in text and 'fieldCount' in metadata:
                 count = metadata.get('fieldCount', 0)
                 text = text.replace('{fieldCount_plural}', 's' if count != 1 else '')
             
             # Handle search context placeholders
-            if '{searchContext_title}' in text:
-                text = text.replace('{searchContext_title}', metadata.get('searchContext', {}).get('title', ''))
-            if '{searchContext_remediation}' in text:
-                text = text.replace('{searchContext_remediation}', metadata.get('searchContext', {}).get('remediation', ''))
+            if '{searchContext_title}' in text or '%(searchContext_title)s' in text:
+                search_title = metadata.get('searchContext', {}).get('title', '') if isinstance(metadata.get('searchContext'), dict) else ''
+                text = text.replace('{searchContext_title}', search_title)
+                text = text.replace('%(searchContext_title)s', search_title)
+            if '{searchContext_description}' in text or '%(searchContext_description)s' in text:
+                search_desc = metadata.get('searchContext', {}).get('description', '') if isinstance(metadata.get('searchContext'), dict) else ''
+                text = text.replace('{searchContext_description}', search_desc)
+                text = text.replace('%(searchContext_description)s', search_desc)
+            if '{searchContext_remediation}' in text or '%(searchContext_remediation)s' in text:
+                search_rem = metadata.get('searchContext', {}).get('remediation', '') if isinstance(metadata.get('searchContext'), dict) else ''
+                text = text.replace('{searchContext_remediation}', search_rem)
+                text = text.replace('%(searchContext_remediation)s', search_rem)
+
+            # Handle field types summary - generate from fieldTypes dict
+            if '{fieldTypes_summary}' in text or '%(fieldTypes_summary)s' in text:
+                field_types_dict = metadata.get('fieldTypes', {})
+                if isinstance(field_types_dict, dict) and field_types_dict:
+                    # Generate summary like "2 text, 1 email"
+                    field_parts = [f"{count} {ftype}" for ftype, count in field_types_dict.items()]
+                    field_summary = ', '.join(field_parts)
+                else:
+                    field_summary = metadata.get('fieldTypes_summary', '')
+                text = text.replace('{fieldTypes_summary}', str(field_summary))
+                text = text.replace('%(fieldTypes_summary)s', str(field_summary))
             
             # Handle label descriptions
             for label_key in ['asideLabel_description', 'footerLabel_description', 'headerLabel_description']:
@@ -198,8 +236,53 @@ def _apply_metadata(desc: Dict[str, Any], metadata: Dict[str, Any]) -> Dict[str,
                 return str(value) if value is not None else match.group(0)
             
             text = re.sub(nested_pattern, replace_nested, text)
+
+            # Also handle %(key)s style placeholders (used in French translations)
+            percent_pattern = r'%\(([^)]+)\)s'
+
+            def replace_percent(match):
+                key = match.group(1)
+
+                # Skip placeholders already handled above
+                if key in ['ratio', 'fg', 'bg', 'sizeCount_singular_size', 'fontSizes_list',
+                          'searchContext_title', 'searchContext_description', 'searchContext_remediation',
+                          'fieldTypes_summary']:
+                    return match.group(0)
+
+                # Handle _description suffixed placeholders (for conditional label text)
+                if key.endswith('_description'):
+                    base_key = key.replace('_description', '')
+                    label_value = metadata.get(base_key)
+                    if label_value:
+                        # Generate conditional text based on current locale
+                        locale = _get_current_locale()
+                        if locale == 'fr':
+                            return f'Il a l\'étiquette "{label_value}".'
+                        else:
+                            return f'It has the label "{label_value}".'
+                    else:
+                        locale = _get_current_locale()
+                        if locale == 'fr':
+                            return "Il n'a pas d'étiquette."
+                        else:
+                            return "It has no label."
+
+                # Handle _plural suffixed placeholders (for conditional 's')
+                if key.endswith('_plural'):
+                    base_key = key.replace('_plural', '')
+                    count = metadata.get(base_key, 0)
+                    # Return 's' for plural in English, or appropriate French plural marker
+                    if isinstance(count, (int, float)) and count != 1:
+                        return 's'
+                    return ''
+
+                # Look up value in metadata
+                value = metadata.get(key)
+                return str(value) if value is not None else match.group(0)
+
+            text = re.sub(percent_pattern, replace_percent, text)
             desc[field] = text
-    
+
     return desc
 
 

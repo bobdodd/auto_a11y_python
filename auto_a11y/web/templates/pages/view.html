@@ -61,6 +61,17 @@
     .state-selector.btn-outline-primary:active small {
         color: white !important;
     }
+
+    /* Bilingual content visibility (matches static report pattern) */
+    .lang-inactive {
+        display: none !important;
+    }
+    .lang-active {
+        display: block;
+    }
+    span.lang-active {
+        display: inline;
+    }
 </style>
 {% endblock %}
 
@@ -651,15 +662,12 @@
                                             {{ t.get(first_violation.impact.value|upper if first_violation.impact.value else first_violation.impact|upper, first_violation.impact.value|upper if first_violation.impact.value else first_violation.impact|upper) }}
                                         </span>
                                         {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
-                                        {# Always prefer what_generic for accordion headers since it's translatable #}
-                                        {% if first_violation.metadata and first_violation.metadata.what_generic %}
-                                            {{ first_violation.metadata.what_generic|translate_issue }}
-                                        {% elif first_violation.metadata and first_violation.metadata.title %}
-                                            {{ first_violation.metadata.title|translate_issue }}
-                                        {% elif first_violation.metadata and first_violation.metadata.what %}
-                                            {{ first_violation.metadata.what|translate_issue }}
+                                        {# Bilingual accordion header (matches static report pattern) #}
+                                        {% if first_violation.metadata and (first_violation.metadata.what_generic_en or first_violation.metadata.what_generic_fr) %}
+                                            <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ first_violation.metadata.what_generic_en or first_violation.metadata.what_en or first_violation.description }}</span>
+                                            <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ first_violation.metadata.what_generic_fr or first_violation.metadata.what_fr or first_violation.description }}</span>
                                         {% else %}
-                                            {{ first_violation.description|translate_issue }}
+                                            {{ first_violation.description }}
                                         {% endif %}
                                     </button>
                                 </h2>
@@ -713,6 +721,11 @@
                                                             <span>{{ violation.metadata.duplicateName }}</span>
                                                             {% elif 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
                                                             <span>Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}</span>
+                                                            {% elif violation.metadata and (violation.metadata.what_generic_en or violation.metadata.what_generic_fr) %}
+                                                            <span>
+                                                                <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_generic_en }}</span>
+                                                                <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_generic_fr }}</span>
+                                                            </span>
                                                             {% endif %}
                                                         </div>
                                                         {% if violation.xpath and not ('ErrDuplicateNavNames' in violation.id or 'DiscoFontFound' in violation.id) %}
@@ -728,7 +741,17 @@
                                                         {% if violation.metadata and violation.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-danger mb-3">
-                                                            <h6 class="alert-heading">{{ (violation.metadata.what if violation.metadata.what else violation.description)|translate_issue }}</h6>
+                                                            <h6 class="alert-heading">
+                                                                {% if violation.metadata and (violation.metadata.what_generic_en or violation.metadata.what_generic_fr) %}
+                                                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_generic_en }}</span>
+                                                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_generic_fr }}</span>
+                                                                {% elif violation.metadata and (violation.metadata.what_en or violation.metadata.what_fr) %}
+                                                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_en }}</span>
+                                                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_fr }}</span>
+                                                                {% else %}
+                                                                    {{ (violation.metadata.what if violation.metadata.what else violation.description)|translate_issue }}
+                                                                {% endif %}
+                                                            </h6>
                                                         </div>
 
                                                         <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
@@ -737,6 +760,11 @@
                                                             <strong>{{ _('What the issue is:') }}</strong>
                                                             {% if 'ErrLinkAccessibleNameMismatch' in violation.id and violation.description %}
                                                             <p>{{ violation.description|translate_issue }}</p>
+                                                            {% elif violation.metadata and (violation.metadata.what_en or violation.metadata.what_fr) %}
+                                                                <p>
+                                                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_en or violation.description }}</span>
+                                                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_fr or violation.description }}</span>
+                                                                </p>
                                                             {% else %}
                                                             <p>{{ violation.metadata.what|default(violation.description)|translate_issue }}</p>
                                                             {% endif %}
@@ -744,17 +772,20 @@
                                                         
                                                         <div class="mb-3">
                                                             <strong>{{ _('Why this is important:') }}</strong>
-                                                            <p>{{ violation.metadata.why }}</p>
+                                                            {% if violation.metadata.why_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.why_en }}</p>{% endif %}
+                                                            {% if violation.metadata.why_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.why_fr }}</p>{% endif %}
                                                         </div>
-                                                        
+
                                                         <div class="mb-3">
                                                             <strong>{{ _('Who it affects:') }}</strong>
-                                                            <p>{{ violation.metadata.who }}</p>
+                                                            {% if violation.metadata.who_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.who_en }}</p>{% endif %}
+                                                            {% if violation.metadata.who_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.who_fr }}</p>{% endif %}
                                                         </div>
                                                         
                                                         <div class="mb-3">
                                                             <strong>{{ _('How to remediate:') }}</strong>
-                                                            <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</div>
+                                                            {% if violation.metadata.full_remediation_en %}<div data-lang="en" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation_en }}</div>{% endif %}
+                                                            {% if violation.metadata.full_remediation_fr %}<div data-lang="fr" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation_fr }}</div>{% endif %}
                                                         </div>
 
                                                         {% if violation.metadata.wcag_full or violation.wcag_criteria %}
@@ -1064,6 +1095,11 @@
                                                             <span>{{ violation.metadata.duplicateName }}</span>
                                                             {% elif 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
                                                             <span>Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}</span>
+                                                            {% elif violation.metadata and (violation.metadata.what_generic_en or violation.metadata.what_generic_fr) %}
+                                                            <span>
+                                                                <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_generic_en }}</span>
+                                                                <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_generic_fr }}</span>
+                                                            </span>
                                                             {% endif %}
                                                         </div>
                                                         {% if violation.xpath and not ('ErrDuplicateNavNames' in violation.id or 'DiscoFontFound' in violation.id) %}
@@ -1079,7 +1115,17 @@
                                                         {% if violation.metadata and violation.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-danger mb-3">
-                                                            <h6 class="alert-heading">{{ (violation.metadata.what if violation.metadata.what else violation.description)|translate_issue }}</h6>
+                                                            <h6 class="alert-heading">
+                                                                {% if violation.metadata and (violation.metadata.what_generic_en or violation.metadata.what_generic_fr) %}
+                                                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_generic_en }}</span>
+                                                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_generic_fr }}</span>
+                                                                {% elif violation.metadata and (violation.metadata.what_en or violation.metadata.what_fr) %}
+                                                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_en }}</span>
+                                                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_fr }}</span>
+                                                                {% else %}
+                                                                    {{ (violation.metadata.what if violation.metadata.what else violation.description)|translate_issue }}
+                                                                {% endif %}
+                                                            </h6>
                                                         </div>
 
                                                         <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
@@ -1088,6 +1134,11 @@
                                                             <strong>{{ _('What the issue is:') }}</strong>
                                                             {% if 'ErrLinkAccessibleNameMismatch' in violation.id and violation.description %}
                                                             <p>{{ violation.description|translate_issue }}</p>
+                                                            {% elif violation.metadata and (violation.metadata.what_en or violation.metadata.what_fr) %}
+                                                                <p>
+                                                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_en or violation.description }}</span>
+                                                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_fr or violation.description }}</span>
+                                                                </p>
                                                             {% else %}
                                                             <p>{{ violation.metadata.what|default(violation.description)|translate_issue }}</p>
                                                             {% endif %}
@@ -1095,17 +1146,20 @@
                                                         
                                                         <div class="mb-3">
                                                             <strong>{{ _('Why this is important:') }}</strong>
-                                                            <p>{{ violation.metadata.why }}</p>
+                                                            {% if violation.metadata.why_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.why_en }}</p>{% endif %}
+                                                            {% if violation.metadata.why_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.why_fr }}</p>{% endif %}
                                                         </div>
-                                                        
+
                                                         <div class="mb-3">
                                                             <strong>{{ _('Who it affects:') }}</strong>
-                                                            <p>{{ violation.metadata.who }}</p>
+                                                            {% if violation.metadata.who_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.who_en }}</p>{% endif %}
+                                                            {% if violation.metadata.who_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.who_fr }}</p>{% endif %}
                                                         </div>
                                                         
                                                         <div class="mb-3">
                                                             <strong>{{ _('How to remediate:') }}</strong>
-                                                            <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</div>
+                                                            {% if violation.metadata.full_remediation_en %}<div data-lang="en" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation_en }}</div>{% endif %}
+                                                            {% if violation.metadata.full_remediation_fr %}<div data-lang="fr" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation_fr }}</div>{% endif %}
                                                         </div>
 
                                                         {% if violation.metadata.wcag_full or violation.wcag_criteria %}
@@ -1416,12 +1470,11 @@
                                             <span>
                                             {% if 'DiscoFontFound' in violation.id and violation.metadata.fontName %}
                                                 Font '{{ violation.metadata.fontName }}' at {{ violation.metadata.sizeCount }} size{{ 's' if violation.metadata.sizeCount != 1 else '' }}: {{ violation.metadata.fontSizes|join(', ') }}
-                                            {% elif violation.metadata and violation.metadata.title %}
-                                                {{ violation.metadata.title|translate_issue }}
-                                            {% elif violation.metadata and violation.metadata.what and violation.metadata.what != "Accessibility issue: " + violation.id.split('_')[1] %}
-                                                {{ violation.metadata.what|translate_issue }}
+                                            {% elif violation.metadata and (violation.metadata.what_en or violation.metadata.what_fr) %}
+                                                <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_en or violation.description }}</span>
+                                                <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_fr or violation.description }}</span>
                                             {% else %}
-                                                {{ violation.description|translate_issue }}
+                                                {{ violation.description }}
                                             {% endif %}
                                             </span>
                                         </div>
@@ -1437,7 +1490,14 @@
                             {% if violation.metadata and violation.metadata.title %}
                             <!-- Enhanced description available -->
                             <div class="alert alert-danger mb-3">
-                                <h6 class="alert-heading">{{ violation.metadata.title|translate_issue }}</h6>
+                                <h6 class="alert-heading">
+                                    {% if violation.metadata.what_generic_en or violation.metadata.what_generic_fr %}
+                                        <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_generic_en }}</span>
+                                        <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_generic_fr }}</span>
+                                    {% else %}
+                                        {{ violation.metadata.title|translate_issue }}
+                                    {% endif %}
+                                </h6>
                             </div>
 
                             <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
@@ -1453,17 +1513,20 @@
                             
                             <div class="mb-3">
                                 <strong>{{ _('Why this is important:') }}</strong>
-                                <p>{{ violation.metadata.why }}</p>
+                                {% if violation.metadata.why_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.why_en }}</p>{% endif %}
+                                {% if violation.metadata.why_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.why_fr }}</p>{% endif %}
                             </div>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('Who it affects:') }}</strong>
-                                <p>{{ violation.metadata.who }}</p>
+                                {% if violation.metadata.who_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.who_en }}</p>{% endif %}
+                                {% if violation.metadata.who_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.who_fr }}</p>{% endif %}
                             </div>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('How to remediate:') }}</strong>
-                                <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation|default(violation.failure_summary) }}</div>
+                                {% if violation.metadata.full_remediation_en %}<div data-lang="en" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation_en }}</div>{% endif %}
+                                {% if violation.metadata.full_remediation_fr %}<div data-lang="fr" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ violation.metadata.full_remediation_fr }}</div>{% endif %}
                             </div>
 
                             {% if violation.metadata.wcag_full or violation.wcag_criteria %}
@@ -1492,10 +1555,24 @@
                             {% endif %}
                             {% else %}
                             <!-- Standard description -->
-                            <p><strong>Rule:</strong> {{ violation.rule_id|default(violation.id) }}</p>
-                            <p><strong>Help:</strong> {{ violation.help_text|default(violation.description)|translate_issue }}</p>
-                            {% if violation.failure_summary %}
-                            <p><strong>How to fix:</strong> {{ violation.failure_summary }}</p>
+                            <p><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Rule:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Règle :</span></strong> {{ violation.rule_id|default(violation.id) }}</p>
+                            <p><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Help:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Aide :</span></strong>
+                                {% if violation.metadata and (violation.metadata.what_en or violation.metadata.what_fr) %}
+                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_en or violation.help_text or violation.description }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_fr or violation.help_text or violation.description }}</span>
+                                {% else %}
+                                    {{ violation.help_text|default(violation.description)|translate_issue }}
+                                {% endif %}
+                            </p>
+                            {% if violation.failure_summary or (violation.metadata and (violation.metadata.full_remediation_en or violation.metadata.full_remediation_fr)) %}
+                            <p><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">How to fix:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Comment corriger :</span></strong>
+                                {% if violation.metadata and (violation.metadata.full_remediation_en or violation.metadata.full_remediation_fr) %}
+                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.full_remediation_en or violation.failure_summary }}</span>
+                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.full_remediation_fr or violation.failure_summary }}</span>
+                                {% else %}
+                                    {{ violation.failure_summary }}
+                                {% endif %}
+                            </p>
                             {% endif %}
                             {% endif %}
                             
@@ -1503,9 +1580,9 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(violation.touchpoint, violation.touchpoint)|default(_('General')) }}</p>
-                                    <p><strong>Impact:</strong> 
+                                    <p><strong>{{ _('Impact:') }}</strong>
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">
-                                            {{ violation.impact.value|upper if violation.impact.value else violation.impact|upper }}
+                                            {{ t.get(violation.impact.value|upper if violation.impact.value else violation.impact|upper, violation.impact.value|upper if violation.impact.value else violation.impact|upper) }}
                                         </span>
                                     </p>
                                 </div>
@@ -1872,15 +1949,12 @@
                                             {{ t.get(first_warning.impact.value|upper if first_warning.impact.value else first_warning.impact|upper, first_warning.impact.value|upper if first_warning.impact.value else first_warning.impact|upper) }}
                                         </span>
                                         {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
-                                        {# Always prefer what_generic for accordion headers since it's translatable #}
-                                        {% if first_warning.metadata and first_warning.metadata.what_generic %}
-                                            {{ first_warning.metadata.what_generic|translate_issue }}
-                                        {% elif first_warning.metadata and first_warning.metadata.title %}
-                                            {{ first_warning.metadata.title|translate_issue }}
-                                        {% elif first_warning.metadata and first_warning.metadata.what %}
-                                            {{ first_warning.metadata.what|translate_issue }}
+                                        {# Bilingual accordion header (matches static report pattern) #}
+                                        {% if first_warning.metadata and (first_warning.metadata.what_generic_en or first_warning.metadata.what_generic_fr) %}
+                                            <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ first_warning.metadata.what_generic_en or first_warning.metadata.what_en or first_warning.description }}</span>
+                                            <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ first_warning.metadata.what_generic_fr or first_warning.metadata.what_fr or first_warning.description }}</span>
                                         {% else %}
-                                            {{ first_warning.description|translate_issue }}
+                                            {{ first_warning.description }}
                                         {% endif %}
                                     </button>
                                 </h2>
@@ -1939,29 +2013,46 @@
                                                         {% if warning.metadata and warning.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-warning mb-3">
-                                                            <h6 class="alert-heading">{{ (warning.metadata.what if warning.metadata.what else warning.description)|translate_issue }}</h6>
+                                                            <h6 class="alert-heading">
+                                                                {% if warning.metadata and (warning.metadata.what_en or warning.metadata.what_fr) %}
+                                                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.what_en or warning.description }}</span>
+                                                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.what_fr or warning.description }}</span>
+                                                                {% else %}
+                                                                    {{ (warning.metadata.what if warning.metadata.what else warning.description)|translate_issue }}
+                                                                {% endif %}
+                                                            </h6>
                                                         </div>
 
                                                         <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What the issue is:') }}</strong>
-                                                            <p>{{ warning.metadata.what|default(warning.description)|translate_issue }}</p>
+                                                            {% if warning.metadata and (warning.metadata.what_en or warning.metadata.what_fr) %}
+                                                                <p>
+                                                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.what_en or warning.description }}</span>
+                                                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.what_fr or warning.description }}</span>
+                                                                </p>
+                                                            {% else %}
+                                                                <p>{{ warning.metadata.what|default(warning.description)|translate_issue }}</p>
+                                                            {% endif %}
                                                         </div>
                                                         
                                                         <div class="mb-3">
                                                             <strong>{{ _('Why this is important:') }}</strong>
-                                                            <p>{{ warning.metadata.why }}</p>
+                                                            {% if warning.metadata.why_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.why_en }}</p>{% endif %}
+                                                            {% if warning.metadata.why_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.why_fr }}</p>{% endif %}
                                                         </div>
-                                                        
+
                                                         <div class="mb-3">
                                                             <strong>{{ _('Who it affects:') }}</strong>
-                                                            <p>{{ warning.metadata.who }}</p>
+                                                            {% if warning.metadata.who_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.who_en }}</p>{% endif %}
+                                                            {% if warning.metadata.who_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.who_fr }}</p>{% endif %}
                                                         </div>
-                                                        
+
                                                         <div class="mb-3">
                                                             <strong>{{ _('How to remediate:') }}</strong>
-                                                            <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation|default(warning.failure_summary) }}</div>
+                                                            {% if warning.metadata.full_remediation_en %}<div data-lang="en" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation_en }}</div>{% endif %}
+                                                            {% if warning.metadata.full_remediation_fr %}<div data-lang="fr" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation_fr }}</div>{% endif %}
                                                         </div>
 
                                                         {% if warning.metadata.wcag_full or warning.wcag_criteria %}
@@ -2001,7 +2092,7 @@
                                                         <div class="row">
                                                             <div class="col-md-6">
                                                                 <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(warning.touchpoint, warning.touchpoint)|default(_('General')) }}</p>
-                                                                <p><strong>Impact:</strong>
+                                                                <p><strong>{{ _('Impact:') }}</strong>
                                                                     <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'secondary' }} impact-badge">
                                                                         {{ t.get(warning.impact.value|upper if warning.impact.value else warning.impact|upper, warning.impact.value|upper if warning.impact.value else warning.impact|upper) }}
                                                                     </span>
@@ -2155,29 +2246,46 @@
                                                         {% if warning.metadata and warning.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-warning mb-3">
-                                                            <h6 class="alert-heading">{{ (warning.metadata.what if warning.metadata.what else warning.description)|translate_issue }}</h6>
+                                                            <h6 class="alert-heading">
+                                                                {% if warning.metadata and (warning.metadata.what_en or warning.metadata.what_fr) %}
+                                                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.what_en or warning.description }}</span>
+                                                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.what_fr or warning.description }}</span>
+                                                                {% else %}
+                                                                    {{ (warning.metadata.what if warning.metadata.what else warning.description)|translate_issue }}
+                                                                {% endif %}
+                                                            </h6>
                                                         </div>
 
                                                         <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What the issue is:') }}</strong>
-                                                            <p>{{ warning.metadata.what|default(warning.description)|translate_issue }}</p>
+                                                            {% if warning.metadata and (warning.metadata.what_en or warning.metadata.what_fr) %}
+                                                                <p>
+                                                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.what_en or warning.description }}</span>
+                                                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.what_fr or warning.description }}</span>
+                                                                </p>
+                                                            {% else %}
+                                                                <p>{{ warning.metadata.what|default(warning.description)|translate_issue }}</p>
+                                                            {% endif %}
                                                         </div>
                                                         
                                                         <div class="mb-3">
                                                             <strong>{{ _('Why this is important:') }}</strong>
-                                                            <p>{{ warning.metadata.why }}</p>
+                                                            {% if warning.metadata.why_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.why_en }}</p>{% endif %}
+                                                            {% if warning.metadata.why_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.why_fr }}</p>{% endif %}
                                                         </div>
-                                                        
+
                                                         <div class="mb-3">
                                                             <strong>{{ _('Who it affects:') }}</strong>
-                                                            <p>{{ warning.metadata.who }}</p>
+                                                            {% if warning.metadata.who_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.who_en }}</p>{% endif %}
+                                                            {% if warning.metadata.who_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.who_fr }}</p>{% endif %}
                                                         </div>
-                                                        
+
                                                         <div class="mb-3">
                                                             <strong>{{ _('How to remediate:') }}</strong>
-                                                            <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation|default(warning.failure_summary) }}</div>
+                                                            {% if warning.metadata.full_remediation_en %}<div data-lang="en" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation_en }}</div>{% endif %}
+                                                            {% if warning.metadata.full_remediation_fr %}<div data-lang="fr" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation_fr }}</div>{% endif %}
                                                         </div>
 
                                                         {% if warning.metadata.wcag_full or warning.wcag_criteria %}
@@ -2262,10 +2370,14 @@
                                             {% endif %}
                                             {% if show_error_codes %}<code>{{ error_code|error_code_only }}</code>{% endif %}
                                             <span>
-                                            {% if warning.metadata and warning.metadata.title %}
+                                            {% if warning.metadata and (warning.metadata.what_generic_en or warning.metadata.what_generic_fr) %}
+                                                <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.what_generic_en or warning.metadata.what_en or warning.description }}</span>
+                                                <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.what_generic_fr or warning.metadata.what_fr or warning.description }}</span>
+                                            {% elif warning.metadata and (warning.metadata.what_en or warning.metadata.what_fr) %}
+                                                <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.what_en or warning.description }}</span>
+                                                <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.what_fr or warning.description }}</span>
+                                            {% elif warning.metadata and warning.metadata.title %}
                                                 {{ warning.metadata.title|translate_issue }}
-                                            {% elif warning.metadata and warning.metadata.what and warning.metadata.what != "Accessibility issue: " + warning.id.split('_')[1] %}
-                                                {{ warning.metadata.what|translate_issue }}
                                             {% else %}
                                                 {{ warning.description|translate_issue }}
                                             {% endif %}
@@ -2283,7 +2395,14 @@
                             {% if warning.metadata and warning.metadata.title %}
                             <!-- Enhanced description available -->
                             <div class="alert alert-warning mb-3">
-                                <h6 class="alert-heading">{{ warning.metadata.title|translate_issue }}</h6>
+                                <h6 class="alert-heading">
+                                    {% if warning.metadata.what_generic_en or warning.metadata.what_generic_fr %}
+                                        <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.what_generic_en }}</span>
+                                        <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.what_generic_fr }}</span>
+                                    {% else %}
+                                        {{ warning.metadata.title|translate_issue }}
+                                    {% endif %}
+                                </h6>
                             </div>
 
                             <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
@@ -2295,17 +2414,20 @@
                             
                             <div class="mb-3">
                                 <strong>{{ _('Why this is important:') }}</strong>
-                                <p>{{ warning.metadata.why }}</p>
+                                {% if warning.metadata.why_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.why_en }}</p>{% endif %}
+                                {% if warning.metadata.why_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.why_fr }}</p>{% endif %}
                             </div>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('Who it affects:') }}</strong>
-                                <p>{{ warning.metadata.who }}</p>
+                                {% if warning.metadata.who_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.who_en }}</p>{% endif %}
+                                {% if warning.metadata.who_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.who_fr }}</p>{% endif %}
                             </div>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('How to remediate:') }}</strong>
-                                <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation|default(warning.failure_summary) }}</div>
+                                {% if warning.metadata.full_remediation_en %}<div data-lang="en" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation_en }}</div>{% endif %}
+                                {% if warning.metadata.full_remediation_fr %}<div data-lang="fr" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ warning.metadata.full_remediation_fr }}</div>{% endif %}
                             </div>
 
                             {% if warning.metadata.wcag_full or warning.wcag_criteria %}
@@ -2337,9 +2459,9 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(warning.touchpoint, warning.touchpoint) }}</p>
-                                    <p><strong>Impact:</strong>
+                                    <p><strong>{{ _('Impact:') }}</strong>
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'secondary' }} impact-badge">
-                                            {{ warning.impact.value|upper if warning.impact.value else warning.impact|upper }}
+                                            {{ t.get(warning.impact.value|upper if warning.impact.value else warning.impact|upper, warning.impact.value|upper if warning.impact.value else warning.impact|upper) }}
                                         </span>
                                     </p>
                                 </div>
@@ -2455,9 +2577,9 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(warning.touchpoint, warning.touchpoint) }}</p>
-                                    <p><strong>Impact:</strong>
+                                    <p><strong>{{ _('Impact:') }}</strong>
                                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[warning.impact.value|lower if warning.impact.value else warning.impact|lower] or 'secondary' }} impact-badge">
-                                            {{ warning.impact.value|upper if warning.impact.value else warning.impact|upper }}
+                                            {{ t.get(warning.impact.value|upper if warning.impact.value else warning.impact|upper, warning.impact.value|upper if warning.impact.value else warning.impact|upper) }}
                                         </span>
                                     </p>
                                 </div>
@@ -2555,8 +2677,13 @@
                                         </span>
                                         {% endif %}
                                         {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
-                                        {# For grouped info items, use generic description from catalog (never specific description from instance) #}
-                                        {{ (first_info.metadata.what_generic if first_info.metadata and first_info.metadata.what_generic else (first_info.metadata.what if first_info.metadata and first_info.metadata.what else error_code|error_code_only))|translate_issue }}
+                                        {# Bilingual accordion header (matches static report pattern) #}
+                                        {% if first_info.metadata and (first_info.metadata.what_generic_en or first_info.metadata.what_generic_fr) %}
+                                            <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ first_info.metadata.what_generic_en or first_info.metadata.what_en or first_info.description or error_code|error_code_only }}</span>
+                                            <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ first_info.metadata.what_generic_fr or first_info.metadata.what_fr or first_info.description or error_code|error_code_only }}</span>
+                                        {% else %}
+                                            {{ first_info.description or error_code|error_code_only }}
+                                        {% endif %}
                                     </button>
                                 </h2>
                                 <div id="info-group-{{ info_counter.value }}" 
@@ -2604,17 +2731,20 @@
                                                         
                                                         <div class="mb-3">
                                                             <strong>{{ _('Why this is important:') }}</strong>
-                                                            <p>{{ info.metadata.why }}</p>
+                                                            {% if info.metadata.why_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ info.metadata.why_en }}</p>{% endif %}
+                                                            {% if info.metadata.why_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ info.metadata.why_fr }}</p>{% endif %}
                                                         </div>
-                                                        
+
                                                         <div class="mb-3">
                                                             <strong>{{ _('Who it affects:') }}</strong>
-                                                            <p>{{ info.metadata.who }}</p>
+                                                            {% if info.metadata.who_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ info.metadata.who_en }}</p>{% endif %}
+                                                            {% if info.metadata.who_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ info.metadata.who_fr }}</p>{% endif %}
                                                         </div>
-                                                        
+
                                                         <div class="mb-3">
                                                             <strong>{{ _('How to remediate:') }}</strong>
-                                                            <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ info.metadata.full_remediation|default(info.failure_summary) }}</div>
+                                                            {% if info.metadata.full_remediation_en %}<div data-lang="en" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ info.metadata.full_remediation_en }}</div>{% endif %}
+                                                            {% if info.metadata.full_remediation_fr %}<div data-lang="fr" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ info.metadata.full_remediation_fr }}</div>{% endif %}
                                                         </div>
 
                                                         {% if info.metadata.wcag_full or info.wcag_criteria %}
@@ -2727,8 +2857,9 @@
                             {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                             {% if info.metadata and info.metadata.title %}
                                 {{ info.metadata.title|translate_issue }}
-                            {% elif info.metadata and info.metadata.what and info.metadata.what != "Accessibility issue: " + info.id.split('_')[1] %}
-                                {{ info.metadata.what|translate_issue }}
+                            {% elif info.metadata and (info.metadata.what_en or info.metadata.what_fr) %}
+                                <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ info.metadata.what_en or info.description }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ info.metadata.what_fr or info.description }}</span>
                             {% else %}
                                 {{ info.description|translate_issue }}
                             {% endif %}
@@ -2744,7 +2875,14 @@
                             {% if info.metadata and info.metadata.title %}
                             <!-- Enhanced description available -->
                             <div class="alert alert-info mb-3">
-                                <h6 class="alert-heading">{{ info.metadata.title|translate_issue }}</h6>
+                                <h6 class="alert-heading">
+                                    {% if info.metadata.what_generic_en or info.metadata.what_generic_fr %}
+                                        <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ info.metadata.what_generic_en }}</span>
+                                        <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ info.metadata.what_generic_fr }}</span>
+                                    {% else %}
+                                        {{ info.metadata.title|translate_issue }}
+                                    {% endif %}
+                                </h6>
                             </div>
 
                             <h6 class="text-info mb-2">{{ _('About this issue:') }}</h6>
@@ -2756,17 +2894,20 @@
                             
                             <div class="mb-3">
                                 <strong>{{ _('Why this is important:') }}</strong>
-                                <p>{{ info.metadata.why }}</p>
+                                {% if info.metadata.why_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ info.metadata.why_en }}</p>{% endif %}
+                                {% if info.metadata.why_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ info.metadata.why_fr }}</p>{% endif %}
                             </div>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('Who it affects:') }}</strong>
-                                <p>{{ info.metadata.who }}</p>
+                                {% if info.metadata.who_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ info.metadata.who_en }}</p>{% endif %}
+                                {% if info.metadata.who_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ info.metadata.who_fr }}</p>{% endif %}
                             </div>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('How to remediate:') }}</strong>
-                                <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ info.metadata.full_remediation|default(info.failure_summary) }}</div>
+                                {% if info.metadata.full_remediation_en %}<div data-lang="en" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ info.metadata.full_remediation_en }}</div>{% endif %}
+                                {% if info.metadata.full_remediation_fr %}<div data-lang="fr" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ info.metadata.full_remediation_fr }}</div>{% endif %}
                             </div>
 
                             {% if info.metadata.wcag_full or info.wcag_criteria %}
@@ -2950,8 +3091,13 @@
                                         </span>
                                         {% endif %}
                                         {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
-                                        {# For grouped discoveries, use generic description from catalog (never specific description from instance) #}
-                                        {{ (first_discovery.metadata.what_generic if first_discovery.metadata and first_discovery.metadata.what_generic else (first_discovery.metadata.what if first_discovery.metadata and first_discovery.metadata.what else error_code|error_code_only))|translate_issue }}
+                                        {# Bilingual accordion header (matches static report pattern) #}
+                                        {% if first_discovery.metadata and (first_discovery.metadata.what_generic_en or first_discovery.metadata.what_generic_fr) %}
+                                            <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ first_discovery.metadata.what_generic_en or first_discovery.metadata.what_en or first_discovery.description or error_code|error_code_only }}</span>
+                                            <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ first_discovery.metadata.what_generic_fr or first_discovery.metadata.what_fr or first_discovery.description or error_code|error_code_only }}</span>
+                                        {% else %}
+                                            {{ first_discovery.description or error_code|error_code_only }}
+                                        {% endif %}
                                     </button>
                                 </h2>
                                 <div id="disc-group-{{ disc_counter.value }}" 
@@ -2978,9 +3124,11 @@
                                                         <code class="ms-2">{{ discovery.xpath }}</code>
                                                         {% endif %}
                                                         {% if 'DiscoFontFound' in discovery.id and discovery.metadata.fontName %}
-                                                        <span class="ms-2">Font '{{ discovery.metadata.fontName }}' at {{ discovery.metadata.sizeCount }} size{{ 's' if discovery.metadata.sizeCount != 1 else '' }}: {{ discovery.metadata.fontSizes|join(', ') }}</span>
+                                                            <span data-lang="en" class="ms-2 {{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Font '{{ discovery.metadata.fontName }}' at {{ discovery.metadata.sizeCount }} size{{ 's' if discovery.metadata.sizeCount != 1 else '' }}: {{ discovery.metadata.fontSizes|join(', ') }}</span>
+                                                            <span data-lang="fr" class="ms-2 {{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Police '{{ discovery.metadata.fontName }}' à {{ discovery.metadata.sizeCount }} taille{{ 's' if discovery.metadata.sizeCount != 1 else '' }} : {{ discovery.metadata.fontSizes|join(', ') }}</span>
                                                         {% elif 'DiscoFormOnPage' in discovery.id and discovery.metadata.formSignature %}
-                                                        <span class="ms-2">Form (signature: {{ discovery.metadata.formSignature }}){% if discovery.metadata.searchContext and 'search' in discovery.metadata.searchContext %} with {{ discovery.metadata.fieldCount }} {{ 'field' if discovery.metadata.fieldCount == 1 else 'fields' }} - {{ discovery.metadata.searchContext }}{% else %} with {{ discovery.metadata.fieldCount }} {{ 'field' if discovery.metadata.fieldCount == 1 else 'fields' }}{% endif %}</span>
+                                                            <span data-lang="en" class="ms-2 {{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Form (signature: {{ discovery.metadata.formSignature }}){% if discovery.metadata.searchContext and 'search' in discovery.metadata.searchContext %} with {{ discovery.metadata.fieldCount }} {{ 'field' if discovery.metadata.fieldCount == 1 else 'fields' }} - {{ discovery.metadata.searchContext }}{% else %} with {{ discovery.metadata.fieldCount }} {{ 'field' if discovery.metadata.fieldCount == 1 else 'fields' }}{% endif %}</span>
+                                                            <span data-lang="fr" class="ms-2 {{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Formulaire (signature : {{ discovery.metadata.formSignature }}){% if discovery.metadata.searchContext and 'search' in discovery.metadata.searchContext %} avec {{ discovery.metadata.fieldCount }} {{ 'champ' if discovery.metadata.fieldCount == 1 else 'champs' }} - {{ discovery.metadata.searchContext }}{% else %} avec {{ discovery.metadata.fieldCount }} {{ 'champ' if discovery.metadata.fieldCount == 1 else 'champs' }}{% endif %}</span>
                                                         {% endif %}
                                                     </button>
                                                 </h2>
@@ -2992,29 +3140,48 @@
                                                         {% if discovery.metadata and discovery.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert mb-3" style="background-color: #f3f0ff; border-color: #6f42c1;">
-                                                            <h6 class="alert-heading" style="color: #6f42c1;">{{ (discovery.metadata.what if discovery.metadata.what else discovery.description)|translate_issue }}</h6>
+                                                            <h6 class="alert-heading" style="color: #6f42c1;">
+                                                                {% if discovery.metadata.get('what_generic_en') or discovery.metadata.get('what_generic_fr') %}
+                                                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata['what_generic_en'] }}</span>
+                                                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata['what_generic_fr'] }}</span>
+                                                                {% elif discovery.metadata.get('what_en') or discovery.metadata.get('what_fr') %}
+                                                                    <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata['what_en'] }}</span>
+                                                                    <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata['what_fr'] }}</span>
+                                                                {% else %}
+                                                                    {{ (discovery.metadata.what if discovery.metadata.what else discovery.description)|translate_issue }}
+                                                                {% endif %}
+                                                            </h6>
                                                         </div>
 
                                                         <h6 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h6>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What was found:') }}</strong>
-                                                            <p>{{ discovery.metadata.what|default(discovery.description)|translate_issue }}</p>
+                                                            <!-- DEBUG: what_en exists={{ discovery.metadata.what_en is defined }}, what_fr exists={{ discovery.metadata.what_fr is defined }} -->
+                                                            {% if discovery.metadata.what_en or discovery.metadata.what_fr %}
+                                                                <p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata.what_en }}</p>
+                                                                <p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata.what_fr }}</p>
+                                                            {% else %}
+                                                                <p>FALLBACK: {{ discovery.metadata.what|default(discovery.description)|translate_issue }}</p>
+                                                            {% endif %}
                                                         </div>
                                                         
                                                         <div class="mb-3">
                                                             <strong>{{ _('Why manual review is needed:') }}</strong>
-                                                            <p>{{ discovery.metadata.why }}</p>
+                                                            {% if discovery.metadata.why_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata.why_en }}</p>{% endif %}
+                                                            {% if discovery.metadata.why_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata.why_fr }}</p>{% endif %}
                                                         </div>
-                                                        
+
                                                         <div class="mb-3">
                                                             <strong>{{ _('Who could be affected:') }}</strong>
-                                                            <p>{{ discovery.metadata.who }}</p>
+                                                            {% if discovery.metadata.who_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata.who_en }}</p>{% endif %}
+                                                            {% if discovery.metadata.who_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata.who_fr }}</p>{% endif %}
                                                         </div>
-                                                        
+
                                                         <div class="mb-3">
                                                             <strong>{{ _('What to check manually:') }}</strong>
-                                                            <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ discovery.metadata.full_remediation|default(discovery.failure_summary) }}</div>
+                                                            {% if discovery.metadata.full_remediation_en %}<div data-lang="en" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ discovery.metadata.full_remediation_en }}</div>{% endif %}
+                                                            {% if discovery.metadata.full_remediation_fr %}<div data-lang="fr" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ discovery.metadata.full_remediation_fr }}</div>{% endif %}
                                                         </div>
 
                                                         {% if discovery.metadata.wcag_full or discovery.wcag_criteria %}
@@ -3062,19 +3229,19 @@
                                                         {% if discovery.html %}
                                                         <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
                                                         {% if 'ErrSkippedHeadingLevel' in discovery.id and discovery.metadata and 'previousHeadingHtml' in discovery.metadata %}
-                                                        <p class="mb-2"><strong>Previous heading (h{{ discovery.metadata.skippedFrom }}):</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Previous heading</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Titre précédent</span> (h{{ discovery.metadata.skippedFrom }}):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
-                                                        <p class="mb-2"><strong>Current heading (h{{ discovery.metadata.skippedTo }}) - skipped h{{ discovery.metadata.expectedLevel }}:</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Current heading</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Titre actuel</span> (h{{ discovery.metadata.skippedTo }}) - <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">skipped</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">sauté</span> h{{ discovery.metadata.expectedLevel }}:</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
                                                         {% elif 'ErrDuplicateLandmarkWithoutName' in discovery.id and discovery.metadata and 'allInstances' in discovery.metadata %}
-                                                        <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">This instance (missing accessible name):</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Cette instance (nom accessible manquant) :</span></strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
-                                                        <h6 class="mt-4">All {{ discovery.metadata.totalCount }} {{ discovery.metadata.role }} landmarks on page:</h6>
+                                                        <h6 class="mt-4"><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">All {{ discovery.metadata.totalCount }} {{ discovery.metadata.role }} landmarks on page:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Tous les {{ discovery.metadata.totalCount }} points de repère {{ discovery.metadata.role }} sur la page :</span></h6>
                                                         {% for instance in discovery.metadata.allInstances %}
                                                         <div class="mb-3">
-                                                            <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
+                                                            <p class="mb-1"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Instance</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Instance</span> {{ instance.index }}:</strong> {{ instance.name }}</p>
                                                             <p class="mb-1 small text-muted">
-                                                            Location: <code>{{instance.xpath}}</code>
+                                                            <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Location:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Emplacement :</span> <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
                                                                 <i class="bi bi-clipboard"></i>
                                                             </button>
@@ -3083,30 +3250,30 @@
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrStyleAttrColorFont' in discovery.id and discovery.metadata and 'styleContent' in discovery.metadata %}
-                                                        <p class="mb-2"><strong>Element with inline color/font style:</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Element with inline color/font style:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Élément avec style couleur/police en ligne :</span></strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
-                                                        <p class="mb-2"><strong>Inline style attribute:</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Inline style attribute:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Attribut style en ligne :</span></strong></p>
                                                         <pre class="bg-danger text-light p-3 rounded"><code>{{ discovery.metadata.styleContent|e }}</code></pre>
                                                         <div class="alert alert-danger">
-                                                            <p class="mb-0"><strong>Error:</strong> Inline color and font styles prevent users from customizing colors and fonts to their needs. Move these styles to a CSS file to support user preferences and accessibility features.</p>
+                                                            <p class="mb-0"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Error:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Erreur :</span></strong> <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Inline color and font styles prevent users from customizing colors and fonts to their needs. Move these styles to a CSS file to support user preferences and accessibility features.</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Les styles de couleur et de police en ligne empêchent les utilisateurs de personnaliser les couleurs et les polices selon leurs besoins. Déplacez ces styles vers un fichier CSS pour prendre en charge les préférences utilisateur et les fonctionnalités d'accessibilité.</span></p>
                                                         </div>
                                                         {% elif 'WarnStyleAttrOther' in discovery.id and discovery.metadata and 'styleContent' in discovery.metadata %}
-                                                        <p class="mb-2"><strong>Element with inline layout style:</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Element with inline layout style:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Élément avec style de mise en page en ligne :</span></strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
-                                                        <p class="mb-2"><strong>Inline style attribute:</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Inline style attribute:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Attribut style en ligne :</span></strong></p>
                                                         <pre class="bg-warning text-dark p-3 rounded"><code>{{ discovery.metadata.styleContent|e }}</code></pre>
                                                         <div class="alert alert-warning">
-                                                            <p class="mb-0"><strong>Warning:</strong> While layout styles are less critical than color/font styles, it's better to move these styles to a CSS class for better maintainability and separation of concerns.</p>
+                                                            <p class="mb-0"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Warning:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Avertissement :</span></strong> <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">While layout styles are less critical than color/font styles, it's better to move these styles to a CSS class for better maintainability and separation of concerns.</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Bien que les styles de mise en page soient moins critiques que les styles de couleur/police, il est préférable de déplacer ces styles vers une classe CSS pour une meilleure maintenabilité et séparation des préoccupations.</span></p>
                                                         </div>
                                                         {% elif 'ErrTabOrderViolation' in discovery.id and discovery.metadata and 'previousElement' in discovery.metadata %}
-                                                        <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">This element (comes later in tab order but appears visually left):</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Cet élément (vient plus tard dans l'ordre de tabulation mais apparaît visuellement à gauche) :</span></strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
-                                                        <p class="mb-2"><strong>Previous element in tab order (visually to the right):</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Previous element in tab order (visually to the right):</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Élément précédent dans l'ordre de tabulation (visuellement à droite) :</span></strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousElement.html|e }}</code></pre>
                                                         <div class="alert alert-info">
-                                                            <p class="mb-1"><strong>Visual positions:</strong></p>
-                                                            <p class="mb-1">• This element: x={{ discovery.metadata.currentElement.position.x }}, y={{ discovery.metadata.currentElement.position.y }} (tab stop #{{ discovery.metadata.currentElement.tabIndex }})</p>
-                                                            <p class="mb-0">• Previous element: x={{ discovery.metadata.previousElement.position.x }}, y={{ discovery.metadata.previousElement.position.y }} (tab stop #{{ discovery.metadata.previousElement.tabIndex }})</p>
+                                                            <p class="mb-1"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Visual positions:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Positions visuelles :</span></strong></p>
+                                                            <p class="mb-1">• <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">This element:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Cet élément :</span> x={{ discovery.metadata.currentElement.position.x }}, y={{ discovery.metadata.currentElement.position.y }} (<span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">tab stop</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">arrêt de tabulation</span> #{{ discovery.metadata.currentElement.tabIndex }})</p>
+                                                            <p class="mb-0">• <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Previous element:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Élément précédent :</span> x={{ discovery.metadata.previousElement.position.x }}, y={{ discovery.metadata.previousElement.position.y }} (<span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">tab stop</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">arrêt de tabulation</span> #{{ discovery.metadata.previousElement.tabIndex }})</p>
                                                         </div>
                                                         {% else %}
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
@@ -3145,10 +3312,14 @@
                             {% if show_error_codes %}<code class="me-2">{{ error_code|error_code_only }}</code>{% endif %}
                             {% if 'DiscoFontFound' in discovery.id and discovery.metadata.fontName %}
                                 Font '{{ discovery.metadata.fontName }}' at {{ discovery.metadata.sizeCount }} size{{ 's' if discovery.metadata.sizeCount != 1 else '' }}: {{ discovery.metadata.fontSizes|join(', ') }}
+                            {% elif discovery.metadata and (discovery.metadata.what_generic_en or discovery.metadata.what_generic_fr) %}
+                                <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata.what_generic_en or discovery.metadata.what_en or discovery.description }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata.what_generic_fr or discovery.metadata.what_fr or discovery.description }}</span>
+                            {% elif discovery.metadata and (discovery.metadata.what_en or discovery.metadata.what_fr) %}
+                                <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata.what_en or discovery.description }}</span>
+                                <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata.what_fr or discovery.description }}</span>
                             {% elif discovery.metadata and discovery.metadata.title %}
                                 {{ discovery.metadata.title|translate_issue }}
-                            {% elif discovery.metadata and discovery.metadata.what and discovery.metadata.what != "Accessibility issue: " + discovery.id.split('_')[1] %}
-                                {{ discovery.metadata.what|translate_issue }}
                             {% else %}
                                 {{ discovery.description|translate_issue }}
                             {% endif %}
@@ -3164,29 +3335,47 @@
                             {% if discovery.metadata and discovery.metadata.title %}
                             <!-- Enhanced description available -->
                             <div class="alert mb-3" style="background-color: #f3f0ff; border-color: #6f42c1;">
-                                <h6 class="alert-heading" style="color: #6f42c1;">{{ discovery.metadata.title|translate_issue }}</h6>
+                                <h6 class="alert-heading" style="color: #6f42c1;">
+                                    {% if discovery.metadata.what_generic_en or discovery.metadata.what_generic_fr %}
+                                        <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata.what_generic_en }}</span>
+                                        <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata.what_generic_fr }}</span>
+                                    {% elif discovery.metadata.what_en or discovery.metadata.what_fr %}
+                                        <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata.what_en }}</span>
+                                        <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata.what_fr }}</span>
+                                    {% else %}
+                                        {{ discovery.metadata.title|translate_issue }}
+                                    {% endif %}
+                                </h6>
                             </div>
-                            
+
                             <h6 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h6>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('What was found:') }}</strong>
-                                <p>{{ discovery.metadata.what|default(discovery.description)|translate_issue }}</p>
+                                {% if discovery.metadata.what_en or discovery.metadata.what_fr %}
+                                    <p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata.what_en }}</p>
+                                    <p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata.what_fr }}</p>
+                                {% else %}
+                                    <p>{{ discovery.metadata.what|default(discovery.description)|translate_issue }}</p>
+                                {% endif %}
                             </div>
 
                             <div class="mb-3">
                                 <strong>{{ _('Why manual review is needed:') }}</strong>
-                                <p>{{ discovery.metadata.why }}</p>
+                                {% if discovery.metadata.why_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata.why_en }}</p>{% endif %}
+                                {% if discovery.metadata.why_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata.why_fr }}</p>{% endif %}
                             </div>
 
                             <div class="mb-3">
                                 <strong>{{ _('Who could be affected:') }}</strong>
-                                <p>{{ discovery.metadata.who }}</p>
+                                {% if discovery.metadata.who_en %}<p data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata.who_en }}</p>{% endif %}
+                                {% if discovery.metadata.who_fr %}<p data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata.who_fr }}</p>{% endif %}
                             </div>
-                            
+
                             <div class="mb-3">
                                 <strong>{{ _('What to check manually:') }}</strong>
-                                <div class="bg-light p-3 rounded" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ discovery.metadata.full_remediation|default(discovery.failure_summary) }}</div>
+                                {% if discovery.metadata.full_remediation_en %}<div data-lang="en" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ discovery.metadata.full_remediation_en }}</div>{% endif %}
+                                {% if discovery.metadata.full_remediation_fr %}<div data-lang="fr" class="bg-light p-3 rounded {{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace;">{{ discovery.metadata.full_remediation_fr }}</div>{% endif %}
                             </div>
 
                             {% if discovery.metadata.wcag_full or discovery.wcag_criteria %}
@@ -3252,30 +3441,30 @@
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrStyleAttrColorFont' in discovery.id and discovery.metadata and 'styleContent' in discovery.metadata %}
-                                                        <p class="mb-2"><strong>Element with inline color/font style:</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Element with inline color/font style:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Élément avec style couleur/police en ligne :</span></strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
-                                                        <p class="mb-2"><strong>Inline style attribute:</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Inline style attribute:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Attribut style en ligne :</span></strong></p>
                                                         <pre class="bg-danger text-light p-3 rounded"><code>{{ discovery.metadata.styleContent|e }}</code></pre>
                                                         <div class="alert alert-danger">
-                                                            <p class="mb-0"><strong>Error:</strong> Inline color and font styles prevent users from customizing colors and fonts to their needs. Move these styles to a CSS file to support user preferences and accessibility features.</p>
+                                                            <p class="mb-0"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Error:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Erreur :</span></strong> <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Inline color and font styles prevent users from customizing colors and fonts to their needs. Move these styles to a CSS file to support user preferences and accessibility features.</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Les styles de couleur et de police en ligne empêchent les utilisateurs de personnaliser les couleurs et les polices selon leurs besoins. Déplacez ces styles vers un fichier CSS pour prendre en charge les préférences utilisateur et les fonctionnalités d'accessibilité.</span></p>
                                                         </div>
                                                         {% elif 'WarnStyleAttrOther' in discovery.id and discovery.metadata and 'styleContent' in discovery.metadata %}
-                                                        <p class="mb-2"><strong>Element with inline layout style:</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Element with inline layout style:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Élément avec style de mise en page en ligne :</span></strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
-                                                        <p class="mb-2"><strong>Inline style attribute:</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Inline style attribute:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Attribut style en ligne :</span></strong></p>
                                                         <pre class="bg-warning text-dark p-3 rounded"><code>{{ discovery.metadata.styleContent|e }}</code></pre>
                                                         <div class="alert alert-warning">
-                                                            <p class="mb-0"><strong>Warning:</strong> While layout styles are less critical than color/font styles, it's better to move these styles to a CSS class for better maintainability and separation of concerns.</p>
+                                                            <p class="mb-0"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Warning:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Avertissement :</span></strong> <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">While layout styles are less critical than color/font styles, it's better to move these styles to a CSS class for better maintainability and separation of concerns.</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Bien que les styles de mise en page soient moins critiques que les styles de couleur/police, il est préférable de déplacer ces styles vers une classe CSS pour une meilleure maintenabilité et séparation des préoccupations.</span></p>
                                                         </div>
                                                         {% elif 'ErrTabOrderViolation' in discovery.id and discovery.metadata and 'previousElement' in discovery.metadata %}
-                                                        <p class="mb-2"><strong>This element (comes later in tab order but appears visually left):</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">This element (comes later in tab order but appears visually left):</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Cet élément (vient plus tard dans l'ordre de tabulation mais apparaît visuellement à gauche) :</span></strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
-                                                        <p class="mb-2"><strong>Previous element in tab order (visually to the right):</strong></p>
+                                                        <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Previous element in tab order (visually to the right):</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Élément précédent dans l'ordre de tabulation (visuellement à droite) :</span></strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousElement.html|e }}</code></pre>
                                                         <div class="alert alert-info">
-                                                            <p class="mb-1"><strong>Visual positions:</strong></p>
-                                                            <p class="mb-1">• This element: x={{ discovery.metadata.currentElement.position.x }}, y={{ discovery.metadata.currentElement.position.y }} (tab stop #{{ discovery.metadata.currentElement.tabIndex }})</p>
-                                                            <p class="mb-0">• Previous element: x={{ discovery.metadata.previousElement.position.x }}, y={{ discovery.metadata.previousElement.position.y }} (tab stop #{{ discovery.metadata.previousElement.tabIndex }})</p>
+                                                            <p class="mb-1"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Visual positions:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Positions visuelles :</span></strong></p>
+                                                            <p class="mb-1">• <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">This element:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Cet élément :</span> x={{ discovery.metadata.currentElement.position.x }}, y={{ discovery.metadata.currentElement.position.y }} (<span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">tab stop</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">arrêt de tabulation</span> #{{ discovery.metadata.currentElement.tabIndex }})</p>
+                                                            <p class="mb-0">• <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Previous element:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Élément précédent :</span> x={{ discovery.metadata.previousElement.position.x }}, y={{ discovery.metadata.previousElement.position.y }} (<span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">tab stop</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">arrêt de tabulation</span> #{{ discovery.metadata.previousElement.tabIndex }})</p>
                                                         </div>
                                                         {% else %}
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ discovery.html|e }}</code></pre>
@@ -3362,7 +3551,7 @@
             <div class="row text-center">
                 <div class="col">
                     <small class="text-muted">
-                        Test completed in {{ "%.2f"|format(latest_result.duration_ms / 1000) }} seconds
+                        {{ _('Test completed in %(seconds)s seconds', seconds="%.2f"|format(latest_result.duration_ms / 1000)) }}
                         {% if latest_result.screenshot_path %}
                         | <a href="{{ url_for('serve_screenshot', filename=latest_result.screenshot_path.replace('screenshots/', '')) }}" target="_blank">
                             {{ _('View Screenshot') }} <i class="bi bi-image"></i>

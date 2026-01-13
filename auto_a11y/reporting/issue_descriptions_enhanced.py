@@ -3798,7 +3798,7 @@ def get_detailed_issue_description(issue_code: str, metadata: Dict[str, Any] = N
         desc = descriptions[error_type].copy()
         
         # Replace metadata placeholders in the description
-        for key in ['title', 'what', 'why', 'who', 'remediation']:
+        for key in ['title', 'what', 'what_generic', 'why', 'who', 'remediation']:
             if key in desc and isinstance(desc[key], str):
                 # Replace {found} with actual font name for font issues (legacy support)
                 if '{found}' in desc[key] and 'found' in metadata:

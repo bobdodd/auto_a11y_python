@@ -3,7 +3,7 @@ Page management routes
 """
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
-from flask_babel import gettext as _, lazy_gettext
+from flask_babel import gettext as _, lazy_gettext, force_locale
 from auto_a11y.models import PageStatus
 from auto_a11y.reporting.issue_catalog import IssueCatalog
 from auto_a11y.reporting.wcag_mapper import enrich_wcag_criteria
@@ -31,272 +31,118 @@ def enrich_test_result_with_catalog(test_result):
             return str(values.get(key, match.group(0)))
         
         return re.sub(r'\{([^}]+)\}', replace_match, template)
-    
-    # Enrich violations
+
+    def enrich_issue_bilingual(issue):
+        """
+        Enrich an issue with bilingual metadata (EN and FR).
+        Follows the same pattern as static_html_generator.py for consistency.
+
+        Args:
+            issue: Issue object with id, description, metadata attributes
+
+        Returns:
+            The same issue object with enriched bilingual metadata fields
+        """
+        # Extract error code from issue ID
+        issue_id = issue.id if hasattr(issue, 'id') else ''
+        error_code = issue_id
+        if '_' in issue_id:
+            parts = issue_id.split('_')
+            for i, part in enumerate(parts):
+                if part.startswith(('Err', 'Warn', 'Info', 'Disco', 'AI')):
+                    error_code = '_'.join(parts[i:])
+                    break
+
+        # Ensure issue has metadata dict
+        if not hasattr(issue, 'metadata') or not issue.metadata:
+            issue.metadata = {}
+
+        # Build issue dict for IssueCatalog.enrich_issue()
+        issue_dict = {
+            'id': issue_id,
+            'description': issue.description if hasattr(issue, 'description') else '',
+            'impact': issue.impact if hasattr(issue, 'impact') else 'moderate',
+            'xpath': issue.xpath if hasattr(issue, 'xpath') else '',
+            'html_snippet': issue.html if hasattr(issue, 'html') else '',
+            'touchpoint': issue.touchpoint if hasattr(issue, 'touchpoint') else '',
+            'failure_summary': issue.failure_summary if hasattr(issue, 'failure_summary') else '',
+            'metadata': {}
+        }
+
+        # Copy metadata if present
+        if hasattr(issue, 'metadata') and issue.metadata:
+            issue_dict['metadata'] = dict(issue.metadata)
+
+        # Enrich with IssueCatalog in both languages (same as static generator)
+        with force_locale('en'):
+            enriched_en = IssueCatalog.enrich_issue(issue_dict.copy())
+
+        with force_locale('fr'):
+            enriched_fr = IssueCatalog.enrich_issue(issue_dict.copy())
+
+        # Store bilingual metadata fields (same as static generator)
+        issue.metadata['what_en'] = enriched_en.get('description_full', enriched_en.get('description', ''))
+        issue.metadata['what_fr'] = enriched_fr.get('description_full', enriched_fr.get('description', ''))
+        issue.metadata['what_generic_en'] = enriched_en.get('what_generic', enriched_en.get('description', ''))
+        issue.metadata['what_generic_fr'] = enriched_fr.get('what_generic', enriched_fr.get('description', ''))
+
+        # Debug: log what_generic values for forms
+        if 'DiscoFormOnPage' in issue_id:
+            logger.warning(f"DEBUG DiscoFormOnPage enrichment:")
+            logger.warning(f"  what_generic_en: {issue.metadata['what_generic_en']}")
+            logger.warning(f"  what_generic_fr: {issue.metadata['what_generic_fr']}")
+
+        issue.metadata['why_en'] = enriched_en.get('why_it_matters', '')
+        issue.metadata['why_fr'] = enriched_fr.get('why_it_matters', '')
+        issue.metadata['who_en'] = enriched_en.get('who_it_affects', '')
+        issue.metadata['who_fr'] = enriched_fr.get('who_it_affects', '')
+        issue.metadata['full_remediation_en'] = enriched_en.get('how_to_fix', '')
+        issue.metadata['full_remediation_fr'] = enriched_fr.get('how_to_fix', '')
+
+        # Set backward-compatible single-language fields (default to EN)
+        issue.metadata['what'] = issue.metadata['what_en']
+        issue.metadata['what_generic'] = issue.metadata['what_generic_en']
+        issue.metadata['why'] = issue.metadata['why_en']
+        issue.metadata['who'] = issue.metadata['who_en']
+        issue.metadata['how'] = issue.metadata['full_remediation_en']
+        issue.metadata['full_remediation'] = issue.metadata['full_remediation_en']
+
+        # Handle WCAG criteria
+        wcag_full_raw = enriched_en.get('wcag_full', '')
+        if isinstance(wcag_full_raw, str) and wcag_full_raw:
+            issue.metadata['wcag_full'] = [c.strip() for c in wcag_full_raw.split(',') if c.strip()]
+        elif isinstance(wcag_full_raw, list):
+            issue.metadata['wcag_full'] = wcag_full_raw
+        else:
+            issue.metadata['wcag_full'] = []
+
+        # Store impact detail
+        issue.metadata['impact_detail'] = enriched_en.get('impact', '')
+
+        return issue
+
+    # Enrich violations - use bilingual enrichment pattern
     if hasattr(test_result, 'violations') and test_result.violations:
         for violation in test_result.violations:
-            if not hasattr(violation, 'metadata') or not violation.metadata:
-                violation.metadata = {}
-            
-            # Extract the error code from the violation ID
-            # IDs can be in formats like:
-            # - testname_ErrorCode (e.g., headings_ErrEmptyHeading)
-            # - testname_subtest_ErrorCode (e.g., more_links_ErrInvalidGenericLinkName)
-            issue_id = violation.id if hasattr(violation, 'id') else ''
-            
-            # Find the actual error code (starts with Err, Warn, Info, or Disco)
-            error_code = issue_id
-            if '_' in issue_id:
-                parts = issue_id.split('_')
-                for i, part in enumerate(parts):
-                    if part.startswith(('Err', 'Warn', 'Info', 'Disco', 'AI')):
-                        # Found the error code, join from here to end
-                        error_code = '_'.join(parts[i:])
-                        break
-            
-            # Always re-enrich to get fresh translations based on current locale
-            # (Previously we skipped if metadata existed, but we need to re-enrich
-            # to support runtime translation)
+            enrich_issue_bilingual(violation)
 
-            # Get catalog info for this issue with metadata for placeholder substitution
-            catalog_info = IssueCatalog.get_issue(error_code, violation.metadata if hasattr(violation, 'metadata') else None)
-            
-            # Only update if we got meaningful enriched data
-            if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
-                # Add enriched metadata - but preserve title if it has specific details
-                # (test may provide a short title for accordion and full description for details)
-                existing_title = violation.metadata.get('title', '')
-                has_specific_title = existing_title and any(pattern in existing_title for pattern in [
-                    '".', '"#', 'missing role=', 'missing aria-',
-                    'px', ':1', 'alpha=', '°', '%'
-                ])
-
-                # Get descriptions with placeholders
-                title_template = catalog_info.get('title', '') or catalog_info.get('description', '')
-                what_template = catalog_info['description']
-                why_template = catalog_info['why_it_matters']
-                how_template = catalog_info['how_to_fix']
-
-                # Fill in placeholders from violation data
-                placeholder_values = {}
-                
-                # First, copy root-level violation attributes that are used in placeholders
-                for field in ('element', 'xpath', 'html'):
-                    if hasattr(violation, field):
-                        val = getattr(violation, field)
-                        if val:
-                            placeholder_values[field] = str(val)
-                
-                if hasattr(violation, 'metadata') and violation.metadata:
-                    # Include all metadata fields for placeholder substitution
-                    for key, value in violation.metadata.items():
-                        if value is not None and not isinstance(value, (dict, list)):
-                            placeholder_values[key] = str(value)
-                    
-                    # Extract contrast ratio without ":1" suffix if present
-                    contrast_ratio = violation.metadata.get('contrastRatio', '')
-                    if isinstance(contrast_ratio, str) and contrast_ratio.endswith(':1'):
-                        contrast_ratio = contrast_ratio[:-2]
-                    placeholder_values['ratio'] = str(contrast_ratio) if contrast_ratio else ''
-                    
-                    # Also map common field names for compatibility
-                    placeholder_values['fg'] = str(violation.metadata.get('textColor', ''))
-                    placeholder_values['bg'] = str(violation.metadata.get('backgroundColor', ''))
-                    placeholder_values['fontSize'] = str(violation.metadata.get('fontSize', ''))
-
-                # Replace placeholders in templates
-                # But preserve 'what' if it already has specific details (contains identifying patterns)
-                existing_what = violation.metadata.get('what', '')
-                has_specific_what = any(pattern in existing_what for pattern in [
-                    '".', '"#', 'containing', ' element(s)', 'lacks accessibility',
-                    'px', ':1', 'alpha=', '°', '%'
-                ])
-                
-                # Apply placeholder substitution using {key} syntax
-                if not has_specific_title:
-                    violation.metadata['title'] = substitute_placeholders(title_template, placeholder_values)
-                # Only overwrite 'what' if it doesn't have specific details already
-                if not has_specific_what:
-                    violation.metadata['what'] = substitute_placeholders(what_template, placeholder_values)
-                violation.metadata['why'] = substitute_placeholders(why_template, placeholder_values)
-                violation.metadata['how'] = substitute_placeholders(how_template, placeholder_values)
-                
-                violation.metadata['what_generic'] = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
-                violation.metadata['who'] = catalog_info['who_it_affects']
-
-                # Handle WCAG criteria - enrich with full names and levels
-                wcag_codes = catalog_info.get('wcag', [])
-                if isinstance(wcag_codes, str) and wcag_codes and wcag_codes != 'N/A':
-                    wcag_codes = [c.strip() for c in wcag_codes.split(',') if c.strip()]
-                elif not isinstance(wcag_codes, list):
-                    wcag_codes = []
-                violation.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
-                violation.metadata['full_remediation'] = violation.metadata.get('how') or catalog_info['how_to_fix']
-                violation.metadata['impact_detail'] = catalog_info['impact']
-    
-    # Enrich warnings
+    # Enrich warnings - use bilingual enrichment pattern
     if hasattr(test_result, 'warnings') and test_result.warnings:
         for warning in test_result.warnings:
-            if not hasattr(warning, 'metadata') or not warning.metadata:
-                warning.metadata = {}
-            
-            # Extract the error code from the warning ID
-            issue_id = warning.id if hasattr(warning, 'id') else ''
-            if '_' in issue_id:
-                error_code = issue_id.split('_', 1)[1]
-            else:
-                error_code = issue_id
+            enrich_issue_bilingual(warning)
 
-            # Always re-enrich for translations with metadata for placeholder substitution
-            catalog_info = IssueCatalog.get_issue(error_code, warning.metadata if hasattr(warning, 'metadata') else None)
-            
-            if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
-                # Get descriptions with placeholders
-                title_template = catalog_info.get('title', '') or catalog_info.get('description', '')
-                what_template = catalog_info['description']
-                why_template = catalog_info['why_it_matters']
-                how_template = catalog_info['how_to_fix']
-                
-                # Fill in placeholders from warning data
-                placeholder_values = {}
-                if hasattr(warning, 'metadata') and warning.metadata:
-                    for key, value in warning.metadata.items():
-                        if value is not None and not isinstance(value, (dict, list)):
-                            placeholder_values[key] = str(value)
-                
-                # Apply placeholder substitution using {key} syntax
-                warning.metadata['title'] = substitute_placeholders(title_template, placeholder_values)
-                warning.metadata['what'] = substitute_placeholders(what_template, placeholder_values)
-                warning.metadata['why'] = substitute_placeholders(why_template, placeholder_values)
-                warning.metadata['how'] = substitute_placeholders(how_template, placeholder_values)
-                
-                warning.metadata['what_generic'] = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
-                warning.metadata['who'] = catalog_info['who_it_affects']
-                # Handle WCAG criteria - enrich with full names and levels
-                wcag_codes = catalog_info.get('wcag', [])
-                if isinstance(wcag_codes, str) and wcag_codes and wcag_codes != 'N/A':
-                    wcag_codes = [c.strip() for c in wcag_codes.split(',') if c.strip()]
-                elif not isinstance(wcag_codes, list):
-                    wcag_codes = []
-                warning.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
-                warning.metadata['full_remediation'] = warning.metadata.get('how') or catalog_info['how_to_fix']
-                warning.metadata['impact_detail'] = catalog_info['impact']
-    
-    # Enrich info items
+    # Enrich info items - use bilingual enrichment pattern
     if hasattr(test_result, 'info') and test_result.info:
         for info in test_result.info:
-            if not hasattr(info, 'metadata') or not info.metadata:
-                info.metadata = {}
-            
-            # Extract the error code from the info ID
-            issue_id = info.id if hasattr(info, 'id') else ''
-            if '_' in issue_id:
-                error_code = issue_id.split('_', 1)[1]
-            else:
-                error_code = issue_id
+            enrich_issue_bilingual(info)
 
-            # Always re-enrich for translations with metadata for placeholder substitution
-            catalog_info = IssueCatalog.get_issue(error_code, info.metadata if hasattr(info, 'metadata') else None)
-            
-            if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
-                info.metadata['title'] = catalog_info.get('title', '') or catalog_info.get('description', '')
-                info.metadata['what'] = catalog_info['description']
-                info.metadata['what_generic'] = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
-                info.metadata['why'] = catalog_info['why_it_matters']
-                info.metadata['who'] = catalog_info['who_it_affects']
-                info.metadata['how'] = catalog_info['how_to_fix']
-                # Handle WCAG criteria - enrich with full names and levels
-                wcag_codes = catalog_info.get('wcag', [])
-                if isinstance(wcag_codes, str) and wcag_codes and wcag_codes != 'N/A':
-                    wcag_codes = [c.strip() for c in wcag_codes.split(',') if c.strip()]
-                elif not isinstance(wcag_codes, list):
-                    wcag_codes = []
-                info.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
-                info.metadata['full_remediation'] = info.metadata.get('how') or catalog_info['how_to_fix']
-                info.metadata['impact_detail'] = catalog_info['impact']
-    
-    # Enrich discovery items
+    # Enrich discovery items - use bilingual enrichment pattern
     if hasattr(test_result, 'discovery') and test_result.discovery:
+        logger.warning(f"DEBUG: Enriching {len(test_result.discovery)} discovery items")
         for discovery in test_result.discovery:
-            if not hasattr(discovery, 'metadata') or not discovery.metadata:
-                discovery.metadata = {}
-            
-            # Extract the error code from the discovery ID
-            # IDs can be in formats like:
-            # - testname_DiscoCode (e.g., headings_DiscoFoundJS)
-            # - testname_subtest_DiscoCode (e.g., event_handlers_DiscoFoundJS)
-            issue_id = discovery.id if hasattr(discovery, 'id') else ''
-            error_code = issue_id
-            if '_' in issue_id:
-                parts = issue_id.split('_')
-                for i, part in enumerate(parts):
-                    if part.startswith(('Err', 'Warn', 'Info', 'Disco', 'AI')):
-                        error_code = '_'.join(parts[i:])
-                        break
+            logger.warning(f"DEBUG: Enriching discovery with id: {discovery.id}")
+            enrich_issue_bilingual(discovery)
 
-            # Always re-enrich to get fresh translations based on current locale with metadata
-            logger.debug(f"Looking up discovery issue: {error_code} (from ID: {issue_id})")
-            catalog_info = IssueCatalog.get_issue(error_code, discovery.metadata if hasattr(discovery, 'metadata') else None)
-            
-            if catalog_info and catalog_info.get('description') != f"Issue {error_code} needs documentation":
-                # Build placeholder values from discovery metadata for string substitution
-                placeholder_values = {}
-                if hasattr(discovery, 'metadata') and discovery.metadata:
-                    for key, value in discovery.metadata.items():
-                        if value is not None and not isinstance(value, (dict, list)):
-                            placeholder_values[key] = str(value)
-                        elif isinstance(value, list):
-                            placeholder_values[f'{key}_list'] = ', '.join(str(v) for v in value)
-                
-                # Use what_generic for display (translatable, no placeholders)
-                what_generic = catalog_info.get('what_generic') or catalog_info.get('description_generic') or catalog_info['description']
-                catalog_description = catalog_info['description']
-                
-                # Check if existing what has instance-specific data (filled placeholders with actual values)
-                existing_what = discovery.metadata.get('what', '')
-                existing_title = discovery.metadata.get('title', '')
-                
-                # If existing has unfilled placeholders, try to fill them
-                # Otherwise use catalog description (translated)
-                if existing_what and any(p in existing_what for p in ['%(', '{']):
-                    try:
-                        filled_what = existing_what % placeholder_values
-                        discovery.metadata['what'] = _(filled_what) if filled_what == existing_what else filled_what
-                    except (KeyError, ValueError, TypeError):
-                        discovery.metadata['what'] = _(what_generic)
-                elif not existing_what or existing_what == catalog_description:
-                    discovery.metadata['what'] = _(catalog_description)
-                else:
-                    discovery.metadata['what'] = _(existing_what)
-                
-                if existing_title and any(p in existing_title for p in ['%(', '{']):
-                    try:
-                        filled_title = existing_title % placeholder_values
-                        discovery.metadata['title'] = _(filled_title) if filled_title == existing_title else filled_title
-                    except (KeyError, ValueError, TypeError):
-                        discovery.metadata['title'] = _(what_generic)
-                elif not existing_title or existing_title == catalog_description:
-                    discovery.metadata['title'] = _(catalog_info.get('title', '') or catalog_description)
-                else:
-                    discovery.metadata['title'] = _(existing_title)
-                
-                discovery.metadata['what_generic'] = _(what_generic)
-                discovery.metadata['why'] = _(catalog_info['why_it_matters'])
-                discovery.metadata['who'] = _(catalog_info['who_it_affects'])
-                discovery.metadata['how'] = _(catalog_info['how_to_fix'])
-
-                # Handle WCAG criteria - enrich with full names and levels
-                wcag_codes = catalog_info.get('wcag', [])
-                if isinstance(wcag_codes, str) and wcag_codes and wcag_codes != 'N/A':
-                    wcag_codes = [c.strip() for c in wcag_codes.split(',') if c.strip()]
-                elif not isinstance(wcag_codes, list):
-                    wcag_codes = []
-                discovery.metadata['wcag_full'] = enrich_wcag_criteria(wcag_codes) if wcag_codes else []
-
-                discovery.metadata['full_remediation'] = discovery.metadata.get('how') or _(catalog_info['how_to_fix'])
-                discovery.metadata['impact_detail'] = _(catalog_info['impact'])
-                logger.debug(f"Enriched discovery item with catalog data: {discovery.metadata.get('title')}")
-    
     return test_result
 
 
@@ -418,6 +264,7 @@ def view_page(page_id):
         'modals': lazy_gettext('Dialogs & Modals'),
         'navigation': lazy_gettext('Navigation'),
         'page': lazy_gettext('Page'),
+        'page_state': lazy_gettext('Page State'),
         'reading_order': lazy_gettext('Reading Order'),
         'responsive': lazy_gettext('Responsive Design'),
         'semantic_structure': lazy_gettext('Semantic Structure'),
@@ -430,6 +277,25 @@ def view_page(page_id):
         'video': lazy_gettext('Media'),
         'other': lazy_gettext('Other')
     }
+
+    # Debug: check discovery metadata before rendering
+    if test_result and test_result.discovery:
+        for disc in test_result.discovery:
+            if 'DiscoFormOnPage' in disc.id:
+                logger.warning(f"DEBUG Before render - DiscoFormOnPage:")
+                logger.warning(f"  has what_generic_en: {'what_generic_en' in disc.metadata}")
+                logger.warning(f"  has what_generic_fr: {'what_generic_fr' in disc.metadata}")
+                logger.warning(f"  has what_en: {'what_en' in disc.metadata}")
+                logger.warning(f"  has what_fr: {'what_fr' in disc.metadata}")
+                if 'what_generic_en' in disc.metadata:
+                    logger.warning(f"  what_generic_en value: {disc.metadata['what_generic_en']}")
+                if 'what_generic_fr' in disc.metadata:
+                    logger.warning(f"  what_generic_fr value: {disc.metadata['what_generic_fr']}")
+                if 'what_en' in disc.metadata:
+                    logger.warning(f"  what_en value: {disc.metadata['what_en'][:100]}")
+                if 'what_fr' in disc.metadata:
+                    logger.warning(f"  what_fr value: {disc.metadata['what_fr'][:100]}")
+                break
 
     return render_template('pages/view.html',
                          page=page,

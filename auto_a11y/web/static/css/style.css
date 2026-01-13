@@ -303,6 +303,35 @@ textarea:focus {
 }
 
 /* WCAG AA Contrast Overrides */
+/* Override Bootstrap primary color for WCAG AA contrast (4.5:1 minimum) */
+:root {
+    --bs-primary: #0a58ca;
+    --bs-primary-rgb: 10, 88, 202;
+}
+.btn-primary {
+    background-color: #0a58ca !important;
+    border-color: #0a58ca !important;
+}
+.btn-primary:hover,
+.btn-primary:active {
+    background-color: #084298 !important;
+    border-color: #084298 !important;
+}
+.btn-outline-primary.active,
+.btn-outline-primary:active {
+    background-color: #0a58ca !important;
+    border-color: #0a58ca !important;
+}
+.bg-primary {
+    background-color: #0a58ca !important;
+}
+.text-primary {
+    color: #0a58ca !important;
+}
+.border-primary {
+    border-color: #0a58ca !important;
+}
+
 /* Override Bootstrap info color for WCAG AA contrast (4.5:1 minimum) */
 :root {
     --bs-info: #0e7490;

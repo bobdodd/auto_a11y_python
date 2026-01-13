@@ -98,6 +98,15 @@
     .alert-warning {
         color: #212529 !important;
     }
+
+    /* Override Bootstrap warning text color for WCAG AA contrast on white */
+    .text-warning {
+        color: #856404 !important; /* Dark yellow/brown with 4.6:1 contrast on white */
+    }
+    :root {
+        --bs-warning: #856404;
+        --bs-warning-rgb: 133, 100, 4;
+    }
 </style>
 {% endblock %}
 

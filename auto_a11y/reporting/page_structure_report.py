@@ -462,6 +462,11 @@ class PageStructureReport:
             margin-right: 5px;
             margin-top: 10px;
         }}
+
+        /* WCAG AA Contrast Overrides */
+        .text-warning {{
+            color: #856404 !important; /* Dark yellow/brown with 4.6:1 contrast on white */
+        }}
     </style>
 </head>
 <body>

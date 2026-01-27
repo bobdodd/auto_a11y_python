@@ -77,6 +77,16 @@ python run.py --debug
 python test_fixtures.py --category <YourCategory>
 ```
 
+### Git Workflow
+
+**CRITICAL: NEVER rewrite git history.**
+
+- **NEVER use:** `git commit --amend`, `git rebase -i`, `git reset --hard`, `git push --force`, or any other commands that modify existing commits
+- **Always create new commits** for changes, even if fixing mistakes from previous commits
+- **Reason:** This project may have multiple collaborators and shared branches. Rewriting history breaks collaboration and can cause data loss
+- If you need to undo changes, use `git revert` to create new commits that reverse previous changes
+- If commits need to be reorganized, consult with the repository owner first
+
 ## High-Level Architecture
 
 ### Testing Flow

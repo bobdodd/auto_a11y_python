@@ -169,20 +169,27 @@ class RecordingExporter:
         if metadata_parts:
             html_parts.append(f"<p>{' | '.join(metadata_parts)}</p>")
 
-        # Add key takeaways, painpoints, and assertions as HTML sections
-        logger.info(f"Recording has {len(recording.key_takeaways)} key takeaways, {len(recording.user_painpoints)} painpoints, {len(recording.user_assertions)} assertions")
+        # Add key takeaways, painpoints, and assertions as HTML sections (English only)
+        # Note: French translations exist in the database but are not uploaded to Drupal
+        # See docs/DRUPAL_MULTILINGUAL_TRANSLATION_RESEARCH.md for details
+        key_takeaways_en = recording.get_key_takeaways('en')
+        user_painpoints_en = recording.get_user_painpoints('en')
+        user_assertions_en = recording.get_user_assertions('en')
 
-        key_takeaways_html = self._generate_key_takeaways_html(recording.key_takeaways)
+        logger.info(f"Recording has {len(key_takeaways_en)} key takeaways, {len(user_painpoints_en)} painpoints, {len(user_assertions_en)} assertions (uploading English only)")
+
+        # Generate English sections only
+        key_takeaways_html = self._generate_key_takeaways_html(key_takeaways_en, language='en')
         if key_takeaways_html:
             logger.info(f"Generated key takeaways HTML: {len(key_takeaways_html)} chars")
             html_parts.append(key_takeaways_html)
 
-        painpoints_html = self._generate_user_painpoints_html(recording.user_painpoints)
+        painpoints_html = self._generate_user_painpoints_html(user_painpoints_en, language='en')
         if painpoints_html:
             logger.info(f"Generated painpoints HTML: {len(painpoints_html)} chars")
             html_parts.append(painpoints_html)
 
-        assertions_html = self._generate_user_assertions_html(recording.user_assertions)
+        assertions_html = self._generate_user_assertions_html(user_assertions_en, language='en')
         if assertions_html:
             logger.info(f"Generated assertions HTML: {len(assertions_html)} chars")
             html_parts.append(assertions_html)
@@ -383,12 +390,13 @@ class RecordingExporter:
         import html
         return html.escape(text)
 
-    def _generate_key_takeaways_html(self, key_takeaways: list) -> str:
+    def _generate_key_takeaways_html(self, key_takeaways: list, language: str = 'en') -> str:
         """
         Generate HTML for key takeaways.
 
         Args:
             key_takeaways: List of dicts with 'number', 'topic', 'description'
+            language: Language code (currently only 'en' is used)
 
         Returns:
             HTML string
@@ -396,7 +404,7 @@ class RecordingExporter:
         if not key_takeaways:
             return ""
 
-        html_parts = ["<h3>Key Takeaways</h3>"]
+        html_parts = [f"<h3>Key Takeaways</h3>"]
 
         for item in key_takeaways:
             number = item.get('number', '')
@@ -408,12 +416,13 @@ class RecordingExporter:
 
         return "\n".join(html_parts)
 
-    def _generate_user_painpoints_html(self, painpoints: list) -> str:
+    def _generate_user_painpoints_html(self, painpoints: list, language: str = 'en') -> str:
         """
         Generate HTML for user painpoints.
 
         Args:
             painpoints: List of dicts with 'title', 'user_quote', 'timecodes'
+            language: Language code (currently only 'en' is used)
 
         Returns:
             HTML string
@@ -421,7 +430,7 @@ class RecordingExporter:
         if not painpoints:
             return ""
 
-        html_parts = ["<h3>User Painpoints</h3>"]
+        html_parts = [f"<h3>User Painpoints</h3>"]
 
         for item in painpoints:
             title = self._escape_html(item.get('title', ''))
@@ -429,14 +438,14 @@ class RecordingExporter:
             timecodes = item.get('timecodes', [])
 
             html_parts.append(f"<h4>{title}</h4>")
-            html_parts.append("<h5>User Statement</h5>")
+            html_parts.append(f"<h5>User Statement</h5>")
             html_parts.append(f'<p>"{user_quote}"</p>')
 
             # Add timecode locations
             if timecodes:
                 if len(timecodes) == 1:
                     tc = timecodes[0]
-                    html_parts.append("<h5>Location</h5>")
+                    html_parts.append(f"<h5>Location</h5>")
                     html_parts.append(f"<p>Start: {tc.get('start', '')}<br>")
                     html_parts.append(f"End: {tc.get('end', '')}<br>")
                     html_parts.append(f"Duration: {tc.get('duration', '')}</p>")
@@ -449,12 +458,13 @@ class RecordingExporter:
 
         return "\n".join(html_parts)
 
-    def _generate_user_assertions_html(self, assertions: list) -> str:
+    def _generate_user_assertions_html(self, assertions: list, language: str = 'en') -> str:
         """
         Generate HTML for user assertions.
 
         Args:
             assertions: List of dicts with 'number', 'assertion', 'user_quote', 'timecodes', 'context'
+            language: Language code (currently only 'en' is used)
 
         Returns:
             HTML string
@@ -462,7 +472,7 @@ class RecordingExporter:
         if not assertions:
             return ""
 
-        html_parts = ["<h3>User Assertions</h3>"]
+        html_parts = [f"<h3>User Assertions</h3>"]
 
         for item in assertions:
             number = item.get('number', '')
@@ -471,17 +481,17 @@ class RecordingExporter:
             timecodes = item.get('timecodes', [])
 
             html_parts.append(f"<h4>{number}. {assertion}</h4>")
-            html_parts.append("<h5>Text Spoken</h5>")
+            html_parts.append(f"<h5>Text Spoken</h5>")
             html_parts.append(f'<p>"{user_quote}"</p>')
 
             # Add timecode information
             if timecodes:
                 tc = timecodes[0] if timecodes else {}
-                html_parts.append("<h5>Start Time</h5>")
+                html_parts.append(f"<h5>Start Time</h5>")
                 html_parts.append(f"<p>{tc.get('start', '')}</p>")
-                html_parts.append("<h5>End Time</h5>")
+                html_parts.append(f"<h5>End Time</h5>")
                 html_parts.append(f"<p>{tc.get('end', '')}</p>")
-                html_parts.append("<h5>Duration</h5>")
+                html_parts.append(f"<h5>Duration</h5>")
                 html_parts.append(f"<p>{tc.get('duration', '')}</p>")
 
         return "\n".join(html_parts)

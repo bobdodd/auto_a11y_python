@@ -1,0 +1,19 @@
+{
+  "description": "Example project-level font configuration. Copy this to your project's config to customize inaccessible font detection.",
+  "font_accessibility": {
+    "use_defaults": true,
+    "additional_inaccessible_fonts": [
+      "custom font name 1",
+      "custom font name 2"
+    ],
+    "excluded_fonts": [
+      "comic sans ms"
+    ],
+    "notes": [
+      "use_defaults: Set to true to include the system's default inaccessible fonts list",
+      "additional_inaccessible_fonts: Add project-specific fonts that should be flagged as inaccessible",
+      "excluded_fonts: Remove specific fonts from the default list if your project requires them",
+      "All font names should be lowercase for consistent matching"
+    ]
+  }
+}

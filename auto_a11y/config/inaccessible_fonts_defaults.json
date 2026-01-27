@@ -1,0 +1,78 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-10-09",
+  "description": "Default list of fonts that are difficult to read for users with dyslexia, low vision, or other reading disabilities. This list is based on accessibility research and WCAG guidelines.",
+  "sources": [
+    "https://dyslexichelp.org/what-fonts-should-dyslexics-avoid/",
+    "https://www.section508.gov/develop/fonts-typography/",
+    "https://webaim.org/techniques/fonts/",
+    "https://business.scope.org.uk/font-accessibility-and-readability-the-basics/"
+  ],
+  "categories": {
+    "script_cursive": {
+      "description": "Script and cursive fonts with connected letters that make it difficult to distinguish individual characters, particularly problematic for users with dyslexia",
+      "fonts": [
+        "brush script",
+        "brush script mt",
+        "brushscript",
+        "lucida handwriting",
+        "lucida calligraphy",
+        "comic sans",
+        "comic sans ms",
+        "bradley hand",
+        "bradley hand itc",
+        "freestyle script",
+        "french script",
+        "edwardian script",
+        "mistral",
+        "script mt bold",
+        "vivaldi",
+        "vladimir script",
+        "lobster"
+      ]
+    },
+    "decorative": {
+      "description": "Highly decorative fonts that prioritize aesthetics over readability, making them difficult to read for extended periods",
+      "fonts": [
+        "curlz",
+        "curlz mt",
+        "jokerman",
+        "papyrus",
+        "chiller",
+        "stencil",
+        "ravie",
+        "magneto",
+        "algerian",
+        "showcard gothic",
+        "broadway",
+        "bauhaus 93",
+        "harrington",
+        "snap itc",
+        "gigi",
+        "juice itc"
+      ]
+    },
+    "narrow_condensed": {
+      "description": "Narrow and condensed fonts with tight letter spacing that reduce legibility, especially for users with low vision",
+      "fonts": [
+        "arial narrow",
+        "impact"
+      ]
+    },
+    "blackletter_gothic": {
+      "description": "Historical blackletter and gothic fonts with complex letterforms that are extremely difficult to read",
+      "fonts": [
+        "old english",
+        "old english text mt",
+        "blackletter",
+        "fraktur",
+        "blackadder itc"
+      ]
+    }
+  },
+  "notes": [
+    "Font names are stored in lowercase for case-insensitive matching",
+    "This list can be extended by projects via project-level configuration",
+    "Projects can also exclude specific fonts from this list if needed for their use case"
+  ]
+}

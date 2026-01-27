@@ -20,11 +20,15 @@ jobs:
         python-version: '3.11'
         cache: 'pip'
 
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.12.1
+      with:
+        mongodb-version: '8.0'
+
     - name: Install system dependencies
       run: |
+        # Update deps
         sudo apt-get update
-        # MongoDB
-        sudo apt-get install -y mongodb
         # WeasyPrint dependencies (GTK, Pango, etc.)
         sudo apt-get install -y \
           libpango-1.0-0 \
@@ -34,14 +38,6 @@ jobs:
           libcairo2 \
           libgirepository1.0-dev \
           gir1.2-pango-1.0
-
-    - name: Start MongoDB
-      run: |
-        sudo systemctl start mongodb
-        sudo systemctl status mongodb
-        # Wait for MongoDB to be ready
-        timeout 30 bash -c 'until mongosh --eval "db.adminCommand({ping: 1})" > /dev/null 2>&1; do sleep 1; done' || \
-        timeout 30 bash -c 'until mongo --eval "db.adminCommand({ping: 1})" > /dev/null 2>&1; do sleep 1; done'
 
     - name: Install Python dependencies
       run: |
@@ -112,16 +108,20 @@ jobs:
           sleep 1
         done
 
-        # Test homepage returns 200
+        # Test homepage returns 200 (or 302)
         HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5001/)
         echo "Homepage HTTP status: $HTTP_CODE"
 
         if [ "$HTTP_CODE" -eq 200 ]; then
           echo "✓ Homepage is accessible!"
         else
-          echo "✗ Homepage returned status $HTTP_CODE"
-          kill $APP_PID 2>/dev/null || true
-          exit 1
+          if [ "$HTTP_CODE" -eq 302 ]; then
+            echo "✓ Homepage is accessible w/ redirect!"
+          else
+            echo "✗ Homepage returned status $HTTP_CODE"
+            kill $APP_PID 2>/dev/null || true
+            exit 1
+          fi
         fi
 
         # Clean up

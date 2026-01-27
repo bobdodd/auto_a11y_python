@@ -1,0 +1,130 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        # MongoDB
+        sudo apt-get install -y mongodb
+        # WeasyPrint dependencies (GTK, Pango, etc.)
+        sudo apt-get install -y \
+          libpango-1.0-0 \
+          libpangoft2-1.0-0 \
+          libgdk-pixbuf2.0-0 \
+          libffi-dev \
+          libcairo2 \
+          libgirepository1.0-dev \
+          gir1.2-pango-1.0
+
+    - name: Start MongoDB
+      run: |
+        sudo systemctl start mongodb
+        sudo systemctl status mongodb
+        # Wait for MongoDB to be ready
+        timeout 30 bash -c 'until mongosh --eval "db.adminCommand({ping: 1})" > /dev/null 2>&1; do sleep 1; done' || \
+        timeout 30 bash -c 'until mongo --eval "db.adminCommand({ping: 1})" > /dev/null 2>&1; do sleep 1; done'
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Install Playwright browsers
+      run: |
+        python -m playwright install chromium
+        python -m playwright install-deps chromium
+
+    - name: Set up environment variables
+      run: |
+        cat > .env << EOF
+        # CI Configuration
+        SECRET_KEY=ci-test-secret-key
+        DEBUG=False
+        HOST=127.0.0.1
+        PORT=5001
+
+        # MongoDB
+        MONGODB_URI=mongodb://localhost:27017/
+        DATABASE_NAME=auto_a11y_ci_test
+
+        # Disable AI Analysis for CI
+        RUN_AI_ANALYSIS=False
+        CLAUDE_API_KEY=
+
+        # Browser Configuration
+        BROWSER_HEADLESS=True
+        BROWSER_TIMEOUT=30000
+
+        # Testing Configuration
+        PARALLEL_TESTS=2
+        TEST_TIMEOUT=60000
+        EOF
+
+    - name: Initialize directories
+      run: |
+        mkdir -p logs temp screenshots reports data static/screenshots
+
+    - name: Test database connection
+      run: |
+        python run.py --test-db
+
+    - name: Run database setup
+      run: |
+        python run.py --setup --skip-browser
+
+    - name: Test Flask app startup and homepage
+      run: |
+        # Start Flask app in background
+        python run.py &
+        APP_PID=$!
+
+        # Wait for app to start (max 30 seconds)
+        echo "Waiting for Flask app to start..."
+        for i in {1..30}; do
+          if curl -s http://127.0.0.1:5001/ > /dev/null 2>&1; then
+            echo "✓ Flask app is running!"
+            break
+          fi
+          if [ $i -eq 30 ]; then
+            echo "✗ Flask app failed to start within 30 seconds"
+            kill $APP_PID 2>/dev/null || true
+            exit 1
+          fi
+          sleep 1
+        done
+
+        # Test homepage returns 200
+        HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:5001/)
+        echo "Homepage HTTP status: $HTTP_CODE"
+
+        if [ "$HTTP_CODE" -eq 200 ]; then
+          echo "✓ Homepage is accessible!"
+        else
+          echo "✗ Homepage returned status $HTTP_CODE"
+          kill $APP_PID 2>/dev/null || true
+          exit 1
+        fi
+
+        # Clean up
+        kill $APP_PID 2>/dev/null || true
+
+        echo "✓ CI tests passed!"

@@ -191,6 +191,26 @@
                         </div>
                     </div>
 
+                    <!-- Upload Options -->
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <strong><i class="bi bi-gear"></i> Upload Options</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="includeFrenchContent">
+                                <label class="form-check-label" for="includeFrenchContent">
+                                    <strong>Include French Content</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        Include French translations in recording uploads (if available).
+                                        Defaults to English-only. French content will only be included if available for each recording.
+                                    </small>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Automated Test Results -->
                     <div class="card mb-3">
                         <div class="card-header">
@@ -431,6 +451,7 @@ async function startPush() {
     const selectedRecordingIds = Array.from(document.querySelectorAll('.recording-checkbox:checked'))
         .map(cb => cb.value);
     const includeAutomatedTests = document.getElementById('includeAutomatedTests').checked;
+    const includeFrenchContent = document.getElementById('includeFrenchContent').checked;
 
     if (selectedPageIds.length === 0 && selectedRecordingIds.length === 0 && !includeAutomatedTests) {
         alert('Please select at least one item to upload.');
@@ -445,7 +466,9 @@ async function startPush() {
     const payload = {
         discovered_page_ids: selectedPageIds,
         recording_ids: selectedRecordingIds,
-        options: {}
+        options: {
+            include_french: includeFrenchContent
+        }
     };
 
     // Include automated test filters if checked

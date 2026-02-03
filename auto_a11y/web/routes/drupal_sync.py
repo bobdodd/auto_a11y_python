@@ -435,8 +435,9 @@ def upload_to_drupal(project_id):
                             except Exception as e:
                                 logger.error(f"Error fetching discovered page {page_id}: {e}")
 
-                    # Export recording
-                    result = recording_exporter.export_from_recording_model(recording, audit_uuid, discovered_page_uuids)
+                    # Export recording with optional French content
+                    include_french = options.get('include_french', False)
+                    result = recording_exporter.export_from_recording_model(recording, audit_uuid, discovered_page_uuids, include_french=include_french)
 
                     if result.get('success'):
                         # Update database with Drupal UUID

@@ -172,7 +172,8 @@
     </style>
 </head>
 <body>
-<div class="container py-4">
+<a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
+<main id="main-content" class="container py-4">
     <!-- Header with Language Switcher -->
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
@@ -240,7 +241,7 @@
     <!-- Common Components List -->
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0" data-i18n="common_components">{{ t['common_components'] }}</h5>
+            <h2 class="mb-0 h5" data-i18n="common_components">{{ t['common_components'] }}</h2>
             <small class="text-muted" data-i18n="click_component_to_view">{{ t['click_component_to_view'] }}</small>
         </div>
         <div class="card-body">
@@ -255,9 +256,9 @@
                                 <code class="ms-2 small text-muted">{{ comp_data.signature[:8] }}</code>
                             </div>
                             <div class="component-meta">
-                                <span><i class="bi bi-file-earmark"></i> {{ comp_data.page_count }} <span data-i18n="page_s">{{ t['page_s'] }}</span></span>
+                                <span><i class="bi bi-file-earmark" aria-hidden="true"></i> {{ comp_data.page_count }} <span data-i18n="page_s">{{ t['page_s'] }}</span></span>
                                 {% if comp_data.score is defined %}
-                                <span><i class="bi bi-graph-up"></i> <span data-i18n="score">{{ t['score'] }}</span>:
+                                <span><i class="bi bi-graph-up" aria-hidden="true"></i> <span data-i18n="score">{{ t['score'] }}</span>:
                                     <strong class="{% if comp_data.score >= 90 %}text-success{% elif comp_data.score >= 70 %}text-warning{% else %}text-danger{% endif %}">
                                         {{ "%.1f"|format(comp_data.score) }}%
                                     </strong>
@@ -278,14 +279,14 @@
                             {% if comp_data.discovery is defined and comp_data.discovery > 0 %}
                             <span class="issue-count discovery">{{ comp_data.discovery }} <span data-i18n="discovery">{{ t.get('discovery', 'Discovery') }}</span></span>
                             {% endif %}
-                            <i class="bi bi-chevron-right"></i>
+                            <i class="bi bi-chevron-right" aria-hidden="true"></i>
                         </div>
                     </div>
                 </a>
                 {% endfor %}
             {% else %}
                 <div class="no-components">
-                    <i class="bi bi-inbox" style="font-size: 3rem; opacity: 0.3;"></i>
+                    <i class="bi bi-inbox" style="font-size: 3rem; opacity: 0.3;" aria-hidden="true"></i>
                     <p class="mt-3" data-i18n="no_common_components">{{ t['no_common_components'] }}</p>
                 </div>
             {% endif %}
@@ -297,7 +298,7 @@
     {% if pages_with_unassigned %}
     <div class="card mt-4">
         <div class="card-header">
-            <h5 class="mb-0" data-i18n="pages_with_non_component_issues">{{ t['pages_with_non_component_issues'] }}</h5>
+            <h2 class="mb-0 h5" data-i18n="pages_with_non_component_issues">{{ t['pages_with_non_component_issues'] }}</h2>
             <small class="text-muted" data-i18n="issues_not_in_components">{{ t['issues_not_in_components'] }}</small>
         </div>
         <div class="card-body">
@@ -310,13 +311,12 @@
                 <div class="component-card">
                     <div class="component-info">
                         <div class="component-type">
-                            <i class="bi bi-file-earmark-text"></i>
+                            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                             {{ page_data.title or page_data.url }}
                         </div>
                         <div class="component-meta">
-                            <span><i class="bi bi-link-45deg"></i> {{ page_data.url }}</span>
                             {% if page_data.dedup_score is defined %}
-                            <span><i class="bi bi-graph-up"></i> <span data-i18n="score">{{ t['score'] }}</span>:
+                            <span><i class="bi bi-graph-up" aria-hidden="true"></i> <span data-i18n="score">{{ t['score'] }}</span>:
                                 <strong class="{% if page_data.dedup_score >= 90 %}text-success{% elif page_data.dedup_score >= 70 %}text-warning{% else %}text-danger{% endif %}">
                                     {{ "%.1f"|format(page_data.dedup_score) }}%
                                 </strong>
@@ -337,7 +337,7 @@
                         {% if page_data.discovery is defined and page_data.discovery > 0 %}
                         <span class="issue-count discovery">{{ page_data.discovery }} <span data-i18n="discovery">{{ t.get('discovery', 'Discovery') }}</span></span>
                         {% endif %}
-                        <i class="bi bi-chevron-right"></i>
+                        <i class="bi bi-chevron-right" aria-hidden="true"></i>
                     </div>
                 </div>
             </a>
@@ -345,7 +345,7 @@
         </div>
     </div>
     {% endif %}
-</div>
+</main>
 
 <script>
 /* Bootstrap JS */

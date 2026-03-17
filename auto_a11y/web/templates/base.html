@@ -32,13 +32,13 @@
                 <ul class="navbar-nav me-auto">
                     <!-- Dashboard - standalone -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}aria-current="page"{% endif %}>
                             <i class="bi bi-speedometer2"></i> {{ _('Dashboard') }}
                         </a>
                     </li>
                     <!-- Projects - standalone -->
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('projects.list_projects') }}">
+                        <a class="nav-link" href="{{ url_for('projects.list_projects') }}" {% if request.endpoint and request.endpoint.startswith('projects.') %}aria-current="page"{% endif %}>
                             <i class="bi bi-folder"></i> {{ _('Projects') }}
                         </a>
                     </li>
@@ -87,7 +87,7 @@
                     </li>
                     <!-- Settings dropdown - includes Help -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle py-2 px-2" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-label="{{ _('Settings') }}">
+                        <a class="nav-link dropdown-toggle py-2 px-2" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ _('Settings') }}">
                             <i class="bi bi-gear"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -105,7 +105,7 @@
                     </li>
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle"></i> {{ current_user.name_display }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
@@ -144,7 +144,9 @@
         <div class="container-fluid">
             <div class="alert alert-info alert-dismissible fade show mt-2" role="alert">
                 <div class="d-flex align-items-center">
-                    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                    <div class="spinner-border spinner-border-sm me-2" role="status">
+                        <span class="visually-hidden">{{ _('Loading...') }}</span>
+                    </div>
                     <div>
                         <strong id="global-activity-title">Activity in Progress</strong> - <span id="global-test-message">Checking status...</span>
                         <a href="#" id="global-test-link" class="ms-2">View Details</a>
@@ -174,6 +176,8 @@
         {% block content %}{% endblock %}
     </main>
 
+    <div id="notification-live-region" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+
     <!-- Footer (hidden on mobile - replaced by bottom nav) -->
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container text-center">
@@ -186,43 +190,43 @@
     <nav class="mobile-bottom-nav" aria-label="{{ _('Mobile navigation') }}">
         <ul>
             <li>
-                <a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active"{% endif %}>
+                <a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active" aria-current="page"{% endif %}>
                     <i class="bi bi-speedometer2"></i>
                     <span>{{ _('Dashboard') }}</span>
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('projects.list_projects') }}" {% if request.endpoint and request.endpoint.startswith('projects.') %}class="active"{% endif %}>
+                <a href="{{ url_for('projects.list_projects') }}" {% if request.endpoint and request.endpoint.startswith('projects.') %}class="active" aria-current="page"{% endif %}>
                     <i class="bi bi-folder"></i>
                     <span>{{ _('Projects') }}</span>
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('testing.testing_dashboard') }}" {% if request.endpoint == 'testing.testing_dashboard' %}class="active"{% endif %}>
+                <a href="{{ url_for('testing.testing_dashboard') }}" {% if request.endpoint == 'testing.testing_dashboard' %}class="active" aria-current="page"{% endif %}>
                     <i class="bi bi-check2-square"></i>
                     <span>{{ _('Testing') }}</span>
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('testing.trends_page') }}" {% if request.endpoint == 'testing.trends_page' %}class="active"{% endif %}>
+                <a href="{{ url_for('testing.trends_page') }}" {% if request.endpoint == 'testing.trends_page' %}class="active" aria-current="page"{% endif %}>
                     <i class="bi bi-graph-up-arrow"></i>
                     <span>{{ _('Trends') }}</span>
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('schedules.schedules_dashboard') }}" {% if request.endpoint == 'schedules.schedules_dashboard' %}class="active"{% endif %}>
+                <a href="{{ url_for('schedules.schedules_dashboard') }}" {% if request.endpoint == 'schedules.schedules_dashboard' %}class="active" aria-current="page"{% endif %}>
                     <i class="bi bi-calendar-check"></i>
                     <span>{{ _('Schedules') }}</span>
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('reports.reports_dashboard') }}" {% if request.endpoint and request.endpoint.startswith('reports.') %}class="active"{% endif %}>
+                <a href="{{ url_for('reports.reports_dashboard') }}" {% if request.endpoint and request.endpoint.startswith('reports.') %}class="active" aria-current="page"{% endif %}>
                     <i class="bi bi-file-earmark-text"></i>
                     <span>{{ _('Reports') }}</span>
                 </a>
             </li>
             <li>
-                <a href="{{ url_for('auth.profile') }}" {% if request.endpoint and request.endpoint.startswith('auth.') %}class="active"{% endif %}>
+                <a href="{{ url_for('auth.profile') }}" {% if request.endpoint and request.endpoint.startswith('auth.') %}class="active" aria-current="page"{% endif %}>
                     <i class="bi bi-person-circle"></i>
                     <span>{{ _('Profile') }}</span>
                 </a>

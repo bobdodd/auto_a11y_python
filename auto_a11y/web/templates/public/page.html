@@ -1,0 +1,134 @@
+{% extends "public/public_base.html" %}
+
+{% block title %}{{ page.title or page.url }}{% endblock %}
+
+{% block breadcrumb %}
+<nav aria-label="{{ _('Breadcrumb') }}" class="container">
+    <ol class="breadcrumb">
+        {% if token %}
+        <li><a href="{{ url_for('public.token_landing', token=token) }}">{{ project.name }}</a></li>
+        <li><a href="{{ url_for('public.token_website', token=token, website_id=website.id) }}">{{ website.name or website.url }}</a></li>
+        {% else %}
+        <li><a href="{{ url_for('public.client_project', project_id=project.id) }}">{{ project.name }}</a></li>
+        <li><a href="{{ url_for('public.client_website', project_id=project.id, website_id=website.id) }}">{{ website.name or website.url }}</a></li>
+        {% endif %}
+        <li aria-current="page">{{ page.title or page.url }}</li>
+    </ol>
+</nav>
+{% endblock %}
+
+{% block content %}
+<h1>{{ page.title or page.url }}</h1>
+
+<p><a href="{{ page.url }}" rel="noopener noreferrer" target="_blank">{{ page.url }}</a></p>
+
+{% if test_result %}
+<dl class="stats">
+    <div class="stat-card">
+        <dt>{{ _('Violations') }}</dt>
+        <dd>{{ test_result.violation_count }}</dd>
+    </div>
+    <div class="stat-card">
+        <dt>{{ _('Warnings') }}</dt>
+        <dd>{{ test_result.warning_count }}</dd>
+    </div>
+    <div class="stat-card">
+        <dt>{{ _('Informational') }}</dt>
+        <dd>{{ test_result.info_count }}</dd>
+    </div>
+    <div class="stat-card">
+        <dt>{{ _('Last Tested') }}</dt>
+        <dd>{{ test_result.test_date|datetimeformat }}</dd>
+    </div>
+</dl>
+
+{# Macro to render a group of issues in an accordion #}
+{% macro render_issue_groups(groups, severity_class, severity_label) %}
+{% if groups %}
+<div class="accordion" data-enhance="accordion">
+    {% for touchpoint, issues in groups.items() %}
+    {% set tp_id = (severity_label ~ '-' ~ touchpoint)|replace(' ', '-')|lower %}
+    <div class="accordion-item">
+        <h3>
+            <button class="accordion-trigger"
+                    aria-expanded="true"
+                    aria-controls="panel-{{ tp_id }}"
+                    id="trigger-{{ tp_id }}">
+                {{ touchpoint }} ({{ issues|length }})
+            </button>
+        </h3>
+        <div id="panel-{{ tp_id }}"
+             role="region"
+             aria-labelledby="trigger-{{ tp_id }}"
+             class="accordion-panel">
+            {% for issue in issues %}
+            <div class="issue-card">
+                <div class="issue-header">
+                    <span class="badge {{ severity_class }}">{{ severity_label }}</span>
+                    <strong>{{ issue.description|translate_issue }}</strong>
+                </div>
+
+                {% set desc = get_issue_description(issue.id, issue.metadata) %}
+                {% if desc %}
+                <div class="issue-description">
+                    {% if desc.get('what') %}
+                    <p>{{ desc['what'] }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                {% if issue.wcag_criteria %}
+                <div class="issue-meta">
+                    {% for criterion in issue.wcag_criteria %}
+                    <a href="{{ criterion|wcag_understanding_url }}"
+                       rel="noopener noreferrer" target="_blank">
+                        {{ criterion|wcag_name }}
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if issue.html or (desc and desc.get('remediation')) %}
+                <details>
+                    <summary>{{ _('Details') }}</summary>
+                    {% if desc and desc.get('remediation') %}
+                    <p><strong>{{ _('How to fix') }}:</strong> {{ desc['remediation'] }}</p>
+                    {% endif %}
+                    {% if issue.html %}
+                    <p><strong>{{ _('Affected HTML') }}:</strong></p>
+                    <pre><code>{{ issue.html }}</code></pre>
+                    {% endif %}
+                </details>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endmacro %}
+
+{% if violation_groups %}
+<h2>{{ _('Violations') }}</h2>
+{{ render_issue_groups(violation_groups, 'badge-high', _('Violation')) }}
+{% endif %}
+
+{% if warning_groups %}
+<h2>{{ _('Warnings') }}</h2>
+{{ render_issue_groups(warning_groups, 'badge-warning', _('Warning')) }}
+{% endif %}
+
+{% if info_groups %}
+<h2>{{ _('Informational') }}</h2>
+{{ render_issue_groups(info_groups, 'badge-info', _('Info')) }}
+{% endif %}
+
+{% if not violation_groups and not warning_groups and not info_groups %}
+<p>{{ _('No issues found on this page.') }}</p>
+{% endif %}
+
+{% else %}
+<p>{{ _('This page has not been tested yet.') }}</p>
+{% endif %}
+{% endblock %}

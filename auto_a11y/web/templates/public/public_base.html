@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="{{ get_locale() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}{% if project %} - {{ project.name }}{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('public.static', filename='css/reset.css') }}">
+    <link rel="stylesheet" href="{{ url_for('public.static', filename='css/tokens.css') }}">
+    <link rel="stylesheet" href="{{ url_for('public.static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('public.static', filename='css/print.css') }}" media="print">
+</head>
+<body>
+    <a class="skip-link" href="#main-content">{{ _('Skip to main content') }}</a>
+
+    <header class="site-header">
+        <div class="container header-inner">
+            <p class="site-title">
+                {% if project %}
+                    {{ project.name }}
+                {% else %}
+                    {{ _('Accessibility Report') }}
+                {% endif %}
+            </p>
+
+            <nav aria-label="{{ _('Language') }}" class="lang-nav">
+                <a href="{{ url_for('set_language', language='en') }}"
+                   {% if get_locale() == 'en' %}aria-current="true"{% endif %}
+                   lang="en">English</a>
+                <a href="{{ url_for('set_language', language='fr') }}"
+                   {% if get_locale() == 'fr' %}aria-current="true"{% endif %}
+                   lang="fr">Fran&ccedil;ais</a>
+            </nav>
+
+            {% if current_user.is_authenticated %}
+            <nav aria-label="{{ _('Account') }}" class="account-nav">
+                <span>{{ current_user.name_display }}</span>
+                <a href="{{ url_for('auth.logout') }}">{{ _('Logout') }}</a>
+            </nav>
+            {% endif %}
+        </div>
+    </header>
+
+    {% block breadcrumb %}{% endblock %}
+
+    <main id="main-content" class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flash-messages" role="alert">
+            {% for category, message in messages %}
+            <li class="flash-{{ category }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            {% block footer_content %}
+            {% if project and project.updated_at %}
+            <p>{{ _('Last updated') }}: {{ project.updated_at|datetimeformat }}</p>
+            {% endif %}
+            {% endblock %}
+        </div>
+    </footer>
+
+    <div class="sr-live" aria-live="polite" id="live-region"></div>
+
+    <script src="{{ url_for('public.static', filename='js/enhancements.js') }}" defer></script>
+</body>
+</html>

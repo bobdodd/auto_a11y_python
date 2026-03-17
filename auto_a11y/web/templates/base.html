@@ -533,12 +533,19 @@
             const alertDiv = document.createElement('div');
             alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
             alertDiv.style.zIndex = '9999';
+            alertDiv.setAttribute('role', 'alert');
             alertDiv.innerHTML = `
                 <strong>${title}</strong> ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Dismiss"></button>
             `;
             document.body.appendChild(alertDiv);
-            
+
+            // Announce to screen readers via live region
+            var liveRegion = document.getElementById('notification-live-region');
+            if (liveRegion) {
+                liveRegion.textContent = title + ': ' + message;
+            }
+
             // Auto-dismiss after 5 seconds
             setTimeout(() => {
                 alertDiv.remove();

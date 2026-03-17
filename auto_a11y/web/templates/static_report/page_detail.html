@@ -252,14 +252,14 @@
             <strong data-i18n="instance">{{ t.get('instance', 'Instance') }}</strong> {{ loop_index }}:
             {% if violation.metadata and violation.metadata.authenticated_user %}
                 <span class="badge bg-secondary ms-2">
-                    <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
+                    <i class="bi bi-person-fill" aria-hidden="true"></i> {{ violation.metadata.authenticated_user.display_name }}
                     {% if violation.metadata.authenticated_user.roles %}
                         ({{ violation.metadata.authenticated_user.roles|join(', ') }})
                     {% endif %}
                 </span>
             {% else %}
                 <span class="badge bg-secondary ms-2">
-                    <i class="bi bi-person"></i> <span data-i18n="guest">{{ t.get('guest', 'Guest') }}</span>
+                    <i class="bi bi-person" aria-hidden="true"></i> <span data-i18n="guest">{{ t.get('guest', 'Guest') }}</span>
                 </span>
             {% endif %}
             {% if violation.xpath %}
@@ -400,7 +400,7 @@
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
                             {{ translations_fr.get('more_about', 'En savoir plus sur') }} {{ criterion_code }} (en anglais)
                         </span>
-                        <i class="bi bi-box-arrow-up-right"></i>
+                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                     </a>
                 </p>
                 <p style="margin: 0;">
@@ -411,7 +411,7 @@
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">
                             {{ translations_fr.get('ways_to_meet', 'Comment satisfaire') }} {{ criterion_code }} (en anglais)
                         </span>
-                        <i class="bi bi-box-arrow-up-right"></i>
+                        <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                     </a>
                 </p>
             </div>
@@ -427,7 +427,7 @@
     <button class="btn btn-sm btn-link p-0 ms-2"
             onclick="copyXpathToClipboard('{{ violation.xpath|e }}', this)"
             title="Copy XPath to clipboard">
-        <i class="bi bi-clipboard"></i>
+        <i class="bi bi-clipboard" aria-hidden="true"></i>
     </button>
 </p>
 {% endif %}
@@ -461,7 +461,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary no-print">
         <div class="container-fluid">
             <a class="navbar-brand" href="../index.html">
-                <i class="bi bi-universal-access-circle"></i>
+                <i class="bi bi-universal-access-circle" aria-hidden="true"></i>
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get('auto_a11y_report', 'Auto A11y Report') }}</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('auto_a11y_report', 'Rapport Auto A11y') }}</span>
             </a>
@@ -472,7 +472,7 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="../index.html">
-                            <i class="bi bi-house"></i>
+                            <i class="bi bi-house" aria-hidden="true"></i>
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['index'] }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['index'] }}</span>
                         </a>
@@ -505,7 +505,7 @@
             <h1 class="h2">{{ page.title|default('Untitled Page') }}</h1>
             <p class="text-muted">
                 <a href="{{ page.url }}" target="_blank">
-                    {{ page.url }} <i class="bi bi-box-arrow-up-right"></i>
+                    {{ page.url }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                 </a>
             </p>
         </div>
@@ -638,7 +638,7 @@
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="mb-0">
-                <i class="bi bi-bug"></i>
+                <i class="bi bi-bug" aria-hidden="true"></i>
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['issues_found'] }}</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['issues_found'] }}</span>
             </h5>
@@ -647,7 +647,7 @@
             <div class="row g-3">
                 <div class="col-6 col-lg-3">
                     <div class="d-flex align-items-center">
-                        <i class="bi bi-x-circle text-danger me-2 fs-4"></i>
+                        <i class="bi bi-x-circle text-danger me-2 fs-4" aria-hidden="true"></i>
                         <div>
                             <div class="fw-bold">{{ errors_count|default(0) }}</div>
                             <small class="text-muted">
@@ -659,7 +659,7 @@
                 </div>
                 <div class="col-6 col-lg-3">
                     <div class="d-flex align-items-center">
-                        <i class="bi bi-exclamation-triangle text-warning me-2 fs-4"></i>
+                        <i class="bi bi-exclamation-triangle text-warning me-2 fs-4" aria-hidden="true"></i>
                         <div>
                             <div class="fw-bold">{{ warnings_count|default(0) }}</div>
                             <small class="text-muted">
@@ -671,7 +671,7 @@
                 </div>
                 <div class="col-6 col-lg-3">
                     <div class="d-flex align-items-center">
-                        <i class="bi bi-info-circle text-info me-2 fs-4"></i>
+                        <i class="bi bi-info-circle text-info me-2 fs-4" aria-hidden="true"></i>
                         <div>
                             <div class="fw-bold">{{ info_count|default(0) }}</div>
                             <small class="text-muted">
@@ -703,12 +703,12 @@
     <div class="filter-panel">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="mb-0">
-                <i class="bi bi-funnel"></i>
+                <i class="bi bi-funnel" aria-hidden="true"></i>
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get('filter_test_results', 'Filter Test Results') }}</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('filter_test_results', 'Filtrer les résultats de test') }}</span>
             </h5>
             <button class="btn btn-sm btn-outline-secondary" id="clearFilters">
-                <i class="bi bi-x-circle"></i>
+                <i class="bi bi-x-circle" aria-hidden="true"></i>
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get('clear_all_filters', 'Clear All Filters') }}</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('clear_all_filters', 'Effacer tous les filtres') }}</span>
             </button>
@@ -818,7 +818,7 @@
         <div class="row mt-3">
             <div class="col-12">
                 <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
                     <input type="text" class="form-control" id="quickSearch"
                            data-i18n-placeholder="search_placeholder"
                            placeholder="{{ t.get('search_placeholder', 'Search in issue descriptions, error codes, or XPaths...') }}">
@@ -847,7 +847,7 @@
         {% if page.states and page.states|length > 1 %}
         <div class="card-body border-bottom bg-light">
             <h6 class="mb-3">
-                <i class="bi bi-layers"></i>
+                <i class="bi bi-layers" aria-hidden="true"></i>
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Page States Tested</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">États de page testés</span>
             </h6>
@@ -867,14 +867,14 @@
                         {% if state.script_info %}
                         <br>
                         <small class="text-muted">
-                            <i class="bi bi-code-square"></i>
+                            <i class="bi bi-code-square" aria-hidden="true"></i>
                             {{ state.script_info.script_name }}
                         </small>
                         {% endif %}
                         {% if state.auth_user %}
                         <br>
                         <small class="text-info">
-                            <i class="bi bi-person-check"></i>
+                            <i class="bi bi-person-check" aria-hidden="true"></i>
                             {{ state.auth_user.display_name or state.auth_user.username }}
                             {% if state.auth_user.roles %}({{ state.auth_user.roles|join(', ') }}){% endif %}
                         </small>
@@ -901,7 +901,7 @@
                     <div class="section-panel errors-section mb-4" style="border: 2px solid #dc3545; border-radius: 8px; overflow: hidden;">
                         <div class="section-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 12px 16px;">
                             <h5 class="mb-0">
-                                <i class="bi bi-x-circle-fill me-2"></i>
+                                <i class="bi bi-x-circle-fill me-2" aria-hidden="true"></i>
                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['errors'] }}</span>
                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['errors'] }}</span>
                                 <span class="badge bg-light text-danger ms-2">{{ state.violations|length }}</span>
@@ -1043,7 +1043,7 @@
                     <div class="section-panel warnings-section mb-4" style="border: 2px solid #ffc107; border-radius: 8px; overflow: hidden;">
                         <div class="section-header" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #212529; padding: 12px 16px;">
                             <h5 class="mb-0">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['warnings'] }}</span>
                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['warnings'] }}</span>
                                 <span class="badge bg-light text-warning ms-2">{{ state.warnings|length }}</span>
@@ -1185,7 +1185,7 @@
                     <div class="section-panel info-section mb-4" style="border: 2px solid #0e7490; border-radius: 8px; overflow: hidden;">
                         <div class="section-header" style="background: linear-gradient(135deg, #0e7490 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
                             <h5 class="mb-0">
-                                <i class="bi bi-info-circle-fill me-2"></i>
+                                <i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i>
                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['info'] }}</span>
                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['info'] }}</span>
                                 <span class="badge bg-light text-info ms-2">{{ state.informational|length }}</span>
@@ -1252,7 +1252,7 @@
                     <div class="section-panel discovery-section mb-4" style="border: 2px solid #6f42c1; border-radius: 8px; overflow: hidden;">
                         <div class="section-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; padding: 12px 16px;">
                             <h5 class="mb-0">
-                                <i class="bi bi-binoculars-fill me-2"></i>
+                                <i class="bi bi-binoculars-fill me-2" aria-hidden="true"></i>
                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['discovery'] }}</span>
                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['discovery'] }}</span>
                                 <span class="badge bg-light text-secondary ms-2">{{ state.discovery|length }}</span>
@@ -1316,7 +1316,7 @@
 
                     {% if not state.violations and not state.warnings and not state.informational and not state.discovery %}
                     <div class="alert alert-success">
-                        <i class="bi bi-check-circle"></i>
+                        <i class="bi bi-check-circle" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">No issues found in this state!</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Aucun problème détecté dans cet état !</span>
                     </div>
@@ -1330,7 +1330,7 @@
             <div class="section-panel errors-section mb-4" style="border: 2px solid #dc3545; border-radius: 8px; overflow: hidden;">
                 <div class="section-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 12px 16px;">
                     <h5 class="mb-0">
-                        <i class="bi bi-x-circle-fill me-2"></i>
+                        <i class="bi bi-x-circle-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['errors'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['errors'] }}</span>
                         <span class="badge bg-light text-danger ms-2">{{ violations|length }}</span>
@@ -1380,14 +1380,14 @@
                                         {# Show user badge for single violations #}
                                         {% if first_violation.metadata and first_violation.metadata.authenticated_user %}
                                             <span class="badge bg-secondary me-2">
-                                                <i class="bi bi-person-fill"></i> {{ first_violation.metadata.authenticated_user.display_name }}
+                                                <i class="bi bi-person-fill" aria-hidden="true"></i> {{ first_violation.metadata.authenticated_user.display_name }}
                                                 {% if first_violation.metadata.authenticated_user.roles %}
                                                     ({{ first_violation.metadata.authenticated_user.roles|join(', ') }})
                                                 {% endif %}
                                             </span>
                                         {% else %}
                                             <span class="badge bg-secondary me-2">
-                                                <i class="bi bi-person"></i>
+                                                <i class="bi bi-person" aria-hidden="true"></i>
                                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Guest</span>
                                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Invité</span>
                                             </span>
@@ -1477,7 +1477,7 @@
             <div class="section-panel warnings-section mb-4" style="border: 2px solid #ffc107; border-radius: 8px; overflow: hidden;">
                 <div class="section-header" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #212529; padding: 12px 16px;">
                     <h5 class="mb-0">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['warnings'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['warnings'] }}</span>
                         <span class="badge bg-light text-warning ms-2">{{ warnings|length }}</span>
@@ -1527,14 +1527,14 @@
                                         {# Show user badge for single warnings #}
                                         {% if first_warning.metadata and first_warning.metadata.authenticated_user %}
                                             <span class="badge bg-secondary me-2">
-                                                <i class="bi bi-person-fill"></i> {{ first_warning.metadata.authenticated_user.display_name }}
+                                                <i class="bi bi-person-fill" aria-hidden="true"></i> {{ first_warning.metadata.authenticated_user.display_name }}
                                                 {% if first_warning.metadata.authenticated_user.roles %}
                                                     ({{ first_warning.metadata.authenticated_user.roles|join(', ') }})
                                                 {% endif %}
                                             </span>
                                         {% else %}
                                             <span class="badge bg-secondary me-2">
-                                                <i class="bi bi-person"></i>
+                                                <i class="bi bi-person" aria-hidden="true"></i>
                                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Guest</span>
                                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Invité</span>
                                             </span>
@@ -1622,7 +1622,7 @@
             <div class="section-panel info-section mb-4" style="border: 2px solid #0e7490; border-radius: 8px; overflow: hidden;">
                 <div class="section-header" style="background: linear-gradient(135deg, #0e7490 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
                     <h5 class="mb-0">
-                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['info'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['info'] }}</span>
                         <span class="badge bg-light text-info ms-2">{{ informational|length }}</span>
@@ -1695,7 +1695,7 @@
             <div class="section-panel discovery-section mb-4" style="border: 2px solid #6f42c1; border-radius: 8px; overflow: hidden;">
                 <div class="section-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; padding: 12px 16px;">
                     <h5 class="mb-0">
-                        <i class="bi bi-binoculars-fill me-2"></i>
+                        <i class="bi bi-binoculars-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['discovery'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['discovery'] }}</span>
                         <span class="badge bg-light text-secondary ms-2">{{ discovery|length }}</span>

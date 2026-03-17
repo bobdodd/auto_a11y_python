@@ -212,7 +212,7 @@
     <!-- Test Information -->
     <div class="test-info">
         <h2>
-            <i class="bi bi-info-circle"></i>
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Test Information</span>
             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Informations sur le test</span>
         </h2>
@@ -351,7 +351,7 @@
                     </select>
                 </div>
                 <button id="reset-filters" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-counterclockwise"></i>
+                    <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Reset</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Réinitialiser</span>
                 </button>
@@ -377,7 +377,7 @@
                 <div style="flex: 1;">
                     <h3 class="page-title">{{ page.title|truncate(80) }}</h3>
                     <div class="page-url">
-                        <i class="bi bi-link-45deg"></i> {{ page.url }}
+                        <i class="bi bi-link-45deg" aria-hidden="true"></i> {{ page.url }}
                     </div>
                 </div>
                 <div>
@@ -403,7 +403,7 @@
                 <div class="issue-badges">
                     {% if page.issues.errors > 0 %}
                     <span class="issue-badge errors">
-                        <i class="bi bi-x-circle-fill"></i>
+                        <i class="bi bi-x-circle-fill" aria-hidden="true"></i>
                         <span>{{ page.issues.errors }}
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Error{{ 's' if page.issues.errors != 1 }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Erreur{{ 's' if page.issues.errors != 1 }}</span>
@@ -413,7 +413,7 @@
 
                     {% if page.issues.warnings > 0 %}
                     <span class="issue-badge warnings">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                         <span>{{ page.issues.warnings }}
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Warning{{ 's' if page.issues.warnings != 1 }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Avertissement{{ 's' if page.issues.warnings != 1 }}</span>
@@ -423,7 +423,7 @@
 
                     {% if page.issues.info > 0 %}
                     <span class="issue-badge info">
-                        <i class="bi bi-info-circle-fill"></i>
+                        <i class="bi bi-info-circle-fill" aria-hidden="true"></i>
                         <span>{{ page.issues.info }}
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Info</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Info</span>
@@ -433,7 +433,7 @@
 
                     {% if page.issues.discovery > 0 %}
                     <span class="issue-badge discovery">
-                        <i class="bi bi-lightbulb-fill"></i>
+                        <i class="bi bi-lightbulb-fill" aria-hidden="true"></i>
                         <span>{{ page.issues.discovery }}
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Discovery</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Découverte</span>
@@ -443,7 +443,7 @@
 
                     {% if page.issues.errors == 0 and page.issues.warnings == 0 and page.issues.info == 0 and page.issues.discovery == 0 %}
                     <span class="badge bg-success">
-                        <i class="bi bi-check-circle-fill"></i>
+                        <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">No Issues</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Aucun problème</span>
                     </span>
@@ -453,14 +453,14 @@
 
             <div class="page-card-footer">
                 <div class="text-muted small">
-                    <i class="bi bi-clock"></i>
+                    <i class="bi bi-clock" aria-hidden="true"></i>
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Tested {{ page.test_date|default('Recently') }}</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Testé {{ page.test_date|default('Récemment') }}</span>
                 </div>
                 <a href="pages/page_{{ '%03d'|format(loop.index) }}.html" class="view-details-btn">
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">View Details</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Voir les détails</span>
-                    <i class="bi bi-arrow-right"></i>
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
                 </a>
             </div>
         </div>
@@ -469,7 +469,7 @@
 
     <!-- No Results Message -->
     <div id="no-results" class="no-results" style="display: none;">
-        <i class="bi bi-search"></i>
+        <i class="bi bi-search" aria-hidden="true"></i>
         <h3>
             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">No Pages Found</span>
             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Aucune page trouvée</span>

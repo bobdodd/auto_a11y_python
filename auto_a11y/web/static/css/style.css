@@ -114,6 +114,16 @@ main {
 }
 
 /* Accessibility improvements */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Fallback for browsers without :focus-visible */
 a:focus,
 button:focus,
 input:focus,
@@ -121,6 +131,12 @@ select:focus,
 textarea:focus {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
+}
+
+/* Remove outline on mouse click for :focus-visible browsers */
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible) {
+    outline: none;
 }
 
 /* Skip to main content link */
@@ -137,6 +153,7 @@ textarea:focus {
 
 .skip-link:focus {
     top: 0;
+    z-index: 1100;
 }
 
 /* Responsive improvements */
@@ -387,4 +404,24 @@ textarea:focus {
 /* Ensure progress bar gray has sufficient contrast with yellow (3:1 for non-text) */
 .progress-bar.bg-secondary {
     background-color: #495057 !important; /* Darker gray for 3:1 contrast with #ffc107 */
+}
+
+/* Respect reduced motion preferences (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+    .card {
+        transition: none;
+    }
+
+    .alert {
+        animation: none;
+    }
+
+    .status-indicator.active {
+        animation: none;
+    }
+
+    * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
 }

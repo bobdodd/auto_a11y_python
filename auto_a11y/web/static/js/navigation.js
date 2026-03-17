@@ -80,47 +80,9 @@ class ReportNavigation {
      * Initialize keyboard shortcuts
      */
     initializeKeyboardShortcuts() {
-        document.addEventListener('keydown', (e) => {
-            // Ignore if user is typing in an input field
-            if (e.target.tagName === 'INPUT' ||
-                e.target.tagName === 'TEXTAREA' ||
-                e.target.tagName === 'SELECT') {
-                return;
-            }
-
-            // Arrow keys for navigation
-            if (e.key === 'ArrowLeft' && !e.shiftKey && !e.ctrlKey && !e.altKey) {
-                e.preventDefault();
-                this.prevPage();
-            } else if (e.key === 'ArrowRight' && !e.shiftKey && !e.ctrlKey && !e.altKey) {
-                e.preventDefault();
-                this.nextPage();
-            }
-
-            // Home key - go to index
-            else if (e.key === 'Home' && !e.shiftKey && !e.ctrlKey && !e.altKey) {
-                e.preventDefault();
-                this.goToIndex();
-            }
-
-            // 'i' key - go to index
-            else if (e.key === 'i' && !e.shiftKey && !e.ctrlKey && !e.altKey) {
-                e.preventDefault();
-                this.goToIndex();
-            }
-
-            // 's' key - go to summary
-            else if (e.key === 's' && !e.shiftKey && !e.ctrlKey && !e.altKey) {
-                e.preventDefault();
-                this.goToSummary();
-            }
-
-            // 'g' key - go to page (show prompt)
-            else if (e.key === 'g' && !e.shiftKey && !e.ctrlKey && !e.altKey) {
-                e.preventDefault();
-                this.promptGoToPage();
-            }
-        });
+        // Keyboard shortcuts removed: bare letter keys (i, s, g), arrow keys,
+        // and Home key conflict with screen reader navigation (NVDA, JAWS).
+        // Navigation is available via the nav links and Back to Top button.
     }
 
     /**
@@ -153,8 +115,8 @@ class ReportNavigation {
         const button = document.createElement('button');
         button.id = 'back-to-top';
         button.className = 'btn btn-primary';
-        button.innerHTML = '<i class="bi bi-arrow-up"></i>';
-        button.title = 'Back to top';
+        button.innerHTML = '<i class="bi bi-arrow-up" aria-hidden="true"></i>';
+        button.setAttribute('aria-label', 'Back to top');
         button.style.cssText = `
             position: fixed;
             bottom: 2rem;

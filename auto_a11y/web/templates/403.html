@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Access Denied') }} - Auto A11y{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-md-6 mx-auto text-center">
+            <h1 class="display-1">403</h1>
+            <h2>{{ _('Access Denied') }}</h2>
+            <p class="lead">{{ _('You do not have permission to access this page.') }}</p>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                <i class="bi bi-house"></i> {{ _('Go Home') }}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

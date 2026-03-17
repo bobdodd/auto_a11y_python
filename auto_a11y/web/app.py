@@ -26,109 +26,15 @@ from auto_a11y.web.routes import (
     discovered_pages_bp,
     automated_tests_bp,
     auth_bp,
-    schedules_bp
+    schedules_bp,
+    share_tokens_bp,
+    public_bp
 )
 from auto_a11y.web.routes.demo import demo_bp
 from auto_a11y.reporting.issue_translations_inline import ISSUE_DESCRIPTION_TRANSLATIONS_FR
+from auto_a11y.reporting.wcag_translations_fr import WCAG_TRANSLATIONS_FR
 
 logger = logging.getLogger(__name__)
-
-# Official French WCAG 2.2 Success Criterion translations
-# Source: https://www.w3.org/Translations/WCAG22-fr/
-# Defined at module level so both context_processor and wcag_name filter can access it
-WCAG_TRANSLATIONS_FR = {
-    # Principle 1: Perceivable
-    'Non-text Content': 'Contenu non textuel',
-    'Audio-only and Video-only (Prerecorded)': 'Contenus seulement audio ou vidéo (pré-enregistrés)',
-    'Captions (Prerecorded)': 'Sous-titres (pré-enregistrés)',
-    'Audio Description or Media Alternative (Prerecorded)': 'Audio-description ou version de remplacement pour un média temporel (pré-enregistré)',
-    'Captions (Live)': 'Sous-titres (en direct)',
-    'Audio Description (Prerecorded)': 'Audio-description (pré-enregistrée)',
-    'Sign Language (Prerecorded)': 'Langue des signes (pré-enregistrée)',
-    'Extended Audio Description (Prerecorded)': 'Audio-description étendue (pré-enregistrée)',
-    'Media Alternative (Prerecorded)': 'Version de remplacement pour un média temporel (pré-enregistré)',
-    'Audio-only (Live)': 'Seulement audio (en direct)',
-    'Info and Relationships': 'Information et relations',
-    'Meaningful Sequence': 'Ordre séquentiel logique',
-    'Sensory Characteristics': 'Caractéristiques sensorielles',
-    'Orientation': 'Orientation',
-    'Identify Input Purpose': 'Identifier la finalité de la saisie',
-    'Identify Purpose': 'Identifier la fonction',
-    'Use of Color': 'Utilisation de la couleur',
-    'Audio Control': 'Contrôle du son',
-    'Contrast (Minimum)': 'Contraste (minimum)',
-    'Resize Text': 'Redimensionnement du texte',
-    'Images of Text': 'Texte sous forme d\'image',
-    'Contrast (Enhanced)': 'Contraste (amélioré)',
-    'Low or No Background Audio': 'Arrière-plan sonore de faible volume ou absent',
-    'Visual Presentation': 'Présentation visuelle',
-    'Images of Text (No Exception)': 'Texte sous forme d\'image (sans exception)',
-    'Reflow': 'Redistribution',
-    'Non-text Contrast': 'Contraste du contenu non textuel',
-    'Text Spacing': 'Espacement du texte',
-    'Content on Hover or Focus': 'Contenu au survol ou au focus',
-    # Principle 2: Operable
-    'Keyboard': 'Clavier',
-    'No Keyboard Trap': 'Pas de piège au clavier',
-    'Keyboard (No Exception)': 'Clavier (sans exception)',
-    'Character Key Shortcuts': 'Raccourcis clavier',
-    'Timing Adjustable': 'Délai ajustable',
-    'Pause, Stop, Hide': 'Mettre en pause, arrêter, masquer',
-    'No Timing': 'Pas de délai',
-    'Interruptions': 'Interruptions',
-    'Re-authenticating': 'Nouvelle authentification',
-    'Timeouts': 'Dépassement du délai',
-    'Three Flashes or Below Threshold': 'Pas plus de trois flashs ou sous le seuil critique',
-    'Three Flashes': 'Trois flashs',
-    'Animation from Interactions': 'Animation déclenchée par les interactions',
-    'Bypass Blocks': 'Contourner des blocs',
-    'Page Titled': 'Titre de page',
-    'Focus Order': 'Parcours du focus',
-    'Link Purpose (In Context)': 'Fonction du lien (selon le contexte)',
-    'Multiple Ways': 'Accès multiples',
-    'Headings and Labels': 'En-têtes et étiquettes',
-    'Focus Visible': 'Visibilité du focus',
-    'Location': 'Localisation',
-    'Link Purpose (Link Only)': 'Fonction du lien (lien seul)',
-    'Section Headings': 'En-têtes de section',
-    'Focus Not Obscured (Minimum)': 'Focus non masqué (minimum)',
-    'Focus Not Obscured (Enhanced)': 'Focus non masqué (amélioré)',
-    'Focus Appearance': 'Apparence du focus',
-    'Pointer Gestures': 'Gestes pour le contrôle du pointeur',
-    'Pointer Cancellation': 'Annulation de l\'action du pointeur',
-    'Label in Name': 'Étiquette dans le nom',
-    'Motion Actuation': 'Activation par le mouvement',
-    'Target Size (Minimum)': 'Taille de la cible (minimum)',
-    'Target Size (Enhanced)': 'Taille de la cible (améliorée)',
-    'Concurrent Input Mechanisms': 'Modalités d\'entrées concurrentes',
-    'Dragging Movements': 'Mouvements de glissement',
-    # Principle 3: Understandable
-    'Language of Page': 'Langue de la page',
-    'Language of Parts': 'Langue d\'un passage',
-    'Unusual Words': 'Mots rares',
-    'Abbreviations': 'Abréviations',
-    'Reading Level': 'Niveau de lecture',
-    'Pronunciation': 'Prononciation',
-    'On Focus': 'Au focus',
-    'On Input': 'À la saisie',
-    'Consistent Navigation': 'Navigation cohérente',
-    'Consistent Identification': 'Identification cohérente',
-    'Change on Request': 'Changement à la demande',
-    'Consistent Help': 'Aide cohérente',
-    'Error Identification': 'Identification des erreurs',
-    'Labels or Instructions': 'Étiquettes ou instructions',
-    'Error Suggestion': 'Suggestion après une erreur',
-    'Error Prevention (Legal, Financial, Data)': 'Prévention des erreurs (juridiques, financières, de données)',
-    'Help': 'Aide',
-    'Error Prevention (All)': 'Prévention des erreurs (tous)',
-    'Redundant Entry': 'Entrée redondante',
-    'Accessible Authentication (Minimum)': 'Authentification accessible (minimum)',
-    'Accessible Authentication (Enhanced)': 'Authentification accessible (améliorée)',
-    # Principle 4: Robust
-    'Parsing': 'Analyse syntaxique',
-    'Name, Role, Value': 'Nom, rôle et valeur',
-    'Status Messages': 'Messages d\'état',
-}
 
 
 def create_app(config):
@@ -246,7 +152,9 @@ def create_app(config):
             t=t,  # Translation dictionary for dynamic strings
             translations=dynamic_translations,  # Full translations dict for JS
             wcag_fr=wcag_fr,  # French WCAG translations
-            issue_fr=issue_fr  # French issue description translations
+            issue_fr=issue_fr,  # French issue description translations
+            microsoft_sso_enabled=config.MICROSOFT_SSO_ENABLED,
+            google_sso_enabled=config.GOOGLE_SSO_ENABLED,
         )
     
     # Store config for access in routes
@@ -307,6 +215,8 @@ def create_app(config):
     app.register_blueprint(demo_bp, url_prefix='/demo')
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(schedules_bp, url_prefix='')
+    app.register_blueprint(share_tokens_bp, url_prefix='/share-tokens')
+    app.register_blueprint(public_bp, url_prefix='')
 
     # Global login requirement - protect all routes except auth, static, demo, and health
     @app.before_request
@@ -314,6 +224,8 @@ def create_app(config):
         """Require login for all routes except auth, static, demo, and health endpoints"""
         allowed_endpoints = [
             'auth.login', 'auth.register', 'auth.logout',
+            'auth.microsoft_login', 'auth.microsoft_callback',
+            'auth.google_login', 'auth.google_callback',
             'static', 'health', 'set_language'
         ]
         if request.endpoint and request.endpoint in allowed_endpoints:
@@ -321,6 +233,8 @@ def create_app(config):
         if request.endpoint and request.endpoint.startswith('static'):
             return None
         if request.endpoint and request.endpoint.startswith('demo.'):
+            return None
+        if request.endpoint and request.endpoint.startswith('public.'):
             return None
         if request.path.startswith('/demo'):
             return None
@@ -491,6 +405,15 @@ def create_app(config):
         return send_from_directory(screenshots_dir, filename)
 
     # Error handlers
+    @app.errorhandler(403)
+    def forbidden(error):
+        """403 error handler"""
+        if '/api/' in request.path:
+            return jsonify({'error': 'Forbidden'}), 403
+        if request.path.startswith('/t/'):
+            return render_template('public/error/403.html'), 403
+        return render_template('403.html'), 403
+
     @app.errorhandler(404)
     def not_found(error):
         """404 error handler"""

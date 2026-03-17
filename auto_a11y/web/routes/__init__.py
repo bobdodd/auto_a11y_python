@@ -18,6 +18,8 @@ from .discovered_pages import discovered_pages_bp
 from .automated_tests import bp as automated_tests_bp
 from .auth import auth_bp, role_required, admin_required, auditor_required
 from .schedules import schedules_bp
+from .share_tokens import share_tokens_bp
+from .public import public_bp
 
 __all__ = [
     'projects_bp',
@@ -38,5 +40,7 @@ __all__ = [
     'role_required',
     'admin_required',
     'auditor_required',
-    'schedules_bp'
+    'schedules_bp',
+    'share_tokens_bp',
+    'public_bp'
 ]

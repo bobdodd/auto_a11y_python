@@ -10,6 +10,24 @@
                 <h4 class="mb-0"><i class="bi bi-box-arrow-in-right"></i> {{ _('Login') }}</h4>
             </div>
             <div class="card-body">
+                {% if microsoft_sso_enabled or google_sso_enabled %}
+                <div class="mb-3">
+                    {% if microsoft_sso_enabled %}
+                    <a href="{{ url_for('auth.microsoft_login') }}" class="btn btn-dark w-100 mb-2">
+                        <i class="bi bi-microsoft"></i> {{ _('Sign in with Microsoft') }}
+                    </a>
+                    {% endif %}
+                    {% if google_sso_enabled %}
+                    <a href="{{ url_for('auth.google_login') }}" class="btn btn-light w-100 mb-2 border">
+                        <i class="bi bi-google"></i> {{ _('Sign in with Google') }}
+                    </a>
+                    {% endif %}
+
+                    <div class="text-center text-muted my-2">
+                        <span>{{ _('or') }}</span>
+                    </div>
+                </div>
+                {% endif %}
                 <form method="POST" action="{{ url_for('auth.login') }}">
                     <div class="mb-3">
                         <label for="email" class="form-label">{{ _('Email') }}</label>

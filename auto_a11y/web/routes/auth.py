@@ -2,12 +2,20 @@
 Authentication routes for user login, logout, and registration
 """
 
-from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
+import hashlib
+import logging
+import secrets
+
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, session, g, abort
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_babel import _
 from functools import wraps
+from itsdangerous import URLSafeSerializer, BadSignature
+from werkzeug.security import generate_password_hash
 
 from auto_a11y.models import AppUser, UserRole
+
+logger = logging.getLogger(__name__)
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -66,6 +74,270 @@ def auditor_required(f):
         
         return f(*args, **kwargs)
     return decorated_function
+
+
+# ------------------------------------------------------------------
+# Token validation helpers
+# ------------------------------------------------------------------
+
+def validate_token(token_string):
+    """
+    Validate a share-link token.
+    Uses URLSafeSerializer (not TimedSerializer -- expiry is checked via
+    the DB ``expires_at`` field).
+    Returns ``{scope, scope_id}`` on success or ``None``.
+    """
+    serializer = URLSafeSerializer(
+        current_app.config['SECRET_KEY'],
+        salt=current_app.app_config.TOKEN_SALT,
+    )
+    try:
+        payload = serializer.loads(token_string)
+    except BadSignature:
+        return None
+
+    token_hash = hashlib.sha256(token_string.encode('utf-8')).hexdigest()
+    token = current_app.db.get_share_token_by_hash(token_hash)
+    if token is None or not token.is_valid:
+        return None
+
+    current_app.db.record_token_use(token_hash)
+    return {'scope': token.scope, 'scope_id': token.scope_id}
+
+
+def require_access(f):
+    """
+    Decorator that gates access to public routes.
+    Checks for a ``token`` URL parameter first, then falls back to
+    ``current_user.is_authenticated``.
+    Sets ``g.access_scope`` and ``g.access_scope_id`` for downstream scope enforcement.
+    """
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token_string = kwargs.get('token')
+
+        if token_string:
+            result = validate_token(token_string)
+            if result is None:
+                abort(403)
+            g.access_scope = result['scope']
+            g.access_scope_id = result['scope_id']
+            return f(*args, **kwargs)
+
+        if current_user.is_authenticated:
+            g.access_scope = None
+            g.access_scope_id = None
+            return f(*args, **kwargs)
+
+        return redirect(url_for('auth.login'))
+
+    return decorated
+
+
+def check_scope(scope_type, scope_id):
+    """
+    Verify the current token/login grants access to the requested resource.
+    Aborts with 403 if access is denied.
+    """
+    from auto_a11y.models import TokenScope
+
+    # Logged-in user (no token) -- allow all for MVP
+    if g.access_scope is None:
+        return
+
+    if g.access_scope == TokenScope.PROJECT:
+        if scope_type == 'project' and scope_id == g.access_scope_id:
+            return
+        if scope_type in ('website', 'page'):
+            if scope_type == 'website':
+                website = current_app.db.get_website(scope_id)
+                if website and website.project_id == g.access_scope_id:
+                    return
+            elif scope_type == 'page':
+                page = current_app.db.get_page(scope_id)
+                if page:
+                    website = current_app.db.get_website(page.website_id)
+                    if website and website.project_id == g.access_scope_id:
+                        return
+
+    elif g.access_scope == TokenScope.WEBSITE:
+        if scope_type == 'website' and scope_id == g.access_scope_id:
+            return
+        if scope_type == 'page':
+            page = current_app.db.get_page(scope_id)
+            if page and page.website_id == g.access_scope_id:
+                return
+
+    abort(403)
+
+
+# ------------------------------------------------------------------
+# Microsoft SSO helpers
+# ------------------------------------------------------------------
+
+def get_msal_app():
+    """Create a ConfidentialClientApplication for Microsoft SSO."""
+    import msal
+    config = current_app.app_config
+    return msal.ConfidentialClientApplication(
+        config.MICROSOFT_CLIENT_ID,
+        authority=config.MICROSOFT_AUTHORITY,
+        client_credential=config.MICROSOFT_CLIENT_SECRET,
+    )
+
+
+def get_microsoft_auth_url(redirect_uri):
+    """Build the Microsoft authorization URL and store state in session."""
+    msal_app = get_msal_app()
+    flow = msal_app.initiate_auth_code_flow(
+        scopes=current_app.app_config.MICROSOFT_SCOPE,
+        redirect_uri=redirect_uri,
+    )
+    session['msal_flow'] = flow
+    return flow['auth_uri']
+
+
+def complete_microsoft_auth(auth_request, redirect_uri):
+    """
+    Exchange the Microsoft authorization code for tokens.
+    Returns a dict of user claims on success, or None on failure.
+    """
+    flow = session.pop('msal_flow', None)
+    if flow is None:
+        return None
+
+    msal_app = get_msal_app()
+    result = msal_app.acquire_token_by_auth_code_flow(
+        flow,
+        auth_request.args,
+    )
+
+    if 'error' in result:
+        logger.warning('Microsoft SSO token error: %s - %s',
+                        result.get('error'), result.get('error_description'))
+        return None
+
+    claims = result.get('id_token_claims', {})
+    email = claims.get('preferred_username') or claims.get('email')
+    if not email:
+        logger.warning('Microsoft SSO: no email in id_token_claims')
+        return None
+
+    return {
+        'email': email.lower(),
+        'name': claims.get('name', ''),
+        'provider': 'microsoft',
+        'provider_id': claims.get('oid', ''),
+    }
+
+
+# ------------------------------------------------------------------
+# Google SSO helpers
+# ------------------------------------------------------------------
+
+def _google_flow(redirect_uri):
+    """Create a Google OAuth2 flow."""
+    from google_auth_oauthlib.flow import Flow
+    config = current_app.app_config
+    return Flow.from_client_config(
+        {
+            'web': {
+                'client_id': config.GOOGLE_CLIENT_ID,
+                'client_secret': config.GOOGLE_CLIENT_SECRET,
+                'auth_uri': 'https://accounts.google.com/o/oauth2/v2/auth',
+                'token_uri': 'https://oauth2.googleapis.com/token',
+            }
+        },
+        scopes=['openid', 'email', 'profile'],
+        redirect_uri=redirect_uri,
+    )
+
+
+def get_google_auth_url(redirect_uri):
+    """Build the Google authorization URL and store state in session."""
+    flow = _google_flow(redirect_uri)
+    auth_url, state = flow.authorization_url(prompt='select_account')
+    session['google_oauth_state'] = state
+    return auth_url
+
+
+def complete_google_auth(auth_request, redirect_uri):
+    """
+    Exchange the Google authorization code for tokens.
+    Returns a dict of user claims on success, or None on failure.
+    """
+    state = session.pop('google_oauth_state', None)
+    if state is None:
+        return None
+
+    try:
+        flow = _google_flow(redirect_uri)
+        flow.fetch_token(authorization_response=auth_request.url)
+    except Exception:
+        logger.warning('Google SSO token exchange failed', exc_info=True)
+        return None
+
+    from google.oauth2 import id_token as google_id_token
+    from google.auth.transport import requests as google_requests
+
+    try:
+        claims = google_id_token.verify_oauth2_token(
+            flow.credentials.id_token,
+            google_requests.Request(),
+            current_app.app_config.GOOGLE_CLIENT_ID,
+        )
+    except ValueError:
+        logger.warning('Google SSO: invalid id_token', exc_info=True)
+        return None
+
+    email = claims.get('email')
+    if not email:
+        logger.warning('Google SSO: no email in id_token')
+        return None
+
+    return {
+        'email': email.lower(),
+        'name': claims.get('name', ''),
+        'provider': 'google',
+        'provider_id': claims.get('sub', ''),
+    }
+
+
+# ------------------------------------------------------------------
+# Shared SSO user management
+# ------------------------------------------------------------------
+
+def find_or_create_sso_user(claims):
+    """
+    Look up AppUser by email; create one if not found.
+    For existing users that haven't used SSO before, link their
+    sso_provider/sso_id fields.
+    """
+    db = current_app.db
+    user = db.get_app_user_by_email(claims['email'])
+
+    if user is None:
+        user = AppUser(
+            email=claims['email'],
+            password_hash=generate_password_hash(secrets.token_hex(32)),
+            role=UserRole.CLIENT,
+            display_name=claims.get('name') or None,
+            is_active=True,
+            sso_provider=claims['provider'],
+            sso_id=claims['provider_id'],
+        )
+        db.create_app_user(user)
+        logger.info('Created SSO user (%s): %s', claims['provider'], user.email)
+        return user
+
+    # Link SSO if not already set
+    if not user.sso_provider:
+        user.sso_provider = claims['provider']
+        user.sso_id = claims['provider_id']
+        db.update_app_user(user)
+        logger.info('Linked %s SSO to existing user: %s', claims['provider'], user.email)
+
+    return user
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -350,3 +622,81 @@ def user_delete(user_id):
     current_app.db.delete_app_user(user_id)
     flash(_('User deleted successfully.'), 'success')
     return redirect(url_for('auth.user_list'))
+
+
+# ------------------------------------------------------------------
+# Microsoft SSO routes
+# ------------------------------------------------------------------
+
+@auth_bp.route('/login/microsoft')
+def microsoft_login():
+    """Redirect user to Microsoft login page."""
+    if not current_app.app_config.MICROSOFT_SSO_ENABLED:
+        abort(404)
+    redirect_uri = request.url_root.rstrip('/') + current_app.app_config.MICROSOFT_REDIRECT_PATH
+    auth_url = get_microsoft_auth_url(redirect_uri)
+    return redirect(auth_url)
+
+
+@auth_bp.route('/microsoft/callback')
+def microsoft_callback():
+    """Handle the OAuth callback from Microsoft."""
+    if not current_app.app_config.MICROSOFT_SSO_ENABLED:
+        abort(404)
+
+    redirect_uri = request.url_root.rstrip('/') + current_app.app_config.MICROSOFT_REDIRECT_PATH
+    claims = complete_microsoft_auth(request, redirect_uri)
+
+    if claims is None:
+        flash(_('Microsoft sign-in failed. Please try again.'), 'danger')
+        return redirect(url_for('auth.login'))
+
+    user = find_or_create_sso_user(claims)
+
+    if not user.is_active:
+        flash(_('Your account has been deactivated.'), 'danger')
+        return redirect(url_for('auth.login'))
+
+    user.record_login(success=True)
+    current_app.db.update_app_user(user)
+    login_user(user)
+    return redirect(url_for('dashboard'))
+
+
+# ------------------------------------------------------------------
+# Google SSO routes
+# ------------------------------------------------------------------
+
+@auth_bp.route('/login/google')
+def google_login():
+    """Redirect user to Google login page."""
+    if not current_app.app_config.GOOGLE_SSO_ENABLED:
+        abort(404)
+    redirect_uri = request.url_root.rstrip('/') + current_app.app_config.GOOGLE_REDIRECT_PATH
+    auth_url = get_google_auth_url(redirect_uri)
+    return redirect(auth_url)
+
+
+@auth_bp.route('/google/callback')
+def google_callback():
+    """Handle the OAuth callback from Google."""
+    if not current_app.app_config.GOOGLE_SSO_ENABLED:
+        abort(404)
+
+    redirect_uri = request.url_root.rstrip('/') + current_app.app_config.GOOGLE_REDIRECT_PATH
+    claims = complete_google_auth(request, redirect_uri)
+
+    if claims is None:
+        flash(_('Google sign-in failed. Please try again.'), 'danger')
+        return redirect(url_for('auth.login'))
+
+    user = find_or_create_sso_user(claims)
+
+    if not user.is_active:
+        flash(_('Your account has been deactivated.'), 'danger')
+        return redirect(url_for('auth.login'))
+
+    user.record_login(success=True)
+    current_app.db.update_app_user(user)
+    login_user(user)
+    return redirect(url_for('dashboard'))

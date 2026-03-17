@@ -212,10 +212,12 @@ class HelpSystem {
     }
     
     createHelpModal() {
-        // Create modal container
         const modal = document.createElement('div');
         modal.id = 'help-modal';
         modal.className = 'help-modal';
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-labelledby', 'help-modal-title');
         modal.innerHTML = `
             <div class="help-modal-content">
                 <div class="help-modal-header">
@@ -223,7 +225,6 @@ class HelpSystem {
                     <button class="help-modal-close" aria-label="Close help">&times;</button>
                 </div>
                 <div class="help-modal-body" id="help-modal-body">
-                    <!-- Content will be inserted here -->
                 </div>
                 <div class="help-modal-footer">
                     <button class="btn btn-primary help-modal-close">Close</button>
@@ -236,33 +237,80 @@ class HelpSystem {
     showHelp(topicPath) {
         const topics = topicPath.split('.');
         let content = this.helpContent;
-        
-        // Navigate to the requested topic
+
         for (const topic of topics) {
             if (content[topic]) {
                 content = content[topic];
             } else {
-                // Help topic not found
                 return;
             }
         }
-        
-        // Display the help content
+
         const modal = document.getElementById('help-modal');
         const title = document.getElementById('help-modal-title');
         const body = document.getElementById('help-modal-body');
-        
+
+        // Save the element that triggered the modal
+        this.previousFocus = document.activeElement;
+
         title.textContent = content.title || 'Help';
         body.innerHTML = content.detailed || content.brief || 'No help available for this topic.';
-        
+
         modal.classList.add('show');
+
+        // Focus the first close button inside the modal
+        var closeBtn = modal.querySelector('.help-modal-close');
+        if (closeBtn) {
+            closeBtn.focus();
+        }
+
+        // Add focus trap
+        this._trapFocus = this._createFocusTrap(modal);
+        modal.addEventListener('keydown', this._trapFocus);
     }
     
     hideHelp() {
         const modal = document.getElementById('help-modal');
         modal.classList.remove('show');
+
+        // Remove focus trap
+        if (this._trapFocus) {
+            modal.removeEventListener('keydown', this._trapFocus);
+            this._trapFocus = null;
+        }
+
+        // Return focus to the trigger element
+        if (this.previousFocus && this.previousFocus.focus) {
+            this.previousFocus.focus();
+        }
     }
-    
+
+    _createFocusTrap(container) {
+        return function(e) {
+            if (e.key !== 'Tab') return;
+
+            var focusable = container.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            if (focusable.length === 0) return;
+
+            var first = focusable[0];
+            var last = focusable[focusable.length - 1];
+
+            if (e.shiftKey) {
+                if (document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                }
+            } else {
+                if (document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        };
+    }
+
     attachEventListeners() {
         // Close modal handlers
         document.querySelectorAll('.help-modal-close').forEach(btn => {

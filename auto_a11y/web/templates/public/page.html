@@ -81,7 +81,8 @@
                 <div class="issue-meta">
                     {% for criterion in issue.wcag_criteria %}
                     <a href="{{ criterion|wcag_understanding_url }}"
-                       rel="noopener noreferrer" target="_blank">
+                       rel="noopener noreferrer" target="_blank"
+                       aria-label="{{ _('Understanding WCAG criterion') }} {{ criterion|wcag_name }} ({{ _('opens in new window') }})">
                         {{ criterion|wcag_name }}
                     </a>
                     {% endfor %}

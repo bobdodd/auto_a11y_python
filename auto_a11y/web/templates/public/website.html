@@ -38,16 +38,16 @@
     <caption class="visually-hidden">{{ _('Pages tested on %(url)s', url=website.url) }}</caption>
     <thead>
         <tr>
-            <th {{ aria_sort('url') }}>
+            <th scope="col" {{ aria_sort('url') }}>
                 <a href="{{ sort_url('url') }}" class="sort-link">{{ _('Page URL') }}</a>
             </th>
-            <th {{ aria_sort('violations') }}>
+            <th scope="col" {{ aria_sort('violations') }}>
                 <a href="{{ sort_url('violations') }}" class="sort-link">{{ _('Violations') }}</a>
             </th>
-            <th {{ aria_sort('warnings') }}>
+            <th scope="col" {{ aria_sort('warnings') }}>
                 <a href="{{ sort_url('warnings') }}" class="sort-link">{{ _('Warnings') }}</a>
             </th>
-            <th {{ aria_sort('last_tested') }}>
+            <th scope="col" {{ aria_sort('last_tested') }}>
                 <a href="{{ sort_url('last_tested') }}" class="sort-link">{{ _('Last Tested') }}</a>
             </th>
         </tr>

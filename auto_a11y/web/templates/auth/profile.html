@@ -46,16 +46,16 @@
                     <input type="hidden" name="action" value="change_password">
                     <div class="mb-3">
                         <label for="current_password" class="form-label">{{ _('Current Password') }}</label>
-                        <input type="password" class="form-control" id="current_password" name="current_password" required>
+                        <input type="password" class="form-control" id="current_password" name="current_password" required autocomplete="current-password">
                     </div>
                     <div class="mb-3">
                         <label for="new_password" class="form-label">{{ _('New Password') }}</label>
-                        <input type="password" class="form-control" id="new_password" name="new_password" required minlength="8">
+                        <input type="password" class="form-control" id="new_password" name="new_password" required minlength="8" autocomplete="new-password">
                         <div class="form-text">{{ _('Minimum 8 characters.') }}</div>
                     </div>
                     <div class="mb-3">
                         <label for="confirm_password" class="form-label">{{ _('Confirm New Password') }}</label>
-                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required autocomplete="new-password">
                     </div>
                     <button type="submit" class="btn btn-warning">
                         <i class="bi bi-key" aria-hidden="true"></i> {{ _('Change Password') }}

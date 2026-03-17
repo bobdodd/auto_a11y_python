@@ -13,7 +13,7 @@
                 <form method="POST" action="{{ url_for('auth.user_create') }}">
                     <div class="mb-3">
                         <label for="email" class="form-label">{{ _('Email') }} <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                        <input type="email" class="form-control" id="email" name="email" required autocomplete="email">
                     </div>
                     <div class="mb-3">
                         <label for="display_name" class="form-label">{{ _('Display Name') }}</label>
@@ -21,7 +21,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">{{ _('Password') }} <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" id="password" name="password" required minlength="8">
+                        <input type="password" class="form-control" id="password" name="password" required minlength="8" autocomplete="new-password">
                         <div class="form-text">{{ _('Minimum 8 characters.') }}</div>
                     </div>
                     <div class="mb-3">

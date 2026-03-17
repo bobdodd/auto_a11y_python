@@ -51,13 +51,13 @@
                         <div class="mb-3">
                             <label for="username" class="form-label">{{ _('Username') }} <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="username" name="username" required
-                                   placeholder="{{ _('e.g., student123') }}">
+                                   placeholder="{{ _('e.g., student123') }}" autocomplete="username">
                             <div class="form-text">{{ _('Username for login') }}</div>
                         </div>
 
                         <div class="mb-3">
                             <label for="password" class="form-label">{{ _('Password') }} <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <input type="password" class="form-control" id="password" name="password" required autocomplete="new-password">
                             <div class="form-text">{{ _('Password for login (stored securely)') }}</div>
                         </div>
 
@@ -111,7 +111,7 @@
                             <div class="mb-3">
                                 <label for="login_url" class="form-label">{{ _('Login Page URL') }}</label>
                                 <input type="url" class="form-control" id="login_url" name="login_url"
-                                       placeholder="https://example.com/login">
+                                       placeholder="https://example.com/login" autocomplete="url">
                                 <div class="form-text">{{ _('Full URL of the login page') }}</div>
                             </div>
 

@@ -57,6 +57,13 @@ class ReportSearch {
             });
         }
 
+        // Make search results count a live region for screen readers
+        var counter = document.getElementById('search-results-count');
+        if (counter) {
+            counter.setAttribute('aria-live', 'polite');
+            counter.setAttribute('aria-atomic', 'true');
+        }
+
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             // Ctrl/Cmd + F - focus search
@@ -330,7 +337,8 @@ class ReportSearch {
 const style = document.createElement('style');
 style.textContent = `
     .search-highlight {
-        background-color: #ffeb3b;
+        background-color: #fff3cd;
+        outline: 2px solid #b3860a;
         padding: 0 2px;
         border-radius: 2px;
     }

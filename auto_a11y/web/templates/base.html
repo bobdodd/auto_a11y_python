@@ -23,7 +23,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('index') }}">
-                <i class="bi bi-universal-access-circle"></i> Auto A11y
+                <i class="bi bi-universal-access-circle" aria-hidden="true"></i> Auto A11y
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="{{ _('Toggle navigation') }}">
                 <span class="navbar-toggler-icon"></span>
@@ -33,43 +33,43 @@
                     <!-- Dashboard - standalone -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}aria-current="page"{% endif %}>
-                            <i class="bi bi-speedometer2"></i> {{ _('Dashboard') }}
+                            <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ _('Dashboard') }}
                         </a>
                     </li>
                     <!-- Projects - standalone -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('projects.list_projects') }}" {% if request.endpoint and request.endpoint.startswith('projects.') %}aria-current="page"{% endif %}>
-                            <i class="bi bi-folder"></i> {{ _('Projects') }}
+                            <i class="bi bi-folder" aria-hidden="true"></i> {{ _('Projects') }}
                         </a>
                     </li>
                     <!-- Testing dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="testingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-check2-square"></i> {{ _('Testing') }}
+                            <i class="bi bi-check2-square" aria-hidden="true"></i> {{ _('Testing') }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="testingDropdown">
                             <li><a class="dropdown-item" href="{{ url_for('testing.testing_dashboard') }}">
-                                <i class="bi bi-speedometer2"></i> {{ _('Testing Dashboard') }}
+                                <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ _('Testing Dashboard') }}
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('testing.trends_page') }}">
-                                <i class="bi bi-graph-up-arrow"></i> {{ _('Trend Analysis') }}
+                                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i> {{ _('Trend Analysis') }}
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('schedules.schedules_dashboard') }}">
-                                <i class="bi bi-calendar-check"></i> {{ _('Schedules') }}
+                                <i class="bi bi-calendar-check" aria-hidden="true"></i> {{ _('Schedules') }}
                             </a></li>
                         </ul>
                     </li>
                     <!-- Reports dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-file-earmark-text"></i> {{ _('Reports') }}
+                            <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ _('Reports') }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
                             <li><a class="dropdown-item" href="{{ url_for('reports.reports_dashboard') }}">
-                                <i class="bi bi-file-earmark-bar-graph"></i> {{ _('Reports Dashboard') }}
+                                <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i> {{ _('Reports Dashboard') }}
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('recordings.list_recordings') }}">
-                                <i class="bi bi-mic"></i> {{ _('Recordings') }}
+                                <i class="bi bi-mic" aria-hidden="true"></i> {{ _('Recordings') }}
                             </a></li>
                         </ul>
                     </li>
@@ -78,7 +78,7 @@
                     <!-- Language selector - compact -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle py-2 px-2" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ _('Language') }}">
-                            <i class="bi bi-translate"></i> <span class="d-none d-lg-inline" id="current-language">{{ get_locale().upper() }}</span>
+                            <i class="bi bi-translate" aria-hidden="true"></i> <span class="d-none d-lg-inline" id="current-language">{{ get_locale().upper() }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item language-switch" href="#" data-lang="en">English</a></li>
@@ -88,25 +88,25 @@
                     <!-- Settings dropdown - includes Help -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle py-2 px-2" href="#" id="settingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ _('Settings') }}">
-                            <i class="bi bi-gear"></i>
+                            <i class="bi bi-gear" aria-hidden="true"></i>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="{{ url_for('help') }}">
-                                <i class="bi bi-question-circle"></i> {{ _('Help') }}
+                                <i class="bi bi-question-circle" aria-hidden="true"></i> {{ _('Help') }}
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('testing.configure_testing') }}">
-                                <i class="bi bi-sliders"></i> {{ _('Configuration') }}
+                                <i class="bi bi-sliders" aria-hidden="true"></i> {{ _('Configuration') }}
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('testing.fixture_status') }}">
-                                <i class="bi bi-check2-square"></i> {{ _('Fixture Status') }}
+                                <i class="bi bi-check2-square" aria-hidden="true"></i> {{ _('Fixture Status') }}
                             </a></li>
                         </ul>
                     </li>
                     {% if current_user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle"></i> {{ current_user.name_display }}
+                            <i class="bi bi-person-circle" aria-hidden="true"></i> {{ current_user.name_display }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><span class="dropdown-item-text text-muted small">
@@ -114,23 +114,23 @@
                             </span></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}">
-                                <i class="bi bi-person"></i> {{ _('Profile') }}
+                                <i class="bi bi-person" aria-hidden="true"></i> {{ _('Profile') }}
                             </a></li>
                             {% if current_user.is_admin() %}
                             <li><a class="dropdown-item" href="{{ url_for('auth.user_list') }}">
-                                <i class="bi bi-people"></i> {{ _('User Management') }}
+                                <i class="bi bi-people" aria-hidden="true"></i> {{ _('User Management') }}
                             </a></li>
                             {% endif %}
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">
-                                <i class="bi bi-box-arrow-right"></i> {{ _('Logout') }}
+                                <i class="bi bi-box-arrow-right" aria-hidden="true"></i> {{ _('Logout') }}
                             </a></li>
                         </ul>
                     </li>
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('auth.login') }}">
-                            <i class="bi bi-box-arrow-in-right"></i> {{ _('Login') }}
+                            <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> {{ _('Login') }}
                         </a>
                     </li>
                     {% endif %}
@@ -152,7 +152,7 @@
                         <a href="#" id="global-test-link" class="ms-2">View Details</a>
                     </div>
                 </div>
-                <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" onclick="pauseGlobalTestTracking()"></button>
+                <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert" aria-label="{{ _('Dismiss') }}" onclick="pauseGlobalTestTracking()"></button>
             </div>
         </div>
     </div>
@@ -164,7 +164,7 @@
                 {% for category, message in messages %}
                     <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ _('Dismiss') }}"></button>
                     </div>
                 {% endfor %}
             </div>
@@ -191,43 +191,43 @@
         <ul>
             <li>
                 <a href="{{ url_for('dashboard') }}" {% if request.endpoint == 'dashboard' %}class="active" aria-current="page"{% endif %}>
-                    <i class="bi bi-speedometer2"></i>
+                    <i class="bi bi-speedometer2" aria-hidden="true"></i>
                     <span>{{ _('Dashboard') }}</span>
                 </a>
             </li>
             <li>
                 <a href="{{ url_for('projects.list_projects') }}" {% if request.endpoint and request.endpoint.startswith('projects.') %}class="active" aria-current="page"{% endif %}>
-                    <i class="bi bi-folder"></i>
+                    <i class="bi bi-folder" aria-hidden="true"></i>
                     <span>{{ _('Projects') }}</span>
                 </a>
             </li>
             <li>
                 <a href="{{ url_for('testing.testing_dashboard') }}" {% if request.endpoint == 'testing.testing_dashboard' %}class="active" aria-current="page"{% endif %}>
-                    <i class="bi bi-check2-square"></i>
+                    <i class="bi bi-check2-square" aria-hidden="true"></i>
                     <span>{{ _('Testing') }}</span>
                 </a>
             </li>
             <li>
                 <a href="{{ url_for('testing.trends_page') }}" {% if request.endpoint == 'testing.trends_page' %}class="active" aria-current="page"{% endif %}>
-                    <i class="bi bi-graph-up-arrow"></i>
+                    <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
                     <span>{{ _('Trends') }}</span>
                 </a>
             </li>
             <li>
                 <a href="{{ url_for('schedules.schedules_dashboard') }}" {% if request.endpoint == 'schedules.schedules_dashboard' %}class="active" aria-current="page"{% endif %}>
-                    <i class="bi bi-calendar-check"></i>
+                    <i class="bi bi-calendar-check" aria-hidden="true"></i>
                     <span>{{ _('Schedules') }}</span>
                 </a>
             </li>
             <li>
                 <a href="{{ url_for('reports.reports_dashboard') }}" {% if request.endpoint and request.endpoint.startswith('reports.') %}class="active" aria-current="page"{% endif %}>
-                    <i class="bi bi-file-earmark-text"></i>
+                    <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                     <span>{{ _('Reports') }}</span>
                 </a>
             </li>
             <li>
                 <a href="{{ url_for('auth.profile') }}" {% if request.endpoint and request.endpoint.startswith('auth.') %}class="active" aria-current="page"{% endif %}>
-                    <i class="bi bi-person-circle"></i>
+                    <i class="bi bi-person-circle" aria-hidden="true"></i>
                     <span>{{ _('Profile') }}</span>
                 </a>
             </li>

@@ -18,7 +18,8 @@ from auto_a11y.models import (
     PageSetupScript, ScriptExecutionSession,
     WebsiteUser, ProjectUser, DiscoveredPage,
     TestStateMatrix, AppUser, UserRole,
-    TestSchedule, ScheduleType, ScheduleRunStatus
+    TestSchedule, ScheduleType, ScheduleRunStatus,
+    ShareToken, TokenScope
 )
 
 logger = logging.getLogger(__name__)
@@ -58,6 +59,7 @@ class Database:
         self.test_state_matrices: Collection = self.db.test_state_matrices  # Multi-state test configuration matrices
         self.app_users: Collection = self.db.app_users  # Application users for authentication
         self.test_schedules: Collection = self.db.test_schedules  # Scheduled test configurations
+        self.share_tokens: Collection = self.db.share_tokens  # Public share tokens
 
         # Create indexes
         self._create_indexes()
@@ -196,6 +198,10 @@ class Database:
         self.test_schedules.create_index([("website_id", 1), ("enabled", 1)])
         self.test_schedules.create_index("next_run_at")
         self.test_schedules.create_index("apscheduler_job_id", unique=True, sparse=True)
+
+        # Share tokens (public share links)
+        self.share_tokens.create_index("token_hash", unique=True)
+        self.share_tokens.create_index([("scope", 1), ("scope_id", 1)])
 
     def test_connection(self) -> bool:
         """Test database connection"""
@@ -2719,3 +2725,49 @@ class Database:
             query["enabled"] = True
 
         return self.test_schedules.count_documents(query)
+
+    # ==========================================
+    # Share Token Methods (Public Share Links)
+    # ==========================================
+
+    def create_share_token(self, token: ShareToken) -> str:
+        """Create a new share token"""
+        result = self.share_tokens.insert_one(token.to_dict())
+        token._id = result.inserted_id
+        logger.info(f"Created share token: {token.label} ({token.scope.value}:{token.scope_id})")
+        return str(result.inserted_id)
+
+    def get_share_token_by_hash(self, token_hash: str) -> Optional[ShareToken]:
+        """Get share token by its hash"""
+        doc = self.share_tokens.find_one({"token_hash": token_hash})
+        return ShareToken.from_dict(doc) if doc else None
+
+    def get_share_tokens_for_scope(
+        self,
+        scope: TokenScope,
+        scope_id: str
+    ) -> List[ShareToken]:
+        """Get all share tokens for a given scope (project or website)"""
+        docs = self.share_tokens.find({
+            "scope": scope.value,
+            "scope_id": scope_id
+        }).sort("created_at", -1)
+        return [ShareToken.from_dict(doc) for doc in docs]
+
+    def revoke_share_token(self, token_id: str) -> bool:
+        """Revoke a share token"""
+        result = self.share_tokens.update_one(
+            {"_id": ObjectId(token_id)},
+            {"$set": {"revoked": True, "revoked_at": datetime.now()}}
+        )
+        if result.modified_count > 0:
+            logger.info(f"Revoked share token: {token_id}")
+            return True
+        return False
+
+    def record_token_use(self, token_hash: str) -> None:
+        """Record that a token was used"""
+        self.share_tokens.update_one(
+            {"token_hash": token_hash},
+            {"$set": {"last_used": datetime.now()}, "$inc": {"use_count": 1}}
+        )

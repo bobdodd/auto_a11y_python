@@ -1,0 +1,144 @@
+{# Includeable partial for share token management.
+   Pass: scope ("project" or "website"), scope_id (the ObjectId string) #}
+<div class="card mb-3" id="share-tokens-section">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0">{{ _('Share Links') }}</h3>
+        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="collapse"
+                data-bs-target="#create-token-form" aria-expanded="false"
+                aria-controls="create-token-form">
+            {{ _('Create Share Link') }}
+        </button>
+    </div>
+
+    <div class="collapse" id="create-token-form">
+        <div class="card-body border-bottom">
+            <form id="token-create-form" onsubmit="return createShareToken(event, '{{ scope }}', '{{ scope_id }}')">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-4">
+                        <label for="token-label" class="form-label">{{ _('Label') }}</label>
+                        <input type="text" class="form-control" id="token-label" name="label"
+                               placeholder="{{ _('e.g. Client review link') }}" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="token-expires" class="form-label">{{ _('Expires') }}</label>
+                        <select class="form-select" id="token-expires" name="expires_days">
+                            <option value="30">{{ _('30 days') }}</option>
+                            <option value="90" selected>{{ _('90 days') }}</option>
+                            <option value="365">{{ _('1 year') }}</option>
+                            <option value="never">{{ _('Never') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success">{{ _('Create') }}</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card-body p-0">
+        <div id="token-list-container">
+            <table class="table table-sm mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ _('Label') }}</th>
+                        <th>{{ _('Created') }}</th>
+                        <th>{{ _('Expires') }}</th>
+                        <th>{{ _('Uses') }}</th>
+                        <th>{{ _('Status') }}</th>
+                        <th>{{ _('Actions') }}</th>
+                    </tr>
+                </thead>
+                <tbody id="token-list-body">
+                    <tr><td colspan="6" class="text-muted text-center py-3">{{ _('Loading...') }}</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{# URL alert shown after creating a token #}
+<div class="alert alert-success d-none" id="token-url-alert" role="alert">
+    <strong>{{ _('Share link created!') }}</strong>
+    <div class="input-group mt-2">
+        <input type="text" class="form-control" id="token-url-display" readonly>
+        <button class="btn btn-outline-secondary" type="button" onclick="copyTokenUrl()">{{ _('Copy') }}</button>
+    </div>
+    <small class="text-muted">{{ _('This is the only time the full link is shown.') }}</small>
+</div>
+
+<script>
+function loadShareTokens(scope, scopeId) {
+    const endpoint = scope === 'project'
+        ? `/share-tokens/projects/${scopeId}/share-tokens`
+        : `/share-tokens/websites/${scopeId}/share-tokens`;
+
+    fetch(endpoint)
+        .then(r => r.json())
+        .then(data => {
+            const tbody = document.getElementById('token-list-body');
+            if (!data.tokens || data.tokens.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-muted text-center py-3">{{ _("No share links yet") }}</td></tr>';
+                return;
+            }
+            tbody.innerHTML = data.tokens.map(t => `
+                <tr>
+                    <td>${escapeHtml(t.label)}</td>
+                    <td>${t.created_at ? new Date(t.created_at).toLocaleDateString() : '-'}</td>
+                    <td>${t.expires_at ? new Date(t.expires_at).toLocaleDateString() : '{{ _("Never") }}'}</td>
+                    <td>${t.use_count}</td>
+                    <td>${t.revoked ? '<span class="badge bg-danger">{{ _("Revoked") }}</span>'
+                                    : (t.is_valid ? '<span class="badge bg-success">{{ _("Active") }}</span>'
+                                                  : '<span class="badge bg-warning">{{ _("Expired") }}</span>')}</td>
+                    <td>${!t.revoked ? `<button class="btn btn-sm btn-outline-danger" onclick="revokeToken('${t.id}', '${scope}', '${scopeId}')">{{ _('Revoke') }}</button>` : ''}</td>
+                </tr>
+            `).join('');
+        });
+}
+
+function createShareToken(event, scope, scopeId) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+
+    const endpoint = scope === 'project'
+        ? `/share-tokens/projects/${scopeId}/share-tokens`
+        : `/share-tokens/websites/${scopeId}/share-tokens`;
+
+    fetch(endpoint, { method: 'POST', body: formData })
+        .then(r => r.json())
+        .then(data => {
+            if (data.public_url) {
+                document.getElementById('token-url-display').value = data.public_url;
+                document.getElementById('token-url-alert').classList.remove('d-none');
+                form.reset();
+                loadShareTokens(scope, scopeId);
+            }
+        });
+    return false;
+}
+
+function revokeToken(tokenId, scope, scopeId) {
+    if (!confirm('{{ _("Revoke this share link? Anyone using it will lose access.") }}')) return;
+
+    fetch(`/share-tokens/share-tokens/${tokenId}/revoke`, { method: 'POST' })
+        .then(r => r.json())
+        .then(() => loadShareTokens(scope, scopeId));
+}
+
+function copyTokenUrl() {
+    const input = document.getElementById('token-url-display');
+    navigator.clipboard.writeText(input.value);
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Auto-load on page render
+document.addEventListener('DOMContentLoaded', function() {
+    loadShareTokens('{{ scope }}', '{{ scope_id }}');
+});
+</script>

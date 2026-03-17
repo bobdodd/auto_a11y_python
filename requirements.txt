@@ -11,6 +11,7 @@ Flask>=3.0.0
 Flask-CORS>=4.0.0
 Flask-Babel>=4.0.0
 Flask-Login>=0.6.3
+Flask-Limiter>=3.5.0
 
 # Database
 pymongo>=4.0.0
@@ -27,6 +28,13 @@ XlsxWriter>=3.1.0
 
 # PDF generation
 weasyprint>=60.0  # HTML to PDF conversion
+
+# Microsoft SSO
+msal>=1.28.0
+
+# Google SSO
+google-auth>=2.0.0
+google-auth-oauthlib>=1.0.0
 
 # HTTP clients
 requests>=2.31.0

@@ -28,6 +28,7 @@ from .schedule import (
     TestSchedule, ScheduleType, AITestMode, ScheduleRunStatus,
     ScheduleTestConfig, PresetConfig
 )
+from .share_token import ShareToken, TokenScope
 
 __all__ = [
     'Project', 'ProjectStatus', 'ProjectType', 'LivedExperienceTester', 'TestSupervisor',
@@ -49,5 +50,6 @@ __all__ = [
     'Issue',
     'AppUser', 'UserRole',
     'TestSchedule', 'ScheduleType', 'AITestMode', 'ScheduleRunStatus',
-    'ScheduleTestConfig', 'PresetConfig'
+    'ScheduleTestConfig', 'PresetConfig',
+    'ShareToken', 'TokenScope'
 ]

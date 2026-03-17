@@ -34,6 +34,9 @@ class AppUser:
     failed_login_count: int = 0
     locked_until: Optional[datetime] = None
 
+    sso_provider: Optional[str] = None   # e.g., 'microsoft'
+    sso_id: Optional[str] = None         # Microsoft object ID (oid)
+
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
 
@@ -140,6 +143,8 @@ class AppUser:
             'login_count': self.login_count,
             'failed_login_count': self.failed_login_count,
             'locked_until': self.locked_until,
+            'sso_provider': self.sso_provider,
+            'sso_id': self.sso_id,
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
@@ -165,6 +170,8 @@ class AppUser:
             login_count=data.get('login_count', 0),
             failed_login_count=data.get('failed_login_count', 0),
             locked_until=data.get('locked_until'),
+            sso_provider=data.get('sso_provider'),
+            sso_id=data.get('sso_id'),
             created_at=data.get('created_at', datetime.now()),
             updated_at=data.get('updated_at', datetime.now()),
             _id=data.get('_id')

@@ -45,11 +45,13 @@
     <main id="main-content" class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-        <ul class="flash-messages" role="alert">
-            {% for category, message in messages %}
-            <li class="flash-{{ category }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
+        <div role="alert">
+            <ul class="flash-messages">
+                {% for category, message in messages %}
+                <li class="flash-{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
         {% endif %}
         {% endwith %}
 

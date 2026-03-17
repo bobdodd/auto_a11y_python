@@ -7,7 +7,7 @@
     <div class="col-md-6">
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
-                <h4 class="mb-0"><i class="bi bi-person-plus"></i> {{ _('Create User') }}</h4>
+                <h1 class="h4 mb-0"><i class="bi bi-person-plus" aria-hidden="true"></i> {{ _('Create User') }}</h1>
             </div>
             <div class="card-body">
                 <form method="POST" action="{{ url_for('auth.user_create') }}">
@@ -34,7 +34,7 @@
                     </div>
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-person-plus"></i> {{ _('Create User') }}
+                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ _('Create User') }}
                         </button>
                         <a href="{{ url_for('auth.user_list') }}" class="btn btn-secondary">
                             {{ _('Cancel') }}

@@ -197,13 +197,14 @@
             {% if pages %}
             <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
                 <table class="table table-sm table-hover">
+                    <caption class="visually-hidden">Pages discovered in this run</caption>
                     <thead class="sticky-top bg-white">
                         <tr>
-                            <th>URL</th>
-                            <th>Title</th>
-                            <th>Depth</th>
-                            <th>Status</th>
-                            <th>Error</th>
+                            <th scope="col">URL</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Depth</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Error</th>
                         </tr>
                     </thead>
                     <tbody>

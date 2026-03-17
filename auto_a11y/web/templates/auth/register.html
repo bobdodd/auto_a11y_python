@@ -7,12 +7,12 @@
     <div class="col-md-6 col-lg-4">
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
-                <h4 class="mb-0"><i class="bi bi-person-plus"></i> {{ _('Register') }}</h4>
+                <h1 class="h4 mb-0"><i class="bi bi-person-plus" aria-hidden="true"></i> {{ _('Register') }}</h1>
             </div>
             <div class="card-body">
                 {% if is_first_user %}
                 <div class="alert alert-info">
-                    <i class="bi bi-info-circle"></i> {{ _('This will be the first user account and will have administrator privileges.') }}
+                    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This will be the first user account and will have administrator privileges.') }}
                 </div>
                 {% endif %}
                 
@@ -36,7 +36,7 @@
                         <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-person-plus"></i> {{ _('Create Account') }}
+                        <i class="bi bi-person-plus" aria-hidden="true"></i> {{ _('Create Account') }}
                     </button>
                 </form>
             </div>

@@ -7,7 +7,7 @@
     <div class="col-md-6">
         <div class="card shadow mb-4">
             <div class="card-header bg-primary text-white">
-                <h4 class="mb-0"><i class="bi bi-person-circle"></i> {{ _('Profile') }}</h4>
+                <h2 class="h4 mb-0"><i class="bi bi-person-circle" aria-hidden="true"></i> {{ _('Profile') }}</h2>
             </div>
             <div class="card-body">
                 <form method="POST" action="{{ url_for('auth.profile') }}">
@@ -29,7 +29,7 @@
                         <input type="text" class="form-control" value="{{ current_user.created_at.strftime('%Y-%m-%d') }}" disabled>
                     </div>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-lg"></i> {{ _('Save Changes') }}
+                        <i class="bi bi-check-lg" aria-hidden="true"></i> {{ _('Save Changes') }}
                     </button>
                 </form>
             </div>
@@ -39,7 +39,7 @@
     <div class="col-md-6">
         <div class="card shadow">
             <div class="card-header bg-warning text-dark">
-                <h4 class="mb-0"><i class="bi bi-key"></i> {{ _('Change Password') }}</h4>
+                <h2 class="h4 mb-0"><i class="bi bi-key" aria-hidden="true"></i> {{ _('Change Password') }}</h2>
             </div>
             <div class="card-body">
                 <form method="POST" action="{{ url_for('auth.profile') }}">
@@ -58,7 +58,7 @@
                         <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
                     </div>
                     <button type="submit" class="btn btn-warning">
-                        <i class="bi bi-key"></i> {{ _('Change Password') }}
+                        <i class="bi bi-key" aria-hidden="true"></i> {{ _('Change Password') }}
                     </button>
                 </form>
             </div>

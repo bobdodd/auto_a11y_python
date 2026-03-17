@@ -7,19 +7,19 @@
     <div class="col-md-6 col-lg-4">
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
-                <h4 class="mb-0"><i class="bi bi-box-arrow-in-right"></i> {{ _('Login') }}</h4>
+                <h1 class="h4 mb-0"><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> {{ _('Login') }}</h1>
             </div>
             <div class="card-body">
                 {% if microsoft_sso_enabled or google_sso_enabled %}
                 <div class="mb-3">
                     {% if microsoft_sso_enabled %}
                     <a href="{{ url_for('auth.microsoft_login') }}" class="btn btn-dark w-100 mb-2">
-                        <i class="bi bi-microsoft"></i> {{ _('Sign in with Microsoft') }}
+                        <i class="bi bi-microsoft" aria-hidden="true"></i> {{ _('Sign in with Microsoft') }}
                     </a>
                     {% endif %}
                     {% if google_sso_enabled %}
                     <a href="{{ url_for('auth.google_login') }}" class="btn btn-light w-100 mb-2 border">
-                        <i class="bi bi-google"></i> {{ _('Sign in with Google') }}
+                        <i class="bi bi-google" aria-hidden="true"></i> {{ _('Sign in with Google') }}
                     </a>
                     {% endif %}
 
@@ -42,7 +42,7 @@
                         <label class="form-check-label" for="remember">{{ _('Remember me') }}</label>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-box-arrow-in-right"></i> {{ _('Login') }}
+                        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> {{ _('Login') }}
                     </button>
                 </form>
             </div>

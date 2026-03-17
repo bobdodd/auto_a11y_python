@@ -6,9 +6,9 @@
 <div class="container-fluid">
     <!-- Page Header - Stacks on mobile -->
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
-        <h1 class="h2 mb-0">{{ _('Projects') }}</h1>
+        <h1 class="mb-0">{{ _('Projects') }}</h1>
         <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary w-100 w-sm-auto">
-            <i class="bi bi-plus-circle"></i> {{ _('New Project') }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('New Project') }}
         </a>
     </div>
 
@@ -58,19 +58,19 @@
 
                     <div class="mb-3">
                         <small class="text-muted">
-                            <i class="bi bi-calendar"></i> {{ _('Created:') }} {{ project.created_at.strftime('%Y-%m-%d') }}<br>
-                            <i class="bi bi-clock"></i> {{ _('Updated:') }} {{ project.updated_at.strftime('%Y-%m-%d') }}
+                            <i class="bi bi-calendar" aria-hidden="true"></i> {{ _('Created:') }} {{ project.created_at.strftime('%Y-%m-%d') }}<br>
+                            <i class="bi bi-clock" aria-hidden="true"></i> {{ _('Updated:') }} {{ project.updated_at.strftime('%Y-%m-%d') }}
                         </small>
                     </div>
 
                     <div class="d-flex justify-content-between">
                         <a href="{{ url_for('projects.view_project', project_id=project.id) }}"
                            class="btn btn-sm btn-primary">
-                            <i class="bi bi-eye"></i> {{ _('View') }}
+                            <i class="bi bi-eye" aria-hidden="true"></i> {{ _('View') }}
                         </a>
                         <a href="{{ url_for('projects.edit_project', project_id=project.id) }}"
                            class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-pencil"></i> {{ _('Edit') }}
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ _('Edit') }}
                         </a>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
     </div>
     {% else %}
     <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i> {{ _('No projects found.') }}
+        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('No projects found.') }}
         <a href="{{ url_for('projects.create_project') }}">{{ _('Create your first project') }}</a>
     </div>
     {% endif %}

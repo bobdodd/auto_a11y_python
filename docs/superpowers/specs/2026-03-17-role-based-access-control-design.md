@@ -199,8 +199,17 @@ Behavior:
 | `share_tokens.py` | `@auditor_required` | Replace with `@require_permission('project'/'website', 'manage')` |
 | `reports.py` | `@login_required` | Add `@require_permission(type, 'read')` — report access requires `read` on the target resource |
 | `schedules.py` | `@auditor_required` | Replace with `@require_permission('website', 'write')` |
+| `project_users.py` | `before_request` login only | Add `@require_permission('project', 'write')` (manages test credentials) |
+| `project_participants.py` | `before_request` login only | Add `@require_permission('project', 'write')` (manages testers/supervisors) |
+| `website_users.py` | `before_request` login only | Add `@require_permission('website', 'write')` (manages website test credentials) |
+| `discovered_pages.py` | `before_request` login only | Add `@require_permission('page', 'read'/'write')` via parent lookup |
+| `recordings.py` | `before_request` login only | Add `@require_permission('project', 'read'/'write')` (recordings are project-scoped) |
+| `automated_tests.py` | `before_request` login only | Add `@require_permission('project', 'read')` (reads project test data) |
+| `scripts.py` | `before_request` login only | Add `@require_permission('page', 'write')` (manages page setup scripts) |
+| `drupal_sync.py` | `before_request` login only | Add `@require_permission('project', 'write')` (sync operations) |
 | `auth.py` | `@admin_required` for user mgmt | Keep as-is (system admin actions) |
-| `public.py` | `@require_access` (token-based) | Keep as-is (separate mechanism, see below) |
+| `public.py` | `@require_access` (token-based) | Keep token mechanism; add RBAC for authenticated users (see below) |
+| `demo.py` | `before_request` login only | No change needed (serves static demo files, no resource access) |
 | API routes | `@login_required` | Add `@require_permission` and filter query results by user access |
 
 ---

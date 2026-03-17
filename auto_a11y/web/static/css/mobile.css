@@ -224,12 +224,17 @@ input[type="radio"],
     .mobile-bottom-nav {
         display: block;
     }
-    
+
     /* Add padding to body to account for bottom nav */
     body {
         padding-bottom: var(--bottom-nav-height);
     }
-    
+
+    /* Prevent focus obscuration by fixed bottom nav (WCAG 2.4.12) */
+    html {
+        scroll-padding-bottom: calc(var(--bottom-nav-height) + 1rem);
+    }
+
     /* Hide footer on mobile - bottom nav replaces it */
     .footer {
         display: none;

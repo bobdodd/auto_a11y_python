@@ -519,8 +519,8 @@
                 <i class="bi bi-arrow-left" aria-hidden="true"></i> <span data-i18n="back_to_index">{{ t['back_to_index'] }}</span>
             </a>
             <div class="lang-switcher">
-                <button onclick="switchLanguage('en')" id="lang-en" class="{{ 'active' if language == 'en' else '' }}" aria-label="Switch to English">EN</button>
-                <button onclick="switchLanguage('fr')" id="lang-fr" class="{{ 'active' if language == 'fr' else '' }}" aria-label="Switch to French">FR</button>
+                <button onclick="switchLanguage('en')" id="lang-en" class="{{ 'active' if language == 'en' else '' }}" lang="en" aria-label="Switch to English">EN</button>
+                <button onclick="switchLanguage('fr')" id="lang-fr" class="{{ 'active' if language == 'fr' else '' }}" lang="fr" aria-label="Switch to French">FR</button>
             </div>
         </div>
         <h1 class="h2 mb-0"><span data-i18n="{{ component_type|lower }}">{{ t.get(component_type|lower, component_type) }}</span>: {% if component_type == 'Form' %}{{ component_label }} <span data-i18n="fields">{{ t.get('fields', 'fields') }}</span>{% else %}{{ component_label }}{% endif %} <code class="h5 text-light opacity-75">{{ component_signature[:8] }}</code></h1>

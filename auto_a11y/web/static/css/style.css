@@ -311,7 +311,7 @@ button:focus:not(:focus-visible) {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: #666;
     border-radius: 5px;
 }
 
@@ -391,7 +391,7 @@ button:focus:not(:focus-visible) {
 /* Fix outline warning buttons to use proper contrast */
 .btn-outline-warning {
     color: #856404 !important;
-    border-color: #ffc107 !important;
+    border-color: #b38600 !important; /* 3.2:1 contrast on white */
 }
 .btn-outline-warning:hover,
 .btn-outline-warning:active,
@@ -404,6 +404,12 @@ button:focus:not(:focus-visible) {
 /* Ensure progress bar gray has sufficient contrast with yellow (3:1 for non-text) */
 .progress-bar.bg-secondary {
     background-color: #495057 !important; /* Darker gray for 3:1 contrast with #ffc107 */
+}
+
+/* Override Bootstrap form borders for WCAG 1.4.11 Non-text Contrast (3:1 minimum) */
+.form-control,
+.form-select {
+    border-color: #86868b;
 }
 
 /* Respect reduced motion preferences (WCAG 2.3.3) */

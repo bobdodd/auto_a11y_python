@@ -607,8 +607,8 @@ class IssueFilterManager {
                     // Search filter
                     const tag = `
                         <span class="badge bg-primary me-2 mb-1">
-                            Search: "${values}" 
-                            <span class="ms-1" style="cursor: pointer;" onclick="filterManager.removeFilter('${type}')">×</span>
+                            Search: "${values}"
+                            <button type="button" class="btn-close btn-close-white ms-1" style="width: 0.5em; height: 0.5em; vertical-align: middle;" aria-label="Remove search filter" onclick="filterManager.removeFilter('${type}')"></button>
                         </span>
                     `;
                     activeFilterTags.insertAdjacentHTML('beforeend', tag);
@@ -617,8 +617,8 @@ class IssueFilterManager {
                     values.forEach(value => {
                         const tag = `
                             <span class="badge bg-primary me-2 mb-1">
-                                ${type}: ${value} 
-                                <span class="ms-1" style="cursor: pointer;" onclick="filterManager.removeFilter('${type}', '${value}')">×</span>
+                                ${type}: ${value}
+                                <button type="button" class="btn-close btn-close-white ms-1" style="width: 0.5em; height: 0.5em; vertical-align: middle;" aria-label="Remove ${type} ${value} filter" onclick="filterManager.removeFilter('${type}', '${value}')"></button>
                             </span>
                         `;
                         activeFilterTags.insertAdjacentHTML('beforeend', tag);

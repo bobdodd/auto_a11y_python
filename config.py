@@ -77,12 +77,49 @@ class Config:
     SCHEDULER_MISFIRE_GRACE_TIME: int = int(os.getenv('SCHEDULER_MISFIRE_GRACE_TIME', 3600))  # 1 hour
     SCHEDULER_COALESCE: bool = os.getenv('SCHEDULER_COALESCE', 'True').lower() == 'true'
 
+    # Share token salt (must match between token creation and validation)
+    TOKEN_SALT: str = 'public-share-token'
+
+    # Rate limiting for public routes
+    RATELIMIT_DEFAULT: str = os.getenv('RATELIMIT_DEFAULT', '60/minute')
+
+    # Microsoft SSO (optional -- leave blank to disable)
+    MICROSOFT_CLIENT_ID: str = os.getenv('MICROSOFT_CLIENT_ID', '')
+    MICROSOFT_CLIENT_SECRET: str = os.getenv('MICROSOFT_CLIENT_SECRET', '')
+    MICROSOFT_TENANT_ID: str = os.getenv('MICROSOFT_TENANT_ID', 'common')
+    MICROSOFT_REDIRECT_PATH: str = '/auth/microsoft/callback'
+
+    # Google SSO (optional -- leave blank to disable)
+    GOOGLE_CLIENT_ID: str = os.getenv('GOOGLE_CLIENT_ID', '')
+    GOOGLE_CLIENT_SECRET: str = os.getenv('GOOGLE_CLIENT_SECRET', '')
+    GOOGLE_REDIRECT_PATH: str = '/auth/google/callback'
+
     # Paths
     SCRIPTS_DIR: Path = SCRIPTS_DIR
     DATA_DIR: Path = DATA_DIR
     REPORTS_DIR: Path = REPORTS_DIR
     SCREENSHOTS_DIR: Path = SCREENSHOTS_DIR
     
+    @property
+    def MICROSOFT_AUTHORITY(self) -> str:
+        return f'https://login.microsoftonline.com/{self.MICROSOFT_TENANT_ID}'
+
+    @property
+    def MICROSOFT_SCOPE(self) -> list:
+        return ['User.Read']
+
+    @property
+    def MICROSOFT_SSO_ENABLED(self) -> bool:
+        return bool(self.MICROSOFT_CLIENT_ID and self.MICROSOFT_CLIENT_SECRET)
+
+    @property
+    def GOOGLE_SSO_ENABLED(self) -> bool:
+        return bool(self.GOOGLE_CLIENT_ID and self.GOOGLE_CLIENT_SECRET)
+
+    @property
+    def SSO_ENABLED(self) -> bool:
+        return self.MICROSOFT_SSO_ENABLED or self.GOOGLE_SSO_ENABLED
+
     def validate(self) -> bool:
         """Validate configuration"""
         if self.RUN_AI_ANALYSIS and not self.CLAUDE_API_KEY:

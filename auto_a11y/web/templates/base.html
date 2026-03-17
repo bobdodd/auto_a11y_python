@@ -17,13 +17,15 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <a class="skip-link" href="#main-content">{{ _('Skip to main content') }}</a>
+
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('index') }}">
                 <i class="bi bi-universal-access-circle"></i> Auto A11y
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="{{ _('Toggle navigation') }}">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -168,7 +170,7 @@
     {% endwith %}
 
     <!-- Main Content -->
-    <main class="container-fluid mt-4">
+    <main id="main-content" class="container-fluid mt-4">
         {% block content %}{% endblock %}
     </main>
 

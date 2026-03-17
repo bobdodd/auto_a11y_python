@@ -150,6 +150,8 @@ Rewrite `createHelpModal()` and related methods to follow the APG Dialog (Modal)
 
 **Remove bare arrow key shortcuts** — Screen readers use arrow keys to read content line by line. Hijacking them prevents basic reading.
 
+**Remove bare `Home` key shortcut** — JAWS uses `Home` to move to the top of the document. The current binding (line 101) conflicts with this.
+
 **Keep:** The "Back to Top" button (it's a proper `<button>` with a click handler). Optionally keep Ctrl+key combinations if useful, but remove all bare key bindings.
 
 ### 3c. Dynamic Notifications (`showNotification()` in `base.html`)
@@ -305,11 +307,13 @@ Verify that all status indicators (badges, colors) convey information through te
 
 ### 6a. Base Template (`static_report/base.html`)
 
-- Ensure `lang` attribute on `<html>`
+- Ensure `lang` attribute on `<html>` is dynamic (currently hardcoded `lang="en"`; should reflect the report's language, e.g., `lang="{{ language }}"`)
 - Add skip link
 - Add `<main id="main-content">` landmark
 - Add `<header>` and `<nav>` landmarks
 - Include inline focus styles (standalone file, no external CSS dependency)
+
+**Note:** Two standalone templates (`comprehensive_report_standalone.html`, `recordings_report_standalone.html`) do not extend `static_report/base.html` and have their own complete HTML structure. These need the same fixes applied independently.
 
 ### 6b. Content Templates
 

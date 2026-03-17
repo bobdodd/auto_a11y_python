@@ -1,0 +1,68 @@
+/* Print styles for the public frontend */
+
+@media print {
+    /* Hide navigation, skip link, footer */
+    .skip-link,
+    .site-header,
+    .site-footer,
+    .lang-nav,
+    .breadcrumb,
+    .btn {
+        display: none !important;
+    }
+
+    /* Expand all accordions / disclosures */
+    .accordion-panel {
+        display: block !important;
+    }
+
+    .accordion-panel[hidden] {
+        display: block !important;
+    }
+
+    details {
+        display: block;
+    }
+
+    details[open] summary {
+        margin-bottom: 0.5em;
+    }
+
+    details > *:not(summary) {
+        display: block !important;
+    }
+
+    /* Black on white */
+    body {
+        color: #000;
+        background: #fff;
+    }
+
+    a {
+        color: #000;
+        text-decoration: underline;
+    }
+
+    /* Show link URLs */
+    a[href]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #555;
+    }
+
+    /* Remove backgrounds */
+    .stat-card,
+    .accordion-trigger,
+    .data-table thead th {
+        background: none !important;
+    }
+
+    /* Page breaks */
+    .accordion-item {
+        break-inside: avoid;
+    }
+
+    .issue-card {
+        break-inside: avoid;
+    }
+}

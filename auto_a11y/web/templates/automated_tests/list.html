@@ -15,7 +15,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Automated Tests</h1>
         <button id="uploadBtn" class="btn btn-primary" disabled>
-            <i class="bi bi-cloud-upload"></i> Upload to Drupal
+            <i class="bi bi-cloud-upload" aria-hidden="true"></i> Upload to Drupal
         </button>
     </div>
 
@@ -23,7 +23,7 @@
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="mb-0">
-                <i class="bi bi-funnel"></i> Filters
+                <i class="bi bi-funnel" aria-hidden="true"></i> Filters
             </h5>
         </div>
         <div class="card-body">
@@ -82,10 +82,10 @@
                 <!-- Filter Actions -->
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search"></i> Apply Filters
+                        <i class="bi bi-search" aria-hidden="true"></i> Apply Filters
                     </button>
                     <button type="button" id="clearFiltersBtn" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> Clear Filters
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> Clear Filters
                     </button>
                 </div>
             </form>
@@ -105,15 +105,16 @@
         <div class="card-body">
             <div id="resultsContainer">
                 <table class="table table-striped" id="resultsTable">
+                    <caption class="visually-hidden">Automated Test Results</caption>
                     <thead>
                         <tr>
-                            <th>Page</th>
-                            <th>Website</th>
-                            <th class="text-center">Violations</th>
-                            <th class="text-center">Warnings</th>
-                            <th class="text-center">Info</th>
-                            <th class="text-center">Total</th>
-                            <th>Actions</th>
+                            <th scope="col">Page</th>
+                            <th scope="col">Website</th>
+                            <th scope="col" class="text-center">Violations</th>
+                            <th scope="col" class="text-center">Warnings</th>
+                            <th scope="col" class="text-center">Info</th>
+                            <th scope="col" class="text-center">Total</th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>

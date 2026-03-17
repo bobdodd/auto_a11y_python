@@ -88,7 +88,7 @@
                 <h2 class="mb-4">{{ _('Understanding Your Scores') }}</h2>
 
                 <div class="alert alert-info">
-                    <h5 class="alert-heading"><i class="bi bi-info-circle"></i> {{ _('Automated vs Manual Testing Scores') }}</h5>
+                    <h5 class="alert-heading"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Automated vs Manual Testing Scores') }}</h5>
                     <p class="mb-0">
                         {{ _('Auto A11y provides two types of scores based on your testing approach:') }}
                         <strong>{{ _('Automated Testing Scores') }}</strong> {{ _('(from automated scans) and') }}
@@ -101,7 +101,7 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0"><i class="bi bi-robot"></i> {{ _('Automated Testing Scores') }}</h5>
+                                <h5 class="mb-0"><i class="bi bi-robot" aria-hidden="true"></i> {{ _('Automated Testing Scores') }}</h5>
                             </div>
                             <div class="card-body">
                                 <p>{{ _('Generated from automated scanning tools that check pages for technical accessibility issues.') }}</p>
@@ -117,7 +117,7 @@
                     <div class="col-md-6">
                         <div class="card">
                             <div class="card-header bg-success text-white">
-                                <h5 class="mb-0"><i class="bi bi-person-check"></i> {{ _('Manual Testing Scores') }}</h5>
+                                <h5 class="mb-0"><i class="bi bi-person-check" aria-hidden="true"></i> {{ _('Manual Testing Scores') }}</h5>
                             </div>
                             <div class="card-body">
                                 <p>{{ _('Generated from human expert audits and lived experience testing with real users.') }}</p>
@@ -342,10 +342,11 @@
                         <p>{{ _('Our tests track both failures and successes to provide comprehensive feedback.') }}</p>
 
                         <table class="table">
+                            <caption class="visually-hidden">{{ _('Test Component Descriptions') }}</caption>
                             <thead>
                                 <tr>
-                                    <th>{{ _('Test Component') }}</th>
-                                    <th>{{ _('What It Tracks') }}</th>
+                                    <th scope="col">{{ _('Test Component') }}</th>
+                                    <th scope="col">{{ _('What It Tracks') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -451,7 +452,7 @@
 
                 <div class="card help-card border-info">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-file-text"></i> {{ _('WCAG Data Attribution') }}</h5>
+                        <h5 class="mb-0"><i class="bi bi-file-text" aria-hidden="true"></i> {{ _('WCAG Data Attribution') }}</h5>
                     </div>
                     <div class="card-body">
                         <p>{{ _('This application uses official WCAG (Web Content Accessibility Guidelines) data from the World Wide Web Consortium (W3C).') }}</p>
@@ -480,7 +481,7 @@
                         </ul>
 
                         <div class="alert alert-warning mt-3" role="alert">
-                            <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> {{ _('Important Notice') }}</h6>
+                            <h6 class="alert-heading"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Important Notice') }}</h6>
                             <p class="mb-0">{{ _('The WCAG content is used with attribution as permitted by W3C. The content has not been modified. All additional content, analysis, and features provided by Auto A11y are clearly distinguished from the original W3C WCAG content.') }}</p>
                         </div>
 

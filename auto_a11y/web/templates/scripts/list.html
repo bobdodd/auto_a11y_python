@@ -25,21 +25,21 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h2">
-                <i class="bi bi-code-square"></i> {% if page %}{{ _('Page Setup Scripts') }}{% else %}{{ _('Website Setup Scripts') }}{% endif %}
+                <i class="bi bi-code-square" aria-hidden="true"></i> {% if page %}{{ _('Page Setup Scripts') }}{% else %}{{ _('Website Setup Scripts') }}{% endif %}
             </h1>
             <p class="text-muted">{% if page %}{{ page.url }}{% else %}{{ website.display_name }}{% endif %}</p>
         </div>
         <div>
             {% if page %}
             <a href="{{ url_for('pages.configure_test_matrix', page_id=page.id) }}" class="btn btn-outline-primary me-2">
-                <i class="bi bi-grid-3x3"></i> {{ _('Configure Test Matrix') }}
+                <i class="bi bi-grid-3x3" aria-hidden="true"></i> {{ _('Configure Test Matrix') }}
             </a>
             <a href="{{ url_for('scripts.create_page_script', page_id=page.id) }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> {{ _('Create New Script') }}
+                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Create New Script') }}
             </a>
             {% else %}
             <a href="{{ url_for('scripts.create_website_script', website_id=website.id) }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> {{ _('Create New Script') }}
+                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Create New Script') }}
             </a>
             {% endif %}
         </div>
@@ -58,7 +58,7 @@
 
     <!-- Info Box -->
     <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i>
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
         <strong>{{ _('Multi-State Testing:') }}</strong>
         {{ _('Scripts with "Test Before" enabled will create multiple test results - one before the script runs and one after. This is perfect for testing cookie banners, modals, and other interactive elements.') }}
     </div>
@@ -67,7 +67,7 @@
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">
-                <i class="bi bi-file-code"></i> {{ _('Page-Specific Scripts') }}
+                <i class="bi bi-file-code" aria-hidden="true"></i> {{ _('Page-Specific Scripts') }}
                 <span class="badge bg-light text-dark">{{ page_scripts|length }}</span>
             </h5>
         </div>
@@ -75,14 +75,15 @@
             {% if page_scripts %}
             <div class="table-responsive">
                 <table class="table table-hover">
+                    <caption class="visually-hidden">{{ _('Page-Specific Scripts List') }}</caption>
                     <thead>
                         <tr>
-                            <th>{{ _('Name') }}</th>
-                            <th>{{ _('Steps') }}</th>
-                            <th>{{ _('Multi-State') }}</th>
-                            <th>{{ _('Trigger') }}</th>
-                            <th>{{ _('Status') }}</th>
-                            <th>{{ _('Actions') }}</th>
+                            <th scope="col">{{ _('Name') }}</th>
+                            <th scope="col">{{ _('Steps') }}</th>
+                            <th scope="col">{{ _('Multi-State') }}</th>
+                            <th scope="col">{{ _('Trigger') }}</th>
+                            <th scope="col">{{ _('Status') }}</th>
+                            <th scope="col">{{ _('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -100,15 +101,15 @@
                             <td>
                                 {% if script.test_before_execution and script.test_after_execution %}
                                 <span class="badge bg-success" title="{{ _('Tests both before and after script') }}">
-                                    <i class="bi bi-layers"></i> {{ _('Before & After') }}
+                                    <i class="bi bi-layers" aria-hidden="true"></i> {{ _('Before & After') }}
                                 </span>
                                 {% elif script.test_before_execution %}
                                 <span class="badge bg-info" title="{{ _('Tests before script only') }}">
-                                    <i class="bi bi-arrow-left"></i> {{ _('Before Only') }}
+                                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ _('Before Only') }}
                                 </span>
                                 {% elif script.test_after_execution %}
                                 <span class="badge bg-info" title="{{ _('Tests after script only') }}">
-                                    <i class="bi bi-arrow-right"></i> {{ _('After Only') }}
+                                    <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ _('After Only') }}
                                 </span>
                                 {% else %}
                                 <span class="badge bg-secondary">{{ _('No Testing') }}</span>
@@ -120,11 +121,11 @@
                             <td>
                                 {% if script.enabled %}
                                 <span class="badge bg-success">
-                                    <i class="bi bi-check-circle"></i> {{ _('Enabled') }}
+                                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ _('Enabled') }}
                                 </span>
                                 {% else %}
                                 <span class="badge bg-secondary">
-                                    <i class="bi bi-pause-circle"></i> {{ _('Disabled') }}
+                                    <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ _('Disabled') }}
                                 </span>
                                 {% endif %}
                             </td>
@@ -132,11 +133,11 @@
                                 <div class="btn-group btn-group-sm" role="group">
                                     <a href="{{ url_for('scripts.view_script', script_id=script.id) }}"
                                        class="btn btn-outline-primary" title="{{ _('View') }}">
-                                        <i class="bi bi-eye"></i>
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ url_for('scripts.edit_script', script_id=script.id) }}"
                                        class="btn btn-outline-secondary" title="{{ _('Edit') }}">
-                                        <i class="bi bi-pencil"></i>
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                     <button type="button" class="btn btn-outline-{% if script.enabled %}success{% else %}secondary{% endif %}"
                                             onclick="toggleScript('{{ script.id }}')" title="{% if script.enabled %}{{ _('Disable') }}{% else %}{{ _('Enable') }}{% endif %}">
@@ -144,7 +145,7 @@
                                     </button>
                                     <button type="button" class="btn btn-outline-danger"
                                             onclick="deleteScript('{{ script.id }}')" title="{{ _('Delete') }}">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="bi bi-trash" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </td>
@@ -158,7 +159,7 @@
                 <i class="bi bi-code-slash" style="font-size: 3rem; color: #ddd;"></i>
                 <p class="text-muted mt-3">{{ _('No page-specific scripts yet') }}</p>
                 <a href="{{ url_for('scripts.create_page_script', page_id=page.id) }}" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> {{ _('Create Your First Script') }}
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Create Your First Script') }}
                 </a>
             </div>
             {% endif %}
@@ -170,25 +171,26 @@
     <div class="card">
         <div class="card-header bg-secondary text-white">
             <h5 class="mb-0">
-                <i class="bi bi-globe"></i> {{ _('Website-Wide Scripts') }}
+                <i class="bi bi-globe" aria-hidden="true"></i> {{ _('Website-Wide Scripts') }}
                 <span class="badge bg-light text-dark">{{ website_scripts|length }}</span>
             </h5>
         </div>
         <div class="card-body">
             <p class="text-muted">
-                <i class="bi bi-info-circle"></i>
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
                 {{ _('These scripts run on ALL pages of this website. They are typically used for common elements like cookie banners or login prompts.') }}
             </p>
 
             <div class="table-responsive">
                 <table class="table table-hover table-sm">
+                    <caption class="visually-hidden">{{ _('Website-Wide Scripts List') }}</caption>
                     <thead>
                         <tr>
-                            <th>{{ _('Name') }}</th>
-                            <th>{{ _('Steps') }}</th>
-                            <th>{{ _('Multi-State') }}</th>
-                            <th>{{ _('Status') }}</th>
-                            <th>{{ _('Actions') }}</th>
+                            <th scope="col">{{ _('Name') }}</th>
+                            <th scope="col">{{ _('Steps') }}</th>
+                            <th scope="col">{{ _('Multi-State') }}</th>
+                            <th scope="col">{{ _('Status') }}</th>
+                            <th scope="col">{{ _('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -206,7 +208,7 @@
                             <td>
                                 {% if script.test_before_execution and script.test_after_execution %}
                                 <span class="badge bg-success">
-                                    <i class="bi bi-layers"></i> {{ _('Both') }}
+                                    <i class="bi bi-layers" aria-hidden="true"></i> {{ _('Both') }}
                                 </span>
                                 {% elif script.test_before_execution %}
                                 <span class="badge bg-info">{{ _('Before') }}</span>
@@ -224,7 +226,7 @@
                             <td>
                                 <a href="{{ url_for('scripts.view_script', script_id=script.id) }}"
                                    class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye"></i> {{ _('View') }}
+                                    <i class="bi bi-eye" aria-hidden="true"></i> {{ _('View') }}
                                 </a>
                             </td>
                         </tr>

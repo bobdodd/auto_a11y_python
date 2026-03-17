@@ -20,13 +20,13 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h2">
-                <i class="bi bi-calendar-event"></i> {{ _('Test Schedules') }}
+                <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ _('Test Schedules') }}
             </h1>
             <p class="text-muted">{{ _('Schedule automated accessibility tests for %(name)s', name=website.name) }}</p>
         </div>
         <div>
             <a href="{{ url_for('schedules.create_schedule', website_id=website.id) }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> {{ _('Create Schedule') }}
+                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Create Schedule') }}
             </a>
         </div>
     </div>
@@ -44,7 +44,7 @@
 
     <!-- Info Box -->
     <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i>
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
         <strong>{{ _('Scheduled Testing:') }}</strong>
         {{ _('Create schedules to run accessibility tests automatically at specific times or intervals. You can configure which tests run and optionally limit AI testing to specific pages to control costs.') }}
     </div>
@@ -53,22 +53,23 @@
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">
-                <i class="bi bi-calendar-event"></i> {{ _('Schedules') }}
+                <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ _('Schedules') }}
                 <span class="badge bg-light text-dark">{{ schedules|length }}</span>
             </h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
+                    <caption class="visually-hidden">{{ _('Test Schedules List') }}</caption>
                     <thead>
                         <tr>
-                            <th>{{ _('Name') }}</th>
-                            <th>{{ _('Schedule') }}</th>
-                            <th>{{ _('AI Testing') }}</th>
-                            <th>{{ _('Status') }}</th>
-                            <th>{{ _('Next Run') }}</th>
-                            <th>{{ _('Last Run') }}</th>
-                            <th>{{ _('Actions') }}</th>
+                            <th scope="col">{{ _('Name') }}</th>
+                            <th scope="col">{{ _('Schedule') }}</th>
+                            <th scope="col">{{ _('AI Testing') }}</th>
+                            <th scope="col">{{ _('Status') }}</th>
+                            <th scope="col">{{ _('Next Run') }}</th>
+                            <th scope="col">{{ _('Last Run') }}</th>
+                            <th scope="col">{{ _('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -128,11 +129,11 @@
                             <td>
                                 {% if schedule.enabled %}
                                 <span class="badge bg-success">
-                                    <i class="bi bi-check-circle"></i> {{ _('Enabled') }}
+                                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ _('Enabled') }}
                                 </span>
                                 {% else %}
                                 <span class="badge bg-secondary">
-                                    <i class="bi bi-pause-circle"></i> {{ _('Disabled') }}
+                                    <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ _('Disabled') }}
                                 </span>
                                 {% endif %}
                             </td>
@@ -164,11 +165,11 @@
                                 <div class="btn-group btn-group-sm" role="group">
                                     <a href="{{ url_for('schedules.view_schedule', website_id=website.id, schedule_id=schedule.id) }}"
                                        class="btn btn-outline-primary" title="{{ _('View') }}">
-                                        <i class="bi bi-eye"></i>
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ url_for('schedules.edit_schedule', website_id=website.id, schedule_id=schedule.id) }}"
                                        class="btn btn-outline-secondary" title="{{ _('Edit') }}">
-                                        <i class="bi bi-pencil"></i>
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                     <button type="button" class="btn btn-outline-{% if schedule.enabled %}success{% else %}secondary{% endif %}"
                                             onclick="toggleSchedule('{{ schedule.id }}')" title="{% if schedule.enabled %}{{ _('Disable') }}{% else %}{{ _('Enable') }}{% endif %}">
@@ -176,11 +177,11 @@
                                     </button>
                                     <button type="button" class="btn btn-outline-info"
                                             onclick="runNow('{{ schedule.id }}')" title="{{ _('Run Now') }}">
-                                        <i class="bi bi-play-fill"></i>
+                                        <i class="bi bi-play-fill" aria-hidden="true"></i>
                                     </button>
                                     <button type="button" class="btn btn-outline-danger"
                                             onclick="deleteSchedule('{{ schedule.id }}')" title="{{ _('Delete') }}">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="bi bi-trash" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </td>
@@ -197,7 +198,7 @@
         <i class="bi bi-calendar-event" style="font-size: 3rem; color: #ddd;"></i>
         <p class="text-muted mt-3">{{ _('No schedules yet') }}</p>
         <a href="{{ url_for('schedules.create_schedule', website_id=website.id) }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> {{ _('Create Your First Schedule') }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Create Your First Schedule') }}
         </a>
     </div>
     {% endif %}

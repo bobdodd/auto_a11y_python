@@ -39,14 +39,15 @@
     <div class="card-body p-0">
         <div id="token-list-container">
             <table class="table table-sm mb-0">
+                <caption class="visually-hidden">{{ _('Share Links List') }}</caption>
                 <thead>
                     <tr>
-                        <th>{{ _('Label') }}</th>
-                        <th>{{ _('Created') }}</th>
-                        <th>{{ _('Expires') }}</th>
-                        <th>{{ _('Uses') }}</th>
-                        <th>{{ _('Status') }}</th>
-                        <th>{{ _('Actions') }}</th>
+                        <th scope="col">{{ _('Label') }}</th>
+                        <th scope="col">{{ _('Created') }}</th>
+                        <th scope="col">{{ _('Expires') }}</th>
+                        <th scope="col">{{ _('Uses') }}</th>
+                        <th scope="col">{{ _('Status') }}</th>
+                        <th scope="col">{{ _('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody id="token-list-body">

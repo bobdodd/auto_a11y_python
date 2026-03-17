@@ -20,13 +20,13 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h2">
-                <i class="bi bi-people"></i> {{ _('Test Users') }}
+                <i class="bi bi-people" aria-hidden="true"></i> {{ _('Test Users') }}
             </h1>
             <p class="text-muted">{{ _('Manage authenticated test users for %(name)s', name=website.display_name) }}</p>
         </div>
         <div>
             <a href="{{ url_for('website_users.create_user', website_id=website.id) }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> {{ _('Create Test User') }}
+                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Create Test User') }}
             </a>
         </div>
     </div>
@@ -44,7 +44,7 @@
 
     <!-- Info Box -->
     <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i>
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
         <strong>{{ _('Authenticated Testing:') }}</strong>
         {{ _('Test users allow you to test pages that require login. Each user can have different roles (e.g., student, teacher, admin) to test role-based content accessibility.') }}
     </div>
@@ -53,22 +53,23 @@
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">
-                <i class="bi bi-people"></i> {{ _('Test Users') }}
+                <i class="bi bi-people" aria-hidden="true"></i> {{ _('Test Users') }}
                 <span class="badge bg-light text-dark">{{ users|length }}</span>
             </h5>
         </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
+                    <caption class="visually-hidden">{{ _('Test Users List') }}</caption>
                     <thead>
                         <tr>
-                            <th>{{ _('Name') }}</th>
-                            <th>{{ _('Username') }}</th>
-                            <th>{{ _('Roles') }}</th>
-                            <th>{{ _('Auth Method') }}</th>
-                            <th>{{ _('Status') }}</th>
-                            <th>{{ _('Last Used') }}</th>
-                            <th>{{ _('Actions') }}</th>
+                            <th scope="col">{{ _('Name') }}</th>
+                            <th scope="col">{{ _('Username') }}</th>
+                            <th scope="col">{{ _('Roles') }}</th>
+                            <th scope="col">{{ _('Auth Method') }}</th>
+                            <th scope="col">{{ _('Status') }}</th>
+                            <th scope="col">{{ _('Last Used') }}</th>
+                            <th scope="col">{{ _('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -96,21 +97,21 @@
                             <td>
                                 {% if user.enabled %}
                                 <span class="badge bg-success">
-                                    <i class="bi bi-check-circle"></i> {{ _('Enabled') }}
+                                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ _('Enabled') }}
                                 </span>
                                 {% else %}
                                 <span class="badge bg-secondary">
-                                    <i class="bi bi-pause-circle"></i> {{ _('Disabled') }}
+                                    <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ _('Disabled') }}
                                 </span>
                                 {% endif %}
 
                                 {% if user.last_login_success == False %}
                                 <br><span class="badge bg-danger mt-1" title="{{ user.last_login_error }}">
-                                    <i class="bi bi-exclamation-triangle"></i> {{ _('Login Failed') }}
+                                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Login Failed') }}
                                 </span>
                                 {% elif user.last_login_success == True %}
                                 <br><span class="badge bg-success mt-1">
-                                    <i class="bi bi-check"></i> {{ _('Login OK') }}
+                                    <i class="bi bi-check" aria-hidden="true"></i> {{ _('Login OK') }}
                                 </span>
                                 {% endif %}
                             </td>
@@ -125,11 +126,11 @@
                                 <div class="btn-group btn-group-sm" role="group">
                                     <a href="{{ url_for('website_users.view_user', user_id=user.id) }}"
                                        class="btn btn-outline-primary" title="{{ _('View') }}">
-                                        <i class="bi bi-eye"></i>
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ url_for('website_users.edit_user', user_id=user.id) }}"
                                        class="btn btn-outline-secondary" title="{{ _('Edit') }}">
-                                        <i class="bi bi-pencil"></i>
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                     <button type="button" class="btn btn-outline-{% if user.enabled %}success{% else %}secondary{% endif %}"
                                             onclick="toggleUser('{{ user.id }}')" title="{% if user.enabled %}{{ _('Disable') }}{% else %}{{ _('Enable') }}{% endif %}">
@@ -137,7 +138,7 @@
                                     </button>
                                     <button type="button" class="btn btn-outline-danger"
                                             onclick="deleteUser('{{ user.id }}')" title="{{ _('Delete') }}">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="bi bi-trash" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </td>
@@ -152,7 +153,7 @@
     {% if all_roles %}
     <div class="card mt-4">
         <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-tags"></i> {{ _('User Roles in Use') }}</h5>
+            <h5 class="mb-0"><i class="bi bi-tags" aria-hidden="true"></i> {{ _('User Roles in Use') }}</h5>
         </div>
         <div class="card-body">
             {% for role in all_roles %}
@@ -167,7 +168,7 @@
         <i class="bi bi-people" style="font-size: 3rem; color: #ddd;"></i>
         <p class="text-muted mt-3">{{ _('No test users yet') }}</p>
         <a href="{{ url_for('website_users.create_user', website_id=website.id) }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> {{ _('Create Your First Test User') }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Create Your First Test User') }}
         </a>
     </div>
     {% endif %}

@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container-fluid">
     <h1 class="h2 mb-4">
-        <i class="bi bi-info-circle"></i> {{ _('About Auto A11y') }}
+        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('About Auto A11y') }}
     </h1>
 
     <div class="row">
@@ -13,7 +13,7 @@
             <!-- About Auto A11y -->
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-universal-access-circle"></i> {{ _('About Auto A11y') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-universal-access-circle" aria-hidden="true"></i> {{ _('About Auto A11y') }}</h5>
                 </div>
                 <div class="card-body">
                     <p class="lead">{{ _('Auto A11y is an automated web accessibility testing tool designed to help developers and testers identify and fix accessibility issues in web applications.') }}</p>
@@ -32,7 +32,7 @@
             <!-- WCAG Data Attribution -->
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="bi bi-file-text"></i> {{ _('WCAG Data Attribution') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-file-text" aria-hidden="true"></i> {{ _('WCAG Data Attribution') }}</h5>
                 </div>
                 <div class="card-body">
                     <p>{{ _('This application uses official WCAG (Web Content Accessibility Guidelines) data from the World Wide Web Consortium (W3C).') }}</p>
@@ -61,7 +61,7 @@
                     </ul>
 
                     <div class="alert alert-warning mt-3" role="alert">
-                        <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> {{ _('Important Notice') }}</h6>
+                        <h6 class="alert-heading"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Important Notice') }}</h6>
                         <p class="mb-0">{{ _('The WCAG content is used with attribution as permitted by W3C. The content has not been modified. All additional content, analysis, and features provided by Auto A11y are clearly distinguished from the original W3C WCAG content.') }}</p>
                     </div>
 
@@ -78,7 +78,7 @@
             <!-- Additional Resources -->
             <div class="card mb-4">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-book"></i> {{ _('Additional Resources') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-book" aria-hidden="true"></i> {{ _('Additional Resources') }}</h5>
                 </div>
                 <div class="card-body">
                     <h6>{{ _('W3C Web Accessibility Initiative (WAI)') }}</h6>
@@ -113,7 +113,7 @@
         <div class="col-lg-4">
             <div class="card sticky-top" style="top: 20px;">
                 <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0"><i class="bi bi-info-square"></i> {{ _('Quick Info') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-info-square" aria-hidden="true"></i> {{ _('Quick Info') }}</h5>
                 </div>
                 <div class="card-body">
                     <h6>{{ _('Version Information') }}</h6>
@@ -146,10 +146,10 @@
 
                     <div class="text-center">
                         <a href="{{ url_for('help') }}" class="btn btn-primary btn-sm">
-                            <i class="bi bi-question-circle"></i> {{ _('View Help') }}
+                            <i class="bi bi-question-circle" aria-hidden="true"></i> {{ _('View Help') }}
                         </a>
                         <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-speedometer2"></i> {{ _('Dashboard') }}
+                            <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ _('Dashboard') }}
                         </a>
                     </div>
                 </div>

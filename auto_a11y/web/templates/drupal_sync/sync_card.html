@@ -2,11 +2,11 @@
 <div class="card mb-4" id="drupalSyncCard">
     <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
         <h5 class="mb-0">
-            <i class="bi bi-cloud-upload"></i> {{ _('Access Labs Portal Sync') }}
+            <i class="bi bi-cloud-upload" aria-hidden="true"></i> {{ _('Access Labs Portal Sync') }}
         </h5>
         <div>
             <span class="badge bg-info" id="drupalAuditBadge">
-                <i class="bi bi-info-circle"></i> {{ _('Loading...') }}
+                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Loading...') }}
             </span>
         </div>
     </div>
@@ -104,7 +104,7 @@
                     </div>
 
                     <div id="uploadErrors" class="alert alert-danger" style="display:none;">
-                        <strong><i class="bi bi-exclamation-triangle"></i> {{ _('Some items failed:') }}</strong>
+                        <strong><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Some items failed:') }}</strong>
                         <ul id="uploadErrorsList"></ul>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalBtn">{{ _('Close') }}</button>
                 <button type="button" class="btn btn-primary" id="startUploadBtn" onclick="startUpload()">
-                    <i class="bi bi-cloud-upload"></i> {{ _('Start Upload') }}
+                    <i class="bi bi-cloud-upload" aria-hidden="true"></i> {{ _('Start Upload') }}
                 </button>
             </div>
         </div>
@@ -151,7 +151,7 @@ function renderSyncStatus() {
     if (!syncStatus.drupal_enabled) {
         document.getElementById('drupalSyncContent').innerHTML = `
             <div class="alert alert-warning">
-                <strong><i class="bi bi-exclamation-triangle"></i> {{ _('Access Labs Portal Integration Not Configured') }}</strong>
+                <strong><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Access Labs Portal Integration Not Configured') }}</strong>
                 <p class="mb-0">{{ _('Configure portal connection in') }} <code>config/drupal.conf</code> {{ _('to enable sync.') }}</p>
             </div>
         `;
@@ -160,7 +160,7 @@ function renderSyncStatus() {
 
     // Update audit badge
     document.getElementById('drupalAuditBadge').innerHTML = `
-        <i class="bi bi-info-circle"></i> {{ _('Audit:') }} "${syncStatus.project_name}"
+        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Audit:') }} "${syncStatus.project_name}"
     `;
 
     // Render status
@@ -190,19 +190,19 @@ function renderSyncStatus() {
 
         <div class="d-flex flex-wrap gap-2 mb-3">
             <a href="/drupal/projects/{{ project.id }}/sync" class="btn btn-primary">
-                <i class="bi bi-cloud-arrow-up-down"></i> {{ _('Synchronization Page') }}
+                <i class="bi bi-cloud-arrow-up-down" aria-hidden="true"></i> {{ _('Synchronization Page') }}
             </a>
             <button type="button" class="btn btn-outline-primary" onclick="openUploadModal()">
-                <i class="bi bi-arrow-up-circle"></i> {{ _('Quick Upload') }}
+                <i class="bi bi-arrow-up-circle" aria-hidden="true"></i> {{ _('Quick Upload') }}
             </button>
             <button type="button" class="btn btn-outline-secondary" onclick="loadSyncStatus()">
-                <i class="bi bi-arrow-clockwise"></i> {{ _('Refresh') }}
+                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ _('Refresh') }}
             </button>
         </div>
 
         ${syncStatus.sync_errors.length > 0 ? `
         <div class="alert alert-warning">
-            <strong><i class="bi bi-exclamation-triangle"></i> {{ _('Sync Issues') }}</strong>
+            <strong><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Sync Issues') }}</strong>
             <ul class="mb-0 mt-2">
                 ${syncStatus.sync_errors.map(err => `<li>${err}</li>`).join('')}
             </ul>

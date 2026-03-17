@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -149,6 +149,18 @@
         .score-poor { background-color: #fd7e14; }
         .score-critical { background-color: #dc3545; }
 
+        .skip-link:focus {
+            top: 0;
+            z-index: 1100;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
         @media print {
             .navbar, .filter-section, .no-print {
                 display: none !important;
@@ -166,21 +178,22 @@
     </style>
 </head>
 <body>
+    <a class="skip-link" href="#main-content" style="position:absolute;top:-40px;left:0;background:#0d6efd;color:white;padding:8px;text-decoration:none;z-index:1100;">Skip to main content</a>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary no-print">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ index_path }}index.html">
-                <i class="bi bi-universal-access-circle"></i>
+                <i class="bi bi-universal-access-circle" aria-hidden="true"></i>
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['auto_a11y_report'] }}</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['auto_a11y_report'] }}</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link {% if current_page == 'index' %}active{% endif %}" href="{{ index_path }}index.html">
-                            <i class="bi bi-house"></i>
+                            <i class="bi bi-house" aria-hidden="true"></i>
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['index'] }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['index'] }}</span>
                         </a>
@@ -188,7 +201,7 @@
                     {% if navigation %}
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="bi bi-list"></i>
+                            <i class="bi bi-list" aria-hidden="true"></i>
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['pages'] }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['pages'] }}</span>
                         </a>
@@ -212,7 +225,7 @@
         </div>
     </nav>
 
-    <main class="container-fluid py-4">
+    <main id="main-content" class="container-fluid py-4">
         {% block content %}{% endblock %}
     </main>
 

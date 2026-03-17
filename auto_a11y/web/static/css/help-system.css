@@ -54,8 +54,10 @@
     cursor: pointer;
     color: #666;
     padding: 0;
-    width: 30px;
-    height: 30px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -261,12 +263,27 @@
         width: 95%;
         max-height: 90vh;
     }
-    
+
     .help-modal-body {
         padding: 15px;
     }
-    
+
     .help-modal-header h2 {
         font-size: 1.2rem;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .help-modal {
+        animation: none;
+    }
+
+    .help-modal-content {
+        animation: none;
+    }
+
+    .help-icon {
+        transition: none;
     }
 }

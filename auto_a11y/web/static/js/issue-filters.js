@@ -650,15 +650,21 @@ class IssueFilterManager {
     updateStatistics(visible, total, visibleByType) {
         document.getElementById('visibleCount').textContent = visible;
         document.getElementById('totalCount').textContent = total;
-        
+
         // Update filter summary
         const summary = [];
         if (visibleByType.error > 0) summary.push(`${visibleByType.error} errors`);
         if (visibleByType.warning > 0) summary.push(`${visibleByType.warning} warnings`);
         if (visibleByType.info > 0) summary.push(`${visibleByType.info} info`);
         if (visibleByType.discovery > 0) summary.push(`${visibleByType.discovery} discovery`);
-        
+
         document.getElementById('filterSummary').textContent = summary.join(', ') || 'No items visible';
+
+        // Announce filter results to screen readers
+        var liveRegion = document.getElementById('live-region') || document.getElementById('notification-live-region');
+        if (liveRegion) {
+            liveRegion.textContent = 'Showing ' + visible + ' of ' + total + ' issues';
+        }
     }
     
     updateCounts() {

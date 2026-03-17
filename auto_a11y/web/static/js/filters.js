@@ -239,6 +239,12 @@ class IssueFilterManager {
 
             filterSummaryEl.textContent = summary.join(', ') || (t.no_items || 'No items');
         }
+
+        // Announce filter results to screen readers
+        var liveRegion = document.getElementById('live-region') || document.getElementById('notification-live-region');
+        if (liveRegion) {
+            liveRegion.textContent = 'Showing ' + visible + ' of ' + total + ' issues';
+        }
     }
 
     updateCounts() {

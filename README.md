@@ -97,6 +97,107 @@ MAX_DEPTH = 3
 MAX_PAGES_PER_WEBSITE = 100
 ```
 
+### Microsoft 365 SSO (Optional)
+
+The login page supports "Sign in with Microsoft" for client users. This is optional -- if the environment variables are left blank, the SSO button is hidden and only email/password login is available.
+
+#### 1. Register an app in Azure AD
+
+1. Go to the [Azure Portal](https://portal.azure.com/) and navigate to **Microsoft Entra ID** (formerly Azure Active Directory) > **App registrations** > **New registration**.
+2. Set the following fields:
+   - **Name**: whatever you like (e.g. "Auto A11y Public").
+   - **Supported account types**: choose **Accounts in any organizational directory (Any Microsoft Entra ID tenant - Multitenant)** to allow users from any Microsoft 365 organization, or choose **Single tenant** if you only want users from your own organization.
+   - **Redirect URI**: select **Web** and enter your callback URL. For local development this is `http://localhost:5001/auth/microsoft/callback`. For production, use your real domain (e.g. `https://reports.example.com/auth/microsoft/callback`).
+3. Click **Register**.
+
+#### 2. Collect the values you need
+
+After registration, on the app's **Overview** page:
+
+| Value | Where to find it | `.env` variable |
+|---|---|---|
+| Application (client) ID | Overview page, top | `MICROSOFT_CLIENT_ID` |
+| Directory (tenant) ID | Overview page, top (only needed for single-tenant; use `common` for multi-tenant) | `MICROSOFT_TENANT_ID` |
+
+#### 3. Create a client secret
+
+1. Go to **Certificates & secrets** > **Client secrets** > **New client secret**.
+2. Give it a description and expiry period, then click **Add**.
+3. Copy the **Value** immediately (it is only shown once).
+
+| Value | `.env` variable |
+|---|---|
+| Client secret value | `MICROSOFT_CLIENT_SECRET` |
+
+#### 4. API permissions
+
+The default registration already grants the `User.Read` delegated permission under Microsoft Graph, which is all that is needed. Verify this under **API permissions** -- you should see `Microsoft Graph > User.Read` listed. No admin consent is required for this permission.
+
+#### 5. Add to your `.env`
+
+```bash
+MICROSOFT_CLIENT_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+MICROSOFT_CLIENT_SECRET=your-secret-value
+MICROSOFT_TENANT_ID=common
+```
+
+Set `MICROSOFT_TENANT_ID` to `common` (the default) for multi-tenant, or to your specific tenant ID for single-tenant.
+
+#### 6. Verify
+
+Start the app and visit `/auth/login`. The "Sign in with Microsoft" button should appear above the email/password form.
+
+### Google SSO (Optional)
+
+The login page also supports "Sign in with Google". Like Microsoft SSO, this is optional -- if the environment variables are left blank, the Google button is hidden.
+
+#### 1. Create a project in Google Cloud Console
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/) and create a new project (or select an existing one).
+2. Navigate to **APIs & Services** > **OAuth consent screen**.
+3. Choose **External** user type (allows any Google account) or **Internal** (restricts to your Google Workspace organization only). Click **Create**.
+4. Fill in the required fields:
+   - **App name**: whatever you like (e.g. "Auto A11y Public").
+   - **User support email**: your email address.
+   - **Developer contact information**: your email address.
+5. Click **Save and Continue**.
+6. On the **Scopes** screen, click **Add or Remove Scopes** and add:
+   - `openid`
+   - `email`
+   - `profile`
+7. Click **Save and Continue** through the remaining screens.
+
+#### 2. Create OAuth credentials
+
+1. Navigate to **APIs & Services** > **Credentials**.
+2. Click **Create Credentials** > **OAuth client ID**.
+3. Set **Application type** to **Web application**.
+4. Give it a name (e.g. "Auto A11y Public").
+5. Under **Authorized redirect URIs**, add your callback URL. For local development this is `http://localhost:5001/auth/google/callback`. For production, use your real domain (e.g. `https://reports.example.com/auth/google/callback`).
+6. Click **Create**.
+
+#### 3. Collect the values you need
+
+After creation, a dialog shows your credentials:
+
+| Value | `.env` variable |
+|---|---|
+| Client ID | `GOOGLE_CLIENT_ID` |
+| Client secret | `GOOGLE_CLIENT_SECRET` |
+
+You can also find these later under **APIs & Services** > **Credentials** by clicking on the OAuth client you created.
+
+#### 4. Add to your `.env`
+
+```bash
+GOOGLE_CLIENT_ID=xxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-xxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+#### 5. Verify
+
+Start the app and visit `/auth/login`. The "Sign in with Google" button should appear above the email/password form.
+
 ## Usage
 
 ### Starting the Application

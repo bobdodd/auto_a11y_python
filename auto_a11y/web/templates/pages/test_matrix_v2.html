@@ -86,13 +86,13 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h2">
-                <i class="bi bi-grid-3x3"></i> {{ _('Configure Test Matrix') }}
+                <i class="bi bi-grid-3x3" aria-hidden="true"></i> {{ _('Configure Test Matrix') }}
             </h1>
             <p class="text-muted">{{ page.url }}</p>
         </div>
         <div>
             <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> {{ _('Back to Scripts') }}
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ _('Back to Scripts') }}
             </a>
         </div>
     </div>
@@ -110,12 +110,12 @@
 
     {% if not testable_scripts %}
     <div class="alert alert-warning">
-        <i class="bi bi-exclamation-triangle"></i>
+        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
         <strong>{{ _('No Testable Scripts') }}</strong><br>
         {{ _('This page has no enabled scripts with multi-state testing configured.') }}
         <div class="mt-3">
             <a href="{{ url_for('scripts.create_page_script', page_id=page.id) }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> {{ _('Create New Script') }}
+                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Create New Script') }}
             </a>
         </div>
     </div>
@@ -123,7 +123,7 @@
 
     <!-- Info Box -->
     <div class="info-box">
-        <h5><i class="bi bi-info-circle"></i> {{ _('About Test Combinations') }}</h5>
+        <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('About Test Combinations') }}</h5>
         <p class="mb-2">
             {{ _('Each row defines one test run. Select which state each script should be in for that test.') }}
         </p>
@@ -137,14 +137,14 @@
     <!-- Script Execution Order -->
     <div class="card mb-4">
         <div class="card-header bg-secondary text-white">
-            <h5 class="mb-0"><i class="bi bi-sort-numeric-down"></i> {{ _('Script Execution Order') }}</h5>
+            <h5 class="mb-0"><i class="bi bi-sort-numeric-down" aria-hidden="true"></i> {{ _('Script Execution Order') }}</h5>
         </div>
         <div class="card-body">
             <p class="text-muted mb-3">{{ _('Drag to reorder scripts. Scripts execute from left to right.') }}</p>
             <div id="script-order-list" class="d-flex flex-wrap gap-2">
                 {% for script in matrix.scripts %}
                 <div class="script-order-item badge bg-primary p-2" draggable="true" data-script-id="{{ script.script_id }}">
-                    <i class="bi bi-grip-vertical me-1"></i>
+                    <i class="bi bi-grip-vertical me-1" aria-hidden="true"></i>
                     <span class="script-order-num">{{ loop.index }}</span>. {{ script.script_name }}
                 </div>
                 {% endfor %}
@@ -155,19 +155,19 @@
     <!-- Preset Buttons -->
     <div class="preset-buttons">
         <button type="button" class="btn btn-outline-primary" onclick="applyPreset('sequential')">
-            <i class="bi bi-arrow-right-circle"></i> {{ _('Sequential (Default)') }}
+            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ _('Sequential (Default)') }}
         </button>
         <button type="button" class="btn btn-outline-secondary" onclick="applyPreset('initial_final')">
-            <i class="bi bi-arrow-left-right"></i> {{ _('Initial + Final') }}
+            <i class="bi bi-arrow-left-right" aria-hidden="true"></i> {{ _('Initial + Final') }}
         </button>
         <button type="button" class="btn btn-outline-secondary" onclick="applyPreset('all')">
-            <i class="bi bi-grid-fill"></i> {{ _('All Combinations') }}
+            <i class="bi bi-grid-fill" aria-hidden="true"></i> {{ _('All Combinations') }}
         </button>
         <button type="button" class="btn btn-outline-secondary" onclick="applyPreset('clear')">
-            <i class="bi bi-x-circle"></i> {{ _('Clear All') }}
+            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Clear All') }}
         </button>
         <button type="button" class="btn btn-success" onclick="addCombination()">
-            <i class="bi bi-plus-circle"></i> {{ _('Add Combination') }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Add Combination') }}
         </button>
     </div>
 
@@ -180,14 +180,15 @@
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
+                    <caption class="visually-hidden">{{ _('Test script combinations configuration') }}</caption>
                     <thead>
                         <tr>
-                            <th style="width: 40px;"></th>
-                            <th style="width: 50px;">#</th>
+                            <th scope="col" style="width: 40px;"></th>
+                            <th scope="col" style="width: 50px;">#</th>
                             {% for script in matrix.scripts %}
-                            <th>{{ script.script_name }}</th>
+                            <th scope="col">{{ script.script_name }}</th>
                             {% endfor %}
-                            <th style="width: 80px;">{{ _('Actions') }}</th>
+                            <th scope="col" style="width: 80px;">{{ _('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody id="combinations-tbody">
@@ -205,7 +206,7 @@
         <div class="d-flex justify-content-between align-items-center">
             <div>
                 <button type="submit" class="btn btn-primary btn-lg">
-                    <i class="bi bi-save"></i> {{ _('Save Configuration') }}
+                    <i class="bi bi-save" aria-hidden="true"></i> {{ _('Save Configuration') }}
                 </button>
                 <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}" class="btn btn-outline-secondary btn-lg">
                     {{ _('Cancel') }}
@@ -268,7 +269,7 @@ function renderTable() {
 
         // Drag handle
         const handleCell = document.createElement('td');
-        handleCell.innerHTML = '<i class="bi bi-grip-vertical drag-handle"></i>';
+        handleCell.innerHTML = '<i class="bi bi-grip-vertical drag-handle" aria-hidden="true"></i>';
         row.appendChild(handleCell);
 
         // Row number
@@ -317,7 +318,7 @@ function renderTable() {
         const actionsCell = document.createElement('td');
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'btn btn-sm btn-outline-danger';
-        deleteBtn.innerHTML = '<i class="bi bi-trash"></i>';
+        deleteBtn.innerHTML = '<i class="bi bi-trash" aria-hidden="true"></i>';
         deleteBtn.title = 'Delete';
         deleteBtn.onclick = () => deleteCombination(index);
         actionsCell.appendChild(deleteBtn);

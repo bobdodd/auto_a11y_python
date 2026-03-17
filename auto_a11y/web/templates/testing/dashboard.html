@@ -97,7 +97,7 @@
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <h1 class="h2 mb-1">
-                <i class="bi bi-speedometer2 text-primary"></i> {{ _('Testing Dashboard') }}
+                <i class="bi bi-speedometer2 text-primary" aria-hidden="true"></i> {{ _('Testing Dashboard') }}
             </h1>
             <p class="text-muted mb-0">
                 {% if selected_project %}
@@ -110,7 +110,7 @@
         </div>
         <div class="d-flex flex-wrap gap-2 align-items-center">
             <div class="input-group" style="width: auto;">
-                <span class="input-group-text"><i class="bi bi-folder"></i></span>
+                <span class="input-group-text"><i class="bi bi-folder" aria-hidden="true"></i></span>
                 <select id="projectSelect" class="form-select" style="min-width: 200px;">
                     <option value="">{{ _('All Projects') }}</option>
                     {% for p in projects %}
@@ -121,7 +121,7 @@
                 </select>
             </div>
             <div class="input-group" style="width: auto;">
-                <span class="input-group-text"><i class="bi bi-globe"></i></span>
+                <span class="input-group-text"><i class="bi bi-globe" aria-hidden="true"></i></span>
                 <select id="websiteSelect" class="form-select" style="min-width: 200px;" {% if not selected_project %}disabled{% endif %}>
                     {% if selected_project %}
                         <option value="">{{ _('All Websites') }}</option>
@@ -136,7 +136,7 @@
                 </select>
             </div>
             <a href="{{ url_for('testing.configure_testing') }}" class="btn btn-outline-secondary" title="{{ _('Configure Testing') }}">
-                <i class="bi bi-gear"></i>
+                <i class="bi bi-gear" aria-hidden="true"></i>
             </a>
         </div>
     </div>
@@ -150,7 +150,7 @@
                         <h6 class="card-title text-muted mb-1">{{ _('Pages') }}</h6>
                         <p class="display-6 mb-0" id="statTotalPages">{{ stats.total_pages }}</p>
                     </div>
-                    <i class="bi bi-file-earmark stat-icon text-primary"></i>
+                    <i class="bi bi-file-earmark stat-icon text-primary" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -162,7 +162,7 @@
                         <p class="display-6 mb-0" id="statTestedPages">{{ stats.tested_pages }}</p>
                         <small class="text-success" id="statCoverage">{{ "%.1f"|format(stats.test_coverage) }}% {{ _('coverage') }}</small>
                     </div>
-                    <i class="bi bi-check2-circle stat-icon text-success"></i>
+                    <i class="bi bi-check2-circle stat-icon text-success" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -173,7 +173,7 @@
                         <h6 class="card-title text-muted mb-1">{{ _('Violations') }}</h6>
                         <p class="display-6 mb-0 text-danger" id="statViolations">{{ stats.total_violations }}</p>
                     </div>
-                    <i class="bi bi-exclamation-triangle stat-icon text-danger"></i>
+                    <i class="bi bi-exclamation-triangle stat-icon text-danger" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -184,7 +184,7 @@
                         <h6 class="card-title text-muted mb-1">{{ _('Warnings') }}</h6>
                         <p class="display-6 mb-0 text-warning" id="statWarnings">{{ stats.total_warnings }}</p>
                     </div>
-                    <i class="bi bi-exclamation-circle stat-icon text-warning"></i>
+                    <i class="bi bi-exclamation-circle stat-icon text-warning" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -195,7 +195,7 @@
                         <h6 class="card-title text-muted mb-1">{{ _('Active') }}</h6>
                         <p class="display-6 mb-0 text-info" id="statActiveTests">{{ stats.active_tests }}</p>
                     </div>
-                    <i class="bi bi-activity stat-icon text-info"></i>
+                    <i class="bi bi-activity stat-icon text-info" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -206,7 +206,7 @@
                         <h6 class="card-title text-muted mb-1">{{ _('Queued') }}</h6>
                         <p class="display-6 mb-0" id="statQueuedTests">{{ stats.queued_tests }}</p>
                     </div>
-                    <i class="bi bi-hourglass-split stat-icon text-secondary"></i>
+                    <i class="bi bi-hourglass-split stat-icon text-secondary" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
@@ -219,7 +219,7 @@
             <!-- Test Actions Card -->
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bi bi-play-circle text-success"></i> {{ _('Test Actions') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-play-circle text-success" aria-hidden="true"></i> {{ _('Test Actions') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
@@ -227,15 +227,15 @@
                         <div class="col-md-4">
                             <div class="d-flex flex-column gap-2">
                                 <button class="btn btn-success" id="testAllBtn" {% if not selected_project and not selected_website %}disabled{% endif %}>
-                                    <i class="bi bi-play-fill"></i> {{ _('Test All Pages') }}
+                                    <i class="bi bi-play-fill" aria-hidden="true"></i> {{ _('Test All Pages') }}
                                 </button>
                                 <button class="btn btn-outline-primary" id="testUntestedBtn" {% if not selected_project and not selected_website %}disabled{% endif %}>
-                                    <i class="bi bi-skip-forward"></i> {{ _('Test Untested Only') }}
+                                    <i class="bi bi-skip-forward" aria-hidden="true"></i> {{ _('Test Untested Only') }}
                                 </button>
                             </div>
                             {% if not selected_project and not selected_website %}
                             <small class="text-muted d-block mt-2">
-                                <i class="bi bi-info-circle"></i> {{ _('Select a project or website to run tests') }}
+                                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Select a project or website to run tests') }}
                             </small>
                             {% endif %}
                         </div>
@@ -243,13 +243,13 @@
                         <!-- Tester Selection -->
                         <div class="col-md-5">
                             <label class="form-label fw-semibold">
-                                <i class="bi bi-people"></i> {{ _('Test As') }}
+                                <i class="bi bi-people" aria-hidden="true"></i> {{ _('Test As') }}
                             </label>
                             <div class="border rounded p-2" style="max-height: 120px; overflow-y: auto;">
                                 <div class="form-check">
                                     <input class="form-check-input tester-checkbox" type="checkbox" id="testerGuest" value="guest" checked>
                                     <label class="form-check-label" for="testerGuest">
-                                        <i class="bi bi-person-slash text-muted"></i> {{ _('Guest (No Login)') }}
+                                        <i class="bi bi-person-slash text-muted" aria-hidden="true"></i> {{ _('Guest (No Login)') }}
                                     </label>
                                 </div>
                                 {% if project_users %}
@@ -257,7 +257,7 @@
                                     <div class="form-check">
                                         <input class="form-check-input tester-checkbox" type="checkbox" id="tester{{ user.id }}" value="{{ user.id }}">
                                         <label class="form-check-label" for="tester{{ user.id }}">
-                                            <i class="bi bi-person-fill text-primary"></i> {{ user.name_display }}
+                                            <i class="bi bi-person-fill text-primary" aria-hidden="true"></i> {{ user.name_display }}
                                             {% if user.roles %}
                                             <small class="text-muted">({{ user.role_display }})</small>
                                             {% endif %}
@@ -266,7 +266,7 @@
                                     {% endfor %}
                                 {% elif selected_project %}
                                     <small class="text-muted">
-                                        <i class="bi bi-info-circle"></i> {{ _('No test users configured') }}
+                                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('No test users configured') }}
                                         <a href="{{ url_for('project_users.list_users', project_id=selected_project.id) }}">{{ _('Add users') }}</a>
                                     </small>
                                 {% endif %}
@@ -276,7 +276,7 @@
                         <!-- Options -->
                         <div class="col-md-3">
                             <label class="form-label fw-semibold">
-                                <i class="bi bi-gear"></i> {{ _('Options') }}
+                                <i class="bi bi-gear" aria-hidden="true"></i> {{ _('Options') }}
                             </label>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="includeScreenshots" checked>
@@ -298,11 +298,11 @@
             <!-- Trends Chart -->
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> {{ _('Trends') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ _('Trends') }}</h5>
                     <div class="d-flex align-items-center gap-2">
                         <small class="text-muted">{{ _('Last 14 days') }}</small>
                         <a href="{{ url_for('testing.trends_page') }}{% if selected_project %}?project_id={{ selected_project.id }}{% endif %}{% if selected_website %}&website_id={{ selected_website.id }}{% endif %}" class="btn btn-sm btn-outline-primary" title="{{ _('View Detailed Trends') }}">
-                            <i class="bi bi-graph-up-arrow"></i> {{ _('Details') }}
+                            <i class="bi bi-graph-up-arrow" aria-hidden="true"></i> {{ _('Details') }}
                         </a>
                     </div>
                 </div>
@@ -314,7 +314,7 @@
             <!-- Recent Results Table -->
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> {{ _('Recent Test Results') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ _('Recent Test Results') }}</h5>
                     <div class="btn-group btn-group-sm" role="group">
                         <button type="button" class="btn btn-outline-secondary active" data-filter="all">{{ _('All') }}</button>
                         <button type="button" class="btn btn-outline-danger" data-filter="errors">{{ _('Errors Only') }}</button>
@@ -325,15 +325,16 @@
                     {% if recent_results %}
                     <div class="table-responsive">
                         <table class="table table-hover table-results mb-0">
+                            <caption class="visually-hidden">{{ _('Recent accessibility test results') }}</caption>
                             <thead class="table-light">
                                 <tr>
-                                    <th>{{ _('Page') }}</th>
-                                    <th>{{ _('Project / Website') }}</th>
-                                    <th class="text-center">{{ _('Date') }}</th>
-                                    <th class="text-center">{{ _('Errors') }}</th>
-                                    <th class="text-center">{{ _('Warnings') }}</th>
-                                    <th class="text-center">{{ _('Status') }}</th>
-                                    <th></th>
+                                    <th scope="col">{{ _('Page') }}</th>
+                                    <th scope="col">{{ _('Project / Website') }}</th>
+                                    <th scope="col" class="text-center">{{ _('Date') }}</th>
+                                    <th scope="col" class="text-center">{{ _('Errors') }}</th>
+                                    <th scope="col" class="text-center">{{ _('Warnings') }}</th>
+                                    <th scope="col" class="text-center">{{ _('Status') }}</th>
+                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -380,7 +381,7 @@
                                     </td>
                                     <td>
                                         <a href="{{ url_for('pages.view_page', page_id=item.result.page_id) }}" class="btn btn-sm btn-outline-primary" title="{{ _('View Details') }}">
-                                            <i class="bi bi-eye"></i>
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -390,7 +391,7 @@
                     </div>
                     {% else %}
                     <div class="empty-state">
-                        <i class="bi bi-inbox"></i>
+                        <i class="bi bi-inbox" aria-hidden="true"></i>
                         <p>{{ _('No recent test results') }}</p>
                         <small class="text-muted">{{ _('Run some tests to see results here') }}</small>
                     </div>
@@ -404,7 +405,7 @@
             <!-- Active Tests Panel -->
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-activity text-primary"></i> {{ _('Active Tests') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-activity text-primary" aria-hidden="true"></i> {{ _('Active Tests') }}</h5>
                     <span class="badge bg-primary" id="activeTestsCount">{{ active_jobs|length }}</span>
                 </div>
                 <div class="card-body" id="activeTestsPanel">
@@ -425,7 +426,7 @@
                         {% endfor %}
                     {% else %}
                     <div class="empty-state py-4">
-                        <i class="bi bi-pause-circle"></i>
+                        <i class="bi bi-pause-circle" aria-hidden="true"></i>
                         <p class="mb-0">{{ _('No active tests') }}</p>
                     </div>
                     {% endif %}
@@ -435,7 +436,7 @@
             <!-- Scheduled Tests Panel -->
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-calendar-check" style="color: #6f42c1;"></i> {{ _('Scheduled Tests') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-calendar-check" aria-hidden="true" style="color: #6f42c1;"></i> {{ _('Scheduled Tests') }}</h5>
                     <span class="badge" style="background-color: #6f42c1;">{{ schedules|length }}</span>
                 </div>
                 <div class="card-body">
@@ -454,11 +455,11 @@
                                 </span>
                             </div>
                             <small class="text-muted">
-                                <i class="bi bi-clock"></i> {{ schedule.schedule_summary }}
+                                <i class="bi bi-clock" aria-hidden="true"></i> {{ schedule.schedule_summary }}
                             </small>
                             {% if schedule.next_run_at %}
                             <br><small class="text-primary">
-                                <i class="bi bi-arrow-right"></i> {{ _('Next:') }} {{ schedule.next_run_at.strftime('%Y-%m-%d %H:%M') }}
+                                <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ _('Next:') }} {{ schedule.next_run_at.strftime('%Y-%m-%d %H:%M') }}
                             </small>
                             {% endif %}
                         </div>
@@ -470,11 +471,11 @@
                         {% endif %}
                     {% else %}
                     <div class="empty-state py-4">
-                        <i class="bi bi-calendar-x"></i>
+                        <i class="bi bi-calendar-x" aria-hidden="true"></i>
                         <p class="mb-0">{{ _('No scheduled tests') }}</p>
                         {% if selected_website %}
                         <a href="{{ url_for('schedules.create_schedule', website_id=selected_website.id) }}" class="btn btn-sm btn-outline-primary mt-2">
-                            <i class="bi bi-plus"></i> {{ _('Create Schedule') }}
+                            <i class="bi bi-plus" aria-hidden="true"></i> {{ _('Create Schedule') }}
                         </a>
                         {% endif %}
                     </div>
@@ -485,7 +486,7 @@
             <!-- Quick Stats Summary -->
             <div class="card mt-4 shadow-sm">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> {{ _('Summary') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ _('Summary') }}</h5>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled mb-0">
@@ -512,7 +513,7 @@
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
     <div id="notificationToast" class="toast" role="alert">
         <div class="toast-header">
-            <i class="bi bi-bell me-2"></i>
+            <i class="bi bi-bell me-2" aria-hidden="true"></i>
             <strong class="me-auto" id="toastTitle">{{ _('Notification') }}</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast"></button>
         </div>
@@ -726,7 +727,7 @@ function updateActiveTestsPanel(activeTests) {
     if (activeTests.length === 0) {
         panel.innerHTML = `
             <div class="empty-state py-4">
-                <i class="bi bi-pause-circle"></i>
+                <i class="bi bi-pause-circle" aria-hidden="true"></i>
                 <p class="mb-0">` + {{ _("No active tests") | tojson }} + `</p>
             </div>
         `;

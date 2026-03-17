@@ -186,7 +186,7 @@
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <h1 class="h2 mb-1">
-                <i class="bi bi-graph-up-arrow text-primary"></i> {{ _('Trend Analysis') }}
+                <i class="bi bi-graph-up-arrow text-primary" aria-hidden="true"></i> {{ _('Trend Analysis') }}
             </h1>
             <p class="text-muted mb-0">
                 {% if selected_project %}
@@ -200,7 +200,7 @@
         <div class="d-flex flex-wrap gap-2 align-items-center">
             <!-- Project/Website Selectors -->
             <div class="input-group" style="width: auto;">
-                <span class="input-group-text"><i class="bi bi-folder"></i></span>
+                <span class="input-group-text"><i class="bi bi-folder" aria-hidden="true"></i></span>
                 <select id="projectSelect" class="form-select" style="min-width: 180px;">
                     <option value="">{{ _('All Projects') }}</option>
                     {% for p in projects %}
@@ -211,7 +211,7 @@
                 </select>
             </div>
             <div class="input-group" style="width: auto;">
-                <span class="input-group-text"><i class="bi bi-globe"></i></span>
+                <span class="input-group-text"><i class="bi bi-globe" aria-hidden="true"></i></span>
                 <select id="websiteSelect" class="form-select" style="min-width: 180px;" {% if not selected_project %}disabled{% endif %}>
                     {% if selected_project %}
                         <option value="">{{ _('All Websites') }}</option>
@@ -226,7 +226,7 @@
                 </select>
             </div>
             <a href="{{ url_for('testing.testing_dashboard') }}{% if selected_project %}?project_id={{ selected_project.id }}{% endif %}{% if selected_website %}&website_id={{ selected_website.id }}{% endif %}" class="btn btn-outline-secondary" title="{{ _('Back to Dashboard') }}">
-                <i class="bi bi-speedometer2"></i>
+                <i class="bi bi-speedometer2" aria-hidden="true"></i>
             </a>
         </div>
     </div>
@@ -262,7 +262,7 @@
                     <span class="text-muted">{{ _('to') }}</span>
                     <input type="date" id="endDate" class="form-control form-control-sm" style="width: 140px;">
                     <button type="button" id="applyDateRange" class="btn btn-sm btn-primary">
-                        <i class="bi bi-arrow-right"></i>
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
@@ -274,14 +274,14 @@
         <div class="card-header bg-white py-2" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#filterPanel" aria-expanded="true">
             <div class="d-flex justify-content-between align-items-center">
                 <h6 class="mb-0">
-                    <i class="bi bi-funnel"></i> {{ _('Filter Trends') }}
+                    <i class="bi bi-funnel" aria-hidden="true"></i> {{ _('Filter Trends') }}
                     <span id="activeFilterCount" class="badge bg-primary ms-2" style="display: none;">0</span>
                 </h6>
                 <div class="d-flex align-items-center gap-2">
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="clearAllFilters" onclick="event.stopPropagation();">
-                        <i class="bi bi-x-circle"></i> {{ _('Clear All') }}
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Clear All') }}
                     </button>
-                    <i class="bi bi-chevron-up" id="filterToggleIcon"></i>
+                    <i class="bi bi-chevron-up" aria-hidden="true" id="filterToggleIcon"></i>
                 </div>
             </div>
         </div>
@@ -348,19 +348,19 @@
                         <label class="form-label fw-bold small">{{ _('Affected User Groups') }}</label>
                         <div class="filter-chips">
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user_group" data-filter-value="vision">
-                                <i class="bi bi-eye-slash me-1"></i>{{ _('Vision') }}
+                                <i class="bi bi-eye-slash me-1" aria-hidden="true"></i>{{ _('Vision') }}
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user_group" data-filter-value="hearing">
-                                <i class="bi bi-ear me-1"></i>{{ _('Hearing') }}
+                                <i class="bi bi-ear me-1" aria-hidden="true"></i>{{ _('Hearing') }}
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user_group" data-filter-value="motor">
-                                <i class="bi bi-hand-index me-1"></i>{{ _('Motor') }}
+                                <i class="bi bi-hand-index me-1" aria-hidden="true"></i>{{ _('Motor') }}
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user_group" data-filter-value="cognitive">
-                                <i class="bi bi-brain me-1"></i>{{ _('Cognitive') }}
+                                <i class="bi bi-brain me-1" aria-hidden="true"></i>{{ _('Cognitive') }}
                             </button>
                             <button class="btn btn-sm btn-outline-secondary filter-chip me-2 mb-2" data-filter-type="user_group" data-filter-value="seizure">
-                                <i class="bi bi-lightning me-1"></i>{{ _('Seizure') }}
+                                <i class="bi bi-lightning me-1" aria-hidden="true"></i>{{ _('Seizure') }}
                             </button>
                         </div>
                     </div>
@@ -383,7 +383,7 @@
                                 <span class="trend-percent"></span>
                             </div>
                         </div>
-                        <i class="bi bi-exclamation-triangle stat-icon text-danger"></i>
+                        <i class="bi bi-exclamation-triangle stat-icon text-danger" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
@@ -396,7 +396,7 @@
                             <h6 class="card-title text-muted mb-1">{{ _('Total Warnings') }}</h6>
                             <p class="display-6 mb-0" id="statTotalWarnings">-</p>
                         </div>
-                        <i class="bi bi-exclamation-circle stat-icon text-warning"></i>
+                        <i class="bi bi-exclamation-circle stat-icon text-warning" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
@@ -409,7 +409,7 @@
                             <h6 class="card-title text-muted mb-1">{{ _('Tests Run') }}</h6>
                             <p class="display-6 mb-0" id="statTotalTests">-</p>
                         </div>
-                        <i class="bi bi-check2-all stat-icon text-success"></i>
+                        <i class="bi bi-check2-all stat-icon text-success" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
@@ -422,7 +422,7 @@
                             <h6 class="card-title text-muted mb-1">{{ _('Avg per Test') }}</h6>
                             <p class="display-6 mb-0" id="statAvgViolations">-</p>
                         </div>
-                        <i class="bi bi-calculator stat-icon text-info"></i>
+                        <i class="bi bi-calculator stat-icon text-info" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
@@ -435,7 +435,7 @@
         <div class="col-lg-8">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> {{ _('Violations & Warnings Over Time') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ _('Violations & Warnings Over Time') }}</h5>
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" id="showMovingAvg" checked>
                         <label class="form-check-label small" for="showMovingAvg">{{ _('Show Moving Avg') }}</label>
@@ -462,7 +462,7 @@
         <div class="col-lg-4">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bi bi-pie-chart"></i> {{ _('By Impact Level') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-pie-chart" aria-hidden="true"></i> {{ _('By Impact Level') }}</h5>
                 </div>
                 <div class="card-body card-loading" id="impactChartContainer">
                     <!-- Loading overlay -->
@@ -488,7 +488,7 @@
         <div class="col-lg-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bi bi-bar-chart"></i> {{ _('By Touchpoint') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ _('By Touchpoint') }}</h5>
                 </div>
                 <div class="card-body card-loading" id="touchpointChartContainer">
                     <!-- Loading overlay -->
@@ -511,22 +511,23 @@
         <div class="col-lg-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bi bi-list-ol"></i> {{ _('Top Issues') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-list-ol" aria-hidden="true"></i> {{ _('Top Issues') }}</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover top-issues-table mb-0">
+                            <caption class="visually-hidden">{{ _('Top accessibility issues by frequency') }}</caption>
                             <thead class="table-light">
                                 <tr>
-                                    <th>{{ _('Issue') }}</th>
-                                    <th class="text-end">{{ _('Count') }}</th>
-                                    <th class="text-center">{{ _('Trend') }}</th>
+                                    <th scope="col">{{ _('Issue') }}</th>
+                                    <th scope="col" class="text-end">{{ _('Count') }}</th>
+                                    <th scope="col" class="text-center">{{ _('Trend') }}</th>
                                 </tr>
                             </thead>
                             <tbody id="topIssuesBody">
                                 <tr>
                                     <td colspan="3" class="text-center text-muted py-4">
-                                        <i class="bi bi-hourglass-split"></i> {{ _('Loading...') }}
+                                        <i class="bi bi-hourglass-split" aria-hidden="true"></i> {{ _('Loading...') }}
                                     </td>
                                 </tr>
                             </tbody>
@@ -543,7 +544,7 @@
         <div class="col-lg-6">
             <div class="card shadow-sm progress-card">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bi bi-arrow-up-right text-success"></i> {{ _('Progress Tracking') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-arrow-up-right text-success" aria-hidden="true"></i> {{ _('Progress Tracking') }}</h5>
                 </div>
                 <div class="card-body card-loading" id="progressSection">
                     <!-- Loading overlay -->
@@ -584,7 +585,7 @@
                     </div>
                     {% else %}
                     <div class="empty-state">
-                        <i class="bi bi-info-circle"></i>
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
                         <p>{{ _('Select a project or website to see progress metrics') }}</p>
                     </div>
                     {% endif %}
@@ -596,9 +597,9 @@
         <div class="col-lg-6">
             <div class="card shadow-sm comparison-card">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-arrow-left-right" style="color: #6f42c1;"></i> {{ _('Period Comparison') }}</h5>
+                    <h5 class="mb-0"><i class="bi bi-arrow-left-right" aria-hidden="true" style="color: #6f42c1;"></i> {{ _('Period Comparison') }}</h5>
                     <button class="btn btn-sm btn-outline-secondary" id="refreshComparison">
-                        <i class="bi bi-arrow-clockwise"></i>
+                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
                     </button>
                 </div>
                 <div class="card-body card-loading" id="comparisonSection">
@@ -640,7 +641,7 @@
                         </div>
                         <div class="col-12">
                             <div class="alert mb-0" id="comparisonAlert">
-                                <i class="bi bi-arrow-down-circle"></i>
+                                <i class="bi bi-arrow-down-circle" aria-hidden="true"></i>
                                 <span id="comparisonMessage">{{ _('Loading comparison...') }}</span>
                             </div>
                         </div>
@@ -1423,13 +1424,13 @@ function updateSummaryStats(summary) {
     indicator.className = 'trend-indicator trend-' + summary.trend_direction;
 
     if (summary.trend_direction === 'improving') {
-        direction.innerHTML = '<i class="bi bi-arrow-down-circle"></i> ';
+        direction.innerHTML = '<i class="bi bi-arrow-down-circle" aria-hidden="true"></i> ';
         percent.textContent = summary.change_percent + '%';
     } else if (summary.trend_direction === 'worsening') {
-        direction.innerHTML = '<i class="bi bi-arrow-up-circle"></i> ';
+        direction.innerHTML = '<i class="bi bi-arrow-up-circle" aria-hidden="true"></i> ';
         percent.textContent = '+' + Math.abs(summary.change_percent) + '%';
     } else {
-        direction.innerHTML = '<i class="bi bi-dash-circle"></i> ';
+        direction.innerHTML = '<i class="bi bi-dash-circle" aria-hidden="true"></i> ';
         percent.textContent = '{{ _("Stable") }}';
     }
 }
@@ -1588,11 +1589,11 @@ function updateTopIssues(topIssues) {
 
     let html = '';
     topIssues.forEach(issue => {
-        let trendIcon = '<i class="bi bi-dash text-muted"></i>';
+        let trendIcon = '<i class="bi bi-dash text-muted" aria-hidden="true"></i>';
         if (issue.trend === 'improving') {
-            trendIcon = '<i class="bi bi-arrow-down text-success"></i>';
+            trendIcon = '<i class="bi bi-arrow-down text-success" aria-hidden="true"></i>';
         } else if (issue.trend === 'worsening') {
-            trendIcon = '<i class="bi bi-arrow-up text-danger"></i>';
+            trendIcon = '<i class="bi bi-arrow-up text-danger" aria-hidden="true"></i>';
         }
 
         html += `
@@ -1626,13 +1627,13 @@ function updateComparison(data) {
 
         if (change.violations.percent < 0) {
             alert.className = 'alert alert-success mb-0';
-            message.innerHTML = `<i class="bi bi-arrow-down-circle me-1"></i> {{ _("Violations decreased by") }} ${Math.abs(change.violations.percent)}%`;
+            message.innerHTML = `<i class="bi bi-arrow-down-circle me-1" aria-hidden="true"></i> {{ _("Violations decreased by") }} ${Math.abs(change.violations.percent)}%`;
         } else if (change.violations.percent > 0) {
             alert.className = 'alert alert-danger mb-0';
-            message.innerHTML = `<i class="bi bi-arrow-up-circle me-1"></i> {{ _("Violations increased by") }} ${change.violations.percent}%`;
+            message.innerHTML = `<i class="bi bi-arrow-up-circle me-1" aria-hidden="true"></i> {{ _("Violations increased by") }} ${change.violations.percent}%`;
         } else {
             alert.className = 'alert alert-secondary mb-0';
-            message.innerHTML = `<i class="bi bi-dash-circle me-1"></i> {{ _("No change in violations") }}`;
+            message.innerHTML = `<i class="bi bi-dash-circle me-1" aria-hidden="true"></i> {{ _("No change in violations") }}`;
         }
     }
 }

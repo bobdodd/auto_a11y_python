@@ -141,7 +141,7 @@
                 <a href="{{ page.url }}" target="_blank">
                     <span class="d-none d-md-inline">{{ page.url }}</span>
                     <span class="d-md-none">{{ page.url|truncate(40) }}</span>
-                    <i class="bi bi-box-arrow-up-right"></i>
+                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                 </a>
             </p>
         </div>
@@ -149,7 +149,7 @@
         <div id="page-actions" class="d-none d-lg-block">
             {% if page.status.value in ['queued', 'testing'] %}
             <button class="btn btn-danger" onclick="cancelPageTest('{{ page.id }}')" id="cancel-test-btn">
-                <i class="bi bi-x-circle"></i> {{ _('Cancel Test') }}
+                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Cancel Test') }}
             </button>
             {% else %}
             {% if website_users %}
@@ -161,21 +161,21 @@
             </select>
             {% endif %}
             <button class="btn btn-primary" onclick="testPage('{{ page.id }}')" id="run-test-btn">
-                <i class="bi bi-play"></i> {{ _('Run Test') }}
+                <i class="bi bi-play" aria-hidden="true"></i> {{ _('Run Test') }}
             </button>
             {% endif %}
             <a href="{{ url_for('pages.edit_page', page_id=page.id) }}" class="btn btn-outline-primary">
-                <i class="bi bi-pencil"></i> {{ _('Edit') }}
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ _('Edit') }}
             </a>
             <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}" class="btn btn-outline-success">
-                <i class="bi bi-code-square"></i> {{ _('Scripts') }}
+                <i class="bi bi-code-square" aria-hidden="true"></i> {{ _('Scripts') }}
             </a>
         </div>
         <!-- Mobile Actions -->
         <div id="page-actions-mobile" class="d-lg-none w-100">
             {% if page.status.value in ['queued', 'testing'] %}
             <button class="btn btn-danger w-100" onclick="cancelPageTest('{{ page.id }}')" id="cancel-test-btn-mobile">
-                <i class="bi bi-x-circle"></i> {{ _('Cancel Test') }}
+                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Cancel Test') }}
             </button>
             {% else %}
             {% if website_users %}
@@ -188,13 +188,13 @@
             {% endif %}
             <div class="d-flex flex-wrap gap-2">
                 <button class="btn btn-primary flex-grow-1" onclick="testPage('{{ page.id }}')" id="run-test-btn-mobile">
-                    <i class="bi bi-play"></i> {{ _('Run Test') }}
+                    <i class="bi bi-play" aria-hidden="true"></i> {{ _('Run Test') }}
                 </button>
                 <a href="{{ url_for('pages.edit_page', page_id=page.id) }}" class="btn btn-outline-primary">
-                    <i class="bi bi-pencil"></i>
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
                 </a>
                 <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}" class="btn btn-outline-success">
-                    <i class="bi bi-code-square"></i>
+                    <i class="bi bi-code-square" aria-hidden="true"></i>
                 </a>
             </div>
             {% endif %}
@@ -315,7 +315,7 @@
                 <div class="card-body text-center">
                     {% set score = score_data.score|default(0) %}
                     <h6 class="card-title">
-                        <i class="bi bi-robot"></i> {{ _('Automated Accessibility Score') }}
+                        <i class="bi bi-robot" aria-hidden="true"></i> {{ _('Automated Accessibility Score') }}
                         <button class="help-icon" data-help="scoring.accessibility_score" aria-label="{{ _('Get help about accessibility score') }}">?</button>
                     </h6>
                     <div class="display-4 fw-bold
@@ -334,7 +334,7 @@
             <div class="card">
                 <div class="card-body text-center">
                     <h6 class="card-title">
-                        <i class="bi bi-robot"></i> {{ _('Automated WCAG Compliance Score') }}
+                        <i class="bi bi-robot" aria-hidden="true"></i> {{ _('Automated WCAG Compliance Score') }}
                         <button class="help-icon" data-help="scoring.compliance_score" aria-label="{{ _('Get help about compliance score') }}">?</button>
                     </h6>
                     {% if compliance_score %}
@@ -363,10 +363,10 @@
         <div class="card mb-3">
             <div class="card-header bg-light">
                 <h5 class="mb-0">
-                    <i class="bi bi-bug"></i> {{ _('Accessibility Issues Found') }}
+                    <i class="bi bi-bug" aria-hidden="true"></i> {{ _('Accessibility Issues Found') }}
                     <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="{{ _('Number of unique issue types discovered. Each type may have multiple instances throughout the page.') }}">
-                        <i class="bi bi-question-circle"></i>
+                        <i class="bi bi-question-circle" aria-hidden="true"></i>
                     </button>
                 </h5>
             </div>
@@ -375,7 +375,7 @@
                     <div class="card text-center flex-fill" style="min-width: 140px;">
                         <div class="card-body py-3">
                             <h6 class="text-danger mb-1">
-                                <i class="bi bi-x-circle"></i> {{ _('Errors') }}
+                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Errors') }}
                             </h6>
                             <p class="display-6 mb-0 text-danger">{{ page.violation_count }}</p>
                             <small class="text-muted">{{ _('types found') }}</small>
@@ -384,7 +384,7 @@
                     <div class="card text-center flex-fill" style="min-width: 140px;">
                         <div class="card-body py-3">
                             <h6 class="text-warning mb-1">
-                                <i class="bi bi-exclamation-triangle"></i> {{ _('Warnings') }}
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Warnings') }}
                             </h6>
                             <p class="display-6 mb-0 text-warning">{{ page.warning_count }}</p>
                             <small class="text-muted">{{ _('types found') }}</small>
@@ -393,7 +393,7 @@
                     <div class="card text-center flex-fill" style="min-width: 140px;">
                         <div class="card-body py-3">
                             <h6 class="text-info mb-1">
-                                <i class="bi bi-info-circle"></i> {{ _('Info') }}
+                                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Info') }}
                             </h6>
                             <p class="display-6 mb-0 text-info">{{ page.info_count|default(0) }}</p>
                             <small class="text-muted">{{ _('types found') }}</small>
@@ -402,7 +402,7 @@
                     <div class="card text-center flex-fill" style="min-width: 140px;">
                         <div class="card-body py-3">
                             <h6 class="mb-1" style="color: #6f42c1;">
-                                <i class="bi bi-search"></i> {{ _('Discovery') }}
+                                <i class="bi bi-search" aria-hidden="true"></i> {{ _('Discovery') }}
                             </h6>
                             <p class="display-6 mb-0" style="color: #6f42c1;">{{ page.discovery_count|default(0) }}</p>
                             <small class="text-muted">{{ _('types found') }}</small>
@@ -416,10 +416,10 @@
         <div class="card">
             <div class="card-header bg-light">
                 <h5 class="mb-0">
-                    <i class="bi bi-check2-square"></i> {{ _('Accessibility Checks Performance') }}
+                    <i class="bi bi-check2-square" aria-hidden="true"></i> {{ _('Accessibility Checks Performance') }}
                     <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
                             title="{{ _('Total individual checks performed on all page elements. High pass rate is good but doesn\'t guarantee full compliance if critical issues exist.') }}">
-                        <i class="bi bi-question-circle"></i>
+                        <i class="bi bi-question-circle" aria-hidden="true"></i>
                     </button>
                 </h5>
             </div>
@@ -508,7 +508,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="alert alert-info mb-0">
-                            <h6 class="alert-heading"><i class="bi bi-lightbulb"></i> {{ _('Understanding the Numbers') }}</h6>
+                            <h6 class="alert-heading"><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ _('Understanding the Numbers') }}</h6>
                             <small>
                                 <strong>{{ _('Example:') }}</strong> {{ _('95%% pass rate (475/500 passed) might still mean critical issues exist. Those 25 failed checks could all be "missing alt text" affecting every image on the page.') }}
                             </small>
@@ -529,15 +529,16 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-sm">
+                    <caption class="visually-hidden">{{ _('Individual accessibility check results breakdown') }}</caption>
                     <thead>
                         <tr>
-                            <th>{{ _('Test') }}</th>
-                            <th>{{ _('Check') }}</th>
-                            <th>{{ _('WCAG') }}</th>
-                            <th class="text-center">{{ _('Tested') }}</th>
-                            <th class="text-center">{{ _('Passed') }}</th>
-                            <th class="text-center">{{ _('Failed') }}</th>
-                            <th class="text-end">{{ _('Pass Rate') }}</th>
+                            <th scope="col">{{ _('Test') }}</th>
+                            <th scope="col">{{ _('Check') }}</th>
+                            <th scope="col">{{ _('WCAG') }}</th>
+                            <th scope="col" class="text-center">{{ _('Tested') }}</th>
+                            <th scope="col" class="text-center">{{ _('Passed') }}</th>
+                            <th scope="col" class="text-center">{{ _('Failed') }}</th>
+                            <th scope="col" class="text-end">{{ _('Pass Rate') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -626,7 +627,7 @@
         <!-- Multi-State Selector -->
         {% if state_results and state_results|length > 1 %}
         <div class="card-body border-bottom bg-light">
-            <h6 class="mb-3"><i class="bi bi-layers"></i> {{ _('Page States Tested') }}</h6>
+            <h6 class="mb-3"><i class="bi bi-layers" aria-hidden="true"></i> {{ _('Page States Tested') }}</h6>
             <p class="text-muted small mb-3">
                 {{ _('This page was tested in multiple states. Select a state below to view its test results.') }}
             </p>
@@ -648,7 +649,7 @@
                             class="btn btn-outline-primary state-selector {% if is_active %}active{% endif %}"
                             data-state-index="{{ loop.index0 }}"
                             onclick="showState({{ loop.index0 }})">
-                        <i class="bi bi-circle-fill" style="font-size: 8px;"></i>
+                        <i class="bi bi-circle-fill" aria-hidden="true" style="font-size: 8px;"></i>
                         {{ state_desc }}
                         <br>
                         <small class="{% if is_active %}text-white{% else %}text-muted{% endif %}">
@@ -664,7 +665,7 @@
             <!-- Test Error Message (if test failed) -->
             {% if latest_result.error %}
             <div class="alert alert-danger mb-4" role="alert">
-                <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>{{ _('Test Execution Error') }}</h5>
+                <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>{{ _('Test Execution Error') }}</h5>
                 <p class="mb-0">{{ _('The accessibility test could not be completed due to an error:') }}</p>
                 <hr>
                 <pre class="mb-0 text-danger" style="white-space: pre-wrap; word-break: break-word;">{{ latest_result.error }}</pre>
@@ -676,7 +677,7 @@
             <div class="section-panel errors-section mb-4" style="border: 2px solid #dc3545; border-radius: 8px; overflow: hidden;">
                 <div class="section-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 12px 16px;">
                     <h5 class="mb-0">
-                        <i class="bi bi-x-circle-fill me-2"></i> {{ _('Errors') }} 
+                        <i class="bi bi-x-circle-fill me-2" aria-hidden="true"></i> {{ _('Errors') }} 
                         <span class="badge bg-light text-danger ms-2">{{ latest_result.violations|length }}</span>
                     </h5>
                     <small class="opacity-75">{{ _('Issues that must be fixed for WCAG compliance') }}</small>
@@ -751,14 +752,14 @@
                                                             <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
                                                             {% if violation.metadata and violation.metadata.authenticated_user %}
                                                                 <span class="badge bg-secondary">
-                                                                    <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
+                                                                    <i class="bi bi-person-fill" aria-hidden="true"></i> {{ violation.metadata.authenticated_user.display_name }}
                                                                     {% if violation.metadata.authenticated_user.roles %}
                                                                         ({{ violation.metadata.authenticated_user.roles|join(', ') }})
                                                                     {% endif %}
                                                                 </span>
                                                             {% else %}
                                                                 <span class="badge bg-secondary">
-                                                                    <i class="bi bi-person"></i> {{ _('Guest') }}
+                                                                    <i class="bi bi-person" aria-hidden="true"></i> {{ _('Guest') }}
                                                                 </span>
                                                             {% endif %}
                                                             {% if 'ErrDuplicateNavNames' in violation.id and violation.metadata and violation.metadata.duplicateName %}
@@ -885,12 +886,12 @@
                                                                         
                                                                         <p style="margin: 0 0 5px 0;">
                                                                             <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
-                                                                                {{ _('More about') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('More about') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
                                                                             <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
-                                                                                {{ _('Ways to meet') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('Ways to meet') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                                             </a>
                                                                         </p>
                                                                         
@@ -905,12 +906,12 @@
                                                                         
                                                                         <p style="margin: 0 0 5px 0;">
                                                                             <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                                                                {{ _('More about') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('More about') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
                                                                             <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                                                                {{ _('Ways to meet') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('Ways to meet') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                                             </a>
                                                                         </p>
                                                                         
@@ -924,7 +925,7 @@
                                                         <p>
                                                             <strong>{{ _('Location:') }}</strong> <code>{{ violation.selector|default(violation.xpath) }}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{ violation.selector|default(violation.xpath)|e }}', this)" title="{{ _('Copy XPath to clipboard') }}">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                         {% endif %}
@@ -964,7 +965,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             {{ _('Location:') }} <code>{{element.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{element.xpath|e}}', this)" title="{{ _('Copy XPath to clipboard') }}" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                         </div>
@@ -977,7 +978,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{h1.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{h1.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ h1.html|e }}</code></pre>
@@ -1009,7 +1010,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -1023,7 +1024,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -1038,7 +1039,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -1055,7 +1056,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{anchor.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{anchor.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ anchor.html|e }}</code></pre>
@@ -1092,7 +1093,7 @@
 
                                                         {% if violation.metadata.ai_detected %}
                                                         <div class="alert alert-info mt-3">
-                                                            <i class="bi bi-robot"></i> <strong>{{ _('AI Detection Note:') }}</strong>
+                                                            <i class="bi bi-robot" aria-hidden="true"></i> <strong>{{ _('AI Detection Note:') }}</strong>
                                                             <p class="mb-0">{{ _('This issue was detected through visual analysis.') }}</p>
                                                             {% if violation.metadata.ai_confidence %}
                                                             <p><strong>{{ _('Confidence:') }}</strong> {{ (violation.metadata.ai_confidence * 100)|round }}%</p>
@@ -1125,14 +1126,14 @@
                                                             <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
                                                             {% if violation.metadata and violation.metadata.authenticated_user %}
                                                                 <span class="badge bg-secondary">
-                                                                    <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
+                                                                    <i class="bi bi-person-fill" aria-hidden="true"></i> {{ violation.metadata.authenticated_user.display_name }}
                                                                     {% if violation.metadata.authenticated_user.roles %}
                                                                         ({{ violation.metadata.authenticated_user.roles|join(', ') }})
                                                                     {% endif %}
                                                                 </span>
                                                             {% else %}
                                                                 <span class="badge bg-secondary">
-                                                                    <i class="bi bi-person"></i> {{ _('Guest') }}
+                                                                    <i class="bi bi-person" aria-hidden="true"></i> {{ _('Guest') }}
                                                                 </span>
                                                             {% endif %}
                                                             {% if 'ErrDuplicateNavNames' in violation.id and violation.metadata and violation.metadata.duplicateName %}
@@ -1259,12 +1260,12 @@
                                                                         
                                                                         <p style="margin: 0 0 5px 0;">
                                                                             <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
-                                                                                {{ _('More about') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('More about') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
                                                                             <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
-                                                                                {{ _('Ways to meet') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('Ways to meet') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                                             </a>
                                                                         </p>
                                                                         
@@ -1279,12 +1280,12 @@
                                                                         
                                                                         <p style="margin: 0 0 5px 0;">
                                                                             <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                                                                {{ _('More about') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('More about') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
                                                                             <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                                                                {{ _('Ways to meet') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('Ways to meet') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                                             </a>
                                                                         </p>
                                                                         
@@ -1298,7 +1299,7 @@
                                                         <p>
                                                             <strong>{{ _('Location:') }}</strong> <code>{{ violation.selector|default(violation.xpath) }}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{ violation.selector|default(violation.xpath)|e }}', this)" title="{{ _('Copy XPath to clipboard') }}">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                         {% endif %}
@@ -1338,7 +1339,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             {{ _('Location:') }} <code>{{element.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{element.xpath|e}}', this)" title="{{ _('Copy XPath to clipboard') }}" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                         </div>
@@ -1351,7 +1352,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{h1.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{h1.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ h1.html|e }}</code></pre>
@@ -1383,7 +1384,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -1397,7 +1398,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -1412,7 +1413,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -1429,7 +1430,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{anchor.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{anchor.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ anchor.html|e }}</code></pre>
@@ -1466,7 +1467,7 @@
 
                                                         {% if violation.metadata.ai_detected %}
                                                         <div class="alert alert-info mt-3">
-                                                            <i class="bi bi-robot"></i> <strong>{{ _('AI Detection Note:') }}</strong>
+                                                            <i class="bi bi-robot" aria-hidden="true"></i> <strong>{{ _('AI Detection Note:') }}</strong>
                                                             <p class="mb-0">{{ _('This issue was detected through visual analysis.') }}</p>
                                                             {% if violation.metadata.ai_confidence %}
                                                             <p><strong>{{ _('Confidence:') }}</strong> {{ (violation.metadata.ai_confidence * 100)|round }}%</p>
@@ -1495,19 +1496,19 @@
                                             <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'info'}[violation.impact.value|lower if violation.impact.value else violation.impact|lower] or 'secondary' }} impact-badge">{{ t.get(violation.impact.value|upper if violation.impact.value else violation.impact|upper, violation.impact.value|upper if violation.impact.value else violation.impact|upper) }}</span>
                                             {% if violation.metadata.ai_detected %}
                                             <span class="badge bg-info" title="Detected by AI analysis">
-                                                <i class="bi bi-robot"></i> AI
+                                                <i class="bi bi-robot" aria-hidden="true"></i> AI
                                             </span>
                                             {% endif %}
                                             {% if violation.metadata and violation.metadata.authenticated_user %}
                                                 <span class="badge bg-secondary">
-                                                    <i class="bi bi-person-fill"></i> {{ violation.metadata.authenticated_user.display_name }}
+                                                    <i class="bi bi-person-fill" aria-hidden="true"></i> {{ violation.metadata.authenticated_user.display_name }}
                                                     {% if violation.metadata.authenticated_user.roles %}
                                                         ({{ violation.metadata.authenticated_user.roles|join(', ') }})
                                                     {% endif %}
                                                 </span>
                                             {% else %}
                                                 <span class="badge bg-secondary">
-                                                    <i class="bi bi-person"></i> Guest
+                                                    <i class="bi bi-person" aria-hidden="true"></i> Guest
                                                 </span>
                                             {% endif %}
                                             {% if show_error_codes %}<code>{{ error_code|error_code_only }}</code>{% endif %}
@@ -1640,12 +1641,12 @@
                                             
                                             <p style="margin: 0 0 5px 0;">
                                                 <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
-                                                    More about {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                    More about {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                 </a>
                                             </p>
                                             <p style="margin: 0;">
                                                 <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
-                                                    Ways to meet {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                    Ways to meet {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                 </a>
                                             </p>
                                             
@@ -1660,12 +1661,12 @@
                                             
                                             <p style="margin: 0 0 5px 0;">
                                                 <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                                    More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                    More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                 </a>
                                             </p>
                                             <p style="margin: 0;">
                                                 <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                                    Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                    Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                 </a>
                                             </p>
                                             
@@ -1679,7 +1680,7 @@
                             <p>
                                 <strong>Location:</strong> <code>{{violation.selector|default(violation.xpath)}}</code>
                                 <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{violation.selector|default(violation.xpath)|e}}', this)" title="Copy XPath to clipboard">
-                                    <i class="bi bi-clipboard"></i>
+                                    <i class="bi bi-clipboard" aria-hidden="true"></i>
                                 </button>
                             </p>
                             {% endif %}
@@ -1715,7 +1716,7 @@
                                     <p class="mb-1 small text-muted">
                                         {{ _('Location:') }} <code>{{ instance.xpath }}</code>
                                         <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{ instance.xpath|e }}', this)" title="{{ _('Copy XPath to clipboard') }}" style="font-size: 0.875rem;">
-                                            <i class="bi bi-clipboard"></i>
+                                            <i class="bi bi-clipboard" aria-hidden="true"></i>
                                         </button>
                                     </p>
                                     <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -1736,7 +1737,7 @@
                                     <p class="mb-1 small text-muted">
                                         {{ _('Location:') }} <code>{{ instance.xpath }}</code>
                                         <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{ instance.xpath|e }}', this)" title="{{ _('Copy XPath to clipboard') }}" style="font-size: 0.875rem;">
-                                            <i class="bi bi-clipboard"></i>
+                                            <i class="bi bi-clipboard" aria-hidden="true"></i>
                                         </button>
                                     </p>
                                     <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -1800,7 +1801,7 @@
                                     <p class="mb-1 small text-muted">
                                                             Location: <code>{{element.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{element.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                 </div>
@@ -1813,7 +1814,7 @@
                                     <p class="mb-1 small text-muted">
                                                             Location: <code>{{h1.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{h1.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                     <pre class="bg-dark text-light p-2 rounded"><code>{{ h1.html|e }}</code></pre>
@@ -1845,7 +1846,7 @@
                                     <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                     <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -1859,7 +1860,7 @@
                                     <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                     <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -1874,7 +1875,7 @@
                                     <p class="mb-1 small text-muted">
                                     Location: <code>{{instance.xpath}}</code>
                                     <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                        <i class="bi bi-clipboard"></i>
+                                        <i class="bi bi-clipboard" aria-hidden="true"></i>
                                     </button>
                                 </p>
                                     <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -1891,7 +1892,7 @@
                                     <p class="mb-1 small text-muted">
                                     Location: <code>{{anchor.xpath}}</code>
                                     <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{anchor.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                        <i class="bi bi-clipboard"></i>
+                                        <i class="bi bi-clipboard" aria-hidden="true"></i>
                                     </button>
                                 </p>
                                     <pre class="bg-dark text-light p-2 rounded"><code>{{ anchor.html|e }}</code></pre>
@@ -1929,7 +1930,7 @@
 
                             {% if violation.metadata.ai_detected %}
                             <div class="mt-3">
-                                <h6><i class="bi bi-robot"></i> AI Detection Details</h6>
+                                <h6><i class="bi bi-robot" aria-hidden="true"></i> AI Detection Details</h6>
                                 <div class="small text-muted">
                                     {% if violation.metadata.visual_location %}
                                     <p><strong>Visual Location:</strong> {{ violation.metadata.visual_location }}</p>
@@ -1963,7 +1964,7 @@
             <div class="section-panel warnings-section mb-4" style="border: 2px solid #ffc107; border-radius: 8px; overflow: hidden;">
                 <div class="section-header" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #212529; padding: 12px 16px;">
                     <h5 class="mb-0">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ _('Warnings') }} 
+                        <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i> {{ _('Warnings') }} 
                         <span class="badge bg-dark text-warning ms-2">{{ latest_result.warnings|length }}</span>
                     </h5>
                     <small class="opacity-75">{{ _('Potential issues that should be reviewed') }}</small>
@@ -2037,7 +2038,7 @@
                                                             <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
                                                             {% if warning.metadata and warning.metadata.authenticated_user %}
                                                                 <span class="badge bg-secondary">
-                                                                    <i class="bi bi-person-fill"></i> {{ warning.metadata.authenticated_user.display_name }}
+                                                                    <i class="bi bi-person-fill" aria-hidden="true"></i> {{ warning.metadata.authenticated_user.display_name }}
                                                                     {% if warning.metadata.authenticated_user.roles %}
                                                                         ({{ warning.metadata.authenticated_user.roles|join(', ') }})
                                                                     {% endif %}
@@ -2152,12 +2153,12 @@
                                                                         
                                                                         <p style="margin: 0 0 5px 0;">
                                                                             <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
-                                                                                {{ _('More about') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('More about') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
                                                                             <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
-                                                                                {{ _('Ways to meet') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('Ways to meet') }} {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                                             </a>
                                                                         </p>
                                                                         
@@ -2172,12 +2173,12 @@
                                                                         
                                                                         <p style="margin: 0 0 5px 0;">
                                                                             <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                                                                {{ _('More about') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('More about') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                                             </a>
                                                                         </p>
                                                                         <p style="margin: 0;">
                                                                             <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                                                                {{ _('Ways to meet') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                                                {{ _('Ways to meet') }} {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                                             </a>
                                                                         </p>
                                                                         
@@ -2191,7 +2192,7 @@
                                                         <p>
                                 <strong>Location:</strong> <code>{{warning.xpath}}</code>
                                 <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{warning.xpath|e}}', this)" title="Copy XPath to clipboard">
-                                    <i class="bi bi-clipboard"></i>
+                                    <i class="bi bi-clipboard" aria-hidden="true"></i>
                                 </button>
                             </p>
                                                         {% endif %}
@@ -2212,7 +2213,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -2270,7 +2271,7 @@
                                                             <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
                                                             {% if warning.metadata and warning.metadata.authenticated_user %}
                                                                 <span class="badge bg-secondary">
-                                                                    <i class="bi bi-person-fill"></i> {{ warning.metadata.authenticated_user.display_name }}
+                                                                    <i class="bi bi-person-fill" aria-hidden="true"></i> {{ warning.metadata.authenticated_user.display_name }}
                                                                     {% if warning.metadata.authenticated_user.roles %}
                                                                         ({{ warning.metadata.authenticated_user.roles|join(', ') }})
                                                                     {% endif %}
@@ -2370,7 +2371,7 @@
                                                         <p>
                                 <strong>Location:</strong> <code>{{warning.xpath}}</code>
                                 <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{warning.xpath|e}}', this)" title="Copy XPath to clipboard">
-                                    <i class="bi bi-clipboard"></i>
+                                    <i class="bi bi-clipboard" aria-hidden="true"></i>
                                 </button>
                             </p>
                                                         {% endif %}
@@ -2401,12 +2402,12 @@
                                             </span>
                                             {% if warning.metadata.ai_detected %}
                                             <span class="badge bg-info" title="Detected by AI analysis">
-                                                <i class="bi bi-robot"></i> AI
+                                                <i class="bi bi-robot" aria-hidden="true"></i> AI
                                             </span>
                                             {% endif %}
                                             {% if warning.metadata and warning.metadata.authenticated_user %}
                                             <span class="badge bg-secondary">
-                                                <i class="bi bi-person-fill"></i> {{ warning.metadata.authenticated_user.display_name }}
+                                                <i class="bi bi-person-fill" aria-hidden="true"></i> {{ warning.metadata.authenticated_user.display_name }}
                                                 {% if warning.metadata.authenticated_user.roles %}
                                                     ({{ warning.metadata.authenticated_user.roles|join(', ') }})
                                                 {% endif %}
@@ -2519,12 +2520,12 @@
                                             
                                             <p style="margin: 0 0 5px 0;">
                                                 <a href="{{ criterion.split()[0] | wcag_understanding_url }}" target="_blank">
-                                                    More about {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                    More about {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                 </a>
                                             </p>
                                             <p style="margin: 0;">
                                                 <a href="{{ criterion.split()[0] | wcag_quickref_url }}" target="_blank">
-                                                    Ways to meet {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                    Ways to meet {{ criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                 </a>
                                             </p>
                                             
@@ -2539,12 +2540,12 @@
                                             
                                             <p style="margin: 0 0 5px 0;">
                                                 <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                                    More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                    More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                 </a>
                                             </p>
                                             <p style="margin: 0;">
                                                 <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                                    Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                                    Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                 </a>
                                             </p>
                                             
@@ -2558,7 +2559,7 @@
                             <p>
                                 <strong>Location:</strong> <code>{{warning.xpath}}</code>
                                 <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{warning.xpath|e}}', this)" title="Copy XPath to clipboard">
-                                    <i class="bi bi-clipboard"></i>
+                                    <i class="bi bi-clipboard" aria-hidden="true"></i>
                                 </button>
                             </p>
                             {% endif %}
@@ -2580,7 +2581,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -2637,12 +2638,12 @@
                                 
                                 <p style="margin: 0 0 5px 0;">
                                     <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                        More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                        More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                     </a>
                                 </p>
                                 <p style="margin: 0;">
                                     <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                        Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                        Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                     </a>
                                 </p>
                                 
@@ -2690,7 +2691,7 @@
             <div class="section-panel info-section mb-4" style="border: 2px solid #0e7490; border-radius: 8px; overflow: hidden;">
                 <div class="section-header" style="background: linear-gradient(135deg, #0e7490 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
                     <h5 class="mb-0">
-                        <i class="bi bi-info-circle-fill me-2"></i> {{ _('Info Notes') }} 
+                        <i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i> {{ _('Info Notes') }} 
                         <span class="badge bg-light text-info ms-2">{{ latest_result.info|length }}</span>
                     </h5>
                     <small class="opacity-75">{{ _('Additional information and best practice recommendations') }}</small>
@@ -2744,7 +2745,7 @@
                                                         <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
                                                         {% if info.metadata and info.metadata.authenticated_user %}
                                                             <span class="badge bg-secondary ms-2">
-                                                                <i class="bi bi-person-fill"></i> {{ info.metadata.authenticated_user.display_name }}
+                                                                <i class="bi bi-person-fill" aria-hidden="true"></i> {{ info.metadata.authenticated_user.display_name }}
                                                                 {% if info.metadata.authenticated_user.roles %}
                                                                     ({{ info.metadata.authenticated_user.roles|join(', ') }})
                                                                 {% endif %}
@@ -2819,7 +2820,7 @@
                                                         <!-- Standard description -->
                                                         <p><strong>{{ _('Touchpoint:') }}</strong> {{ info.touchpoint|default(_('General')) }}</p>
                                                         <p class="text-muted">
-                                                            <i class="bi bi-info-circle"></i> {{ _('This is an informational note.') }}
+                                                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This is an informational note.') }}
                                                         </p>
                                                         {% endif %}
                                                         
@@ -2827,7 +2828,7 @@
                                                         <p>
                                 <strong>Location:</strong> <code>{{info.xpath}}</code>
                                 <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{info.xpath|e}}', this)" title="Copy XPath to clipboard">
-                                    <i class="bi bi-clipboard"></i>
+                                    <i class="bi bi-clipboard" aria-hidden="true"></i>
                                 </button>
                             </p>
                                                         {% endif %}
@@ -2848,7 +2849,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -2985,7 +2986,7 @@
                             <p>
                                 <strong>Location:</strong> <code>{{info.xpath}}</code>
                                 <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{info.xpath|e}}', this)" title="Copy XPath to clipboard">
-                                    <i class="bi bi-clipboard"></i>
+                                    <i class="bi bi-clipboard" aria-hidden="true"></i>
                                 </button>
                             </p>
                             {% endif %}
@@ -3007,7 +3008,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -3054,12 +3055,12 @@
                                 
                                 <p style="margin: 0 0 5px 0;">
                                     <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                        More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                        More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                     </a>
                                 </p>
                                 <p style="margin: 0;">
                                     <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                        Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                        Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                     </a>
                                 </p>
                                 
@@ -3104,7 +3105,7 @@
             <div class="section-panel discovery-section mb-4" style="border: 2px solid #6f42c1; border-radius: 8px; overflow: hidden;">
                 <div class="section-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; padding: 12px 16px;">
                     <h5 class="mb-0">
-                        <i class="bi bi-search me-2"></i> {{ _('Discovery Items') }} 
+                        <i class="bi bi-search me-2" aria-hidden="true"></i> {{ _('Discovery Items') }} 
                         <span class="badge bg-light text-purple ms-2" style="color: #6f42c1 !important;">{{ latest_result.discovery|length }}</span>
                     </h5>
                     <small class="opacity-75">{{ _('Elements found that may need manual review') }}</small>
@@ -3158,7 +3159,7 @@
                                                         <strong>{{ _('Instance') }} {{ loop.index }}:</strong>
                                                         {% if discovery.metadata and discovery.metadata.authenticated_user %}
                                                             <span class="badge bg-secondary ms-2">
-                                                                <i class="bi bi-person-fill"></i> {{ discovery.metadata.authenticated_user.display_name }}
+                                                                <i class="bi bi-person-fill" aria-hidden="true"></i> {{ discovery.metadata.authenticated_user.display_name }}
                                                                 {% if discovery.metadata.authenticated_user.roles %}
                                                                     ({{ discovery.metadata.authenticated_user.roles|join(', ') }})
                                                                 {% endif %}
@@ -3255,7 +3256,7 @@
                                                         <!-- Standard description -->
                                                         <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(discovery.touchpoint, discovery.touchpoint) }}</p>
                                                         <p class="text-muted">
-                                                            <i class="bi bi-info-circle"></i> {{ _('This item requires manual inspection.') }}
+                                                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This item requires manual inspection.') }}
                                                         </p>
                                                         {% endif %}
                                                         
@@ -3265,7 +3266,7 @@
                                                         <p>
                                 <strong>Location:</strong> <code>{{discovery.xpath}}</code>
                                 <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{discovery.xpath|e}}', this)" title="Copy XPath to clipboard">
-                                    <i class="bi bi-clipboard"></i>
+                                    <i class="bi bi-clipboard" aria-hidden="true"></i>
                                 </button>
                             </p>
                                                         {% endif %}
@@ -3286,7 +3287,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Location:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Emplacement :</span> <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -3449,13 +3450,13 @@
                             <hr>
                             <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(discovery.touchpoint, discovery.touchpoint) }}</p>
                             <p class="text-muted">
-                                <i class="bi bi-info-circle"></i> {{ _('This item requires manual inspection to ensure accessibility.') }}
+                                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This item requires manual inspection to ensure accessibility.') }}
                             </p>
                             {% if discovery.xpath %}
                             <p>
                                 <strong>Location:</strong> <code>{{discovery.xpath}}</code>
                                 <button class="btn btn-sm btn-link p-0 ms-2" onclick="copyXpathToClipboard('{{discovery.xpath|e}}', this)" title="Copy XPath to clipboard">
-                                    <i class="bi bi-clipboard"></i>
+                                    <i class="bi bi-clipboard" aria-hidden="true"></i>
                                 </button>
                             </p>
                             {% endif %}
@@ -3477,7 +3478,7 @@
                                                             <p class="mb-1 small text-muted">
                                                             Location: <code>{{instance.xpath}}</code>
                                                             <button class="btn btn-sm btn-link p-0 ms-1" onclick="copyXpathToClipboard('{{instance.xpath|e}}', this)" title="Copy XPath to clipboard" style="font-size: 0.875rem;">
-                                                                <i class="bi bi-clipboard"></i>
+                                                                <i class="bi bi-clipboard" aria-hidden="true"></i>
                                                             </button>
                                                         </p>
                                                             <pre class="bg-dark text-light p-2 rounded"><code>{{ instance.html|e }}</code></pre>
@@ -3532,7 +3533,7 @@
                             <!-- Standard description -->
                             <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(discovery.touchpoint, discovery.touchpoint) }}</p>
                             <p class="text-muted">
-                                <i class="bi bi-info-circle"></i> {{ _('This item requires manual inspection to ensure accessibility.') }}
+                                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This item requires manual inspection to ensure accessibility.') }}
                             </p>
                             {% if discovery.wcag_criteria %}
                             {% for wcag_criterion in discovery.wcag_criteria|sort %}
@@ -3543,12 +3544,12 @@
                                 
                                 <p style="margin: 0 0 5px 0;">
                                     <a href="{{ wcag_criterion | wcag_understanding_url }}" target="_blank">
-                                        More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                        More about {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                     </a>
                                 </p>
                                 <p style="margin: 0;">
                                     <a href="{{ wcag_criterion | wcag_quickref_url }}" target="_blank">
-                                        Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right"></i>
+                                        Ways to meet {{ wcag_criterion | wcag_name }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                     </a>
                                 </p>
                                 
@@ -3597,7 +3598,7 @@
                         {{ _('Test completed in %(seconds)s seconds', seconds="%.2f"|format(latest_result.duration_ms / 1000)) }}
                         {% if latest_result.screenshot_path %}
                         | <a href="{{ url_for('serve_screenshot', filename=latest_result.screenshot_path.replace('screenshots/', '')) }}" target="_blank">
-                            {{ _('View Screenshot') }} <i class="bi bi-image"></i>
+                            {{ _('View Screenshot') }} <i class="bi bi-image" aria-hidden="true"></i>
                         </a>
                         {% endif %}
                     </small>
@@ -3607,7 +3608,7 @@
     </div>
     {% elif page.status.value != 'tested' %}
     <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i> {{ _('This page has not been tested yet. Click "Run Test" to start accessibility testing.') }}
+        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This page has not been tested yet. Click "Run Test" to start accessibility testing.') }}
     </div>
     {% endif %}
 
@@ -3620,17 +3621,18 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
+                    <caption class="visually-hidden">{{ _('Historical test results for this page') }}</caption>
                     <thead>
                         <tr>
-                            <th>{{ _('Date') }}</th>
-                            <th>{{ _('User') }}</th>
-                            <th>{{ _('Errors') }}</th>
-                            <th>{{ _('Warnings') }}</th>
-                            <th>{{ _('Info') }}</th>
-                            <th>{{ _('Discovery') }}</th>
-                            <th>{{ _('Passed') }}</th>
-                            <th>{{ _('Duration') }}</th>
-                            <th>{{ _('Actions') }}</th>
+                            <th scope="col">{{ _('Date') }}</th>
+                            <th scope="col">{{ _('User') }}</th>
+                            <th scope="col">{{ _('Errors') }}</th>
+                            <th scope="col">{{ _('Warnings') }}</th>
+                            <th scope="col">{{ _('Info') }}</th>
+                            <th scope="col">{{ _('Discovery') }}</th>
+                            <th scope="col">{{ _('Passed') }}</th>
+                            <th scope="col">{{ _('Duration') }}</th>
+                            <th scope="col">{{ _('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -3639,12 +3641,12 @@
                             <td>{{ result.test_date.strftime('%Y-%m-%d %H:%M') }}</td>
                             <td>
                                 {% if result.metadata and result.metadata.get('authenticated_user') %}
-                                    <i class="bi bi-person-fill"></i> {{ result.metadata.authenticated_user.display_name }}
+                                    <i class="bi bi-person-fill" aria-hidden="true"></i> {{ result.metadata.authenticated_user.display_name }}
                                     {% if result.metadata.authenticated_user.roles %}
                                         <br><small class="text-muted">{{ result.metadata.authenticated_user.roles|join(', ') }}</small>
                                     {% endif %}
                                 {% else %}
-                                    <i class="bi bi-person"></i> {{ _('Guest') }}
+                                    <i class="bi bi-person" aria-hidden="true"></i> {{ _('Guest') }}
                                 {% endif %}
                             </td>
                             <td><span class="badge bg-danger">{{ result.violation_count }}</span></td>
@@ -3656,7 +3658,7 @@
                             <td>
                                 <a href="{{ url_for('testing.view_result', result_id=result.id) }}"
                                    class="btn btn-sm btn-primary">
-                                    <i class="bi bi-eye"></i> {{ _('View') }}
+                                    <i class="bi bi-eye" aria-hidden="true"></i> {{ _('View') }}
                                 </a>
                             </td>
                         </tr>
@@ -3682,7 +3684,7 @@
             </div>
             <div class="modal-footer">
                 <a id="screenshotModalLink" href="" target="_blank" class="btn btn-primary">
-                    <i class="bi bi-box-arrow-up-right"></i> {{ _('Open in New Tab') }}
+                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> {{ _('Open in New Tab') }}
                 </a>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
             </div>
@@ -3841,7 +3843,7 @@ function updateActionButtons(mode) {
         // Replace with cancel button
         actionsDiv.innerHTML = `
             <button class="btn btn-danger" onclick="cancelPageTest('{{ page.id }}')" id="cancel-test-btn">
-                <i class="bi bi-x-circle"></i> ${i18n.cancelTest}
+                <i class="bi bi-x-circle" aria-hidden="true"></i> ${i18n.cancelTest}
             </button>
             ${editBtn ? editBtn.outerHTML : ''}
         `;
@@ -3849,7 +3851,7 @@ function updateActionButtons(mode) {
         // Replace with run test button
         actionsDiv.innerHTML = `
             <button class="btn btn-primary" onclick="testPage('{{ page.id }}')" id="run-test-btn">
-                <i class="bi bi-play"></i> ${i18n.runTest}
+                <i class="bi bi-play" aria-hidden="true"></i> ${i18n.runTest}
             </button>
             ${editBtn ? editBtn.outerHTML : ''}
         `;
@@ -3897,14 +3899,14 @@ function cancelPageTest(pageId) {
             // Re-enable button
             if (cancelBtn) {
                 cancelBtn.disabled = false;
-                cancelBtn.innerHTML = `<i class="bi bi-x-circle"></i> ${i18n.cancelTest}`;
+                cancelBtn.innerHTML = `<i class="bi bi-x-circle" aria-hidden="true"></i> ${i18n.cancelTest}`;
             }
         }
     }).fail(function() {
         alert(i18n.failedToCancel);
         if (cancelBtn) {
             cancelBtn.disabled = false;
-            cancelBtn.innerHTML = `<i class="bi bi-x-circle"></i> ${i18n.cancelTest}`;
+            cancelBtn.innerHTML = `<i class="bi bi-x-circle" aria-hidden="true"></i> ${i18n.cancelTest}`;
         }
     });
 }
@@ -3980,7 +3982,7 @@ function testPage(pageId) {
                 // Re-enable button
                 if (testBtn) {
                     testBtn.disabled = false;
-                    testBtn.innerHTML = `<i class="bi bi-play"></i> ${i18n.runTest}`;
+                    testBtn.innerHTML = `<i class="bi bi-play" aria-hidden="true"></i> ${i18n.runTest}`;
                 }
             }
         }
@@ -3991,7 +3993,7 @@ function testPage(pageId) {
         // Re-enable button
         if (testBtn) {
             testBtn.disabled = false;
-            testBtn.innerHTML = `<i class="bi bi-play"></i> ${i18n.runTest}`;
+            testBtn.innerHTML = `<i class="bi bi-play" aria-hidden="true"></i> ${i18n.runTest}`;
         }
     });
 }
@@ -4034,7 +4036,7 @@ function copyXpathToClipboard(xpath, button) {
     navigator.clipboard.writeText(xpath).then(function() {
         // Show temporary success feedback
         const originalHTML = button.innerHTML;
-        button.innerHTML = '<i class="bi bi-check text-success"></i>';
+        button.innerHTML = '<i class="bi bi-check text-success" aria-hidden="true"></i>';
         button.classList.add('text-success');
 
         // Reset after 2 seconds
@@ -4046,7 +4048,7 @@ function copyXpathToClipboard(xpath, button) {
         console.error('Failed to copy xpath: ', err);
         // Show error feedback
         const originalHTML = button.innerHTML;
-        button.innerHTML = '<i class="bi bi-x text-danger"></i>';
+        button.innerHTML = '<i class="bi bi-x text-danger" aria-hidden="true"></i>';
         button.classList.add('text-danger');
 
         setTimeout(function() {

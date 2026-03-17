@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-md-12">
             <h1 class="mb-4">
-                <i class="bi bi-gear"></i> {{ _('Settings') }}
+                <i class="bi bi-gear" aria-hidden="true"></i> {{ _('Settings') }}
             </h1>
         </div>
     </div>
@@ -17,7 +17,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h5><i class="bi bi-sliders"></i> {{ _('Testing Configuration') }}</h5>
+                    <h5><i class="bi bi-sliders" aria-hidden="true"></i> {{ _('Testing Configuration') }}</h5>
                 </div>
                 <div class="card-body">
                     <form id="testing-config-form">
@@ -73,7 +73,7 @@
                         </div>
 
                         <hr class="my-4">
-                        <h6><i class="bi bi-layout-text-window-reverse"></i> {{ _('UI Pagination Settings') }}</h6>
+                        <h6><i class="bi bi-layout-text-window-reverse" aria-hidden="true"></i> {{ _('UI Pagination Settings') }}</h6>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -91,7 +91,7 @@
                         </div>
 
                         <hr class="my-4">
-                        <h6><i class="bi bi-code-square"></i> {{ _('Developer Options') }}</h6>
+                        <h6><i class="bi bi-code-square" aria-hidden="true"></i> {{ _('Developer Options') }}</h6>
 
                         <div class="row mb-3">
                             <div class="col-md-6">
@@ -107,7 +107,7 @@
                         </div>
 
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save"></i> {{ _('Save Configuration') }}
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ _('Save Configuration') }}
                         </button>
                     </form>
                 </div>
@@ -118,18 +118,18 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-warning text-dark">
-                    <h5><i class="bi bi-wrench"></i> {{ _('System Maintenance') }}</h5>
+                    <h5><i class="bi bi-wrench" aria-hidden="true"></i> {{ _('System Maintenance') }}</h5>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-warning" role="alert">
-                        <i class="bi bi-exclamation-triangle"></i> <strong>{{ _('Warning:') }}</strong> {{ _('These actions cannot be undone.') }}
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> <strong>{{ _('Warning:') }}</strong> {{ _('These actions cannot be undone.') }}
                     </div>
                     
                     <div class="mb-3">
                         <h6>{{ _('Clear Outstanding Jobs') }}</h6>
                         <p class="text-muted small">{{ _('Reset all running and pending scrapes and tests. Use this if the system appears stuck.') }}</p>
                         <button class="btn btn-danger" onclick="clearAllJobs()">
-                            <i class="bi bi-trash"></i> {{ _('Clear All Jobs') }}
+                            <i class="bi bi-trash" aria-hidden="true"></i> {{ _('Clear All Jobs') }}
                         </button>
                     </div>
                     
@@ -137,7 +137,7 @@
                         <h6>{{ _('Clear Stale Jobs') }}</h6>
                         <p class="text-muted small">{{ _('Remove jobs that have been running for more than 24 hours.') }}</p>
                         <button class="btn btn-warning" onclick="clearStaleJobs()">
-                            <i class="bi bi-clock-history"></i> {{ _('Clear Stale Jobs') }}
+                            <i class="bi bi-clock-history" aria-hidden="true"></i> {{ _('Clear Stale Jobs') }}
                         </button>
                     </div>
                     
@@ -145,7 +145,7 @@
                         <h6>{{ _('Clean Page Data') }}</h6>
                         <p class="text-muted small">{{ _('Reset violation counts for pages that haven\'t been tested yet. Fixes data inconsistencies.') }}</p>
                         <button class="btn btn-info" onclick="cleanupPageCounts()">
-                            <i class="bi bi-arrow-clockwise"></i> {{ _('Clean Page Data') }}
+                            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ _('Clean Page Data') }}
                         </button>
                     </div>
                     
@@ -167,12 +167,12 @@
 </div>
 
 <!-- Modal for confirmation -->
-<div class="modal fade" id="confirmModal" tabindex="-1">
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Confirm Action') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="confirmModalLabel">{{ _('Confirm Action') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body">
                 <p id="confirmMessage"></p>

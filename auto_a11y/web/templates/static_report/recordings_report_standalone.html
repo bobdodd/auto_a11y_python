@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -91,11 +91,23 @@
             letter-spacing: 0.5px;
             color: #6c757d;
         }
+
+        .skip-link:focus {
+            top: 0;
+            z-index: 1100;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
+    <a class="skip-link" href="#main-content" style="position:absolute;top:-40px;left:0;background:#0d6efd;color:white;padding:8px;text-decoration:none;z-index:1100;">Skip to main content</a>
     <!-- Navigation -->
-    <nav class="navbar navbar-dark mb-4">
+    <nav class="navbar navbar-dark mb-4" id="main-content">
         <div class="container-fluid">
             <span class="navbar-brand mb-0 h1">
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['auto_a11y_report'] }}</span>
@@ -249,8 +261,8 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapseKeyTakeaways-{{ recording.recording_id|replace(' ', '-') }}">
-                                <i class="bi bi-list-ol me-2"></i>
+                                    data-bs-target="#collapseKeyTakeaways-{{ recording.recording_id|replace(' ', '-') }}" aria-expanded="false" aria-controls="collapseKeyTakeaways-{{ recording.recording_id|replace(' ', '-') }}">
+                                <i class="bi bi-list-ol me-2" aria-hidden="true"></i>
                                 <strong>
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['key_takeaways'] }} ({{ takeaways_en|length }})</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['key_takeaways'] }} ({{ takeaways_fr|length }})</span>
@@ -268,7 +280,7 @@
                                         <p>{{ takeaway.description }}</p>
                                         {% if include_timecodes and takeaway.timecodes %}
                                         <p class="text-muted small mb-0">
-                                            <i class="bi bi-clock"></i>
+                                            <i class="bi bi-clock" aria-hidden="true"></i>
                                             {% for tc in takeaway.timecodes %}
                                             <code>{{ tc.start }} - {{ tc.end }}</code>{% if not loop.last %}, {% endif %}
                                             {% endfor %}
@@ -285,7 +297,7 @@
                                         <p>{{ takeaway.description }}</p>
                                         {% if include_timecodes and takeaway.timecodes %}
                                         <p class="text-muted small mb-0">
-                                            <i class="bi bi-clock"></i>
+                                            <i class="bi bi-clock" aria-hidden="true"></i>
                                             {% for tc in takeaway.timecodes %}
                                             <code>{{ tc.start }} - {{ tc.end }}</code>{% if not loop.last %}, {% endif %}
                                             {% endfor %}
@@ -340,7 +352,7 @@
                                             <strong class="text-primary">Timecode{% if painpoint.timecodes|length > 1 %}s{% endif %}:</strong>
                                             {% for tc in painpoint.timecodes %}
                                             <div class="ms-3 mb-2">
-                                                <i class="bi bi-clock"></i>
+                                                <i class="bi bi-clock" aria-hidden="true"></i>
                                                 <span class="text-muted small">
                                                     <code>{{ tc.start }}</code> - <code>{{ tc.end }}</code>
                                                     {% if tc.duration %}(Duration: <code>{{ tc.duration }}</code>){% endif %}
@@ -375,7 +387,7 @@
                                             <strong class="text-primary">Code{% if painpoint.timecodes|length > 1 %}s{% endif %} temporel{% if painpoint.timecodes|length > 1 %}s{% endif %} :</strong>
                                             {% for tc in painpoint.timecodes %}
                                             <div class="ms-3 mb-2">
-                                                <i class="bi bi-clock"></i>
+                                                <i class="bi bi-clock" aria-hidden="true"></i>
                                                 <span class="text-muted small">
                                                     <code>{{ tc.start }}</code> - <code>{{ tc.end }}</code>
                                                     {% if tc.duration %}(Durée : <code>{{ tc.duration }}</code>){% endif %}
@@ -426,7 +438,7 @@
                                             <strong class="text-primary">Timecode{% if assertion.timecodes|length > 1 %}s{% endif %}:</strong>
                                             {% for tc in assertion.timecodes %}
                                             <div class="ms-3 mb-2">
-                                                <i class="bi bi-clock"></i>
+                                                <i class="bi bi-clock" aria-hidden="true"></i>
                                                 <span class="text-muted small">
                                                     <code>{{ tc.start }}</code> - <code>{{ tc.end }}</code>
                                                     {% if tc.duration %}(Duration: <code>{{ tc.duration }}</code>){% endif %}
@@ -460,7 +472,7 @@
                                             <strong class="text-primary">Code{% if assertion.timecodes|length > 1 %}s{% endif %} temporel{% if assertion.timecodes|length > 1 %}s{% endif %} :</strong>
                                             {% for tc in assertion.timecodes %}
                                             <div class="ms-3 mb-2">
-                                                <i class="bi bi-clock"></i>
+                                                <i class="bi bi-clock" aria-hidden="true"></i>
                                                 <span class="text-muted small">
                                                     <code>{{ tc.start }}</code> - <code>{{ tc.end }}</code>
                                                     {% if tc.duration %}(Durée : <code>{{ tc.duration }}</code>){% endif %}
@@ -518,7 +530,7 @@
                                                         </span>
                                                         {% if issue.timecodes %}
                                                         <span class="badge bg-info">
-                                                            <i class="bi bi-clock"></i> {{ issue.timecodes|length }} timecode(s)
+                                                            <i class="bi bi-clock" aria-hidden="true"></i> {{ issue.timecodes|length }} timecode(s)
                                                         </span>
                                                         {% endif %}
                                                     </div>
@@ -605,7 +617,7 @@
                                                         </span>
                                                         {% if issue.timecodes %}
                                                         <span class="badge bg-info">
-                                                            <i class="bi bi-clock"></i> {{ issue.timecodes|length }} code(s) temporel(s)
+                                                            <i class="bi bi-clock" aria-hidden="true"></i> {{ issue.timecodes|length }} code(s) temporel(s)
                                                         </span>
                                                         {% endif %}
                                                     </div>

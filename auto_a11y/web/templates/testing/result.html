@@ -29,7 +29,7 @@
                 {{ _('Tested on') }} {{ result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}
                 {% if page %}
                 | <a href="{{ page.url }}" target="_blank">
-                    {{ page.url }} <i class="bi bi-box-arrow-up-right"></i>
+                    {{ page.url }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                 </a>
                 {% endif %}
             </p>
@@ -37,7 +37,7 @@
         <div>
             {% if page %}
             <a href="{{ url_for('pages.view_page', page_id=page.id) }}" class="btn btn-outline-primary">
-                <i class="bi bi-arrow-left"></i> {{ _('Back to Page') }}
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ _('Back to Page') }}
             </a>
             {% endif %}
         </div>
@@ -124,7 +124,7 @@
                                             {% if violation.help_url %}
                                             <p><strong>{{ _('Learn More:') }}</strong>
                                                 <a href="{{ violation.help_url }}" target="_blank">
-                                                    {{ violation.help_url }} <i class="bi bi-box-arrow-up-right"></i>
+                                                    {{ violation.help_url }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                                 </a>
                                             </p>
                                             {% endif %}
@@ -177,7 +177,7 @@
                     </div>
                     {% else %}
                     <div class="alert alert-success">
-                        <i class="bi bi-check-circle"></i> {{ _('No violations found! The page passes all automated accessibility checks.') }}
+                        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ _('No violations found! The page passes all automated accessibility checks.') }}
                     </div>
                     {% endif %}
                 </div>
@@ -205,7 +205,7 @@
                                 <dt class="col-sm-4">{{ _('Screenshot:') }}</dt>
                                 <dd class="col-sm-8">
                                     <a href="{{ url_for('serve_screenshot', filename=result.screenshot_path.replace('screenshots/', '')) }}" target="_blank">
-                                        {{ _('View Screenshot') }} <i class="bi bi-image"></i>
+                                        {{ _('View Screenshot') }} <i class="bi bi-image" aria-hidden="true"></i>
                                     </a>
                                 </dd>
                                 {% endif %}

@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2">{{ _('Reports') }}</h1>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateReportModal">
-            <i class="bi bi-plus-circle"></i> {{ _('Generate Report') }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Generate Report') }}
         </button>
     </div>
 
@@ -124,7 +124,7 @@
             <div class="card h-100 report-card">
                 <div class="card-body text-center">
                     <div class="icon-wrapper">
-                        <i class="bi bi-file-earmark-check display-3 icon-summary"></i>
+                        <i class="bi bi-file-earmark-check display-3 icon-summary" aria-hidden="true"></i>
                     </div>
                     <div class="content-wrapper">
                         <h5 class="card-title mt-3">{{ _('Accessibility Report') }}</h5>
@@ -132,7 +132,7 @@
                     </div>
                     <div class="btn-wrapper">
                         <button class="btn btn-summary" data-bs-toggle="modal" data-bs-target="#generateReportModal">
-                            <i class="bi bi-download me-2"></i>{{ _('Generate Report') }}
+                            <i class="bi bi-download me-2" aria-hidden="true"></i>{{ _('Generate Report') }}
                         </button>
                     </div>
                 </div>
@@ -142,7 +142,7 @@
             <div class="card h-100 report-card">
                 <div class="card-body text-center">
                     <div class="icon-wrapper">
-                        <i class="bi bi-search display-3 icon-html"></i>
+                        <i class="bi bi-search display-3 icon-html" aria-hidden="true"></i>
                     </div>
                     <div class="content-wrapper">
                         <h5 class="card-title mt-3">{{ _('Discovery Report') }}</h5>
@@ -150,7 +150,7 @@
                     </div>
                     <div class="btn-wrapper">
                         <button class="btn btn-html" data-bs-toggle="modal" data-bs-target="#discoveryModal">
-                            <i class="bi bi-search me-2"></i>{{ _('Generate Discovery Report') }}
+                            <i class="bi bi-search me-2" aria-hidden="true"></i>{{ _('Generate Discovery Report') }}
                         </button>
                     </div>
                 </div>
@@ -160,7 +160,7 @@
             <div class="card h-100 report-card">
                 <div class="card-body text-center">
                     <div class="icon-wrapper">
-                        <i class="bi bi-diagram-3 display-3 icon-summary"></i>
+                        <i class="bi bi-diagram-3 display-3 icon-summary" aria-hidden="true"></i>
                     </div>
                     <div class="content-wrapper">
                         <h5 class="card-title mt-3">{{ _('Site Structure') }}</h5>
@@ -168,7 +168,7 @@
                     </div>
                     <div class="btn-wrapper">
                         <button class="btn btn-summary" data-bs-toggle="modal" data-bs-target="#siteStructureModal">
-                            <i class="bi bi-diagram-3 me-2"></i>{{ _('Generate Structure') }}
+                            <i class="bi bi-diagram-3 me-2" aria-hidden="true"></i>{{ _('Generate Structure') }}
                         </button>
                     </div>
                 </div>
@@ -182,7 +182,7 @@
             <div class="card h-100 report-card">
                 <div class="card-body text-center">
                     <div class="icon-wrapper">
-                        <i class="bi bi-file-earmark-zip display-3 icon-html"></i>
+                        <i class="bi bi-file-earmark-zip display-3 icon-html" aria-hidden="true"></i>
                     </div>
                     <div class="content-wrapper">
                         <h5 class="card-title mt-3">{{ _('Offline Report (Static HTML)') }}</h5>
@@ -190,7 +190,7 @@
                     </div>
                     <div class="btn-wrapper">
                         <button class="btn btn-html" data-bs-toggle="modal" data-bs-target="#staticHtmlModal">
-                            <i class="bi bi-download me-2"></i>{{ _('Generate Offline Report') }}
+                            <i class="bi bi-download me-2" aria-hidden="true"></i>{{ _('Generate Offline Report') }}
                         </button>
                     </div>
                 </div>
@@ -200,7 +200,7 @@
             <div class="card h-100 report-card">
                 <div class="card-body text-center">
                     <div class="icon-wrapper">
-                        <i class="bi bi-file-earmark-zip display-3 icon-summary"></i>
+                        <i class="bi bi-file-earmark-zip display-3 icon-summary" aria-hidden="true"></i>
                     </div>
                     <div class="content-wrapper">
                         <h5 class="card-title mt-3">{{ _('Deduplicated Offline Report') }}</h5>
@@ -208,7 +208,7 @@
                     </div>
                     <div class="btn-wrapper">
                         <button class="btn btn-summary" data-bs-toggle="modal" data-bs-target="#deduplicatedModal">
-                            <i class="bi bi-file-earmark-zip me-2"></i>{{ _('Generate Deduplicated Report') }}
+                            <i class="bi bi-file-earmark-zip me-2" aria-hidden="true"></i>{{ _('Generate Deduplicated Report') }}
                         </button>
                     </div>
                 </div>
@@ -218,7 +218,7 @@
             <div class="card h-100 report-card">
                 <div class="card-body text-center">
                     <div class="icon-wrapper">
-                        <i class="bi bi-mic display-3 icon-pdf"></i>
+                        <i class="bi bi-mic display-3 icon-pdf" aria-hidden="true"></i>
                     </div>
                     <div class="content-wrapper">
                         <h5 class="card-title mt-3">{{ _('Recordings Report') }}</h5>
@@ -226,7 +226,7 @@
                     </div>
                     <div class="btn-wrapper">
                         <button class="btn btn-pdf" data-bs-toggle="modal" data-bs-target="#recordingsModal">
-                            <i class="bi bi-mic me-2"></i>{{ _('Generate Recordings Report') }}
+                            <i class="bi bi-mic me-2" aria-hidden="true"></i>{{ _('Generate Recordings Report') }}
                         </button>
                     </div>
                 </div>
@@ -243,14 +243,15 @@
             {% if reports %}
             <div class="table-responsive">
                 <table class="table table-hover">
+                    <caption class="visually-hidden">{{ _('List of generated accessibility reports') }}</caption>
                     <thead>
                         <tr>
-                            <th>{{ _('Report Name') }}</th>
-                            <th>{{ _('Type') }}</th>
-                            <th>{{ _('Project') }}</th>
-                            <th>{{ _('Generated') }}</th>
-                            <th>{{ _('Size') }}</th>
-                            <th>{{ _('Actions') }}</th>
+                            <th scope="col">{{ _('Report Name') }}</th>
+                            <th scope="col">{{ _('Type') }}</th>
+                            <th scope="col">{{ _('Project') }}</th>
+                            <th scope="col">{{ _('Generated') }}</th>
+                            <th scope="col">{{ _('Size') }}</th>
+                            <th scope="col">{{ _('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -282,11 +283,11 @@
                                 <div class="btn-group" role="group">
                                     <a href="{{ url_for('reports.download_report', filename=report.filename) }}"
                                        class="btn btn-sm btn-primary" title="{{ _('Download') }}">
-                                        <i class="bi bi-download"></i>
+                                        <i class="bi bi-download" aria-hidden="true"></i>
                                     </a>
                                     <button class="btn btn-sm btn-danger"
                                             onclick="deleteReport('{{ report.filename }}')" title="{{ _('Delete') }}">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="bi bi-trash" aria-hidden="true"></i>
                                     </button>
                                 </div>
                             </td>
@@ -406,7 +407,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-file-earmark-arrow-down"></i> {{ _('Generate Report') }}
+                        <i class="bi bi-file-earmark-arrow-down" aria-hidden="true"></i> {{ _('Generate Report') }}
                     </button>
                 </div>
             </form>
@@ -883,13 +884,13 @@ function generateDiscoveryReport() {
                         </select>
                     </div>
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i> {{ _('This report will generate a hierarchical tree view of all pages in the selected website, organized by URL structure.') }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This report will generate a hierarchical tree view of all pages in the selected website, organized by URL structure.') }}
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-diagram-3"></i> {{ _('Generate Structure Report') }}
+                        <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ _('Generate Structure Report') }}
                     </button>
                 </div>
             </form>
@@ -908,7 +909,7 @@ function generateDiscoveryReport() {
             <form id="discoveryForm">
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="bi bi-info-circle"></i> {{ _('This report discovers pages with content requiring manual accessibility inspection, including:') }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This report discovers pages with content requiring manual accessibility inspection, including:') }}
                         <ul class="mt-2 mb-0">
                             <li>{{ _('Discovery issues (content requiring human judgment)') }}</li>
                             <li>{{ _('Informational notices') }}</li>
@@ -956,7 +957,7 @@ function generateDiscoveryReport() {
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search"></i> {{ _('Generate Discovery Report') }}
+                        <i class="bi bi-search" aria-hidden="true"></i> {{ _('Generate Discovery Report') }}
                     </button>
                 </div>
             </form>
@@ -975,7 +976,7 @@ function generateDiscoveryReport() {
             <form id="staticHtmlForm">
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="bi bi-info-circle"></i> {{ _('This report generates a complete offline website with:') }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This report generates a complete offline website with:') }}
                         <ul class="mt-2 mb-0">
                             <li>{{ _('Index page with all tested pages') }}</li>
                             <li>{{ _('Summary page with statistics and charts') }}</li>
@@ -1027,12 +1028,12 @@ function generateDiscoveryReport() {
                 </div>
                 <div class="modal-footer flex-column align-items-stretch">
                     <div class="alert alert-warning mb-3">
-                        <i class="bi bi-exclamation-triangle"></i> <strong>{{ _('Note:') }}</strong> {{ _('Large reports may take several minutes to generate. The report will appear in the list below when complete.') }}
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> <strong>{{ _('Note:') }}</strong> {{ _('Large reports may take several minutes to generate. The report will appear in the list below when complete.') }}
                     </div>
                     <div class="d-flex justify-content-end gap-2">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-file-earmark-zip"></i> {{ _('Generate Report') }}
+                            <i class="bi bi-file-earmark-zip" aria-hidden="true"></i> {{ _('Generate Report') }}
                         </button>
                     </div>
                 </div>
@@ -1142,7 +1143,7 @@ if (staticHtmlModal) {
             <form id="deduplicatedForm">
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="bi bi-info-circle"></i> {{ _('This report generates a single-page offline HTML report with:') }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This report generates a single-page offline HTML report with:') }}
                         <ul class="mt-2 mb-0">
                             <li>{{ _('Issues deduplicated and grouped by common components') }}</li>
                             <li>{{ _('Common components table (navigation, headers, footers, forms, etc.)') }}</li>
@@ -1174,13 +1175,13 @@ if (staticHtmlModal) {
                         </div>
                     </div>
                     <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle"></i> <strong>{{ _('Note:') }}</strong> {{ _('Large reports may take several minutes to generate. The report will appear in the list below when complete.') }}
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> <strong>{{ _('Note:') }}</strong> {{ _('Large reports may take several minutes to generate. The report will appear in the list below when complete.') }}
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-layers"></i> {{ _('Generate Report') }}
+                        <i class="bi bi-layers" aria-hidden="true"></i> {{ _('Generate Report') }}
                     </button>
                 </div>
             </form>
@@ -1282,7 +1283,7 @@ if (deduplicatedModal) {
             <form id="recordingsForm">
                 <div class="modal-body">
                     <div class="alert alert-info mb-3">
-                        <i class="bi bi-info-circle"></i> {{ _('This report includes manual accessibility findings from:') }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This report includes manual accessibility findings from:') }}
                         <ul class="mt-2 mb-0">
                             <li>{{ _('Accessibility audit recordings') }}</li>
                             <li>{{ _('Lived experience testing sessions') }}</li>
@@ -1344,7 +1345,7 @@ if (deduplicatedModal) {
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-mic"></i> {{ _('Generate Recordings Report') }}
+                        <i class="bi bi-mic" aria-hidden="true"></i> {{ _('Generate Recordings Report') }}
                     </button>
                 </div>
             </form>

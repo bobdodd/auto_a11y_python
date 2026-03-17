@@ -118,19 +118,19 @@
             <h1 class="h2">{{ page.title or 'Untitled Page' }}</h1>
             <p class="text-muted mb-0">
                 <a href="{{ page.url }}" target="_blank" rel="noopener noreferrer">
-                    {{ page.url }} <i class="bi bi-box-arrow-up-right"></i>
+                    {{ page.url }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                 </a>
             </p>
         </div>
         <div>
             <button id="runTestBtn" class="btn btn-primary">
-                <i class="bi bi-play-circle"></i> Run Test
+                <i class="bi bi-play-circle" aria-hidden="true"></i> Run Test
             </button>
             <a href="{{ url_for('pages.edit_page', page_id=page.id) }}" class="btn btn-outline-primary">
-                <i class="bi bi-pencil"></i> Edit
+                <i class="bi bi-pencil" aria-hidden="true"></i> Edit
             </a>
             <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}" class="btn btn-outline-success">
-                <i class="bi bi-code-square"></i> Scripts
+                <i class="bi bi-code-square" aria-hidden="true"></i> Scripts
             </a>
         </div>
     </div>
@@ -183,9 +183,9 @@
     {% if latest_result and (latest_result.violations or latest_result.warnings or latest_result.info or latest_result.discovery) %}
     <div class="filter-panel">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="mb-0"><i class="bi bi-funnel"></i> Filter Test Results</h5>
+            <h5 class="mb-0"><i class="bi bi-funnel" aria-hidden="true"></i> Filter Test Results</h5>
             <button class="btn btn-sm btn-outline-secondary" id="clearFilters">
-                <i class="bi bi-x-circle"></i> Clear All Filters
+                <i class="bi bi-x-circle" aria-hidden="true"></i> Clear All Filters
             </button>
         </div>
 
@@ -276,19 +276,19 @@
                     <label class="form-label fw-bold">Affected User Groups</label>
                     <div class="filter-chips">
                         <div class="filter-chip" data-filter-type="user" data-filter-value="vision">
-                            <i class="bi bi-eye-slash"></i> Vision Impairments
+                            <i class="bi bi-eye-slash" aria-hidden="true"></i> Vision Impairments
                         </div>
                         <div class="filter-chip" data-filter-type="user" data-filter-value="hearing">
-                            <i class="bi bi-ear"></i> Hearing Impairments
+                            <i class="bi bi-ear" aria-hidden="true"></i> Hearing Impairments
                         </div>
                         <div class="filter-chip" data-filter-type="user" data-filter-value="motor">
-                            <i class="bi bi-hand-index"></i> Motor Impairments
+                            <i class="bi bi-hand-index" aria-hidden="true"></i> Motor Impairments
                         </div>
                         <div class="filter-chip" data-filter-type="user" data-filter-value="cognitive">
-                            <i class="bi bi-brain"></i> Cognitive Impairments
+                            <i class="bi bi-brain" aria-hidden="true"></i> Cognitive Impairments
                         </div>
                         <div class="filter-chip" data-filter-type="user" data-filter-value="seizure">
-                            <i class="bi bi-lightning"></i> Seizure Disorders
+                            <i class="bi bi-lightning" aria-hidden="true"></i> Seizure Disorders
                         </div>
                     </div>
                 </div>
@@ -299,7 +299,7 @@
         <div class="row mt-3">
             <div class="col-12">
                 <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <span class="input-group-text"><i class="bi bi-search" aria-hidden="true"></i></span>
                     <input type="text" class="form-control" id="quickSearch" 
                            placeholder="Search in issue descriptions, IDs, or HTML...">
                 </div>
@@ -318,7 +318,7 @@
             <!-- Errors (Violations) -->
             {% if latest_result.violations %}
             <h6 class="text-danger mb-3">
-                <i class="bi bi-x-circle"></i> Errors (<span class="type-count" data-type="error">{{ latest_result.violations|length }}</span>)
+                <i class="bi bi-x-circle" aria-hidden="true"></i> Errors (<span class="type-count" data-type="error">{{ latest_result.violations|length }}</span>)
             </h6>
             <div class="accordion mb-4" id="violationsAccordion">
                 {% for violation in latest_result.violations %}
@@ -747,13 +747,13 @@ document.getElementById('runTestBtn')?.addEventListener('click', function() {
         } else {
             alert('Test failed: ' + (data.error || 'Unknown error'));
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-play-circle"></i> Run Test';
+            btn.innerHTML = '<i class="bi bi-play-circle" aria-hidden="true"></i> Run Test';
         }
     })
     .catch(error => {
         alert('Error running test: ' + error);
         btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-play-circle"></i> Run Test';
+        btn.innerHTML = '<i class="bi bi-play-circle" aria-hidden="true"></i> Run Test';
     });
 });
 </script>

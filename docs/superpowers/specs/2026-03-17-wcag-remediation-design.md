@@ -144,6 +144,8 @@ Rewrite `createHelpModal()` and related methods to follow the APG Dialog (Modal)
 3. Adds keydown handler for Escape and Tab trapping
 4. `hideHelp()` removes handlers and calls `this.previousFocus.focus()`
 
+**Close button touch target:** The help modal close button is 30x30px (in `help-system.css`). Increase to at least 44x44px to meet WCAG 2.5.8 Target Size (Minimum).
+
 ### 3b. Navigation Shortcuts (`navigation.js`)
 
 **Remove bare letter key shortcuts** (`i`, `s`, `g`) that conflict with screen reader navigation. NVDA and JAWS use single letter keys for quick navigation (e.g., `h` for headings, `f` for forms). Custom single-key shortcuts break this.
@@ -179,6 +181,23 @@ Make the `#search-results-count` element a live region:
 ```
 
 Or add the attribute dynamically in the constructor. This ensures screen readers announce result counts as they change.
+
+### 3e. Search Highlight Contrast (`search.js`)
+
+The search highlight color `#ffeb3b` (yellow) has approximately 1.6:1 contrast ratio against white background — fails WCAG 1.4.3 Contrast (Minimum). Change to a color with at least 4.5:1 contrast, e.g., a darker yellow/amber or use a high-contrast outline/underline pattern instead of background color.
+
+```css
+.search-highlight {
+    background-color: #fff3cd; /* lighter background */
+    outline: 2px solid #b3860a; /* high-contrast outline */
+    padding: 0 2px;
+    border-radius: 2px;
+}
+```
+
+### 3f. Filter Announcements (`filters.js`, `issue-filters.js`)
+
+When filters hide/show items, the result count changes are not announced to screen readers. Add a live region announcement after filtering operations to communicate how many results are visible (e.g., "Showing 12 of 45 issues").
 
 ## Section 4: CSS / Focus / Motion Fixes
 

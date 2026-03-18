@@ -24,7 +24,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2">{{ _('Test Result') }}</h1>
+            <h1>{{ _('Test Result') }}</h1>
             <p class="text-muted">
                 {{ _('Tested on') }} {{ result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}
                 {% if page %}
@@ -44,11 +44,13 @@
     </div>
 
     <!-- Summary Cards -->
+    <section aria-labelledby="result-summary-heading">
+    <h2 id="result-summary-heading" class="visually-hidden">{{ _('Result Summary') }}</h2>
     <div class="row mb-4 g-3">
         <div class="col-md-3">
             <div class="card border-danger h-100">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-danger">{{ _('Violations') }}</h5>
+                    <h3 class="card-title text-danger">{{ _('Violations') }}</h3>
                     <p class="display-6 mb-0">{{ result.violation_count }}</p>
                 </div>
             </div>
@@ -56,7 +58,7 @@
         <div class="col-md-3">
             <div class="card border-warning h-100">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-warning">{{ _('Warnings') }}</h5>
+                    <h3 class="card-title text-warning">{{ _('Warnings') }}</h3>
                     <p class="display-6 mb-0">{{ result.warning_count }}</p>
                 </div>
             </div>
@@ -64,7 +66,7 @@
         <div class="col-md-3">
             <div class="card border-success h-100">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-success">{{ _('Passed') }}</h5>
+                    <h3 class="card-title text-success">{{ _('Passed') }}</h3>
                     <p class="display-6 mb-0">{{ result.pass_count }}</p>
                 </div>
             </div>
@@ -72,14 +74,17 @@
         <div class="col-md-3">
             <div class="card border-info h-100">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-info">{{ _('Duration') }}</h5>
+                    <h3 class="card-title text-info">{{ _('Duration') }}</h3>
                     <p class="display-6 mb-0">{{ "%.2f"|format(result.duration_ms / 1000) }}s</p>
                 </div>
             </div>
         </div>
     </div>
+    </section>
 
     <!-- Test Details -->
+    <section aria-labelledby="test-details-heading">
+    <h2 id="test-details-heading" class="visually-hidden">{{ _('Test Details') }}</h2>
     <div class="card">
         <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs" role="tablist">
@@ -141,7 +146,7 @@
                                         <div class="col-md-4">
                                             <div class="card bg-light">
                                                 <div class="card-body">
-                                                    <h6 class="card-title">{{ _('Details') }}</h6>
+                                                    <h3 class="card-title">{{ _('Details') }}</h3>
                                                     <dl class="row mb-0">
                                                         <dt class="col-sm-5">{{ _('Impact:') }}</dt>
                                                         <dd class="col-sm-7">{{ violation.impact|title }}</dd>
@@ -187,7 +192,7 @@
                 <div class="tab-pane fade" id="metadata-tab" role="tabpanel">
                     <div class="row">
                         <div class="col-md-6">
-                            <h6>{{ _('Test Information') }}</h6>
+                            <h3>{{ _('Test Information') }}</h3>
                             <dl class="row">
                                 <dt class="col-sm-4">{{ _('Test ID:') }}</dt>
                                 <dd class="col-sm-8"><code>{{ result.id }}</code></dd>
@@ -212,7 +217,7 @@
                             </dl>
                         </div>
                         <div class="col-md-6">
-                            <h6>{{ _('Test Configuration') }}</h6>
+                            <h3>{{ _('Test Configuration') }}</h3>
                             <dl class="row">
                                 <dt class="col-sm-4">{{ _('AI Analysis:') }}</dt>
                                 <dd class="col-sm-8">
@@ -234,13 +239,14 @@
 
                     {% if result.metadata %}
                     <hr>
-                    <h6>{{ _('Additional Metadata') }}</h6>
+                    <h3>{{ _('Additional Metadata') }}</h3>
                     <pre class="bg-light p-3 rounded">{{ result.metadata|tojson(indent=2) }}</pre>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
+    </section>
 </div>
 {% endblock %}
 

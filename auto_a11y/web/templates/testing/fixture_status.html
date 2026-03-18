@@ -85,11 +85,13 @@
     </div>
 
     <!-- Summary Cards -->
+    <section aria-labelledby="summary-heading">
+    <h2 id="summary-heading" class="visually-hidden">{{ _('Fixture Test Summary') }}</h2>
     <div class="row mb-4 g-3">
         <div class="col-12 col-sm-6 col-xl-2">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title fs-6">Debug Mode</h5>
+                    <h3 class="card-title fs-6">Debug Mode</h3>
                     <p class="card-text">
                         <span id="debug-mode-badge" class="badge bg-secondary">Loading...</span>
                     </p>
@@ -100,7 +102,7 @@
         <div class="col-12 col-sm-6 col-xl-2">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title fs-6">Total Error Codes</h5>
+                    <h3 class="card-title fs-6">Total Error Codes</h3>
                     <p class="card-text display-6" id="total-tests">-</p>
                     <small class="text-muted">Error codes with fixtures</small>
                 </div>
@@ -109,7 +111,7 @@
         <div class="col-12 col-sm-6 col-xl-2">
             <div class="card h-100 border-success">
                 <div class="card-body">
-                    <h5 class="card-title fs-6">All Pass <i class="bi bi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('all-pass')"></i></h5>
+                    <h3 class="card-title fs-6">All Pass <i class="bi bi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('all-pass')"></i></h3>
                     <p class="card-text display-6 text-success" id="all-pass-tests">-</p>
                     <small class="text-muted">All fixtures passing</small>
                 </div>
@@ -118,7 +120,7 @@
         <div class="col-12 col-sm-6 col-xl-2">
             <div class="card h-100 border-warning">
                 <div class="card-body">
-                    <h5 class="card-title fs-6">Partial Pass <i class="bi bi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('partial-pass')"></i></h5>
+                    <h3 class="card-title fs-6">Partial Pass <i class="bi bi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('partial-pass')"></i></h3>
                     <p class="card-text display-6 text-warning" id="partial-pass-tests">-</p>
                     <small class="text-muted">Some fixtures passing</small>
                 </div>
@@ -127,7 +129,7 @@
         <div class="col-12 col-sm-6 col-xl-2">
             <div class="card h-100 border-danger">
                 <div class="card-body">
-                    <h5 class="card-title fs-6">All Fail <i class="bi bi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('all-fail')"></i></h5>
+                    <h3 class="card-title fs-6">All Fail <i class="bi bi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('all-fail')"></i></h3>
                     <p class="card-text display-6 text-danger" id="all-fail-tests">-</p>
                     <small class="text-muted">No fixtures passing</small>
                 </div>
@@ -136,20 +138,21 @@
         <div class="col-12 col-sm-6 col-xl-2">
             <div class="card h-100 bg-light">
                 <div class="card-body">
-                    <h5 class="card-title fs-6">Enabled</h5>
+                    <h3 class="card-title fs-6">Enabled</h3>
                     <p class="card-text display-6 text-primary" id="enabled-tests">-</p>
                     <small class="text-muted">Available for scanning</small>
                 </div>
             </div>
         </div>
     </div>
+    </section>
 
     <!-- Latest Test Run Info -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Latest Fixture Test Run</h5>
+                    <h2 class="mb-0">Latest Fixture Test Run</h2>
                 </div>
                 <div class="card-body" id="test-run-info">
                     <div class="spinner-border" role="status">
@@ -165,7 +168,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Individual Test Status</h5>
+                    <h2 class="mb-0">Individual Test Status</h2>
                     <small class="text-muted">Tests are automatically enabled/disabled based on fixture results</small>
                     <div class="alert alert-info mt-2 mb-0" role="alert">
                         <i class="bi bi-info-circle" aria-hidden="true"></i> <strong>Understanding Test Status:</strong>
@@ -256,7 +259,7 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Actions</h5>
+                    <h2 class="card-title">Actions</h2>
                     <p class="text-muted mb-2">Run the fixture test script to update test availability</p>
                     <div class="bg-light p-2 rounded mb-3">
                         <code>python test_fixtures.py</code>
@@ -557,7 +560,7 @@ function showHelp(topic) {
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="helpModalLabel">${help.title}</h5>
+                        <h2 class="modal-title" id="helpModalLabel">${help.title}</h2>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">

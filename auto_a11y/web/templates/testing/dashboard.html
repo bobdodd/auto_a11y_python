@@ -96,7 +96,7 @@
     <!-- Header with Project/Website Selectors -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
-            <h1 class="h2 mb-1">
+            <h1 class="mb-1">
                 <i class="bi bi-speedometer2 text-primary" aria-hidden="true"></i> {{ _('Testing Dashboard') }}
             </h1>
             <p class="text-muted mb-0">
@@ -142,12 +142,14 @@
     </div>
 
     <!-- Stats Cards Row -->
+    <section aria-labelledby="stats-heading">
+    <h2 id="stats-heading" class="visually-hidden">{{ _('Statistics Overview') }}</h2>
     <div class="d-flex flex-wrap gap-3 mb-4">
         <div class="card stat-card text-center flex-fill" style="min-width: 140px;">
             <div class="card-body py-3">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="text-start">
-                        <h6 class="card-title text-muted mb-1">{{ _('Pages') }}</h6>
+                        <h3 class="card-title text-muted mb-1">{{ _('Pages') }}</h3>
                         <p class="display-6 mb-0" id="statTotalPages">{{ stats.total_pages }}</p>
                     </div>
                     <i class="bi bi-file-earmark stat-icon text-primary" aria-hidden="true"></i>
@@ -158,7 +160,7 @@
             <div class="card-body py-3">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="text-start">
-                        <h6 class="card-title text-muted mb-1">{{ _('Tested') }}</h6>
+                        <h3 class="card-title text-muted mb-1">{{ _('Tested') }}</h3>
                         <p class="display-6 mb-0" id="statTestedPages">{{ stats.tested_pages }}</p>
                         <small class="text-success" id="statCoverage">{{ "%.1f"|format(stats.test_coverage) }}% {{ _('coverage') }}</small>
                     </div>
@@ -170,7 +172,7 @@
             <div class="card-body py-3">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="text-start">
-                        <h6 class="card-title text-muted mb-1">{{ _('Violations') }}</h6>
+                        <h3 class="card-title text-muted mb-1">{{ _('Violations') }}</h3>
                         <p class="display-6 mb-0 text-danger" id="statViolations">{{ stats.total_violations }}</p>
                     </div>
                     <i class="bi bi-exclamation-triangle stat-icon text-danger" aria-hidden="true"></i>
@@ -181,7 +183,7 @@
             <div class="card-body py-3">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="text-start">
-                        <h6 class="card-title text-muted mb-1">{{ _('Warnings') }}</h6>
+                        <h3 class="card-title text-muted mb-1">{{ _('Warnings') }}</h3>
                         <p class="display-6 mb-0 text-warning" id="statWarnings">{{ stats.total_warnings }}</p>
                     </div>
                     <i class="bi bi-exclamation-circle stat-icon text-warning" aria-hidden="true"></i>
@@ -192,7 +194,7 @@
             <div class="card-body py-3">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="text-start">
-                        <h6 class="card-title text-muted mb-1">{{ _('Active') }}</h6>
+                        <h3 class="card-title text-muted mb-1">{{ _('Active') }}</h3>
                         <p class="display-6 mb-0 text-info" id="statActiveTests">{{ stats.active_tests }}</p>
                     </div>
                     <i class="bi bi-activity stat-icon text-info" aria-hidden="true"></i>
@@ -203,7 +205,7 @@
             <div class="card-body py-3">
                 <div class="d-flex justify-content-between align-items-start">
                     <div class="text-start">
-                        <h6 class="card-title text-muted mb-1">{{ _('Queued') }}</h6>
+                        <h3 class="card-title text-muted mb-1">{{ _('Queued') }}</h3>
                         <p class="display-6 mb-0" id="statQueuedTests">{{ stats.queued_tests }}</p>
                     </div>
                     <i class="bi bi-hourglass-split stat-icon text-secondary" aria-hidden="true"></i>
@@ -211,6 +213,7 @@
             </div>
         </div>
     </div>
+    </section>
 
     <!-- Main Content Row -->
     <div class="row">
@@ -219,7 +222,7 @@
             <!-- Test Actions Card -->
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bi bi-play-circle text-success" aria-hidden="true"></i> {{ _('Test Actions') }}</h5>
+                    <h2 class="mb-0"><i class="bi bi-play-circle text-success" aria-hidden="true"></i> {{ _('Test Actions') }}</h2>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
@@ -298,7 +301,7 @@
             <!-- Trends Chart -->
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ _('Trends') }}</h5>
+                    <h2 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ _('Trends') }}</h2>
                     <div class="d-flex align-items-center gap-2">
                         <small class="text-muted">{{ _('Last 14 days') }}</small>
                         <a href="{{ url_for('testing.trends_page') }}{% if selected_project %}?project_id={{ selected_project.id }}{% endif %}{% if selected_website %}&website_id={{ selected_website.id }}{% endif %}" class="btn btn-sm btn-outline-primary" title="{{ _('View Detailed Trends') }}">
@@ -307,14 +310,17 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <canvas id="trendsChart" height="120"></canvas>
+                    <figure>
+                        <canvas id="trendsChart" height="120"></canvas>
+                        <figcaption class="visually-hidden">{{ _('Line chart showing violations and warnings over the last 14 days') }}</figcaption>
+                    </figure>
                 </div>
             </div>
 
             <!-- Recent Results Table -->
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap gap-2">
-                    <h5 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ _('Recent Test Results') }}</h5>
+                    <h2 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ _('Recent Test Results') }}</h2>
                     <div class="btn-group btn-group-sm" role="group">
                         <button type="button" class="btn btn-outline-secondary active" data-filter="all">{{ _('All') }}</button>
                         <button type="button" class="btn btn-outline-danger" data-filter="errors">{{ _('Errors Only') }}</button>
@@ -405,7 +411,7 @@
             <!-- Active Tests Panel -->
             <div class="card mb-4 shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-activity text-primary" aria-hidden="true"></i> {{ _('Active Tests') }}</h5>
+                    <h2 class="mb-0"><i class="bi bi-activity text-primary" aria-hidden="true"></i> {{ _('Active Tests') }}</h2>
                     <span class="badge bg-primary" id="activeTestsCount">{{ active_jobs|length }}</span>
                 </div>
                 <div class="card-body" id="activeTestsPanel">
@@ -436,7 +442,7 @@
             <!-- Scheduled Tests Panel -->
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="bi bi-calendar-check" aria-hidden="true" style="color: #6f42c1;"></i> {{ _('Scheduled Tests') }}</h5>
+                    <h2 class="mb-0"><i class="bi bi-calendar-check" aria-hidden="true" style="color: #6f42c1;"></i> {{ _('Scheduled Tests') }}</h2>
                     <span class="badge" style="background-color: #6f42c1;">{{ schedules|length }}</span>
                 </div>
                 <div class="card-body">
@@ -486,7 +492,7 @@
             <!-- Quick Stats Summary -->
             <div class="card mt-4 shadow-sm">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ _('Summary') }}</h5>
+                    <h2 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ _('Summary') }}</h2>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled mb-0">

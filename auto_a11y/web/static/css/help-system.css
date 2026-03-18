@@ -11,7 +11,7 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--color-bg-overlay);
     animation: fadeIn 0.3s ease;
 }
 
@@ -22,9 +22,9 @@
 }
 
 .help-modal-content {
-    background-color: #fff;
+    background-color: var(--color-bg);
     border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px var(--color-shadow-strong);
     max-width: 700px;
     width: 90%;
     max-height: 80vh;
@@ -35,7 +35,7 @@
 
 .help-modal-header {
     padding: 20px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid var(--color-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -43,7 +43,7 @@
 
 .help-modal-header h2 {
     margin: 0;
-    color: #333;
+    color: var(--color-text-heading);
     font-size: 1.5rem;
 }
 
@@ -52,7 +52,7 @@
     border: none;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #666;
+    color: var(--color-text-muted);
     padding: 0;
     width: 44px;
     height: 44px;
@@ -66,7 +66,7 @@
 }
 
 .help-modal-close:hover {
-    background-color: #f0f0f0;
+    background-color: var(--color-bg-subtle);
 }
 
 .help-modal-body {
@@ -76,14 +76,14 @@
 }
 
 .help-modal-body h3 {
-    color: #2c3e50;
+    color: var(--color-help-heading);
     margin-top: 0;
     margin-bottom: 15px;
     font-size: 1.3rem;
 }
 
 .help-modal-body h4 {
-    color: #34495e;
+    color: var(--color-help-heading);
     margin-top: 20px;
     margin-bottom: 10px;
     font-size: 1.1rem;
@@ -91,7 +91,7 @@
 
 .help-modal-body p {
     line-height: 1.6;
-    color: #555;
+    color: var(--color-text-muted);
     margin-bottom: 15px;
 }
 
@@ -103,35 +103,35 @@
 .help-modal-body li {
     margin-bottom: 8px;
     line-height: 1.5;
-    color: #555;
+    color: var(--color-text-muted);
 }
 
 .help-modal-body code {
-    background-color: #f4f4f4;
+    background-color: var(--color-bg-code);
     padding: 3px 6px;
     border-radius: 3px;
     font-family: 'Monaco', 'Courier New', monospace;
     font-size: 0.9em;
-    color: #d14;
+    color: var(--color-text-code);
     display: inline-block;
     margin: 10px 0;
 }
 
 .help-modal-body strong {
-    color: #333;
+    color: var(--color-text);
     font-weight: 600;
 }
 
 .help-modal-footer {
     padding: 15px 20px;
-    border-top: 1px solid #e0e0e0;
+    border-top: 1px solid var(--color-border);
     text-align: right;
 }
 
 /* Example Box */
 .example-box {
-    background-color: #f9f9f9;
-    border-left: 4px solid #3498db;
+    background-color: var(--color-bg-subtle);
+    border-left: 4px solid var(--color-help-icon);
     padding: 15px;
     margin: 20px 0;
     border-radius: 4px;
@@ -156,8 +156,8 @@
     min-height: 24px;
     padding: 0;
     border-radius: 50%;
-    background-color: #3498db;
-    color: white;
+    background-color: var(--color-help-icon);
+    color: var(--color-text-inverse);
     border: none;
     cursor: pointer;
     font-size: 12px;
@@ -169,20 +169,20 @@
 }
 
 .help-icon:hover {
-    background-color: #2980b9;
+    background-color: var(--color-help-icon-hover);
     transform: scale(1.1);
 }
 
 .help-icon:focus {
-    outline: 2px solid #3498db;
+    outline: 2px solid var(--color-help-icon);
     outline-offset: 2px;
 }
 
 /* Help Tooltips */
 .help-tooltip {
     position: absolute;
-    background-color: #333;
-    color: white;
+    background-color: var(--color-text);
+    color: var(--color-text-inverse);
     padding: 5px 10px;
     border-radius: 4px;
     font-size: 12px;
@@ -200,19 +200,19 @@
     margin-left: -5px;
     border-width: 5px;
     border-style: solid;
-    border-color: #333 transparent transparent transparent;
+    border-color: var(--color-text) transparent transparent transparent;
 }
 
 /* Inline Help Links */
 .help-link {
-    color: #3498db;
+    color: var(--color-help-icon);
     text-decoration: none;
     cursor: pointer;
-    border-bottom: 1px dotted #3498db;
+    border-bottom: 1px dotted var(--color-help-icon);
 }
 
 .help-link:hover {
-    color: #2980b9;
+    color: var(--color-help-icon-hover);
     border-bottom-style: solid;
 }
 
@@ -220,7 +220,7 @@
 .score-help-container {
     margin-top: 10px;
     padding: 10px;
-    background-color: #f8f9fa;
+    background-color: var(--color-bg-subtle);
     border-radius: 4px;
     font-size: 0.9em;
 }
@@ -228,12 +228,12 @@
 .score-help-container h4 {
     margin-top: 0;
     margin-bottom: 5px;
-    color: #495057;
+    color: var(--color-text-muted);
 }
 
 .score-help-container p {
     margin: 5px 0;
-    color: #6c757d;
+    color: var(--color-text-muted);
 }
 
 /* Animations */

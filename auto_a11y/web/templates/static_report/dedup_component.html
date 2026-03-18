@@ -270,16 +270,16 @@
 {# Macro for rendering issue details #}
 {% macro render_issue_details(issue, alert_type) %}
 <div class="alert alert-{{ alert_type }} mb-3">
-    <h5 class="alert-heading">
+    <h4 class="alert-heading">
         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ issue.description_en }}</span>
         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ issue.description_fr }}</span>
-    </h5>
+    </h4>
 </div>
 
-<h5 class="text-{{ alert_type }} mb-2">
+<h4 class="text-{{ alert_type }} mb-2">
     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['about_this_issue'] }}</span>
     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['about_this_issue'] }}</span>
-</h5>
+</h4>
 
 <!-- What -->
 <div class="mb-3">
@@ -329,10 +329,10 @@
 
 <!-- WCAG Criteria -->
 {% if issue.wcag_full %}
-<h5 class="text-{{ alert_type }} mb-2 mt-4">
+<h4 class="text-{{ alert_type }} mb-2 mt-4">
     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['relevant_test_criteria'] }}</span>
     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['relevant_test_criteria'] }}</span>
-</h5>
+</h4>
 <div class="mb-3">
     <strong>
         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['wcag_success_criteria'] }}</span>
@@ -448,10 +448,10 @@
 <!-- Element Details -->
 {% if issue.element or issue.xpath %}
 <hr>
-<h5 class="text-{{ alert_type }} mb-2">
+<h4 class="text-{{ alert_type }} mb-2">
     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['element_details'] }}</span>
     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['element_details'] }}</span>
-</h5>
+</h4>
 {% if issue.element %}
 <p>
     <strong>
@@ -523,7 +523,7 @@
                 <button onclick="switchLanguage('fr')" id="lang-fr" class="{{ 'active' if language == 'fr' else '' }}" lang="fr" aria-label="Switch to French">FR</button>
             </div>
         </div>
-        <h1 class="h2 mb-0"><span data-i18n="{{ component_type|lower }}">{{ t.get(component_type|lower, component_type) }}</span>: {% if component_type == 'Form' %}{{ component_label }} <span data-i18n="fields">{{ t.get('fields', 'fields') }}</span>{% else %}{{ component_label }}{% endif %} <code class="h5 text-light opacity-75">{{ component_signature[:8] }}</code></h1>
+        <h1 class="mb-0"><span data-i18n="{{ component_type|lower }}">{{ t.get(component_type|lower, component_type) }}</span>: {% if component_type == 'Form' %}{{ component_label }} <span data-i18n="fields">{{ t.get('fields', 'fields') }}</span>{% else %}{{ component_label }}{% endif %} <code class="text-light opacity-75">{{ component_signature[:8] }}</code></h1>
         <div class="component-meta">
             <span><i class="bi bi-file-earmark" aria-hidden="true"></i> <span data-i18n="found_on">{{ t['found_on'] }}</span> {{ page_count }} <span data-i18n="page_s">{{ t['page_s'] }}</span></span>
             <span><i class="bi bi-bug" aria-hidden="true"></i> {{ total_issues }} <span data-i18n="deduplicated_issue_s">{{ t['deduplicated_issue_s'] }}</span></span>

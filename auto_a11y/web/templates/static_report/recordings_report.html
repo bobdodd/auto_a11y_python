@@ -163,12 +163,12 @@
                 </h4>
                 {% for painpoint in painpoints %}
                 <div class="border-start border-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}.get(painpoint.impact|lower, 'secondary') }} border-4 ps-3 mb-3">
-                    <h5 class="mb-2">
+                    <h4 class="mb-2">
                         <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}.get(painpoint.impact|lower, 'secondary') }}">
                             {{ painpoint.impact|upper }}
                         </span>
                         {{ painpoint.title }}
-                    </h5>
+                    </h4>
                     {% if painpoint.user_quote %}
                     <p class="fst-italic">"{{ painpoint.user_quote }}"</p>
                     {% endif %}
@@ -202,12 +202,12 @@
                 {% for issue in recording_issues %}
                 <div class="card mb-2">
                     <div class="card-body">
-                        <h5>
+                        <h4>
                             <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}[issue.impact.value] }}">
                                 {{ issue.impact.value|upper }}
                             </span>
                             {{ issue.title }}
-                        </h5>
+                        </h4>
 
                         {% if issue.description %}
                         <p>{{ issue.description }}</p>
@@ -279,12 +279,12 @@
         <div class="card-body">
             {% for issue in touchpoint_issues %}
             <div class="mb-3 pb-3 {% if not loop.last %}border-bottom{% endif %}">
-                <h5>
+                <h4>
                     <span class="badge bg-{{ {'high': 'danger', 'medium': 'warning', 'low': 'secondary'}[issue.impact.value] }}">
                         {{ issue.impact.value|upper }}
                     </span>
                     {{ issue.title }}
-                </h5>
+                </h4>
                 {% if issue.description %}
                 <p>{{ issue.description }}</p>
                 {% endif %}

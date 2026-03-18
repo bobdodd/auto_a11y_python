@@ -282,16 +282,16 @@
 {% if violation.metadata and (violation.metadata.what_en or violation.metadata.what_fr) %}
 <!-- Enhanced description available -->
 <div class="alert alert-{{ alert_type }} mb-3">
-    <h6 class="alert-heading">
+    <h4 class="alert-heading">
         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ violation.description_en }}</span>
         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ violation.description_fr }}</span>
-    </h6>
+    </h4>
 </div>
 
-<h6 class="text-{{ alert_type }} mb-2">
+<h4 class="text-{{ alert_type }} mb-2">
     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t.get('about_this_issue', 'About this issue:') }}</span>
     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('about_this_issue', 'À propos de ce problème :') }}</span>
-</h6>
+</h4>
 
 <div class="mb-3">
     <strong>
@@ -336,10 +336,10 @@
 {% endif %}
 
 {% if violation.metadata.wcag_full %}
-<h6 class="text-{{ alert_type }} mb-2 mt-4">
+<h4 class="text-{{ alert_type }} mb-2 mt-4">
     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get('relevant_test_criteria', 'Relevant test criteria:') }}</span>
     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('relevant_test_criteria', 'Critères de test pertinents :') }}</span>
-</h6>
+</h4>
 <div class="mb-3">
     <strong>
         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">WCAG {{ translations_en.get('success_criteria', 'Success Criteria:') }}</span>
@@ -452,7 +452,7 @@
 {% endif %}
 
 {% if violation.html_snippet %}
-<h6 class="mt-3" data-i18n="code_snippet">{{ t.get('code_snippet', 'Code Snippet') }}</h6>
+<h4 class="mt-3" data-i18n="code_snippet">{{ t.get('code_snippet', 'Code Snippet') }}</h4>
 <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html_snippet|e }}</code></pre>
 {% endif %}
 {% endmacro %}
@@ -502,7 +502,7 @@
     <!-- Page Header with Language Switcher -->
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
-            <h1 class="h2">{{ page.title|default('Untitled Page') }}</h1>
+            <h1>{{ page.title|default('Untitled Page') }}</h1>
             <p class="text-muted">
                 <a href="{{ page.url }}" target="_blank">
                     {{ page.url }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
@@ -520,10 +520,10 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">
+                    <h2 class="card-subtitle mb-2 text-muted">
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['status'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['status'] }}</span>
-                    </h6>
+                    </h2>
                     <p class="mb-0">
                         <span class="badge bg-success">
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['tested'] }}</span>
@@ -536,10 +536,10 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">
+                    <h2 class="card-subtitle mb-2 text-muted">
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['last_tested'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['last_tested'] }}</span>
-                    </h6>
+                    </h2>
                     <p class="mb-0">
                         {{ page.test_date|default('Recently') }}
                     </p>
@@ -549,10 +549,10 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">
+                    <h2 class="card-subtitle mb-2 text-muted">
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['issues_found'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['issues_found'] }}</span>
-                    </h6>
+                    </h2>
                     <p class="mb-0">
                         <span class="text-danger fw-bold">{{ errors_count|default(0) }}</span>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['errors'] }}</span>
@@ -567,10 +567,10 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">
+                    <h2 class="card-subtitle mb-2 text-muted">
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['score'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['score'] }}</span>
-                    </h6>
+                    </h2>
                     <p class="mb-0">
                         {% set score = page.score|default(0) %}
                         <span class="fw-bold {% if score >= 90 %}text-success{% elif score >= 70 %}text-warning{% else %}text-danger{% endif %}">
@@ -590,10 +590,10 @@
             <div class="card h-100">
                 <div class="card-body text-center">
                     {% set score = page.score|default(0) %}
-                    <h6 class="card-title">
+                    <h2 class="card-title">
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['accessibility_score'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['accessibility_score'] }}</span>
-                    </h6>
+                    </h2>
                     <div class="display-4 fw-bold {% if score >= 90 %}text-success{% elif score >= 70 %}text-warning{% else %}text-danger{% endif %}">
                         {{ "%.1f"|format(score) }}%
                     </div>
@@ -609,10 +609,10 @@
         <div class="col-md-6">
             <div class="card h-100">
                 <div class="card-body text-center">
-                    <h6 class="card-title">
+                    <h2 class="card-title">
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['compliance_score'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['compliance_score'] }}</span>
-                    </h6>
+                    </h2>
                     {% if compliance_score %}
                     <div class="display-4 fw-bold {% if compliance_score.score >= 90 %}text-success{% elif compliance_score.score >= 70 %}text-warning{% else %}text-danger{% endif %}">
                         {{ "%.1f"|format(compliance_score.score) }}%
@@ -846,11 +846,11 @@
         <!-- Multi-State Selector -->
         {% if page.states and page.states|length > 1 %}
         <div class="card-body border-bottom bg-light">
-            <h6 class="mb-3">
+            <h3 class="mb-3">
                 <i class="bi bi-layers" aria-hidden="true"></i>
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Page States Tested</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">États de page testés</span>
-            </h6>
+            </h3>
             <p class="text-muted small mb-3">
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">This page was tested in multiple states. Select a state below to view its test results.</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Cette page a été testée dans plusieurs états. Sélectionnez un état ci-dessous pour voir ses résultats de test.</span>
@@ -955,16 +955,16 @@
                                         <div class="accordion-body">
                                             {% if first_violation.metadata and (first_violation.metadata.what_en or first_violation.metadata.what_fr) %}
                                             <div class="alert alert-danger mb-3">
-                                                <h6 class="alert-heading">
+                                                <h4 class="alert-heading">
                                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ first_violation.metadata.title_en or first_violation.metadata.what_en or first_violation.description }}</span>
                                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ first_violation.metadata.title_fr or first_violation.metadata.what_fr or first_violation.description }}</span>
-                                                </h6>
+                                                </h4>
                                             </div>
-                                            
-                                            <h6 class="text-danger mb-2">
+
+                                            <h4 class="text-danger mb-2">
                                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">About this issue:</span>
                                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">À propos de ce problème :</span>
-                                            </h6>
+                                            </h4>
                                             
                                             <div class="mb-3">
                                                 <strong>
@@ -1097,16 +1097,16 @@
                                         <div class="accordion-body">
                                             {% if first_warning.metadata and (first_warning.metadata.what_en or first_warning.metadata.what_fr) %}
                                             <div class="alert alert-warning mb-3">
-                                                <h6 class="alert-heading">
+                                                <h4 class="alert-heading">
                                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ first_warning.metadata.title_en or first_warning.metadata.what_en or first_warning.description }}</span>
                                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ first_warning.metadata.title_fr or first_warning.metadata.what_fr or first_warning.description }}</span>
-                                                </h6>
+                                                </h4>
                                             </div>
-                                            
-                                            <h6 class="text-warning mb-2">
+
+                                            <h4 class="text-warning mb-2">
                                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">About this issue:</span>
                                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">À propos de ce problème :</span>
-                                            </h6>
+                                            </h4>
                                             
                                             <div class="mb-3">
                                                 <strong>
@@ -1786,10 +1786,10 @@
     {% if page.screenshot_path %}
     <div class="card mt-4">
         <div class="card-body">
-            <h6 class="mb-3">
+            <h2 class="mb-3">
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Page Thumbnail (at time of test)</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Vignette de la page (au moment du test)</span>
-            </h6>
+            </h2>
             <a href="../assets/images/screenshots/{{ page.screenshot_path.split('/')[-1] }}" target="_blank">
                 <img src="../assets/images/screenshots/{{ page.screenshot_path.split('/')[-1] }}"
                      alt="Screenshot of {{ page.url }}"

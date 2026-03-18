@@ -78,7 +78,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="display-4">
-                <i class="bibi-check2-square text-primary"></i> Fixture Test Status
+                <i class="bi bi-check2-square text-primary" aria-hidden="true"></i> Fixture Test Status
             </h1>
             <p class="lead">View which accessibility tests have passing fixtures</p>
         </div>
@@ -109,7 +109,7 @@
         <div class="col-12 col-sm-6 col-xl-2">
             <div class="card h-100 border-success">
                 <div class="card-body">
-                    <h5 class="card-title fs-6">All Pass <i class="bibi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('all-pass')"></i></h5>
+                    <h5 class="card-title fs-6">All Pass <i class="bi bi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('all-pass')"></i></h5>
                     <p class="card-text display-6 text-success" id="all-pass-tests">-</p>
                     <small class="text-muted">All fixtures passing</small>
                 </div>
@@ -118,7 +118,7 @@
         <div class="col-12 col-sm-6 col-xl-2">
             <div class="card h-100 border-warning">
                 <div class="card-body">
-                    <h5 class="card-title fs-6">Partial Pass <i class="bibi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('partial-pass')"></i></h5>
+                    <h5 class="card-title fs-6">Partial Pass <i class="bi bi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('partial-pass')"></i></h5>
                     <p class="card-text display-6 text-warning" id="partial-pass-tests">-</p>
                     <small class="text-muted">Some fixtures passing</small>
                 </div>
@@ -127,7 +127,7 @@
         <div class="col-12 col-sm-6 col-xl-2">
             <div class="card h-100 border-danger">
                 <div class="card-body">
-                    <h5 class="card-title fs-6">All Fail <i class="bibi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('all-fail')"></i></h5>
+                    <h5 class="card-title fs-6">All Fail <i class="bi bi-question-circle-fill text-primary" style="cursor: pointer;" onclick="showHelp('all-fail')"></i></h5>
                     <p class="card-text display-6 text-danger" id="all-fail-tests">-</p>
                     <small class="text-muted">No fixtures passing</small>
                 </div>
@@ -168,7 +168,7 @@
                     <h5 class="mb-0">Individual Test Status</h5>
                     <small class="text-muted">Tests are automatically enabled/disabled based on fixture results</small>
                     <div class="alert alert-info mt-2 mb-0" role="alert">
-                        <i class="bibi-info-circle"></i> <strong>Understanding Test Status:</strong>
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> <strong>Understanding Test Status:</strong>
                         <ul class="mb-0 mt-2">
                             <li><strong>Error Code:</strong> Each accessibility issue type (e.g., ErrNoAltText)</li>
                             <li><strong>Fixtures:</strong> Individual HTML test files for each error code (typically 2-3 per code)</li>
@@ -243,7 +243,7 @@
                     <!-- Mobile-friendly view hint -->
                     <div class="d-md-none mt-2">
                         <small class="text-muted">
-                            <i class="bibi-info-circle"></i> Swipe table horizontally for more details
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> Swipe table horizontally for more details
                         </small>
                     </div>
                 </div>
@@ -264,10 +264,10 @@
                     <hr>
                     <div class="d-flex flex-wrap gap-2">
                         <a href="{{ url_for('testing.configure_testing') }}" class="btn btn-secondary">
-                            <i class="bibi-gear"></i> Settings
+                            <i class="bi bi-gear" aria-hidden="true"></i> Settings
                         </a>
                         <button class="btn btn-primary" onclick="refreshStatus()">
-                            <i class="bibi-arrow-clockwise"></i> Refresh Status
+                            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Refresh Status
                         </button>
                     </div>
                 </div>
@@ -348,7 +348,7 @@ function updateTestRunInfo(summary) {
     if (!summary) {
         container.innerHTML = `
             <div class="alert alert-warning mb-0">
-                <i class="bibi-exclamation-triangle"></i> No fixture test runs found. 
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> No fixture test runs found. 
                 Run <code>python test_fixtures.py</code> to test fixtures.
             </div>
         `;
@@ -483,7 +483,7 @@ function refreshStatus() {
     
     setTimeout(() => {
         btn.disabled = false;
-        btn.innerHTML = '<i class="bibi-arrow-clockwise"></i> Refresh Status';
+        btn.innerHTML = '<i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Refresh Status';
     }, 1000);
 }
 
@@ -491,7 +491,7 @@ function showError(message) {
     // Show error in test run info area
     document.getElementById('test-run-info').innerHTML = `
         <div class="alert alert-danger mb-0">
-            <i class="bibi-exclamation-circle"></i> ${message}
+            <i class="bi bi-exclamation-circle" aria-hidden="true"></i> ${message}
         </div>
     `;
 }

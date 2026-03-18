@@ -306,12 +306,12 @@
 </div>
 
 <!-- Generate Report Modal -->
-<div class="modal fade" id="generateReportModal" tabindex="-1">
+<div class="modal fade" id="generateReportModal" tabindex="-1" aria-labelledby="generateReportModalTitle">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Generate Report') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="generateReportModalTitle">{{ _('Generate Report') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <form id="generateReportForm">
                 <div class="modal-body">
@@ -852,12 +852,12 @@ function generateDiscoveryReport() {
 </script>
 
 <!-- Site Structure Report Modal -->
-<div class="modal fade" id="siteStructureModal" tabindex="-1">
+<div class="modal fade" id="siteStructureModal" tabindex="-1" aria-labelledby="siteStructureModalTitle">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Generate Site Structure Report') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="siteStructureModalTitle">{{ _('Generate Site Structure Report') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <form id="siteStructureForm">
                 <div class="modal-body">
@@ -899,12 +899,12 @@ function generateDiscoveryReport() {
 </div>
 
 <!-- Discovery Report Modal -->
-<div class="modal fade" id="discoveryModal" tabindex="-1">
+<div class="modal fade" id="discoveryModal" tabindex="-1" aria-labelledby="discoveryModalTitle">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Generate Discovery Report') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="discoveryModalTitle">{{ _('Generate Discovery Report') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <form id="discoveryForm">
                 <div class="modal-body">
@@ -966,12 +966,12 @@ function generateDiscoveryReport() {
 </div>
 
 <!-- Static HTML Report Modal -->
-<div class="modal fade" id="staticHtmlModal" tabindex="-1">
+<div class="modal fade" id="staticHtmlModal" tabindex="-1" aria-labelledby="staticHtmlModalTitle">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Generate Offline Report (Static HTML)') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="staticHtmlModalTitle">{{ _('Generate Offline Report (Static HTML)') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <form id="staticHtmlForm">
                 <div class="modal-body">
@@ -1133,12 +1133,12 @@ if (staticHtmlModal) {
 </script>
 
 <!-- Deduplicated Report Modal -->
-<div class="modal fade" id="deduplicatedModal" tabindex="-1">
+<div class="modal fade" id="deduplicatedModal" tabindex="-1" aria-labelledby="deduplicatedModalTitle">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Generate Deduplicated Report') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="deduplicatedModalTitle">{{ _('Generate Deduplicated Report') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <form id="deduplicatedForm">
                 <div class="modal-body">
@@ -1273,12 +1273,12 @@ if (deduplicatedModal) {
 </script>
 
 <!-- Recordings Report Modal -->
-<div class="modal fade" id="recordingsModal" tabindex="-1">
+<div class="modal fade" id="recordingsModal" tabindex="-1" aria-labelledby="recordingsModalTitle">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Generate Recordings Report') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title" id="recordingsModalTitle">{{ _('Generate Recordings Report') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <form id="recordingsForm">
                 <div class="modal-body">
@@ -1354,12 +1354,12 @@ if (deduplicatedModal) {
 </div>
 
 <!-- Error/Info Dialog Modal -->
-<div class="modal fade" id="messageModal" tabindex="-1">
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalTitle">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="messageModalTitle">{{ _('Notice') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body">
                 <p id="messageModalBody"></p>

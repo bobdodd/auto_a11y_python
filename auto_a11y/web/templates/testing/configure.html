@@ -354,7 +354,7 @@ function showAlert(type, message) {
     alertDiv.setAttribute('role', 'alert');
     alertDiv.innerHTML = `
         ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ _('Dismiss') }}"></button>
     `;
     
     const container = document.querySelector('.container');

@@ -575,7 +575,7 @@
                     </tbody>
                     <tfoot class="table-light">
                         <tr>
-                            <th colspan="3">{{ _('Totals') }}</th>
+                            <th scope="row" colspan="3">{{ _('Totals') }}</th>
                             {% set total_passed = latest_result.metadata.checks | map(attribute='passed') | map('default', 0) | sum %}
                             {% set total_failed = latest_result.metadata.checks | map(attribute='failed') | map('default', 0) | sum %}
                             {% set total_na = latest_result.metadata.checks | selectattr('total', 'equalto', 0) | list | length %}
@@ -3672,7 +3672,7 @@
 </div>
 
 <!-- Screenshot Modal -->
-<div class="modal fade" id="screenshotModal" tabindex="-1">
+<div class="modal fade" id="screenshotModal" tabindex="-1" aria-labelledby="screenshotModalTitle">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
@@ -3693,11 +3693,11 @@
 </div>
 
 <!-- Test Page Modal -->
-<div class="modal fade" id="testModal" tabindex="-1">
+<div class="modal fade" id="testModal" tabindex="-1" aria-labelledby="testModalTitle">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Running Test') }}</h5>
+                <h5 class="modal-title" id="testModalTitle">{{ _('Running Test') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body text-center">

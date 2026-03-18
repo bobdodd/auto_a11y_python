@@ -26,12 +26,14 @@
         </div>
     </div>
 
+    <section aria-labelledby="features-heading">
+    <h2 id="features-heading" class="visually-hidden">{{ _('Features') }}</h2>
     <div class="row mt-5">
         <div class="col-md-4 mb-4">
             <div class="card h-100">
                 <div class="card-body text-center">
                     <i class="bi bi-robot display-4 text-primary"></i>
-                    <h5 class="card-title mt-3">{{ _('AI-Powered Analysis') }}</h5>
+                    <h2 class="card-title mt-3">{{ _('AI-Powered Analysis') }}</h2>
                     <p class="card-text">
                         {{ _('Claude AI detects complex accessibility issues that require visual understanding') }}
                     </p>
@@ -42,7 +44,7 @@
             <div class="card h-100">
                 <div class="card-body text-center">
                     <i class="bi bi-browser-chrome display-4 text-primary"></i>
-                    <h5 class="card-title mt-3">{{ _('Browser Testing') }}</h5>
+                    <h2 class="card-title mt-3">{{ _('Browser Testing') }}</h2>
                     <p class="card-text">
                         {{ _('Real browser testing with Puppeteer ensures accurate DOM-based results') }}
                     </p>
@@ -53,7 +55,7 @@
             <div class="card h-100">
                 <div class="card-body text-center">
                     <i class="bi bi-file-earmark-check display-4 text-primary"></i>
-                    <h5 class="card-title mt-3">{{ _('WCAG Compliance') }}</h5>
+                    <h2 class="card-title mt-3">{{ _('WCAG Compliance') }}</h2>
                     <p class="card-text">
                         {{ _('Comprehensive testing against WCAG 2.1 Level A, AA, and AAA guidelines') }}
                     </p>
@@ -61,5 +63,6 @@
             </div>
         </div>
     </div>
+    </section>
 </div>
 {% endblock %}

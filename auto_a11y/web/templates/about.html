@@ -4,21 +4,22 @@
 
 {% block content %}
 <div class="container-fluid">
-    <h1 class="h2 mb-4">
+    <h1 class="mb-4">
         <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('About Auto A11y') }}
     </h1>
 
     <div class="row">
         <div class="col-lg-8">
             <!-- About Auto A11y -->
+            <section aria-labelledby="about-heading">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="bi bi-universal-access-circle" aria-hidden="true"></i> {{ _('About Auto A11y') }}</h5>
+                    <h2 id="about-heading" class="mb-0"><i class="bi bi-universal-access-circle" aria-hidden="true"></i> {{ _('About Auto A11y') }}</h2>
                 </div>
                 <div class="card-body">
                     <p class="lead">{{ _('Auto A11y is an automated web accessibility testing tool designed to help developers and testers identify and fix accessibility issues in web applications.') }}</p>
 
-                    <h6 class="mt-4">{{ _('Features') }}</h6>
+                    <h3 class="mt-4">{{ _('Features') }}</h3>
                     <ul>
                         <li>{{ _('Automated WCAG 2.2 compliance testing') }}</li>
                         <li>{{ _('Lived experience testing with real users') }}</li>
@@ -28,16 +29,18 @@
                     </ul>
                 </div>
             </div>
+            </section>
 
             <!-- WCAG Data Attribution -->
+            <section aria-labelledby="wcag-attribution-heading">
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0"><i class="bi bi-file-text" aria-hidden="true"></i> {{ _('WCAG Data Attribution') }}</h5>
+                    <h2 id="wcag-attribution-heading" class="mb-0"><i class="bi bi-file-text" aria-hidden="true"></i> {{ _('WCAG Data Attribution') }}</h2>
                 </div>
                 <div class="card-body">
                     <p>{{ _('This application uses official WCAG (Web Content Accessibility Guidelines) data from the World Wide Web Consortium (W3C).') }}</p>
 
-                    <h6 class="mt-3">{{ _('Source') }}</h6>
+                    <h3 class="mt-3">{{ _('Source') }}</h3>
                     <p>{{ _('The WCAG Success Criteria data used in this application is sourced from:') }}</p>
                     <ul>
                         <li>
@@ -61,11 +64,11 @@
                     </ul>
 
                     <div class="alert alert-warning mt-3" role="alert">
-                        <h6 class="alert-heading"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Important Notice') }}</h6>
+                        <h3 class="alert-heading"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Important Notice') }}</h3>
                         <p class="mb-0">{{ _('The WCAG content is used with attribution as permitted by W3C. The content has not been modified. All additional content, analysis, and features provided by Auto A11y are clearly distinguished from the original W3C WCAG content.') }}</p>
                     </div>
 
-                    <h6 class="mt-3">{{ _('Copyright') }}</h6>
+                    <h3 class="mt-3">{{ _('Copyright') }}</h3>
                     <p class="small text-muted">
                         {{ _('Copyright © 2008-2023 World Wide Web Consortium.') }}
                         <a href="https://www.w3.org/Consortium/Legal/2015/doc-license" target="_blank" rel="noopener noreferrer">
@@ -74,14 +77,16 @@
                     </p>
                 </div>
             </div>
+            </section>
 
             <!-- Additional Resources -->
+            <section aria-labelledby="resources-heading">
             <div class="card mb-4">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0"><i class="bi bi-book" aria-hidden="true"></i> {{ _('Additional Resources') }}</h5>
+                    <h2 id="resources-heading" class="mb-0"><i class="bi bi-book" aria-hidden="true"></i> {{ _('Additional Resources') }}</h2>
                 </div>
                 <div class="card-body">
-                    <h6>{{ _('W3C Web Accessibility Initiative (WAI)') }}</h6>
+                    <h3>{{ _('W3C Web Accessibility Initiative (WAI)') }}</h3>
                     <ul>
                         <li>
                             <a href="https://www.w3.org/WAI/" target="_blank" rel="noopener noreferrer">
@@ -107,16 +112,17 @@
 
                 </div>
             </div>
+            </section>
         </div>
 
         <!-- Sidebar -->
-        <div class="col-lg-4">
+        <aside class="col-lg-4">
             <div class="card sticky-top" style="top: 20px;">
                 <div class="card-header bg-secondary text-white">
-                    <h5 class="mb-0"><i class="bi bi-info-square" aria-hidden="true"></i> {{ _('Quick Info') }}</h5>
+                    <h2 class="mb-0"><i class="bi bi-info-square" aria-hidden="true"></i> {{ _('Quick Info') }}</h2>
                 </div>
                 <div class="card-body">
-                    <h6>{{ _('Version Information') }}</h6>
+                    <h3>{{ _('Version Information') }}</h3>
                     <p class="small">
                         <strong>{{ _('WCAG Version:') }}</strong> 2.2<br>
                         <strong>{{ _('Last Updated:') }}</strong> {{ _('October 2023') }}
@@ -124,7 +130,7 @@
 
                     <hr>
 
-                    <h6>{{ _('Conformance Levels') }}</h6>
+                    <h3>{{ _('Conformance Levels') }}</h3>
                     <p class="small">{{ _('Auto A11y tests against all three WCAG conformance levels:') }}</p>
                     <ul class="small">
                         <li><strong>{{ _('Level A:') }}</strong> {{ _('Minimum level of conformance') }}</li>
@@ -134,7 +140,7 @@
 
                     <hr>
 
-                    <h6>{{ _('Testing Approaches') }}</h6>
+                    <h3>{{ _('Testing Approaches') }}</h3>
                     <p class="small">{{ _('Auto A11y supports multiple testing approaches:') }}</p>
                     <ul class="small">
                         <li><strong>{{ _('Automated Testing:') }}</strong> {{ _('Using axe-core engine') }}</li>
@@ -154,7 +160,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </aside>
     </div>
 </div>
 {% endblock %}

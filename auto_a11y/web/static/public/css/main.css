@@ -20,16 +20,16 @@ body {
 
 /* Focus indicator (global) */
 :focus-visible {
-    outline: var(--focus-outline);
-    outline-offset: var(--focus-offset);
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
 }
 
 a {
-    color: var(--color-primary-light);
+    color: var(--color-link);
 }
 
 a:hover {
-    color: var(--color-primary-dark);
+    color: var(--color-brand-hover);
 }
 
 /* ---------- Utilities ---------- */
@@ -73,7 +73,7 @@ a:hover {
     position: absolute;
     top: -100%;
     left: var(--space-md);
-    background: var(--color-primary);
+    background: var(--color-brand);
     color: var(--color-text-inverse);
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--border-radius);
@@ -373,7 +373,7 @@ details {
 
 details summary {
     cursor: pointer;
-    color: var(--color-primary-light);
+    color: var(--color-link);
     font-size: var(--font-size-sm);
 }
 
@@ -411,7 +411,7 @@ details pre {
 }
 
 .form-input:focus {
-    border-color: var(--color-primary);
+    border-color: var(--color-brand);
 }
 
 .btn {
@@ -427,12 +427,12 @@ details pre {
 }
 
 .btn-primary {
-    background: var(--color-primary);
+    background: var(--color-brand);
     color: var(--color-text-inverse);
 }
 
 .btn-primary:hover {
-    background: var(--color-primary-dark);
+    background: var(--color-brand-hover);
     color: var(--color-text-inverse);
 }
 
@@ -451,25 +451,25 @@ details pre {
 }
 
 .btn-microsoft {
-    background: #2f2f2f;
-    color: #fff;
-    border: 1px solid #2f2f2f;
+    background: var(--color-sso-microsoft-bg);
+    color: var(--color-text-inverse);
+    border: 1px solid var(--color-sso-microsoft-bg);
 }
 
 .btn-microsoft:hover {
-    background: #1a1a1a;
-    color: #fff;
+    background: var(--color-sso-microsoft-hover);
+    color: var(--color-text-inverse);
 }
 
 .btn-google {
-    background: #fff;
-    color: #3c4043;
-    border: 1px solid #dadce0;
+    background: var(--color-bg);
+    color: var(--color-sso-google-text);
+    border: 1px solid var(--color-sso-google-border);
 }
 
 .btn-google:hover {
-    background: #f7f8f8;
-    color: #3c4043;
+    background: var(--color-sso-google-hover);
+    color: var(--color-sso-google-text);
 }
 
 .btn-microsoft + .btn-google,
@@ -508,13 +508,13 @@ details pre {
 }
 
 .flash-danger {
-    background: #fdedec;
+    background: var(--color-severity-high-bg);
     border-color: var(--color-severity-high);
     color: var(--color-severity-high);
 }
 
 .flash-success {
-    background: #eafaf1;
+    background: var(--color-severity-pass-bg);
     border-color: var(--color-severity-pass);
     color: var(--color-severity-pass);
 }

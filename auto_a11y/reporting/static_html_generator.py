@@ -734,13 +734,29 @@ class StaticHTMLReportGenerator:
             bootstrap_js = bootstrap_js.replace('//# sourceMappingURL=bootstrap.bundle.min.js.map', '')
             assets['bootstrap_js'] = bootstrap_js
 
+            # Read design tokens CSS (lives in public static dir)
+            tokens_css_path = static_dir / 'public' / 'css' / 'tokens.css'
+            if tokens_css_path.exists():
+                assets['tokens_css'] = tokens_css_path.read_text(encoding='utf-8')
+            else:
+                assets['tokens_css'] = ''
+
+            # Read custom style CSS
+            style_css_path = static_dir / 'css' / 'style.css'
+            if style_css_path.exists():
+                assets['style_css'] = style_css_path.read_text(encoding='utf-8')
+            else:
+                assets['style_css'] = ''
+
         except Exception as e:
             logger.error(f"Failed to read embedded assets: {e}")
             # Return empty strings if files can't be read
             assets = {
                 'bootstrap_css': '',
                 'bootstrap_icons_css': '',
-                'bootstrap_js': ''
+                'bootstrap_js': '',
+                'tokens_css': '',
+                'style_css': ''
             }
 
         return assets
@@ -1595,11 +1611,16 @@ class StaticHTMLReportGenerator:
         static_dir = Path(__file__).parent.parent / 'web' / 'static'
 
         # Copy CSS files
-        css_files = ['bootstrap.min.css', 'bootstrap-icons.css', 'custom.css']
+        css_files = ['bootstrap.min.css', 'bootstrap-icons.css', 'style.css', 'custom.css']
         for css_file in css_files:
             src = static_dir / 'css' / css_file
             if src.exists():
                 shutil.copy(src, report_dir / 'assets' / 'css' / css_file)
+
+        # Copy tokens.css from public static directory
+        tokens_src = static_dir / 'public' / 'css' / 'tokens.css'
+        if tokens_src.exists():
+            shutil.copy(tokens_src, report_dir / 'assets' / 'css' / 'tokens.css')
 
         # Copy JS files
         js_files = ['bootstrap.bundle.min.js', 'filters.js', 'navigation.js', 'search.js']
@@ -2502,6 +2523,8 @@ class StaticHTMLReportGenerator:
                 bootstrap_css=embedded_assets['bootstrap_css'],
                 bootstrap_icons_css=embedded_assets['bootstrap_icons_css'],
                 bootstrap_js=embedded_assets['bootstrap_js'],
+                tokens_css=embedded_assets.get('tokens_css', ''),
+                style_css=embedded_assets.get('style_css', ''),
                 show_error_codes=config.SHOW_ERROR_CODES
             )
 
@@ -3031,6 +3054,8 @@ class StaticHTMLReportGenerator:
                 bootstrap_css=embedded_assets['bootstrap_css'],
                 bootstrap_icons_css=embedded_assets['bootstrap_icons_css'],
                 bootstrap_js=embedded_assets['bootstrap_js'],
+                tokens_css=embedded_assets.get('tokens_css', ''),
+                style_css=embedded_assets.get('style_css', ''),
                 show_error_codes=config.SHOW_ERROR_CODES
             )
 

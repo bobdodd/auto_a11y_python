@@ -16,15 +16,18 @@
 {{ bootstrap_icons_css|safe }}
     </style>
 
+    <!-- Embedded Design Tokens -->
+    <style>
+{{ tokens_css|safe }}
+    </style>
+
+    <!-- Embedded Application Styles -->
+    <style>
+{{ style_css|safe }}
+    </style>
+
     <!-- Custom styles for report -->
     <style>
-        :root {
-            --primary-color: #0d6efd;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --info-color: #0e7490;
-            --success-color: #198754;
-        }
 
         /* Language switcher styles */
         .lang-switcher {
@@ -51,7 +54,7 @@
 
         .lang-switcher button.active {
             background: white;
-            color: var(--primary-color);
+            color: var(--color-brand);
             border-color: white;
         }
 
@@ -68,7 +71,7 @@
         }
 
         .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--color-brand) 0%, var(--color-discovery) 100%);
         }
 
         .stat-card {
@@ -89,7 +92,7 @@
             font-size: 0.875rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #6c757d;
+            color: var(--color-text-muted);
         }
 
         .skip-link:focus {
@@ -105,7 +108,7 @@
     </style>
 </head>
 <body>
-    <a class="skip-link" href="#main-content" style="position:absolute;top:-40px;left:0;background:#0d6efd;color:white;padding:8px;text-decoration:none;z-index:1100;">Skip to main content</a>
+    <a class="skip-link" href="#main-content" style="position:absolute;top:-40px;left:0;background:var(--color-brand);color:var(--color-text-inverse);padding:8px;text-decoration:none;z-index:1100;">Skip to main content</a>
     <!-- Navigation -->
     <nav class="navbar navbar-dark mb-4" id="main-content">
         <div class="container-fluid">

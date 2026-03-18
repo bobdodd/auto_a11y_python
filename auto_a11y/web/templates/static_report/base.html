@@ -10,19 +10,14 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="{{ asset_path }}css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset_path }}css/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ asset_path }}css/tokens.css">
+    <link rel="stylesheet" href="{{ asset_path }}css/style.css">
     <link rel="stylesheet" href="{{ asset_path }}css/custom.css">
 
     {% block extra_css %}{% endblock %}
 
     <style>
         /* Custom styles for static report */
-        :root {
-            --primary-color: #0d6efd;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --info-color: #0e7490;
-            --success-color: #198754;
-        }
 
         /* Language switcher styles */
         .lang-switcher {
@@ -49,7 +44,7 @@
 
         .lang-switcher button.active {
             background: white;
-            color: var(--primary-color);
+            color: var(--color-brand);
             border-color: white;
         }
 
@@ -94,7 +89,7 @@
             font-size: 0.875rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #6c757d;
+            color: var(--color-text-muted);
         }
 
         .badge-count {
@@ -103,7 +98,7 @@
         }
 
         .page-list-item {
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--color-border-table);
             border-radius: 6px;
             padding: 1rem;
             margin-bottom: 0.75rem;
@@ -115,7 +110,7 @@
         }
 
         .filter-section {
-            background: #f8f9fa;
+            background: var(--color-bg-subtle);
             padding: 1rem;
             border-radius: 6px;
             margin-bottom: 1.5rem;
@@ -132,10 +127,10 @@
         }
 
         .footer {
-            background-color: #f8f9fa;
+            background-color: var(--color-bg-subtle);
             padding: 1.5rem 0;
             margin-top: 3rem;
-            border-top: 1px solid #dee2e6;
+            border-top: 1px solid var(--color-border-table);
         }
 
         .score-badge {
@@ -144,9 +139,9 @@
         }
 
         .score-excellent { background-color: var(--color-severity-pass); }
-        .score-good { background-color: #20c997; }
-        .score-fair { background-color: var(--color-severity-medium); color: #000; }
-        .score-poor { background-color: #fd7e14; }
+        .score-good { background-color: var(--color-score-good); }
+        .score-fair { background-color: var(--color-severity-medium); color: var(--color-text); }
+        .score-poor { background-color: var(--color-score-poor); }
         .score-critical { background-color: var(--color-severity-high); }
 
         .skip-link:focus {
@@ -178,7 +173,7 @@
     </style>
 </head>
 <body>
-    <a class="skip-link" href="#main-content" style="position:absolute;top:-40px;left:0;background:#0d6efd;color:white;padding:8px;text-decoration:none;z-index:1100;">Skip to main content</a>
+    <a class="skip-link" href="#main-content" style="position:absolute;top:-40px;left:0;background:var(--color-brand);color:var(--color-text-inverse);padding:8px;text-decoration:none;z-index:1100;">Skip to main content</a>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary no-print" aria-label="{{ _('Report navigation') }}">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ index_path }}index.html">

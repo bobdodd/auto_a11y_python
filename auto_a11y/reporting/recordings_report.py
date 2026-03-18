@@ -63,13 +63,29 @@ class RecordingsReportGenerator:
             bootstrap_js = bootstrap_js.replace('//# sourceMappingURL=bootstrap.bundle.min.js.map', '')
             assets['bootstrap_js'] = bootstrap_js
 
+            # Read design tokens CSS (lives in public static dir)
+            tokens_css_path = static_dir / 'public' / 'css' / 'tokens.css'
+            if tokens_css_path.exists():
+                assets['tokens_css'] = tokens_css_path.read_text(encoding='utf-8')
+            else:
+                assets['tokens_css'] = ''
+
+            # Read custom style CSS
+            style_css_path = static_dir / 'css' / 'style.css'
+            if style_css_path.exists():
+                assets['style_css'] = style_css_path.read_text(encoding='utf-8')
+            else:
+                assets['style_css'] = ''
+
         except Exception as e:
             logger.error(f"Failed to read embedded assets: {e}")
             # Return empty strings if files can't be read
             assets = {
                 'bootstrap_css': '',
                 'bootstrap_icons_css': '',
-                'bootstrap_js': ''
+                'bootstrap_js': '',
+                'tokens_css': '',
+                'style_css': ''
             }
 
         return assets
@@ -411,7 +427,9 @@ class RecordingsReportGenerator:
             'asset_path': '',  # Empty for standalone - assets are embedded
             'bootstrap_css': embedded_assets['bootstrap_css'],
             'bootstrap_icons_css': embedded_assets['bootstrap_icons_css'],
-            'bootstrap_js': embedded_assets['bootstrap_js']
+            'bootstrap_js': embedded_assets['bootstrap_js'],
+            'tokens_css': embedded_assets.get('tokens_css', ''),
+            'style_css': embedded_assets.get('style_css', '')
         }
 
         # Render the template

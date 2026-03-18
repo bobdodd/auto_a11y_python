@@ -5,8 +5,8 @@
 {% block content %}
 <div class="container-fluid">
     <div class="mb-4">
-        <h1 class="h2">
-            <i class="bi bi-upload"></i> {{ _('Upload Manual Audit Recording') }}
+        <h1>
+            <i class="bi bi-upload" aria-hidden="true"></i> {{ _('Upload Manual Audit Recording') }}
         </h1>
         <p class="text-muted">
             {{ _('Upload a Dictaphone JSON file containing accessibility findings from manual audits or lived experience testing.') }}
@@ -18,6 +18,9 @@
             <div class="card">
                 <div class="card-body">
                     <form method="post" action="{{ url_for('recordings.upload_recording') }}" enctype="multipart/form-data">
+                        <fieldset>
+                        <legend class="visually-hidden">{{ _('Upload Recording Details') }}</legend>
+
                         <!-- JSON File Upload - Multi-language -->
                         <div class="mb-4">
                             <label class="form-label">{{ _('Dictaphone JSON Files') }}</label>
@@ -25,8 +28,8 @@
                             <div class="border rounded p-3 mb-2 bg-light">
                                 <label for="json_file_en" class="form-label">{{ _('English Issues (EN) *') }}</label>
                                 <input type="file" class="form-control" id="json_file_en" name="json_file_en"
-                                       accept=".json" required>
-                                <div class="form-text">
+                                       accept=".json" required aria-describedby="json-file-en-help">
+                                <div class="form-text" id="json-file-en-help">
                                     {{ _('JSON file with accessibility issues in English.') }}
                                 </div>
                             </div>
@@ -34,17 +37,17 @@
                             <div class="border rounded p-3 bg-light">
                                 <label for="json_file_fr" class="form-label">{{ _('French Issues (FR)') }}</label>
                                 <input type="file" class="form-control" id="json_file_fr" name="json_file_fr"
-                                       accept=".json">
-                                <div class="form-text">
+                                       accept=".json" aria-describedby="json-file-fr-help">
+                                <div class="form-text" id="json-file-fr-help">
                                     {{ _('Optional: JSON file with accessibility issues in French.') }}
                                 </div>
                             </div>
                         </div>
 
                         <!-- Recording Content Files (HTML/JSON) - Multi-language Support -->
-                        <div class="card mb-4 bg-light">
+                        <fieldset class="card mb-4 bg-light">
                             <div class="card-header">
-                                <h6 class="mb-0"><i class="bi bi-file-earmark-text"></i> {{ _('Recording Content (Optional)') }}</h6>
+                                <legend class="mb-0"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ _('Recording Content (Optional)') }}</legend>
                             </div>
                             <div class="card-body">
                                 <p class="small text-muted mb-3">
@@ -53,13 +56,13 @@
 
                                 <!-- English Content -->
                                 <div class="border rounded p-3 mb-3 bg-white">
-                                    <h6 class="text-primary mb-3"><i class="bi bi-flag"></i> {{ _('English Content') }}</h6>
+                                    <h2 class="text-primary mb-3"><i class="bi bi-flag" aria-hidden="true"></i> {{ _('English Content') }}</h2>
 
                                     <div class="mb-3">
                                         <label for="key_takeaways_file_en" class="form-label">{{ _('Key Takeaways (EN)') }}</label>
                                         <input type="file" class="form-control" id="key_takeaways_file_en" name="key_takeaways_file_en"
-                                               accept=".html,.htm,.json">
-                                        <div class="form-text">
+                                               accept=".html,.htm,.json" aria-describedby="key-takeaways-en-help">
+                                        <div class="form-text" id="key-takeaways-en-help">
                                             {{ _('Numbered list of the most important accessibility issues found.') }}
                                         </div>
                                     </div>
@@ -67,8 +70,8 @@
                                     <div class="mb-3">
                                         <label for="user_painpoints_file_en" class="form-label">{{ _('User Painpoints (EN)') }}</label>
                                         <input type="file" class="form-control" id="user_painpoints_file_en" name="user_painpoints_file_en"
-                                               accept=".html,.htm,.json">
-                                        <div class="form-text">
+                                               accept=".html,.htm,.json" aria-describedby="user-painpoints-en-help">
+                                        <div class="form-text" id="user-painpoints-en-help">
                                             {{ _('User-focused description of difficulties experienced during testing.') }}
                                         </div>
                                     </div>
@@ -76,8 +79,8 @@
                                     <div class="mb-0">
                                         <label for="user_assertions_file_en" class="form-label">{{ _('User Assertions (EN)') }}</label>
                                         <input type="file" class="form-control" id="user_assertions_file_en" name="user_assertions_file_en"
-                                               accept=".html,.htm,.json">
-                                        <div class="form-text">
+                                               accept=".html,.htm,.json" aria-describedby="user-assertions-en-help">
+                                        <div class="form-text" id="user-assertions-en-help">
                                             {{ _('Direct quotes and observations from the tester with timecodes.') }}
                                         </div>
                                     </div>
@@ -85,13 +88,13 @@
 
                                 <!-- French Content -->
                                 <div class="border rounded p-3 bg-white">
-                                    <h6 class="text-primary mb-3"><i class="bi bi-flag"></i> {{ _('French Content (Contenu français)') }}</h6>
+                                    <h2 class="text-primary mb-3"><i class="bi bi-flag" aria-hidden="true"></i> {{ _('French Content (Contenu français)') }}</h2>
 
                                     <div class="mb-3">
                                         <label for="key_takeaways_file_fr" class="form-label">{{ _('Key Takeaways (FR)') }}</label>
                                         <input type="file" class="form-control" id="key_takeaways_file_fr" name="key_takeaways_file_fr"
-                                               accept=".html,.htm,.json">
-                                        <div class="form-text">
+                                               accept=".html,.htm,.json" aria-describedby="key-takeaways-fr-help">
+                                        <div class="form-text" id="key-takeaways-fr-help">
                                             {{ _('Liste numérotée des problèmes d\'accessibilité les plus importants trouvés.') }}
                                         </div>
                                     </div>
@@ -99,8 +102,8 @@
                                     <div class="mb-3">
                                         <label for="user_painpoints_file_fr" class="form-label">{{ _('User Painpoints (FR)') }}</label>
                                         <input type="file" class="form-control" id="user_painpoints_file_fr" name="user_painpoints_file_fr"
-                                               accept=".html,.htm,.json">
-                                        <div class="form-text">
+                                               accept=".html,.htm,.json" aria-describedby="user-painpoints-fr-help">
+                                        <div class="form-text" id="user-painpoints-fr-help">
                                             {{ _('Description des difficultés rencontrées lors des tests.') }}
                                         </div>
                                     </div>
@@ -108,25 +111,25 @@
                                     <div class="mb-0">
                                         <label for="user_assertions_file_fr" class="form-label">{{ _('User Assertions (FR)') }}</label>
                                         <input type="file" class="form-control" id="user_assertions_file_fr" name="user_assertions_file_fr"
-                                               accept=".html,.htm,.json">
-                                        <div class="form-text">
+                                               accept=".html,.htm,.json" aria-describedby="user-assertions-fr-help">
+                                        <div class="form-text" id="user-assertions-fr-help">
                                             {{ _('Citations directes et observations du testeur avec les codes temporels.') }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </fieldset>
 
                         <!-- Project Selection -->
                         <div class="mb-4">
                             <label for="project_id" class="form-label">{{ _('Project *') }}</label>
-                            <select class="form-select" id="project_id" name="project_id" required>
+                            <select class="form-select" id="project_id" name="project_id" required aria-describedby="project-id-help">
                                 <option value="">{{ _('Select a project...') }}</option>
                                 {% for project in projects %}
                                 <option value="{{ project.id }}">{{ project.name }}</option>
                                 {% endfor %}
                             </select>
-                            <div class="form-text">
+                            <div class="form-text" id="project-id-help">
                                 {{ _('Which project should this recording be associated with?') }}
                             </div>
                         </div>
@@ -134,7 +137,7 @@
                         <!-- Test User Account Used -->
                         <div class="mb-4">
                             <label for="test_user_account" class="form-label">{{ _('Test User Account Used') }}</label>
-                            <select class="form-select" id="test_user_account" name="test_user_account">
+                            <select class="form-select" id="test_user_account" name="test_user_account" aria-describedby="test-user-help">
                                 <option value="">{{ _('Select a test user...') }}</option>
                             </select>
                             <div class="form-text" id="test-user-help">
@@ -145,7 +148,7 @@
                         <!-- Lived Experience Tester (for lived experience recordings) -->
                         <div class="mb-4" id="tester-field" style="display: none;">
                             <label for="lived_experience_tester_id" class="form-label">{{ _('Lived Experience Tester') }}</label>
-                            <select class="form-select" id="lived_experience_tester_id" name="lived_experience_tester_id">
+                            <select class="form-select" id="lived_experience_tester_id" name="lived_experience_tester_id" aria-describedby="tester-help">
                                 <option value="">{{ _('Select a tester...') }}</option>
                             </select>
                             <div class="form-text" id="tester-help">
@@ -156,7 +159,7 @@
                         <!-- Test Supervisor (for lived experience recordings) -->
                         <div class="mb-4" id="supervisor-field" style="display: none;">
                             <label for="test_supervisor_id" class="form-label">{{ _('Test Supervisor') }}</label>
-                            <select class="form-select" id="test_supervisor_id" name="test_supervisor_id">
+                            <select class="form-select" id="test_supervisor_id" name="test_supervisor_id" aria-describedby="supervisor-help">
                                 <option value="">{{ _('Select a supervisor...') }}</option>
                             </select>
                             <div class="form-text" id="supervisor-help">
@@ -168,8 +171,8 @@
                         <div class="mb-4">
                             <label for="title" class="form-label">{{ _('Recording Title') }}</label>
                             <input type="text" class="form-control" id="title" name="title"
-                                   placeholder="{{ _('e.g., Main Website Screen Reader Audit') }}">
-                            <div class="form-text">
+                                   placeholder="{{ _('e.g., Main Website Screen Reader Audit') }}" aria-describedby="title-help">
+                            <div class="form-text" id="title-help">
                                 {{ _('Optional: A descriptive title for this recording.') }}
                             </div>
                         </div>
@@ -210,8 +213,8 @@
                         <div class="mb-4">
                             <label for="page_urls" class="form-label">{{ _('Page URLs Covered') }}</label>
                             <textarea class="form-control" id="page_urls" name="page_urls" rows="3"
-                                      placeholder="https://example.com/&#10;https://example.com/about&#10;https://example.com/contact"></textarea>
-                            <div class="form-text">
+                                      placeholder="https://example.com/&#10;https://example.com/about&#10;https://example.com/contact" aria-describedby="page-urls-help"></textarea>
+                            <div class="form-text" id="page-urls-help">
                                 {{ _('Optional: Enter one URL per line for specific pages discussed in this recording.') }}
                             </div>
                         </div>
@@ -222,7 +225,7 @@
                             <div class="form-text mb-2" id="discovered-pages-help">
                                 {{ _('Optional: Select discovered pages related to this recording. Choose a project first to see available pages.') }}
                             </div>
-                            <div id="discovered-pages-container" style="max-height: 200px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.25rem; padding: 0.5rem;">
+                            <div id="discovered-pages-container" aria-describedby="discovered-pages-help" style="max-height: 200px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.25rem; padding: 0.5rem;">
                                 <p class="text-muted small mb-0">{{ _('Select a project to see discovered pages.') }}</p>
                             </div>
                         </div>
@@ -231,8 +234,8 @@
                         <div class="mb-4">
                             <label for="component_names" class="form-label">{{ _('Common Components') }}</label>
                             <textarea class="form-control" id="component_names" name="component_names" rows="3"
-                                      placeholder="header&#10;navigation&#10;footer&#10;search bar"></textarea>
-                            <div class="form-text">
+                                      placeholder="header&#10;navigation&#10;footer&#10;search bar" aria-describedby="component-names-help"></textarea>
+                            <div class="form-text" id="component-names-help">
                                 {{ _('Optional: Enter one component name per line (e.g., header, nav, footer, modal, carousel).') }}
                             </div>
                         </div>
@@ -241,8 +244,8 @@
                         <div class="mb-4">
                             <label for="app_screens" class="form-label">{{ _('App Screens / Views') }}</label>
                             <textarea class="form-control" id="app_screens" name="app_screens" rows="3"
-                                      placeholder="Login screen&#10;Home dashboard&#10;Settings page"></textarea>
-                            <div class="form-text">
+                                      placeholder="Login screen&#10;Home dashboard&#10;Settings page" aria-describedby="app-screens-help"></textarea>
+                            <div class="form-text" id="app-screens-help">
                                 {{ _('Optional: For app projects - enter one screen/view name per line.') }}
                             </div>
                         </div>
@@ -251,8 +254,8 @@
                         <div class="mb-4">
                             <label for="device_sections" class="form-label">{{ _('Device Sections') }}</label>
                             <textarea class="form-control" id="device_sections" name="device_sections" rows="3"
-                                      placeholder="Main screen&#10;Keypad&#10;Card reader"></textarea>
-                            <div class="form-text">
+                                      placeholder="Main screen&#10;Keypad&#10;Card reader" aria-describedby="device-sections-help"></textarea>
+                            <div class="form-text" id="device-sections-help">
                                 {{ _('Optional: For tangible devices - enter one section name per line.') }}
                             </div>
                         </div>
@@ -261,16 +264,16 @@
                         <div class="mb-4">
                             <label for="task_description" class="form-label">{{ _('Task Description') }}</label>
                             <textarea class="form-control" id="task_description" name="task_description" rows="2"
-                                      placeholder="{{ _('Complete checkout process') }}"></textarea>
-                            <div class="form-text">
+                                      placeholder="{{ _('Complete checkout process') }}" aria-describedby="task-description-help"></textarea>
+                            <div class="form-text" id="task-description-help">
                                 {{ _('Optional: Describe the specific task being performed (e.g., "Complete checkout", "Navigate to settings").') }}
                             </div>
                         </div>
 
                         <!-- Testing Scope -->
-                        <div class="mb-4">
-                            <label class="form-label">{{ _('Testing Scope') }}</label>
-                            <div class="form-text mb-2">
+                        <fieldset class="mb-4">
+                            <legend class="form-label">{{ _('Testing Scope') }}</legend>
+                            <div class="form-text mb-2" id="testing-scope-help">
                                 {{ _('Select the content types covered in this recording to determine applicable WCAG criteria for compliance scoring.') }}
                             </div>
                             <div class="row">
@@ -333,14 +336,14 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </fieldset>
 
                         <!-- Media File Path -->
                         <div class="mb-4">
                             <label for="media_file_path" class="form-label">{{ _('Media File Path') }}</label>
                             <input type="text" class="form-control" id="media_file_path" name="media_file_path"
-                                   placeholder="/path/to/recording.mp4 or https://videos.example.com/audit.mp4">
-                            <div class="form-text">
+                                   placeholder="/path/to/recording.mp4 or https://videos.example.com/audit.mp4" aria-describedby="media-file-path-help">
+                            <div class="form-text" id="media-file-path-help">
                                 {{ _('Optional: Path or URL to the actual video/audio recording file for reference.') }}
                             </div>
                         </div>
@@ -348,12 +351,13 @@
                         <!-- Action Buttons -->
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-upload"></i> {{ _('Upload Recording') }}
+                                <i class="bi bi-upload" aria-hidden="true"></i> {{ _('Upload Recording') }}
                             </button>
                             <a href="{{ url_for('recordings.list_recordings') }}" class="btn btn-outline-secondary">
                                 {{ _('Cancel') }}
                             </a>
                         </div>
+                        </fieldset>
                     </form>
                 </div>
             </div>
@@ -362,7 +366,7 @@
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">{{ _('About Dictaphone Format') }}</h5>
+                    <h2 class="mb-0">{{ _('About Dictaphone Format') }}</h2>
                 </div>
                 <div class="card-body">
                     <p class="small">
@@ -377,7 +381,7 @@
                         <li><strong>{{ _('Detailed Descriptions:') }}</strong> {{ _('What, why, who, and how to fix') }}</li>
                     </ul>
 
-                    <h6 class="mt-4">{{ _('Example JSON Structure') }}</h6>
+                    <h3 class="mt-4">{{ _('Example JSON Structure') }}</h3>
                     <pre class="small bg-light p-2" style="font-size: 0.75rem;"><code>{
   "recording": "NED-A",
   "issues": [

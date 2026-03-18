@@ -14,7 +14,7 @@
                     <li class="breadcrumb-item active">Combined View</li>
                 </ol>
             </nav>
-            <h1 class="h2 mb-0">All Recordings Combined</h1>
+            <h1 class="mb-0">All Recordings Combined</h1>
             <p class="text-muted">{{ recordings|length }} recordings, {{ total_issues }} total issues</p>
         </div>
     </div>
@@ -24,7 +24,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Total Issues</h6>
+                    <h2 class="text-muted mb-2">Total Issues</h2>
                     <p class="display-6 mb-0">{{ total_issues }}</p>
                 </div>
             </div>
@@ -32,7 +32,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">High Impact</h6>
+                    <h2 class="text-muted mb-2">High Impact</h2>
                     <p class="display-6 text-danger mb-0">{{ high_count }}</p>
                 </div>
             </div>
@@ -40,7 +40,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Medium Impact</h6>
+                    <h2 class="text-muted mb-2">Medium Impact</h2>
                     <p class="display-6 text-warning mb-0">{{ medium_count }}</p>
                 </div>
             </div>
@@ -48,7 +48,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Low Impact</h6>
+                    <h2 class="text-muted mb-2">Low Impact</h2>
                     <p class="display-6 text-info mb-0">{{ low_count }}</p>
                 </div>
             </div>
@@ -58,17 +58,17 @@
     <!-- Recordings Included -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">Recordings Included</h5>
+            <h2 class="mb-0">Recordings Included</h2>
         </div>
         <div class="card-body">
             <div class="row">
                 {% for recording in recordings %}
                 <div class="col-md-6 mb-2">
-                    <div class="d-flex align-items-center">
+                    <article class="d-flex align-items-center">
                         <span class="badge bg-secondary me-2">{{ recording.recording_type.value|replace('_', ' ')|title }}</span>
                         <span class="me-2">{{ recording.title }}</span>
                         <span class="badge bg-danger">{{ recording.total_issues }} issues</span>
-                    </div>
+                    </article>
                 </div>
                 {% endfor %}
             </div>
@@ -78,16 +78,16 @@
     <!-- Issues by Touchpoint -->
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-bug me-2"></i>Accessibility Issues by Touchpoint</h5>
+            <h2 class="mb-0"><i class="bi bi-bug me-2" aria-hidden="true"></i>Accessibility Issues by Touchpoint</h2>
         </div>
         <div class="card-body">
             {% if issues_by_touchpoint %}
             {% for touchpoint, issues in issues_by_touchpoint.items()|sort %}
             <div class="mb-4">
-                <h5 class="border-bottom pb-2 mb-3">
-                    <i class="bi bi-folder"></i> {{ touchpoint }}
+                <h3 class="border-bottom pb-2 mb-3">
+                    <i class="bi bi-folder" aria-hidden="true"></i> {{ touchpoint }}
                     <span class="badge bg-secondary">{{ issues|length }}</span>
-                </h5>
+                </h3>
 
                 <div class="accordion" id="accordion-{{ touchpoint|replace(' ', '-') }}">
                     {% for issue in issues %}

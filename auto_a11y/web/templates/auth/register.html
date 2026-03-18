@@ -7,7 +7,7 @@
     <div class="col-md-6 col-lg-4">
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
-                <h1 class="h4 mb-0"><i class="bi bi-person-plus" aria-hidden="true"></i> {{ _('Register') }}</h1>
+                <h1 class="mb-0"><i class="bi bi-person-plus" aria-hidden="true"></i> {{ _('Register') }}</h1>
             </div>
             <div class="card-body">
                 {% if is_first_user %}
@@ -17,27 +17,30 @@
                 {% endif %}
                 
                 <form method="POST" action="{{ url_for('auth.register') }}">
-                    <div class="mb-3">
-                        <label for="email" class="form-label">{{ _('Email') }} <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="email" name="email" required autofocus autocomplete="email">
-                    </div>
-                    <div class="mb-3">
-                        <label for="display_name" class="form-label">{{ _('Display Name') }}</label>
-                        <input type="text" class="form-control" id="display_name" name="display_name">
-                        <div class="form-text">{{ _('Optional. How you want your name displayed.') }}</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">{{ _('Password') }} <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" id="password" name="password" required minlength="8" autocomplete="new-password">
-                        <div class="form-text">{{ _('Minimum 8 characters.') }}</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirm_password" class="form-label">{{ _('Confirm Password') }} <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" id="confirm_password" name="confirm_password" required autocomplete="new-password">
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-person-plus" aria-hidden="true"></i> {{ _('Create Account') }}
-                    </button>
+                    <fieldset>
+                        <legend class="visually-hidden">{{ _('Account Details') }}</legend>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">{{ _('Email') }} <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="email" name="email" required autofocus autocomplete="email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="display_name" class="form-label">{{ _('Display Name') }}</label>
+                            <input type="text" class="form-control" id="display_name" name="display_name" aria-describedby="display_name_help">
+                            <div class="form-text" id="display_name_help">{{ _('Optional. How you want your name displayed.') }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">{{ _('Password') }} <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="password" name="password" required minlength="8" autocomplete="new-password" aria-describedby="password_help">
+                            <div class="form-text" id="password_help">{{ _('Minimum 8 characters.') }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">{{ _('Confirm Password') }} <span class="text-danger">*</span></label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required autocomplete="new-password">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ _('Create Account') }}
+                        </button>
+                    </fieldset>
                 </form>
             </div>
             <div class="card-footer text-center">

@@ -7,7 +7,7 @@
     <div class="col-md-6 col-lg-4">
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
-                <h1 class="h4 mb-0"><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> {{ _('Login') }}</h1>
+                <h1 class="mb-0"><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> {{ _('Login') }}</h1>
             </div>
             <div class="card-body">
                 {% if microsoft_sso_enabled or google_sso_enabled %}
@@ -29,21 +29,24 @@
                 </div>
                 {% endif %}
                 <form method="POST" action="{{ url_for('auth.login') }}">
-                    <div class="mb-3">
-                        <label for="email" class="form-label">{{ _('Email') }}</label>
-                        <input type="email" class="form-control" id="email" name="email" required autofocus autocomplete="email">
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">{{ _('Password') }}</label>
-                        <input type="password" class="form-control" id="password" name="password" required autocomplete="current-password">
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
-                        <label class="form-check-label" for="remember">{{ _('Remember me') }}</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> {{ _('Login') }}
-                    </button>
+                    <fieldset>
+                        <legend class="visually-hidden">{{ _('Login Credentials') }}</legend>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">{{ _('Email') }}</label>
+                            <input type="email" class="form-control" id="email" name="email" required autofocus autocomplete="email">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">{{ _('Password') }}</label>
+                            <input type="password" class="form-control" id="password" name="password" required autocomplete="current-password">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                            <label class="form-check-label" for="remember">{{ _('Remember me') }}</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-box-arrow-in-right" aria-hidden="true"></i> {{ _('Login') }}
+                        </button>
+                    </fieldset>
                 </form>
             </div>
             <div class="card-footer text-center">

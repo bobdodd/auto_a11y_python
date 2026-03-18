@@ -7,46 +7,49 @@
     <div class="col-md-6">
         <div class="card shadow mb-4">
             <div class="card-header bg-primary text-white">
-                <h2 class="h4 mb-0"><i class="bi bi-person-gear" aria-hidden="true"></i> {{ _('Edit User') }}</h2>
+                <h2 class="mb-0"><i class="bi bi-person-gear" aria-hidden="true"></i> {{ _('Edit User') }}</h2>
             </div>
             <div class="card-body">
                 <form method="POST" action="{{ url_for('auth.user_edit', user_id=user.id) }}">
                     <input type="hidden" name="action" value="update">
-                    <div class="mb-3">
-                        <label for="email" class="form-label">{{ _('Email') }}</label>
-                        <input type="email" class="form-control" id="email" value="{{ user.email }}" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label for="display_name" class="form-label">{{ _('Display Name') }}</label>
-                        <input type="text" class="form-control" id="display_name" name="display_name" value="{{ user.display_name or '' }}">
-                    </div>
-                    <div class="mb-3">
-                        <label for="role" class="form-label">{{ _('Role') }}</label>
-                        <select class="form-select" id="role" name="role">
-                            <option value="client" {% if user.role.value == 'client' %}selected{% endif %}>{{ _('Client') }}</option>
-                            <option value="auditor" {% if user.role.value == 'auditor' %}selected{% endif %}>{{ _('Auditor') }}</option>
-                            <option value="admin" {% if user.role.value == 'admin' %}selected{% endif %}>{{ _('Admin') }}</option>
-                        </select>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if user.is_active %}checked{% endif %}>
-                        <label class="form-check-label" for="is_active">{{ _('Active') }}</label>
-                    </div>
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-check-lg" aria-hidden="true"></i> {{ _('Save Changes') }}
-                        </button>
-                        <a href="{{ url_for('auth.user_list') }}" class="btn btn-secondary">
-                            {{ _('Cancel') }}
-                        </a>
-                    </div>
+                    <fieldset>
+                        <legend class="visually-hidden">{{ _('User Details') }}</legend>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">{{ _('Email') }}</label>
+                            <input type="email" class="form-control" id="email" value="{{ user.email }}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="display_name" class="form-label">{{ _('Display Name') }}</label>
+                            <input type="text" class="form-control" id="display_name" name="display_name" value="{{ user.display_name or '' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">{{ _('Role') }}</label>
+                            <select class="form-select" id="role" name="role">
+                                <option value="client" {% if user.role.value == 'client' %}selected{% endif %}>{{ _('Client') }}</option>
+                                <option value="auditor" {% if user.role.value == 'auditor' %}selected{% endif %}>{{ _('Auditor') }}</option>
+                                <option value="admin" {% if user.role.value == 'admin' %}selected{% endif %}>{{ _('Admin') }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if user.is_active %}checked{% endif %}>
+                            <label class="form-check-label" for="is_active">{{ _('Active') }}</label>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg" aria-hidden="true"></i> {{ _('Save Changes') }}
+                            </button>
+                            <a href="{{ url_for('auth.user_list') }}" class="btn btn-secondary">
+                                {{ _('Cancel') }}
+                            </a>
+                        </div>
+                    </fieldset>
                 </form>
             </div>
         </div>
 
         <div class="card shadow mb-4">
             <div class="card-header bg-info text-white">
-                <h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('User Statistics') }}</h2>
+                <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('User Statistics') }}</h3>
             </div>
             <div class="card-body">
                 <dl class="row mb-0">
@@ -69,19 +72,22 @@
     <div class="col-md-6">
         <div class="card shadow mb-4">
             <div class="card-header bg-warning text-dark">
-                <h2 class="h5 mb-0"><i class="bi bi-key" aria-hidden="true"></i> {{ _('Reset Password') }}</h2>
+                <h3 class="mb-0"><i class="bi bi-key" aria-hidden="true"></i> {{ _('Reset Password') }}</h3>
             </div>
             <div class="card-body">
                 <form method="POST" action="{{ url_for('auth.user_edit', user_id=user.id) }}">
                     <input type="hidden" name="action" value="reset_password">
-                    <div class="mb-3">
-                        <label for="new_password" class="form-label">{{ _('New Password') }}</label>
-                        <input type="password" class="form-control" id="new_password" name="new_password" required minlength="8" autocomplete="new-password">
-                        <div class="form-text">{{ _('Minimum 8 characters.') }}</div>
-                    </div>
-                    <button type="submit" class="btn btn-warning">
-                        <i class="bi bi-key" aria-hidden="true"></i> {{ _('Reset Password') }}
-                    </button>
+                    <fieldset>
+                        <legend class="visually-hidden">{{ _('Reset Password') }}</legend>
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">{{ _('New Password') }}</label>
+                            <input type="password" class="form-control" id="new_password" name="new_password" required minlength="8" autocomplete="new-password" aria-describedby="new_password_help">
+                            <div class="form-text" id="new_password_help">{{ _('Minimum 8 characters.') }}</div>
+                        </div>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-key" aria-hidden="true"></i> {{ _('Reset Password') }}
+                        </button>
+                    </fieldset>
                 </form>
             </div>
         </div>
@@ -89,7 +95,7 @@
         {% if user.is_locked() %}
         <div class="card shadow">
             <div class="card-header bg-danger text-white">
-                <h2 class="h5 mb-0"><i class="bi bi-lock" aria-hidden="true"></i> {{ _('Account Locked') }}</h2>
+                <h3 class="mb-0"><i class="bi bi-lock" aria-hidden="true"></i> {{ _('Account Locked') }}</h3>
             </div>
             <div class="card-body">
                 <p>{{ _('This account is locked due to too many failed login attempts.') }}</p>

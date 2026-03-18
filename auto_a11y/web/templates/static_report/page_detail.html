@@ -239,6 +239,47 @@
     .text-warning {
         color: #856404 !important; /* Dark yellow/brown with 4.6:1 contrast on white */
     }
+
+    /* Design token variables */
+    :root {
+        --color-severity-high: #dc3545;
+        --color-severity-high-gradient-end: #c82333;
+        --color-severity-high-bg: #fdedec;
+        --color-severity-medium: #ffc107;
+        --color-severity-medium-gradient-end: #e0a800;
+        --color-severity-medium-bg: #fff3cd;
+        --color-severity-pass: #198754;
+        --color-severity-pass-bg: #eafaf1;
+        --color-info: #0e7490;
+        --color-info-gradient-end: #0aa2c0;
+        --color-info-bg: #e7f3ff;
+        --color-discovery: #6f42c1;
+        --color-discovery-gradient-end: #5a32a3;
+        --color-discovery-bg: #f3eefa;
+    }
+
+    /* Severity header gradients */
+    .severity-header-high {
+        background: linear-gradient(135deg, var(--color-severity-high), var(--color-severity-high-gradient-end));
+    }
+    .severity-header-medium {
+        background: linear-gradient(135deg, var(--color-severity-medium), var(--color-severity-medium-gradient-end));
+    }
+    .severity-header-info {
+        background: linear-gradient(135deg, var(--color-info), var(--color-info-gradient-end));
+    }
+    .severity-header-discovery {
+        background: linear-gradient(135deg, var(--color-discovery), var(--color-discovery-gradient-end));
+    }
+
+    /* Border color utilities */
+    .border-severity-high { border-color: var(--color-severity-high) !important; }
+    .border-severity-medium { border-color: var(--color-severity-medium) !important; }
+    .border-info-custom { border-color: var(--color-info) !important; }
+    .border-discovery { border-color: var(--color-discovery) !important; }
+
+    /* Text color utilities */
+    .text-discovery { color: var(--color-discovery) !important; }
     </style>
 </head>
 <body>
@@ -683,7 +724,7 @@
                 </div>
                 <div class="col-6 col-lg-3">
                     <div class="d-flex align-items-center">
-                        <i class="bi bi-search" aria-hidden="true" style="color: #6f42c1;" class="me-2 fs-4"></i>
+                        <i class="bi bi-search me-2 fs-4 text-discovery" aria-hidden="true"></i>
                         <div>
                             <div class="fw-bold">{{ discovery_count|default(0) }}</div>
                             <small class="text-muted">
@@ -898,8 +939,8 @@
                 <div class="state-content {% if loop.index0 == 0 %}active{% endif %}" data-state-index="{{ loop.index0 }}">
                     <!-- Errors (Violations) for {{ state.description }} -->
                     {% if state.violations %}
-                    <div class="section-panel errors-section mb-4" style="border: 2px solid #dc3545; border-radius: 8px; overflow: hidden;">
-                        <div class="section-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 12px 16px;">
+                    <div class="section-panel errors-section mb-4 border-severity-high" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
+                        <div class="section-header severity-header-high" style="color: white; padding: 12px 16px;">
                             <h3 class="mb-0">
                                 <i class="bi bi-x-circle-fill me-2" aria-hidden="true"></i>
                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['errors'] }}</span>
@@ -911,11 +952,11 @@
                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Problèmes à corriger pour la conformité WCAG</span>
                             </small>
                         </div>
-                        <div class="section-body" style="padding: 16px; background: #fff5f5;">
+                        <div class="section-body" style="padding: 16px; background: var(--color-severity-high-bg);">
                     <div class="accordion mb-4" id="violationsAccordion_{{ loop.index0 }}">
                         {% set viol_counter = namespace(value=0) %}
                         {% for touchpoint, touchpoint_violations in state.violations|groupby('touchpoint') %}
-                            <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #dc3545;">
+                            <div class="touchpoint-header mt-3 mb-2 ps-2 border-severity-high" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid;">
                                 <strong>
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'Général') }}</span>
@@ -1040,8 +1081,8 @@
 
                     <!-- Warnings for {{ state.description }} -->
                     {% if state.warnings %}
-                    <div class="section-panel warnings-section mb-4" style="border: 2px solid #ffc107; border-radius: 8px; overflow: hidden;">
-                        <div class="section-header" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #212529; padding: 12px 16px;">
+                    <div class="section-panel warnings-section mb-4 border-severity-medium" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
+                        <div class="section-header severity-header-medium" style="color: #212529; padding: 12px 16px;">
                             <h3 class="mb-0">
                                 <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['warnings'] }}</span>
@@ -1053,11 +1094,11 @@
                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Problèmes potentiels à examiner</span>
                             </small>
                         </div>
-                        <div class="section-body" style="padding: 16px; background: #fffbeb;">
+                        <div class="section-body" style="padding: 16px; background: var(--color-severity-medium-bg);">
                     <div class="accordion mb-4" id="warningsAccordion_{{ loop.index0 }}">
                         {% set warn_counter = namespace(value=0) %}
                         {% for touchpoint, touchpoint_warnings in state.warnings|groupby('touchpoint') %}
-                            <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #ffc107;">
+                            <div class="touchpoint-header mt-3 mb-2 ps-2 border-severity-medium" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid;">
                                 <strong>
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'Général') }}</span>
@@ -1182,8 +1223,8 @@
 
                     {# Informational items for this state #}
                     {% if state.informational %}
-                    <div class="section-panel info-section mb-4" style="border: 2px solid #0e7490; border-radius: 8px; overflow: hidden;">
-                        <div class="section-header" style="background: linear-gradient(135deg, #0e7490 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
+                    <div class="section-panel info-section mb-4 border-info-custom" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
+                        <div class="section-header severity-header-info" style="color: white; padding: 12px 16px;">
                             <h3 class="mb-0">
                                 <i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i>
                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['info'] }}</span>
@@ -1195,11 +1236,11 @@
                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Notes d'information à examiner</span>
                             </small>
                         </div>
-                        <div class="section-body" style="padding: 16px; background: #e8f9fd;">
+                        <div class="section-body" style="padding: 16px; background: var(--color-info-bg);">
                     <div class="accordion mb-4" id="informationalAccordion_{{ loop.index0 }}">
                         {% set info_counter = namespace(value=0) %}
                         {% for touchpoint, touchpoint_info in state.informational|groupby('touchpoint') %}
-                            <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #0e7490;">
+                            <div class="touchpoint-header mt-3 mb-2 ps-2 border-info-custom" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid;">
                                 <strong>
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'Général') }}</span>
@@ -1249,8 +1290,8 @@
 
                     {# Discovery items for this state #}
                     {% if state.discovery %}
-                    <div class="section-panel discovery-section mb-4" style="border: 2px solid #6f42c1; border-radius: 8px; overflow: hidden;">
-                        <div class="section-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; padding: 12px 16px;">
+                    <div class="section-panel discovery-section mb-4 border-discovery" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
+                        <div class="section-header severity-header-discovery" style="color: white; padding: 12px 16px;">
                             <h3 class="mb-0">
                                 <i class="bi bi-binoculars-fill me-2" aria-hidden="true"></i>
                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['discovery'] }}</span>
@@ -1262,11 +1303,11 @@
                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Éléments découverts à examiner manuellement</span>
                             </small>
                         </div>
-                        <div class="section-body" style="padding: 16px; background: #f3eefa;">
+                        <div class="section-body" style="padding: 16px; background: var(--color-discovery-bg);">
                     <div class="accordion mb-4" id="discoveryAccordion_{{ loop.index0 }}">
                         {% set disco_counter = namespace(value=0) %}
                         {% for touchpoint, touchpoint_discovery in state.discovery|groupby('touchpoint') %}
-                            <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #6f42c1;">
+                            <div class="touchpoint-header mt-3 mb-2 ps-2 border-discovery" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid;">
                                 <strong>
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'Général') }}</span>
@@ -1327,8 +1368,8 @@
                 {# Single state: Render normally - This section needs to be continued below due to length #}
                 <!-- Errors (Violations) -->
                 {% if violations %}
-            <div class="section-panel errors-section mb-4" style="border: 2px solid #dc3545; border-radius: 8px; overflow: hidden;">
-                <div class="section-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 12px 16px;">
+            <div class="section-panel errors-section mb-4 border-severity-high" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
+                <div class="section-header severity-header-high" style="color: white; padding: 12px 16px;">
                     <h3 class="mb-0">
                         <i class="bi bi-x-circle-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['errors'] }}</span>
@@ -1340,11 +1381,11 @@
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Problèmes à corriger pour la conformité WCAG</span>
                     </small>
                 </div>
-                <div class="section-body" style="padding: 16px; background: #fff5f5;">
+                <div class="section-body" style="padding: 16px; background: var(--color-severity-high-bg);">
             <div class="accordion" id="violationsAccordion">
                 {% set viol_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_violations in violations|groupby('touchpoint') %}
-                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #dc3545;">
+                    <div class="touchpoint-header mt-3 mb-2 ps-2 border-severity-high" style="border-left: 4px solid;">
                         <strong>
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
@@ -1474,8 +1515,8 @@
 
             <!-- Warnings -->
             {% if warnings %}
-            <div class="section-panel warnings-section mb-4" style="border: 2px solid #ffc107; border-radius: 8px; overflow: hidden;">
-                <div class="section-header" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #212529; padding: 12px 16px;">
+            <div class="section-panel warnings-section mb-4 border-severity-medium" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
+                <div class="section-header severity-header-medium" style="color: #212529; padding: 12px 16px;">
                     <h3 class="mb-0">
                         <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['warnings'] }}</span>
@@ -1487,11 +1528,11 @@
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Problèmes potentiels à examiner</span>
                     </small>
                 </div>
-                <div class="section-body" style="padding: 16px; background: #fffbeb;">
+                <div class="section-body" style="padding: 16px; background: var(--color-severity-medium-bg);">
             <div class="accordion" id="warningsAccordion">
                 {% set warn_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_warnings in warnings|groupby('touchpoint') %}
-                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #ffc107;">
+                    <div class="touchpoint-header mt-3 mb-2 ps-2 border-severity-medium" style="border-left: 4px solid;">
                         <strong>
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
@@ -1619,8 +1660,8 @@
 
             <!-- Informational Items -->
             {% if informational %}
-            <div class="section-panel info-section mb-4" style="border: 2px solid #0e7490; border-radius: 8px; overflow: hidden;">
-                <div class="section-header" style="background: linear-gradient(135deg, #0e7490 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
+            <div class="section-panel info-section mb-4 border-info-custom" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
+                <div class="section-header severity-header-info" style="color: white; padding: 12px 16px;">
                     <h3 class="mb-0">
                         <i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['info'] }}</span>
@@ -1632,11 +1673,11 @@
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Éléments informatifs pour référence</span>
                     </small>
                 </div>
-                <div class="section-body" style="padding: 16px; background: #e8f9fd;">
+                <div class="section-body" style="padding: 16px; background: var(--color-info-bg);">
             <div class="accordion" id="informationalAccordion">
                 {% set info_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_info in informational|groupby('touchpoint') %}
-                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #0e7490;">
+                    <div class="touchpoint-header mt-3 mb-2 ps-2 border-info-custom" style="border-left: 4px solid;">
                         <strong>
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
@@ -1692,8 +1733,8 @@
 
             <!-- Discovery Items -->
             {% if discovery %}
-            <div class="section-panel discovery-section mb-4" style="border: 2px solid #6f42c1; border-radius: 8px; overflow: hidden;">
-                <div class="section-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; padding: 12px 16px;">
+            <div class="section-panel discovery-section mb-4 border-discovery" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
+                <div class="section-header severity-header-discovery" style="color: white; padding: 12px 16px;">
                     <h3 class="mb-0">
                         <i class="bi bi-binoculars-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['discovery'] }}</span>
@@ -1705,11 +1746,11 @@
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Éléments découverts à examiner manuellement</span>
                     </small>
                 </div>
-                <div class="section-body" style="padding: 16px; background: #f3eefa;">
+                <div class="section-body" style="padding: 16px; background: var(--color-discovery-bg);">
             <div class="accordion" id="discoveryAccordion">
                 {% set disc_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_discovery in discovery|groupby('touchpoint') %}
-                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #6f42c1;">
+                    <div class="touchpoint-header mt-3 mb-2 ps-2 border-discovery" style="border-left: 4px solid;">
                         <strong>
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>

@@ -90,18 +90,18 @@
     }
 
     .issue-type-card.errors {
-        background-color: #fee;
-        border-color: #dc3545;
+        background-color: var(--color-severity-high-bg);
+        border-color: var(--color-severity-high);
     }
 
     .issue-type-card.warnings {
-        background-color: #fff3cd;
-        border-color: #ffc107;
+        background-color: var(--color-severity-medium-bg);
+        border-color: var(--color-severity-medium);
     }
 
     .issue-type-card.info {
-        background-color: #e7f5ff;
-        border-color: #0e7490;
+        background-color: var(--color-info-bg);
+        border-color: var(--color-info);
     }
 
     .issue-type-card.discovery {
@@ -150,11 +150,11 @@
     }
 
     .top-issue-item.error {
-        border-color: #dc3545;
+        border-color: var(--color-severity-high);
     }
 
     .top-issue-item.warning {
-        border-color: #ffc107;
+        border-color: var(--color-severity-medium);
     }
 
     .top-issue-item .issue-rank {
@@ -189,12 +189,12 @@
     }
 
     .impact-high {
-        background-color: #dc3545;
+        background-color: var(--color-severity-high);
         color: white;
     }
 
     .impact-medium {
-        background-color: #ffc107;
+        background-color: var(--color-severity-medium);
         color: #000;
     }
 
@@ -285,15 +285,15 @@
     }
 
     .recommendations {
-        background: #fff3cd;
-        border: 2px solid #ffc107;
+        background: var(--color-severity-medium-bg);
+        border: 2px solid var(--color-severity-medium);
         border-radius: 8px;
         padding: 1.5rem;
         margin-top: 2rem;
     }
 
     .recommendations h3 {
-        color: #996404;
+        color: var(--color-severity-medium);
         margin-bottom: 1rem;
         font-size: 1.25rem;
     }
@@ -318,21 +318,21 @@
     }
 
     .compliance-pass {
-        background-color: #d1e7dd;
+        background-color: var(--color-severity-pass-bg);
         color: #0a3622;
-        border: 2px solid #198754;
+        border: 2px solid var(--color-severity-pass);
     }
 
     .compliance-partial {
-        background-color: #fff3cd;
+        background-color: var(--color-severity-medium-bg);
         color: #664d03;
-        border: 2px solid #ffc107;
+        border: 2px solid var(--color-severity-medium);
     }
 
     .compliance-fail {
-        background-color: #f8d7da;
+        background-color: var(--color-severity-high-bg);
         color: #58151c;
-        border: 2px solid #dc3545;
+        border: 2px solid var(--color-severity-high);
     }
 </style>
 {% endblock %}
@@ -415,7 +415,7 @@
                     <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                 </div>
                 <div class="type-count text-warning">{{ summary.total_warnings|default(0) }}</div>
-                <div class="type-label" style="color: #996404;">Warnings</div>
+                <div class="type-label text-severity-medium">Warnings</div>
                 <div class="type-pages">
                     On {{ summary.pages_with_warnings|default(0) }} page{{ 's' if summary.pages_with_warnings != 1 }}
                 </div>

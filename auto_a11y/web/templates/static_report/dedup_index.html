@@ -169,6 +169,12 @@
     .text-warning {
         color: #856404 !important; /* Dark yellow/brown with 4.6:1 contrast on white */
     }
+
+    /* Severity color utility classes */
+    :root {
+        --color-discovery: #6f42c1;
+    }
+    .text-discovery { color: var(--color-discovery) !important; }
     </style>
 </head>
 <body>
@@ -224,7 +230,7 @@
         </div>
         {% if total_discovery is defined and total_discovery > 0 %}
         <div class="stat-card">
-            <div class="stat-value" style="color: #6f42c1;">{{ total_discovery }}</div>
+            <div class="stat-value text-discovery">{{ total_discovery }}</div>
             <div class="stat-label" data-i18n="discovery">{{ t.get('discovery', 'Discovery') }}</div>
         </div>
         {% endif %}

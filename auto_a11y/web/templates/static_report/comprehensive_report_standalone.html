@@ -96,6 +96,26 @@
             top: 0;
             z-index: 1100;
         }
+
+        /* Severity color utility classes */
+        :root {
+            --color-severity-high: #dc3545;
+            --color-severity-medium: #ffc107;
+            --color-info: #0e7490;
+            --color-info-alt: #17a2b8;
+            --color-discovery: #6f42c1;
+            --color-text-inverse: #ffffff;
+            --color-text: #212529;
+        }
+        .text-severity-high { color: var(--color-severity-high) !important; }
+        .text-severity-medium { color: var(--color-severity-medium) !important; }
+        .text-info-custom { color: var(--color-info-alt) !important; }
+        .text-discovery { color: var(--color-discovery) !important; }
+        .border-severity-high { border-color: var(--color-severity-high) !important; }
+        .border-severity-medium { border-color: var(--color-severity-medium) !important; }
+        .border-info-custom { border-color: var(--color-info-alt) !important; }
+        .border-discovery { border-color: var(--color-discovery) !important; }
+
         @media (prefers-reduced-motion: reduce) {
             * {
                 animation-duration: 0.01ms !important;
@@ -183,7 +203,7 @@
                         <svg viewBox="0 0 200 200">
                             <circle cx="100" cy="100" r="90" fill="none" stroke="#e0e0e0" stroke-width="20"/>
                             <circle cx="100" cy="100" r="90" fill="none"
-                                    stroke="{% if compliance_score >= 80 %}#28a745{% elif compliance_score >= 60 %}#ffc107{% else %}#dc3545{% endif %}"
+                                    stroke="{% if compliance_score >= 80 %}var(--color-severity-pass){% elif compliance_score >= 60 %}var(--color-severity-medium){% else %}var(--color-severity-high){% endif %}"
                                     stroke-width="20"
                                     stroke-dasharray="{{ compliance_score * 5.65 }} 565"
                                     transform="rotate(-90 100 100)"/>
@@ -207,7 +227,7 @@
                             <div class="mb-3">
                                 <h3>
                                     {{ translations_en.overall_assessment }}:
-                                    <span style="color: {% if ai_summary_en.overall_assessment.rating|lower == 'excellent' %}#28a745{% elif 'good' in ai_summary_en.overall_assessment.rating|lower %}#198754{% elif 'fair' in ai_summary_en.overall_assessment.rating|lower %}#ffc107{% else %}#dc3545{% endif %}">
+                                    <span style="color: {% if ai_summary_en.overall_assessment.rating|lower == 'excellent' %}var(--color-severity-pass){% elif 'good' in ai_summary_en.overall_assessment.rating|lower %}var(--color-severity-pass){% elif 'fair' in ai_summary_en.overall_assessment.rating|lower %}var(--color-severity-medium){% else %}var(--color-severity-high){% endif %}">
                                         {{ ai_summary_en.overall_assessment.rating }}
                                     </span>
                                 </h3>
@@ -222,7 +242,7 @@
                             <div class="mb-3">
                                 <h3>
                                     {{ translations_fr.overall_assessment }} :
-                                    <span style="color: {% if ai_summary_fr.overall_assessment.rating|lower == 'excellent' %}#28a745{% elif 'bon' in ai_summary_fr.overall_assessment.rating|lower or 'good' in ai_summary_fr.overall_assessment.rating|lower %}#198754{% elif 'fair' in ai_summary_fr.overall_assessment.rating|lower or 'passable' in ai_summary_fr.overall_assessment.rating|lower %}#ffc107{% else %}#dc3545{% endif %}">
+                                    <span style="color: {% if ai_summary_fr.overall_assessment.rating|lower == 'excellent' %}var(--color-severity-pass){% elif 'bon' in ai_summary_fr.overall_assessment.rating|lower or 'good' in ai_summary_fr.overall_assessment.rating|lower %}var(--color-severity-pass){% elif 'fair' in ai_summary_fr.overall_assessment.rating|lower or 'passable' in ai_summary_fr.overall_assessment.rating|lower %}var(--color-severity-medium){% else %}var(--color-severity-high){% endif %}">
                                         {{ ai_summary_fr.overall_assessment.rating }}
                                     </span>
                                 </h3>
@@ -335,7 +355,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="metric-card">
-                        <div class="metric-value" style="color: #dc3545;">{{ analytics.by_impact.high }}</div>
+                        <div class="metric-value text-severity-high">{{ analytics.by_impact.high }}</div>
                         <div class="metric-label">
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.high_impact }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.high_impact }}</span>
@@ -344,7 +364,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="metric-card">
-                        <div class="metric-value" style="color: #ffc107;">{{ analytics.by_impact.medium }}</div>
+                        <div class="metric-value text-severity-medium">{{ analytics.by_impact.medium }}</div>
                         <div class="metric-label">
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.medium_impact }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.medium_impact }}</span>
@@ -353,7 +373,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="metric-card">
-                        <div class="metric-value" style="color: #17a2b8;">{{ analytics.by_impact.low }}</div>
+                        <div class="metric-value text-info-custom">{{ analytics.by_impact.low }}</div>
                         <div class="metric-label">
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.low_impact }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.low_impact }}</span>
@@ -364,7 +384,7 @@
                 {% if data.statistics.total_recordings > 0 %}
                 <div class="col-md-3">
                     <div class="metric-card">
-                        <div class="metric-value" style="color: #6f42c1;">{{ data.statistics.total_recordings }}</div>
+                        <div class="metric-value text-discovery">{{ data.statistics.total_recordings }}</div>
                         <div class="metric-label">
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.total_recordings }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.total_recordings }}</span>
@@ -373,7 +393,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="metric-card">
-                        <div class="metric-value" style="color: #6f42c1;">{{ data.statistics.total_recording_issues }}</div>
+                        <div class="metric-value text-discovery">{{ data.statistics.total_recording_issues }}</div>
                         <div class="metric-label">
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.recording_issues }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.recording_issues }}</span>
@@ -513,7 +533,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><span class="badge" style="background-color: #dc3545;">
+                                <td><span class="badge" style="background-color: var(--color-severity-high);">
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">High</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Élevé</span>
                                 </span></td>
@@ -524,7 +544,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><span class="badge" style="background-color: #ffc107; color: #000;">
+                                <td><span class="badge" style="background-color: var(--color-severity-medium); color: var(--color-text);">
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Medium</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Moyen</span>
                                 </span></td>
@@ -535,7 +555,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td><span class="badge" style="background-color: #17a2b8;">
+                                <td><span class="badge" style="background-color: var(--color-info-alt);">
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Low</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Faible</span>
                                 </span></td>
@@ -731,9 +751,9 @@
                 <div class="col-md-6">
                     <div class="row g-3">
                         <div class="col-6">
-                            <div class="metric-card" style="border-left: 4px solid #dc3545;">
+                            <div class="metric-card border-severity-high" style="border-left: 4px solid;">
                                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚠️</div>
-                                <div class="metric-value" style="color: #dc3545;">{{ analytics.by_type.error }}</div>
+                                <div class="metric-value text-severity-high">{{ analytics.by_type.error }}</div>
                                 <div class="metric-label">
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.errors }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.errors }}</span>
@@ -745,9 +765,9 @@
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="metric-card" style="border-left: 4px solid #ffc107;">
+                            <div class="metric-card border-severity-medium" style="border-left: 4px solid;">
                                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡</div>
-                                <div class="metric-value" style="color: #ffc107;">{{ analytics.by_type.warning }}</div>
+                                <div class="metric-value text-severity-medium">{{ analytics.by_type.warning }}</div>
                                 <div class="metric-label">
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.warnings }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.warnings }}</span>
@@ -759,9 +779,9 @@
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="metric-card" style="border-left: 4px solid #17a2b8;">
+                            <div class="metric-card border-info-custom" style="border-left: 4px solid;">
                                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">ℹ️</div>
-                                <div class="metric-value" style="color: #17a2b8;">{{ analytics.by_type.info }}</div>
+                                <div class="metric-value text-info-custom">{{ analytics.by_type.info }}</div>
                                 <div class="metric-label">
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.info_items }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.info_items }}</span>
@@ -773,9 +793,9 @@
                             </div>
                         </div>
                         <div class="col-6">
-                            <div class="metric-card" style="border-left: 4px solid #6f42c1;">
+                            <div class="metric-card border-discovery" style="border-left: 4px solid;">
                                 <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
-                                <div class="metric-value" style="color: #6f42c1;">{{ analytics.by_type.discovery }}</div>
+                                <div class="metric-value text-discovery">{{ analytics.by_type.discovery }}</div>
                                 <div class="metric-label">
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.discovery }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.discovery }}</span>
@@ -995,7 +1015,7 @@
                                 {% else %}
                                     {% set impact = 'medium' %}
                                 {% endif %}
-                                <span class="badge" style="background-color: {% if impact == 'high' %}#dc3545{% elif impact == 'medium' %}#ffc107; color: #000;{% else %}#17a2b8{% endif %}">
+                                <span class="badge" style="background-color: {% if impact == 'high' %}var(--color-severity-high){% elif impact == 'medium' %}var(--color-severity-medium); color: var(--color-text);{% else %}var(--color-info-alt){% endif %}">
                                     {{ impact|title }}
                                 </span>
                             </td>
@@ -1060,16 +1080,16 @@
                             </td>
                             <td><strong>{{ page.total }}</strong></td>
                             <td>
-                                <span class="badge" style="background-color: #dc3545;">{{ page.breakdown.error }}</span>
+                                <span class="badge" style="background-color: var(--color-severity-high);">{{ page.breakdown.error }}</span>
                             </td>
                             <td>
-                                <span class="badge" style="background-color: #ffc107; color: #000;">{{ page.breakdown.warning }}</span>
+                                <span class="badge" style="background-color: var(--color-severity-medium); color: var(--color-text);">{{ page.breakdown.warning }}</span>
                             </td>
                             <td>
-                                <span class="badge" style="background-color: #17a2b8;">{{ page.breakdown.info }}</span>
+                                <span class="badge" style="background-color: var(--color-info-alt);">{{ page.breakdown.info }}</span>
                             </td>
                             <td>
-                                <span class="badge" style="background-color: #6f42c1;">{{ page.breakdown.discovery }}</span>
+                                <span class="badge" style="background-color: var(--color-discovery);">{{ page.breakdown.discovery }}</span>
                             </td>
                         </tr>
                         {% endfor %}

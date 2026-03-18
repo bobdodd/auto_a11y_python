@@ -213,6 +213,47 @@
         background-color: #ffc107 !important;
         color: #212529 !important;
     }
+
+    /* Severity color utility classes */
+    :root {
+        --color-severity-high: #dc3545;
+        --color-severity-high-gradient-end: #c82333;
+        --color-severity-high-bg: #fdedec;
+        --color-severity-medium: #ffc107;
+        --color-severity-medium-gradient-end: #e0a800;
+        --color-severity-medium-bg: #fff3cd;
+        --color-severity-pass: #198754;
+        --color-severity-pass-bg: #eafaf1;
+        --color-info: #0e7490;
+        --color-info-gradient-end: #0aa2c0;
+        --color-info-bg: #e7f3ff;
+        --color-discovery: #6f42c1;
+        --color-discovery-gradient-end: #5a32a3;
+        --color-discovery-bg: #f3eefa;
+        --color-text-inverse: #ffffff;
+        --color-text: #212529;
+    }
+    .severity-header-high {
+        background: linear-gradient(135deg, var(--color-severity-high), var(--color-severity-high-gradient-end));
+        color: var(--color-text-inverse);
+    }
+    .severity-header-medium {
+        background: linear-gradient(135deg, var(--color-severity-medium), var(--color-severity-medium-gradient-end));
+        color: var(--color-text);
+    }
+    .severity-header-info {
+        background: linear-gradient(135deg, var(--color-info), var(--color-info-gradient-end));
+        color: var(--color-text-inverse);
+    }
+    .severity-header-discovery {
+        background: linear-gradient(135deg, var(--color-discovery), var(--color-discovery-gradient-end));
+        color: var(--color-text-inverse);
+    }
+    .border-severity-high { border-color: var(--color-severity-high) !important; }
+    .border-severity-medium { border-color: var(--color-severity-medium) !important; }
+    .border-info-custom { border-color: var(--color-info) !important; }
+    .border-discovery { border-color: var(--color-discovery) !important; }
+    .text-discovery { color: var(--color-discovery) !important; }
 </style>
 </head>
 <body>
@@ -537,7 +578,7 @@
                 </div>
                 <div class="col-6 col-lg-3">
                     <div class="d-flex align-items-center">
-                        <i class="bi bi-search me-2 fs-4" style="color: #6f42c1;" aria-hidden="true"></i>
+                        <i class="bi bi-search me-2 fs-4 text-discovery" aria-hidden="true"></i>
                         <div>
                             <div class="fw-bold">{{ discovery_count|default(0) }}</div>
                             <small class="text-muted" data-i18n="discovery">{{ t['discovery'] }}</small>
@@ -676,7 +717,7 @@
     <div class="accordion mb-4" id="violationsAccordion">
         {% set viol_counter = namespace(value=0) %}
         {% for touchpoint, touchpoint_violations in violations|groupby('touchpoint') %}
-            <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #dc3545;">
+            <div class="touchpoint-header mt-3 mb-2 ps-2 border-severity-high" style="border-left: 4px solid;">
                 <strong>
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
@@ -769,7 +810,7 @@
     <div class="accordion mb-4" id="warningsAccordion">
         {% set warn_counter = namespace(value=0) %}
         {% for touchpoint, touchpoint_warnings in warnings|groupby('touchpoint') %}
-            <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #ffc107;">
+            <div class="touchpoint-header mt-3 mb-2 ps-2 border-severity-medium" style="border-left: 4px solid;">
                 <strong>
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
@@ -862,7 +903,7 @@
     <div class="accordion mb-4" id="infoAccordion">
         {% set info_counter = namespace(value=0) %}
         {% for touchpoint, touchpoint_info in info|groupby('touchpoint') %}
-            <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #0e7490;">
+            <div class="touchpoint-header mt-3 mb-2 ps-2 border-info-custom" style="border-left: 4px solid;">
                 <strong>
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
@@ -951,13 +992,13 @@
 
     <!-- Discovery -->
     {% if discovery %}
-    <h3 class="mb-3" style="color: #6f42c1;">
+    <h3 class="mb-3 text-discovery">
         <i class="bi bi-search" aria-hidden="true"></i> <span data-i18n="discovery">{{ t['discovery'] }}</span> ({{ discovery|length }})
     </h3>
     <div class="accordion mb-4" id="discoveryAccordion">
         {% set disco_counter = namespace(value=0) %}
         {% for touchpoint, touchpoint_discovery in discovery|groupby('touchpoint') %}
-            <div class="touchpoint-header mt-3 mb-2 ps-2" style="border-left: 4px solid #6f42c1;">
+            <div class="touchpoint-header mt-3 mb-2 ps-2 border-discovery" style="border-left: 4px solid;">
                 <strong>
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
@@ -980,9 +1021,9 @@
                     <h4 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#disco-{{ disco_counter.value }}">
                             {% if group_list|length > 1 %}
-                            <span class="badge me-2" style="background-color: #6f42c1;">{{ group_list|length }}</span>
+                            <span class="badge me-2" style="background-color: var(--color-discovery);">{{ group_list|length }}</span>
                             {% endif %}
-                            <span class="badge me-2 impact-badge" style="background-color: #6f42c1;" data-i18n="discovery">
+                            <span class="badge me-2 impact-badge" style="background-color: var(--color-discovery);" data-i18n="discovery">
                                 {{ t['discovery']|upper }}
                             </span>
                             <code class="me-2">{{ disco_code }}</code>

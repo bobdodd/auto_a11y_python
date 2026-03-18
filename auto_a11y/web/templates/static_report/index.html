@@ -87,21 +87,21 @@
     }
 
     .issue-badge.errors {
-        background-color: #fee;
-        color: #dc3545;
-        border: 1px solid #dc3545;
+        background-color: var(--color-severity-high-bg);
+        color: var(--color-severity-high);
+        border: 1px solid var(--color-severity-high);
     }
 
     .issue-badge.warnings {
-        background-color: #fff3cd;
-        color: #996404;
-        border: 1px solid #ffc107;
+        background-color: var(--color-severity-medium-bg);
+        color: var(--color-severity-medium);
+        border: 1px solid var(--color-severity-medium);
     }
 
     .issue-badge.info {
-        background-color: #e7f5ff;
+        background-color: var(--color-info-bg);
         color: #0c5a8a;
-        border: 1px solid #0e7490;
+        border: 1px solid var(--color-info);
     }
 
     .issue-badge.discovery {
@@ -283,21 +283,21 @@
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Pages testées</span>
             </div>
         </div>
-        <div class="stat-card" style="background-color: #fee;">
+        <div class="stat-card bg-severity-high-subtle">
             <div class="stat-value text-danger">{{ summary.total_errors|default(0) }}</div>
             <div class="stat-label">
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Total Errors</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Total des erreurs</span>
             </div>
         </div>
-        <div class="stat-card" style="background-color: #fff3cd;">
+        <div class="stat-card bg-severity-medium-subtle">
             <div class="stat-value text-warning">{{ summary.total_warnings|default(0) }}</div>
             <div class="stat-label">
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Total Warnings</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Total des avertissements</span>
             </div>
         </div>
-        <div class="stat-card" style="background-color: #e7f5ff;">
+        <div class="stat-card bg-info-subtle">
             <div class="stat-value text-info">{{ summary.total_info|default(0) }}</div>
             <div class="stat-label">
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Informational</span>
@@ -311,7 +311,7 @@
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Éléments de découverte</span>
             </div>
         </div>
-        <div class="stat-card" style="background-color: #d1ecf1;">
+        <div class="stat-card bg-info-subtle">
             <div class="stat-value text-primary">{{ "%.1f"|format(summary.average_score|default(0)) }}%</div>
             <div class="stat-label">
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Average Score</span>

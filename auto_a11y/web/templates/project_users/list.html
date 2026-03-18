@@ -162,7 +162,7 @@
 
     {% else %}
     <div class="text-center py-5">
-        <i class="bi bi-people" aria-hidden="true" style="font-size: 3rem; color: #ddd;"></i>
+        <i class="bi bi-people text-placeholder" aria-hidden="true" style="font-size: 3rem;"></i>
         <p class="text-muted mt-3">{{ _('No test users yet') }}</p>
         <a href="{{ url_for('project_users.create_user', project_id=project.id) }}" class="btn btn-primary">
             <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Create Your First Test User') }}

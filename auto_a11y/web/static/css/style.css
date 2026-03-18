@@ -534,3 +534,62 @@ table caption {
         outline-width: 3px;
     }
 }
+
+/* ============================================================
+   Utility classes (replacing inline style= color attributes)
+   ============================================================ */
+
+/* Severity text colors */
+.text-severity-high { color: var(--color-severity-high) !important; }
+.text-severity-medium { color: var(--color-severity-medium) !important; }
+.text-severity-pass { color: var(--color-severity-pass) !important; }
+.text-info-custom { color: var(--color-info) !important; }
+.text-discovery { color: var(--color-discovery) !important; }
+.text-severity-low { color: var(--color-severity-low) !important; }
+
+/* Severity background colors (subtle tints) */
+.bg-severity-high-subtle { background-color: var(--color-severity-high-bg) !important; }
+.bg-severity-medium-subtle { background-color: var(--color-severity-medium-bg) !important; }
+.bg-severity-pass-subtle { background-color: var(--color-severity-pass-bg) !important; }
+.bg-info-subtle { background-color: var(--color-info-bg) !important; }
+.bg-discovery-subtle { background-color: var(--color-discovery-bg) !important; }
+
+/* Severity gradient section headers */
+.severity-header-high {
+    background: linear-gradient(135deg, var(--color-severity-high), var(--color-severity-high-gradient-end));
+    color: var(--color-text-inverse);
+}
+.severity-header-medium {
+    background: linear-gradient(135deg, var(--color-severity-medium), var(--color-severity-medium-gradient-end));
+    color: var(--color-text);
+}
+.severity-header-pass {
+    background: linear-gradient(135deg, var(--color-severity-pass), var(--color-severity-pass-gradient-end));
+    color: var(--color-text-inverse);
+}
+.severity-header-info {
+    background: linear-gradient(135deg, var(--color-info), var(--color-info-gradient-end));
+    color: var(--color-text-inverse);
+}
+.severity-header-discovery {
+    background: linear-gradient(135deg, var(--color-discovery), var(--color-discovery-gradient-end));
+    color: var(--color-text-inverse);
+}
+
+/* Severity border indicators (e.g. border-left on list items) */
+.border-severity-high { border-color: var(--color-severity-high) !important; }
+.border-severity-medium { border-color: var(--color-severity-medium) !important; }
+.border-severity-pass { border-color: var(--color-severity-pass) !important; }
+.border-info-custom { border-color: var(--color-info) !important; }
+.border-discovery { border-color: var(--color-discovery) !important; }
+
+/* Generic border utilities */
+.border-subtle { border-color: var(--color-border) !important; }
+.border-table { border-color: var(--color-border-table) !important; }
+
+/* Token-aware background and text */
+.bg-token { background-color: var(--color-bg) !important; }
+.bg-token-subtle { background-color: var(--color-bg-subtle) !important; }
+.text-brand { color: var(--color-brand) !important; }
+.text-link { color: var(--color-link) !important; }
+.text-placeholder { color: var(--color-border) !important; }

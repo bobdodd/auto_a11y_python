@@ -167,7 +167,7 @@
                             <div class="col-12 mb-3">
                                 <label class="form-label">Interested Because</label>
                                 {% if interested_because_terms %}
-                                    <div style="max-height: 300px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 0.25rem; padding: 0.5rem;">
+                                    <div class="border-table" style="max-height: 300px; overflow-y: auto; border: 1px solid; border-radius: 0.25rem; padding: 0.5rem;">
                                         {% for term in interested_because_terms %}
                                         <div class="form-check">
                                             <input class="form-check-input interested-because-checkbox" type="checkbox"
@@ -193,7 +193,7 @@
                             <div class="col-12 mb-3">
                                 <label class="form-label">Page Elements</label>
                                 {% if page_elements_terms %}
-                                    <div style="border: 1px solid #dee2e6; border-radius: 0.25rem; padding: 0.5rem;">
+                                    <div class="border-table" style="border: 1px solid; border-radius: 0.25rem; padding: 0.5rem;">
                                         {% for term in page_elements_terms %}
                                         <div class="form-check">
                                             <input class="form-check-input page-elements-checkbox" type="checkbox"

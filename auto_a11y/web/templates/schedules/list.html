@@ -195,7 +195,7 @@
 
     {% else %}
     <div class="text-center py-5">
-        <i class="bi bi-calendar-event" aria-hidden="true" style="font-size: 3rem; color: #ddd;"></i>
+        <i class="bi bi-calendar-event text-placeholder" aria-hidden="true" style="font-size: 3rem;"></i>
         <p class="text-muted mt-3">{{ _('No schedules yet') }}</p>
         <a href="{{ url_for('schedules.create_schedule', website_id=website.id) }}" class="btn btn-primary">
             <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Create Your First Schedule') }}

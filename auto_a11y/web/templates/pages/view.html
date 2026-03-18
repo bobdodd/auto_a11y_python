@@ -363,7 +363,7 @@
         <section aria-labelledby="issues-found-heading">
             <div class="card mb-3">
                 <div class="card-header bg-light">
-                    <h2 id="issues-found-heading" class="mb-0 h5">
+                    <h2 id="issues-found-heading" class="mb-0">
                         <i class="bi bi-bug" aria-hidden="true"></i> {{ _('Accessibility Issues Found') }}
                         <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
                                 title="{{ _('Number of unique issue types discovered. Each type may have multiple instances throughout the page.') }}">
@@ -375,7 +375,7 @@
                     <div class="d-flex flex-wrap gap-3">
                         <div class="card text-center flex-fill" style="min-width: 140px;">
                             <div class="card-body py-3">
-                                <h3 class="text-danger mb-1 h6">
+                                <h3 class="text-danger mb-1">
                                     <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Errors') }}
                                 </h3>
                                 <p class="display-6 mb-0 text-danger">{{ page.violation_count }}</p>
@@ -384,7 +384,7 @@
                         </div>
                         <div class="card text-center flex-fill" style="min-width: 140px;">
                             <div class="card-body py-3">
-                                <h3 class="text-warning mb-1 h6">
+                                <h3 class="text-warning mb-1">
                                     <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Warnings') }}
                                 </h3>
                                 <p class="display-6 mb-0 text-warning">{{ page.warning_count }}</p>
@@ -393,7 +393,7 @@
                         </div>
                         <div class="card text-center flex-fill" style="min-width: 140px;">
                             <div class="card-body py-3">
-                                <h3 class="text-info mb-1 h6">
+                                <h3 class="text-info mb-1">
                                     <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Info') }}
                                 </h3>
                                 <p class="display-6 mb-0 text-info">{{ page.info_count|default(0) }}</p>
@@ -402,7 +402,7 @@
                         </div>
                         <div class="card text-center flex-fill" style="min-width: 140px;">
                             <div class="card-body py-3">
-                                <h3 class="mb-1 h6" style="color: #6f42c1;">
+                                <h3 class="mb-1" style="color: #6f42c1;">
                                     <i class="bi bi-search" aria-hidden="true"></i> {{ _('Discovery') }}
                                 </h3>
                                 <p class="display-6 mb-0" style="color: #6f42c1;">{{ page.discovery_count|default(0) }}</p>
@@ -418,7 +418,7 @@
         <section aria-labelledby="checks-performance-heading">
             <div class="card">
                 <div class="card-header bg-light">
-                    <h2 id="checks-performance-heading" class="mb-0 h5">
+                    <h2 id="checks-performance-heading" class="mb-0">
                         <i class="bi bi-check2-square" aria-hidden="true"></i> {{ _('Accessibility Checks Performance') }}
                         <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
                                 title="{{ _('Total individual checks performed on all page elements. High pass rate is good but doesn\'t guarantee full compliance if critical issues exist.') }}">
@@ -528,7 +528,7 @@
     <section aria-labelledby="check-details-heading">
         <div class="card mb-4">
             <div class="card-header">
-                <h2 id="check-details-heading" class="mb-0 h5">{{ _('Test Check Details') }}</h2>
+                <h2 id="check-details-heading" class="mb-0">{{ _('Test Check Details') }}</h2>
             </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -624,7 +624,7 @@
     <section aria-labelledby="test-results-heading">
         <div class="card test-results-card" data-filterable="true">
             <div class="card-header">
-                <h2 id="test-results-heading" class="mb-0 h5">{{ _('Latest Test Results') }}</h2>
+                <h2 id="test-results-heading" class="mb-0">{{ _('Latest Test Results') }}</h2>
                 <small class="text-muted">
                     {{ _('Tested on') }} {{ latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}
                 </small>
@@ -683,7 +683,7 @@
             <section aria-labelledby="errors-heading">
                 <div class="section-panel errors-section mb-4" style="border: 2px solid #dc3545; border-radius: 8px; overflow: hidden;">
                     <div class="section-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 12px 16px;">
-                        <h3 id="errors-heading" class="mb-0 h5">
+                        <h3 id="errors-heading" class="mb-0">
                             <i class="bi bi-x-circle-fill me-2" aria-hidden="true"></i> {{ _('Errors') }}
                             <span class="badge bg-light text-danger ms-2">{{ latest_result.violations|length }}</span>
                         </h3>
@@ -1976,7 +1976,7 @@
             <section aria-labelledby="warnings-heading">
                 <div class="section-panel warnings-section mb-4" style="border: 2px solid #ffc107; border-radius: 8px; overflow: hidden;">
                     <div class="section-header" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #212529; padding: 12px 16px;">
-                        <h3 id="warnings-heading" class="mb-0 h5">
+                        <h3 id="warnings-heading" class="mb-0">
                             <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i> {{ _('Warnings') }}
                             <span class="badge bg-dark text-warning ms-2">{{ latest_result.warnings|length }}</span>
                         </h3>
@@ -2707,7 +2707,7 @@
             <section aria-labelledby="info-heading">
                 <div class="section-panel info-section mb-4" style="border: 2px solid #0e7490; border-radius: 8px; overflow: hidden;">
                     <div class="section-header" style="background: linear-gradient(135deg, #0e7490 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
-                        <h3 id="info-heading" class="mb-0 h5">
+                        <h3 id="info-heading" class="mb-0">
                             <i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i> {{ _('Info Notes') }}
                             <span class="badge bg-light text-info ms-2">{{ latest_result.info|length }}</span>
                         </h3>
@@ -3127,7 +3127,7 @@
             <section aria-labelledby="discovery-heading">
                 <div class="section-panel discovery-section mb-4" style="border: 2px solid #6f42c1; border-radius: 8px; overflow: hidden;">
                     <div class="section-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; padding: 12px 16px;">
-                        <h3 id="discovery-heading" class="mb-0 h5">
+                        <h3 id="discovery-heading" class="mb-0">
                             <i class="bi bi-search me-2" aria-hidden="true"></i> {{ _('Discovery Items') }}
                             <span class="badge bg-light text-purple ms-2" style="color: #6f42c1 !important;">{{ latest_result.discovery|length }}</span>
                         </h3>
@@ -3644,7 +3644,7 @@
     <section aria-labelledby="test-history-heading">
         <div class="card mt-4">
             <div class="card-header">
-                <h2 id="test-history-heading" class="mb-0 h5">{{ _('Test History') }}</h2>
+                <h2 id="test-history-heading" class="mb-0">{{ _('Test History') }}</h2>
             </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -3705,7 +3705,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title h5" id="screenshotModalTitle">{{ _('Page Screenshot') }}</h2>
+                <h2 class="modal-title" id="screenshotModalTitle">{{ _('Page Screenshot') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body text-center">

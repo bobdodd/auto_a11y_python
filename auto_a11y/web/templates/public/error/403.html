@@ -4,7 +4,8 @@
 
 {% block content %}
 <div class="error-page">
-    <h1>403</h1>
+    <p aria-hidden="true">403</p>
+    <h1>{{ _('Access Denied') }}</h1>
     <p>{{ _('You do not have permission to view this page. The link may have expired or been revoked.') }}</p>
     <a href="{{ url_for('auth.login') }}" class="btn btn-primary">{{ _('Login') }}</a>
 </div>

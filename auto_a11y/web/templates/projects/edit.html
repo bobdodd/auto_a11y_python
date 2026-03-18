@@ -215,7 +215,7 @@
                                         <div class="accordion-body">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    <h6>{{ _('Script/Cursive Fonts (17 fonts)') }}</h6>
+                                                    <h3>{{ _('Script/Cursive Fonts (17 fonts)') }}</h3>
                                                     <ul class="small mb-3" style="list-style-type: none; padding-left: 0;">
                                                         <li>• Brush Script, Brush Script MT, Brushscript</li>
                                                         <li>• Lucida Handwriting, Lucida Calligraphy</li>
@@ -236,7 +236,7 @@
                                                         </li>
                                                     </ul>
 
-                                                    <h6>{{ _('Decorative Fonts (16 fonts)') }}</h6>
+                                                    <h3>{{ _('Decorative Fonts (16 fonts)') }}</h3>
                                                     <ul class="small mb-3" style="list-style-type: none; padding-left: 0;">
                                                         <li>• Curlz, Curlz MT</li>
                                                         <li>• Jokerman, Papyrus</li>
@@ -259,13 +259,13 @@
                                                     </ul>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <h6>{{ _('Narrow/Condensed Fonts (2 fonts)') }}</h6>
+                                                    <h3>{{ _('Narrow/Condensed Fonts (2 fonts)') }}</h3>
                                                     <ul class="small mb-3" style="list-style-type: none; padding-left: 0;">
                                                         <li>• Arial Narrow</li>
                                                         <li>• Impact</li>
                                                     </ul>
 
-                                                    <h6>{{ _('Blackletter/Gothic Fonts (5 fonts)') }}</h6>
+                                                    <h3>{{ _('Blackletter/Gothic Fonts (5 fonts)') }}</h3>
                                                     <ul class="small mb-3" style="list-style-type: none; padding-left: 0;">
                                                         <li>• Old English, Old English Text MT</li>
                                                         <li>• Blackletter</li>
@@ -658,27 +658,27 @@ function showTestDetails(testId) {
                     </div>
 
                     <div class="test-details-section">
-                        <h6><i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ _('What This Test Detects') }}</h6>
+                        <h3><i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ _('What This Test Detects') }}</h3>
                         <p>${test.description}</p>
                     </div>
 
                     ${test.why_it_matters ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ _('Why It Matters') }}</h6>
+                        <h3><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ _('Why It Matters') }}</h3>
                         <p>${test.why_it_matters}</p>
                     </div>
                     ` : ''}
 
                     ${test.who_it_affects ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-people me-2" aria-hidden="true"></i>{{ _('Who It Affects') }}</h6>
+                        <h3><i class="bi bi-people me-2" aria-hidden="true"></i>{{ _('Who It Affects') }}</h3>
                         <p>${test.who_it_affects}</p>
                     </div>
                     ` : ''}
 
                     ${test.how_to_fix ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-wrench me-2" aria-hidden="true"></i>{{ _('How to Fix') }}</h6>
+                        <h3><i class="bi bi-wrench me-2" aria-hidden="true"></i>{{ _('How to Fix') }}</h3>
                         <p>${test.how_to_fix}</p>
                     </div>
                     ` : ''}

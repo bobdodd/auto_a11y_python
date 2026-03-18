@@ -221,7 +221,7 @@
                 <div class="card mb-2 shadow-sm">
                     <div class="card-body py-2 px-3">
                         <div class="d-flex justify-content-between align-items-start mb-1">
-                            <h6 class="mb-0 text-break" style="font-size: 0.9rem;">{{ page.title or _('Untitled') }}</h6>
+                            <h3 class="mb-0 text-break" style="font-size: 0.9rem;">{{ page.title or _('Untitled') }}</h3>
                             <div class="d-flex flex-wrap gap-1 ms-2">
                                 {% if page.audited %}
                                 <span class="badge bg-success" style="font-size: 0.7rem;">{{ _('Audited') }}</span>
@@ -353,7 +353,7 @@
                     <div class="card-body py-2 px-3">
                         <div class="d-flex justify-content-between align-items-start mb-1">
                             <div class="flex-grow-1 me-2">
-                                <h6 class="mb-0 text-break" style="font-size: 0.9rem;">{{ recording.title }}</h6>
+                                <h3 class="mb-0 text-break" style="font-size: 0.9rem;">{{ recording.title }}</h3>
                                 <small class="text-muted">{{ recording.recording_id }}</small>
                             </div>
                             {% if recording.total_issues > 0 %}

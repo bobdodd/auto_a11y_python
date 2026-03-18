@@ -216,7 +216,7 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">{{ _('Status') }}</h6>
+                    <h2 class="card-subtitle mb-2 text-muted">{{ _('Status') }}</h2>
                     <p class="mb-0" id="page-status-container">
                         {% if page.status.value == 'discovered' %}
                             <span class="badge bg-secondary">{{ _('Discovered') }}</span>
@@ -244,7 +244,7 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">{{ _('Priority') }}</h6>
+                    <h2 class="card-subtitle mb-2 text-muted">{{ _('Priority') }}</h2>
                     <p class="mb-0">
                         {% if page.priority == 'critical' %}
                             <span class="badge bg-danger">{{ _('Critical') }}</span>
@@ -264,7 +264,7 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">{{ _('Last Tested') }}</h6>
+                    <h2 class="card-subtitle mb-2 text-muted">{{ _('Last Tested') }}</h2>
                     <p class="mb-0">
                         {{ page.last_tested.strftime('%Y-%m-%d %H:%M') if page.last_tested else _('Never') }}
                     </p>
@@ -274,7 +274,7 @@
         <div class="col-6 col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">{{ _('Test Duration') }}</h6>
+                    <h2 class="card-subtitle mb-2 text-muted">{{ _('Test Duration') }}</h2>
                     <p class="mb-0">
                         {% if page.test_duration_ms %}
                             {{ "%.2f"|format(page.test_duration_ms / 1000) }}s
@@ -288,7 +288,7 @@
         <div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">{{ _('Page Screenshot') }}</h6>
+                    <h2 class="card-subtitle mb-2 text-muted">{{ _('Page Screenshot') }}</h2>
                     {% if page.screenshot_path %}
                     {% set page_screenshot_filename = page.screenshot_path.split('/')[-1] %}
                     <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=page_screenshot_filename) }}', '{{ page.url }}'); return false;">
@@ -314,10 +314,10 @@
             <div class="card">
                 <div class="card-body text-center">
                     {% set score = score_data.score|default(0) %}
-                    <h6 class="card-title">
+                    <h2 class="card-title">
                         <i class="bi bi-robot" aria-hidden="true"></i> {{ _('Automated Accessibility Score') }}
                         <button class="help-icon" data-help="scoring.accessibility_score" aria-label="{{ _('Get help about accessibility score') }}">?</button>
-                    </h6>
+                    </h2>
                     <div class="display-4 fw-bold
                         {% if score >= 90 %}text-success
                         {% elif score >= 70 %}text-warning
@@ -333,10 +333,10 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="card-title">
+                    <h2 class="card-title">
                         <i class="bi bi-robot" aria-hidden="true"></i> {{ _('Automated WCAG Compliance Score') }}
                         <button class="help-icon" data-help="scoring.compliance_score" aria-label="{{ _('Get help about compliance score') }}">?</button>
-                    </h6>
+                    </h2>
                     {% if compliance_score %}
                     <div class="display-4 fw-bold
                         {% if compliance_score.score >= 90 %}text-success
@@ -489,29 +489,29 @@
                         
                         <div class="row text-center">
                             <div class="col">
-                                <h6 class="text-success">✓ {{ _('Passed') }}</h6>
+                                <h3 class="text-success">✓ {{ _('Passed') }}</h3>
                                 <p class="mb-0 fs-4">{{ actual_passed }}</p>
                             </div>
                             <div class="col">
-                                <h6 class="text-danger">✗ {{ _('Failed') }}</h6>
+                                <h3 class="text-danger">✗ {{ _('Failed') }}</h3>
                                 <p class="mb-0 fs-4">{{ actual_failed }}</p>
                             </div>
                             {% if actual_na > 0 %}
                             <div class="col">
-                                <h6 class="text-secondary">{{ _('N/A') }}</h6>
+                                <h3 class="text-secondary">{{ _('N/A') }}</h3>
                                 <p class="mb-0 fs-4">{{ actual_na }}</p>
                                 <small class="text-muted">{{ _('tests') }}</small>
                             </div>
                             {% endif %}
                             <div class="col">
-                                <h6 class="text-muted">{{ _('Total Tested') }}</h6>
+                                <h3 class="text-muted">{{ _('Total Tested') }}</h3>
                                 <p class="mb-0 fs-4">{{ total_tested }}</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="alert alert-info mb-0">
-                            <h6 class="alert-heading"><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ _('Understanding the Numbers') }}</h6>
+                            <h3 class="alert-heading"><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ _('Understanding the Numbers') }}</h3>
                             <small>
                                 <strong>{{ _('Example:') }}</strong> {{ _('95%% pass rate (475/500 passed) might still mean critical issues exist. Those 25 failed checks could all be "missing alt text" affecting every image on the page.') }}
                             </small>
@@ -633,7 +633,7 @@
         <!-- Multi-State Selector -->
         {% if state_results and state_results|length > 1 %}
         <div class="card-body border-bottom bg-light">
-            <h6 class="mb-3"><i class="bi bi-layers" aria-hidden="true"></i> {{ _('Page States Tested') }}</h6>
+            <h3 class="mb-3"><i class="bi bi-layers" aria-hidden="true"></i> {{ _('Page States Tested') }}</h3>
             <p class="text-muted small mb-3">
                 {{ _('This page was tested in multiple states. Select a state below to view its test results.') }}
             </p>
@@ -671,7 +671,7 @@
             <!-- Test Error Message (if test failed) -->
             {% if latest_result.error %}
             <div class="alert alert-danger mb-4" role="alert">
-                <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>{{ _('Test Execution Error') }}</h5>
+                <h3 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>{{ _('Test Execution Error') }}</h3>
                 <p class="mb-0">{{ _('The accessibility test could not be completed due to an error:') }}</p>
                 <hr>
                 <pre class="mb-0 text-danger" style="white-space: pre-wrap; word-break: break-word;">{{ latest_result.error }}</pre>
@@ -793,7 +793,7 @@
                                                         {% if violation.metadata and violation.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-danger mb-3">
-                                                            <h6 class="alert-heading">
+                                                            <h4 class="alert-heading">
                                                                 {% if violation.metadata and (violation.metadata.what_generic_en or violation.metadata.what_generic_fr) %}
                                                                     <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_generic_en }}</span>
                                                                     <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_generic_fr }}</span>
@@ -803,10 +803,10 @@
                                                                 {% else %}
                                                                     {{ (violation.metadata.what if violation.metadata.what else violation.description)|translate_issue }}
                                                                 {% endif %}
-                                                            </h6>
+                                                            </h4>
                                                         </div>
 
-                                                        <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
+                                                        <h4 class="text-danger mb-2">{{ _('About this issue:') }}</h4>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What the issue is:') }}</strong>
@@ -841,7 +841,7 @@
                                                         </div>
 
                                                         {% if violation.metadata.wcag_full or violation.wcag_criteria %}
-                                                        <h6 class="text-danger mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
+                                                        <h4 class="text-danger mb-2 mt-4">{{ _('Relevant test criteria:') }}</h4>
                                                         <div class="mb-3">
                                                             {% if violation.metadata.wcag_full %}
                                                             <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -951,7 +951,7 @@
                                                         {% endif %}
 
                                                         {% if violation.html %}
-                                                        <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
+                                                        <h4 class="mt-3">{{ _('Code Snippet') }}</h4>
                                                         {% if 'ErrSkippedHeadingLevel' in violation.id and violation.metadata and 'previousHeadingHtml' in violation.metadata %}
                                                         <p class="mb-2"><strong>Previous heading (h{{ violation.metadata.skippedFrom }}):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
@@ -965,7 +965,7 @@
                                                         {% endif %}
                                                         <p class="mb-2"><strong>{{ _('Obscuring element (dialog/overlay):') }}</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
-                                                        <h6 class="mt-4">{{ violation.metadata.obscuredCount }} {{ _('Interactive element(s) being obscured:') }}</h6>
+                                                        <h4 class="mt-4">{{ violation.metadata.obscuredCount }} {{ _('Interactive element(s) being obscured:') }}</h4>
                                                         {% for element in violation.metadata.obscuredElements %}
                                                         <div class="mb-3 border-start border-warning border-3 ps-3">
                                                             <p class="mb-1"><strong>&lt;{{ element.element }}&gt;:</strong> "{{ element.text }}"</p>
@@ -978,7 +978,7 @@
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrMultipleH1' in violation.id and violation.metadata and 'allH1s' in violation.metadata %}
-                                                        <h6 class="mt-3">All {{ violation.metadata.count }} H1 elements found on page:</h6>
+                                                        <h4 class="mt-3">All {{ violation.metadata.count }} H1 elements found on page:</h4>
                                                         {% for h1 in violation.metadata.allH1s %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>H1 #{{ h1.index }}:</strong> {{ h1.text }}</p>
@@ -995,7 +995,7 @@
                                                         <p class="mb-2"><strong>Detected pattern:</strong> {{ violation.metadata.pattern }}</p>
                                                         <p class="mb-2"><strong>Number of items found:</strong> {{ violation.metadata.itemCount }}</p>
                                                         {% if violation.metadata.sampleItems %}
-                                                        <h6 class="mt-4">Sample list items detected:</h6>
+                                                        <h4 class="mt-4">Sample list items detected:</h4>
                                                         {% for item in violation.metadata.sampleItems %}
                                                         <div class="mb-2 border-start border-info border-3 ps-3">
                                                             <p class="mb-0"><strong>Item {{ item.index }}:</strong> {{ item.text }}</p>
@@ -1010,7 +1010,7 @@
                                                         {% elif 'ErrDuplicateLandmarkWithoutName' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
-                                                        <h6 class="mt-4">All {{ violation.metadata.totalCount }} {{ violation.metadata.role }} landmarks on page:</h6>
+                                                        <h4 class="mt-4">All {{ violation.metadata.totalCount }} {{ violation.metadata.role }} landmarks on page:</h4>
                                                         {% for instance in violation.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
@@ -1024,7 +1024,7 @@
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrDuplicateNavNames' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
-                                                        <h6 class="mt-3">All {{ violation.metadata.totalCount }} navigation elements with the name "{{ violation.metadata.duplicateName }}":</h6>
+                                                        <h4 class="mt-3">All {{ violation.metadata.totalCount }} navigation elements with the name "{{ violation.metadata.duplicateName }}":</h4>
                                                         {% for instance in violation.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>Navigation {{ instance.index }}:</strong></p>
@@ -1038,7 +1038,7 @@
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrSmallText' in violation.id and violation.metadata and violation.metadata.get('allInstances') %}
-                                                        <h6 class="mt-3">{{ _('%(count)d element(s) with text smaller than 16px:', count=violation.metadata.allInstances|length) }}</h6>
+                                                        <h4 class="mt-3">{{ _('%(count)d element(s) with text smaller than 16px:', count=violation.metadata.allInstances|length) }}</h4>
                                                         {% for instance in violation.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; element - Text size: <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
@@ -1053,10 +1053,10 @@
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrAnchorTargetTabindex' in violation.id and violation.metadata and violation.metadata.anchorLinksCount %}
-                                                        <h6 class="mt-3">Link target (needs tabindex="-1"):</h6>
+                                                        <h4 class="mt-3">Link target (needs tabindex="-1"):</h4>
                                                         <p class="mb-2"><strong>Target element:</strong> &lt;{{ violation.element }}&gt; with id="{{ violation.metadata.targetId }}"</p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
-                                                        <h6 class="mt-4">{{ violation.metadata.anchorLinksCount }} anchor link(s) pointing to this target:</h6>
+                                                        <h4 class="mt-4">{{ violation.metadata.anchorLinksCount }} anchor link(s) pointing to this target:</h4>
                                                         {% for anchor in violation.metadata.anchorLinks %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>Link {{ anchor.index }}:</strong> "{{ anchor.text }}"</p>
@@ -1169,7 +1169,7 @@
                                                         {% if violation.metadata and violation.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-danger mb-3">
-                                                            <h6 class="alert-heading">
+                                                            <h4 class="alert-heading">
                                                                 {% if violation.metadata and (violation.metadata.what_generic_en or violation.metadata.what_generic_fr) %}
                                                                     <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_generic_en }}</span>
                                                                     <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_generic_fr }}</span>
@@ -1179,10 +1179,10 @@
                                                                 {% else %}
                                                                     {{ (violation.metadata.what if violation.metadata.what else violation.description)|translate_issue }}
                                                                 {% endif %}
-                                                            </h6>
+                                                            </h4>
                                                         </div>
 
-                                                        <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
+                                                        <h4 class="text-danger mb-2">{{ _('About this issue:') }}</h4>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What the issue is:') }}</strong>
@@ -1217,7 +1217,7 @@
                                                         </div>
 
                                                         {% if violation.metadata.wcag_full or violation.wcag_criteria %}
-                                                        <h6 class="text-danger mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
+                                                        <h4 class="text-danger mb-2 mt-4">{{ _('Relevant test criteria:') }}</h4>
                                                         <div class="mb-3">
                                                             {% if violation.metadata.wcag_full %}
                                                             <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -1327,7 +1327,7 @@
                                                         {% endif %}
 
                                                         {% if violation.html %}
-                                                        <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
+                                                        <h4 class="mt-3">{{ _('Code Snippet') }}</h4>
                                                         {% if 'ErrSkippedHeadingLevel' in violation.id and violation.metadata and 'previousHeadingHtml' in violation.metadata %}
                                                         <p class="mb-2"><strong>Previous heading (h{{ violation.metadata.skippedFrom }}):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
@@ -1341,7 +1341,7 @@
                                                         {% endif %}
                                                         <p class="mb-2"><strong>{{ _('Obscuring element (dialog/overlay):') }}</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
-                                                        <h6 class="mt-4">{{ violation.metadata.obscuredCount }} {{ _('Interactive element(s) being obscured:') }}</h6>
+                                                        <h4 class="mt-4">{{ violation.metadata.obscuredCount }} {{ _('Interactive element(s) being obscured:') }}</h4>
                                                         {% for element in violation.metadata.obscuredElements %}
                                                         <div class="mb-3 border-start border-warning border-3 ps-3">
                                                             <p class="mb-1"><strong>&lt;{{ element.element }}&gt;:</strong> "{{ element.text }}"</p>
@@ -1354,7 +1354,7 @@
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrMultipleH1' in violation.id and violation.metadata and 'allH1s' in violation.metadata %}
-                                                        <h6 class="mt-3">All {{ violation.metadata.count }} H1 elements found on page:</h6>
+                                                        <h4 class="mt-3">All {{ violation.metadata.count }} H1 elements found on page:</h4>
                                                         {% for h1 in violation.metadata.allH1s %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>H1 #{{ h1.index }}:</strong> {{ h1.text }}</p>
@@ -1371,7 +1371,7 @@
                                                         <p class="mb-2"><strong>Detected pattern:</strong> {{ violation.metadata.pattern }}</p>
                                                         <p class="mb-2"><strong>Number of items found:</strong> {{ violation.metadata.itemCount }}</p>
                                                         {% if violation.metadata.sampleItems %}
-                                                        <h6 class="mt-4">Sample list items detected:</h6>
+                                                        <h4 class="mt-4">Sample list items detected:</h4>
                                                         {% for item in violation.metadata.sampleItems %}
                                                         <div class="mb-2 border-start border-info border-3 ps-3">
                                                             <p class="mb-0"><strong>Item {{ item.index }}:</strong> {{ item.text }}</p>
@@ -1386,7 +1386,7 @@
                                                         {% elif 'ErrDuplicateLandmarkWithoutName' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
-                                                        <h6 class="mt-4">All {{ violation.metadata.totalCount }} {{ violation.metadata.role }} landmarks on page:</h6>
+                                                        <h4 class="mt-4">All {{ violation.metadata.totalCount }} {{ violation.metadata.role }} landmarks on page:</h4>
                                                         {% for instance in violation.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
@@ -1400,7 +1400,7 @@
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrDuplicateNavNames' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
-                                                        <h6 class="mt-3">All {{ violation.metadata.totalCount }} navigation elements with the name "{{ violation.metadata.duplicateName }}":</h6>
+                                                        <h4 class="mt-3">All {{ violation.metadata.totalCount }} navigation elements with the name "{{ violation.metadata.duplicateName }}":</h4>
                                                         {% for instance in violation.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>Navigation {{ instance.index }}:</strong></p>
@@ -1414,7 +1414,7 @@
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrSmallText' in violation.id and violation.metadata and violation.metadata.get('allInstances') %}
-                                                        <h6 class="mt-3">{{ _('%(count)d element(s) with text smaller than 16px:', count=violation.metadata.allInstances|length) }}</h6>
+                                                        <h4 class="mt-3">{{ _('%(count)d element(s) with text smaller than 16px:', count=violation.metadata.allInstances|length) }}</h4>
                                                         {% for instance in violation.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; element - Text size: <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
@@ -1429,10 +1429,10 @@
                                                         </div>
                                                         {% endfor %}
                                                         {% elif 'ErrAnchorTargetTabindex' in violation.id and violation.metadata and violation.metadata.anchorLinksCount %}
-                                                        <h6 class="mt-3">Link target (needs tabindex="-1"):</h6>
+                                                        <h4 class="mt-3">Link target (needs tabindex="-1"):</h4>
                                                         <p class="mb-2"><strong>Target element:</strong> &lt;{{ violation.element }}&gt; with id="{{ violation.metadata.targetId }}"</p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
-                                                        <h6 class="mt-4">{{ violation.metadata.anchorLinksCount }} anchor link(s) pointing to this target:</h6>
+                                                        <h4 class="mt-4">{{ violation.metadata.anchorLinksCount }} anchor link(s) pointing to this target:</h4>
                                                         {% for anchor in violation.metadata.anchorLinks %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>Link {{ anchor.index }}:</strong> "{{ anchor.text }}"</p>
@@ -1546,17 +1546,17 @@
                             {% if violation.metadata and violation.metadata.title %}
                             <!-- Enhanced description available -->
                             <div class="alert alert-danger mb-3">
-                                <h6 class="alert-heading">
+                                <h4 class="alert-heading">
                                     {% if violation.metadata.what_generic_en or violation.metadata.what_generic_fr %}
                                         <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ violation.metadata.what_generic_en }}</span>
                                         <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ violation.metadata.what_generic_fr }}</span>
                                     {% else %}
                                         {{ violation.metadata.title|translate_issue }}
                                     {% endif %}
-                                </h6>
+                                </h4>
                             </div>
 
-                            <h6 class="text-danger mb-2">{{ _('About this issue:') }}</h6>
+                            <h4 class="text-danger mb-2">{{ _('About this issue:') }}</h4>
 
                             <div class="mb-3">
                                 <strong>{{ _('What the issue is:') }}</strong>
@@ -1586,7 +1586,7 @@
                             </div>
 
                             {% if violation.metadata.wcag_full or violation.wcag_criteria %}
-                            <h6 class="text-danger mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
+                            <h4 class="text-danger mb-2 mt-4">{{ _('Relevant test criteria:') }}</h4>
                             <div class="mb-3">
                                 {% if violation.metadata.wcag_full %}
                                 <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -1718,7 +1718,7 @@
                             {# Special case: ErrSmallText with allInstances but no html #}
                             {% if 'ErrSmallText' in violation.id and violation.metadata and violation.metadata.get('allInstances') and not violation.html %}
                             <div class="mt-3">
-                                <h6>{{ _('Affected Elements') }}</h6>
+                                <h4>{{ _('Affected Elements') }}</h4>
                                 <p class="mb-2">{{ _('%(count)d element(s) with text smaller than 16px:', count=violation.metadata.allInstances|length) }}</p>
                                 {% for instance in violation.metadata.allInstances %}
                                 <div class="mb-3 border-start border-warning border-3 ps-3">
@@ -1739,7 +1739,7 @@
                             {# Special case: ErrContentOutsideLandmarks with allInstances #}
                             {% if 'ErrContentOutsideLandmarks' in violation.id and violation.metadata and violation.metadata.get('allInstances') %}
                             <div class="mt-3">
-                                <h6>{{ _('Elements Outside Landmarks') }}</h6>
+                                <h4>{{ _('Elements Outside Landmarks') }}</h4>
                                 <p class="mb-2">{{ violation.metadata.elementCount }} immediate child element(s) of &lt;body&gt; contain content outside landmark regions ({{ violation.metadata.textNodeCount }} text nodes total):</p>
                                 {% for instance in violation.metadata.allInstances %}
                                 <div class="mb-3 border-start border-warning border-3 ps-3">
@@ -1760,7 +1760,7 @@
                             {# Special case: ErrDivMapMissingAttributes with structured metadata #}
                             {% if 'ErrDivMapMissingAttributes' in violation.id and violation.metadata and violation.metadata.get('elementId') %}
                             <div class="mt-3">
-                                <h6>{{ _('Missing Accessibility Attributes') }}</h6>
+                                <h4>{{ _('Missing Accessibility Attributes') }}</h4>
                                 <p class="mb-2">{{ _('Map container') }} <code>{{ violation.metadata.elementId }}</code>
                                 {% if violation.metadata.containedContent %}
                                     {{ _('containing') }} {{ violation.metadata.containedContent|join(', ') }}
@@ -1777,7 +1777,7 @@
                             {# Special case: ErrMapAriaHidden with interactive element counts #}
                             {% if 'ErrMapAriaHidden' in violation.id and violation.metadata and violation.metadata.get('interactiveCount') %}
                             <div class="mt-3">
-                                <h6>{{ _('Silent Focus Trap Details') }}</h6>
+                                <h4>{{ _('Silent Focus Trap Details') }}</h4>
                                 <p class="mb-2">{{ _('This map container has') }} <code>aria-hidden="true"</code> {{ _('but contains') }} <strong>{{ violation.metadata.interactiveCount }}</strong> {{ _('focusable element(s) that keyboard users can still reach:') }}</p>
                                 <ul class="mb-3">
                                     {% if violation.metadata.buttonCount > 0 %}<li>{{ violation.metadata.buttonCount }} {{ _('button(s)') }}</li>{% endif %}
@@ -1791,7 +1791,7 @@
 
                             {% if violation.html %}
                             <div class="mt-3">
-                                <h6>{{ _('Code Snippet') }}</h6>
+                                <h4>{{ _('Code Snippet') }}</h4>
                                 {% if 'ErrSkippedHeadingLevel' in violation.id and violation.metadata and 'previousHeadingHtml' in violation.metadata %}
                                 <p class="mb-2"><strong>Previous heading (h{{ violation.metadata.skippedFrom }}):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.metadata.previousHeadingHtml|e }}</code></pre>
@@ -1805,7 +1805,7 @@
                                 {% endif %}
                                 <p class="mb-2"><strong>{{ _('Obscuring element (dialog/overlay):') }}</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
-                                <h6 class="mt-4">{{ violation.metadata.obscuredCount }} {{ _('Interactive element(s) being obscured:') }}</h6>
+                                <h4 class="mt-4">{{ violation.metadata.obscuredCount }} {{ _('Interactive element(s) being obscured:') }}</h4>
                                 {% for element in violation.metadata.obscuredElements %}
                                 <div class="mb-3 border-start border-warning border-3 ps-3">
                                     <p class="mb-1"><strong>&lt;{{ element.element }}&gt;:</strong> "{{ element.text }}"</p>
@@ -1818,7 +1818,7 @@
                                 </div>
                                 {% endfor %}
                                 {% elif 'ErrMultipleH1' in violation.id and violation.metadata and 'allH1s' in violation.metadata %}
-                                <h6 class="mt-3">All {{ violation.metadata.count }} H1 elements found on page:</h6>
+                                <h4 class="mt-3">All {{ violation.metadata.count }} H1 elements found on page:</h4>
                                 {% for h1 in violation.metadata.allH1s %}
                                 <div class="mb-3">
                                     <p class="mb-1"><strong>H1 #{{ h1.index }}:</strong> {{ h1.text }}</p>
@@ -1835,7 +1835,7 @@
                                 <p class="mb-2"><strong>Detected pattern:</strong> {{ violation.metadata.pattern }}</p>
                                 <p class="mb-2"><strong>Number of items found:</strong> {{ violation.metadata.itemCount }}</p>
                                 {% if violation.metadata.sampleItems %}
-                                <h6 class="mt-4">Sample list items detected:</h6>
+                                <h4 class="mt-4">Sample list items detected:</h4>
                                 {% for item in violation.metadata.sampleItems %}
                                 <div class="mb-2 border-start border-info border-3 ps-3">
                                     <p class="mb-0"><strong>Item {{ item.index }}:</strong> {{ item.text }}</p>
@@ -1850,7 +1850,7 @@
                                 {% elif 'ErrDuplicateLandmarkWithoutName' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
                                 <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
-                                <h6 class="mt-4">All {{ violation.metadata.totalCount }} {{ violation.metadata.role }} landmarks on page:</h6>
+                                <h4 class="mt-4">All {{ violation.metadata.totalCount }} {{ violation.metadata.role }} landmarks on page:</h4>
                                 {% for instance in violation.metadata.allInstances %}
                                 <div class="mb-3">
                                     <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
@@ -1864,7 +1864,7 @@
                                 </div>
                                 {% endfor %}
                                 {% elif 'ErrDuplicateNavNames' in violation.id and violation.metadata and 'allInstances' in violation.metadata %}
-                                <h6 class="mt-3">All {{ violation.metadata.totalCount }} navigation elements with the name "{{ violation.metadata.duplicateName }}":</h6>
+                                <h4 class="mt-3">All {{ violation.metadata.totalCount }} navigation elements with the name "{{ violation.metadata.duplicateName }}":</h4>
                                 {% for instance in violation.metadata.allInstances %}
                                 <div class="mb-3">
                                     <p class="mb-1"><strong>Navigation {{ instance.index }}:</strong></p>
@@ -1878,7 +1878,7 @@
                                 </div>
                                 {% endfor %}
                                 {% elif 'ErrSmallText' in violation.id and violation.metadata and violation.metadata.get('allInstances') %}
-                                <h6 class="mt-3">{{ _('%(count)d element(s) with text smaller than 16px:', count=violation.metadata.allInstances|length) }}</h6>
+                                <h4 class="mt-3">{{ _('%(count)d element(s) with text smaller than 16px:', count=violation.metadata.allInstances|length) }}</h4>
                                 {% for instance in violation.metadata.allInstances %}
                                 <div class="mb-3">
                                     <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> &lt;{{ instance.element }}&gt; element - Text size: <span class="badge bg-warning">{{ instance.fontSize }}px</span></p>
@@ -1893,10 +1893,10 @@
                                 </div>
                                 {% endfor %}
                                 {% elif 'ErrAnchorTargetTabindex' in violation.id and violation.metadata and violation.metadata.anchorLinksCount %}
-                                <h6 class="mt-3">Link target (needs tabindex="-1"):</h6>
+                                <h4 class="mt-3">Link target (needs tabindex="-1"):</h4>
                                 <p class="mb-2"><strong>Target element:</strong> &lt;{{ violation.element }}&gt; with id="{{ violation.metadata.targetId }}"</p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ violation.html|e }}</code></pre>
-                                <h6 class="mt-4">{{ violation.metadata.anchorLinksCount }} anchor link(s) pointing to this target:</h6>
+                                <h4 class="mt-4">{{ violation.metadata.anchorLinksCount }} anchor link(s) pointing to this target:</h4>
                                 {% for anchor in violation.metadata.anchorLinks %}
                                 <div class="mb-3">
                                     <p class="mb-1"><strong>Link {{ anchor.index }}:</strong> "{{ anchor.text }}"</p>
@@ -1927,7 +1927,7 @@
 
                             <!-- Thumbnail of the page at time of test -->
                             {% if screenshot_filename %}
-                            <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
+                            <h4 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h4>
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                 <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
                                      alt="Thumbnail of {{ page.url }}"
@@ -1941,7 +1941,7 @@
 
                             {% if violation.metadata.ai_detected %}
                             <div class="mt-3">
-                                <h6><i class="bi bi-robot" aria-hidden="true"></i> AI Detection Details</h6>
+                                <h4><i class="bi bi-robot" aria-hidden="true"></i> AI Detection Details</h4>
                                 <div class="small text-muted">
                                     {% if violation.metadata.visual_location %}
                                     <p><strong>Visual Location:</strong> {{ violation.metadata.visual_location }}</p>
@@ -2071,17 +2071,17 @@
                                                         {% if warning.metadata and warning.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-warning mb-3">
-                                                            <h6 class="alert-heading">
+                                                            <h4 class="alert-heading">
                                                                 {% if warning.metadata and (warning.metadata.what_en or warning.metadata.what_fr) %}
                                                                     <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.what_en or warning.description }}</span>
                                                                     <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.what_fr or warning.description }}</span>
                                                                 {% else %}
                                                                     {{ (warning.metadata.what if warning.metadata.what else warning.description)|translate_issue }}
                                                                 {% endif %}
-                                                            </h6>
+                                                            </h4>
                                                         </div>
 
-                                                        <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
+                                                        <h4 class="text-warning mb-2">{{ _('About this issue:') }}</h4>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What the issue is:') }}</strong>
@@ -2114,7 +2114,7 @@
                                                         </div>
 
                                                         {% if warning.metadata.wcag_full or warning.wcag_criteria %}
-                                                        <h6 class="text-warning mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
+                                                        <h4 class="text-warning mb-2 mt-4">{{ _('Relevant test criteria:') }}</h4>
                                                         <div class="mb-3">
                                                             {% if warning.metadata.wcag_full %}
                                                             <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -2210,7 +2210,7 @@
                             </p>
                                                         {% endif %}
                                                         {% if warning.html %}
-                                                        <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
+                                                        <h4 class="mt-3">{{ _('Code Snippet') }}</h4>
                                                         {% if 'ErrSkippedHeadingLevel' in warning.id and warning.metadata and 'previousHeadingHtml' in warning.metadata %}
                                                         <p class="mb-2"><strong>Previous heading (h{{ warning.metadata.skippedFrom }}):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousHeadingHtml|e }}</code></pre>
@@ -2219,7 +2219,7 @@
                                                         {% elif 'ErrDuplicateLandmarkWithoutName' in warning.id and warning.metadata and 'allInstances' in warning.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.html|e }}</code></pre>
-                                                        <h6 class="mt-4">All {{ warning.metadata.totalCount }} {{ warning.metadata.role }} landmarks on page:</h6>
+                                                        <h4 class="mt-4">All {{ warning.metadata.totalCount }} {{ warning.metadata.role }} landmarks on page:</h4>
                                                         {% for instance in warning.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
@@ -2306,17 +2306,17 @@
                                                         {% if warning.metadata and warning.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-warning mb-3">
-                                                            <h6 class="alert-heading">
+                                                            <h4 class="alert-heading">
                                                                 {% if warning.metadata and (warning.metadata.what_en or warning.metadata.what_fr) %}
                                                                     <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.what_en or warning.description }}</span>
                                                                     <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.what_fr or warning.description }}</span>
                                                                 {% else %}
                                                                     {{ (warning.metadata.what if warning.metadata.what else warning.description)|translate_issue }}
                                                                 {% endif %}
-                                                            </h6>
+                                                            </h4>
                                                         </div>
 
-                                                        <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
+                                                        <h4 class="text-warning mb-2">{{ _('About this issue:') }}</h4>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What the issue is:') }}</strong>
@@ -2349,7 +2349,7 @@
                                                         </div>
 
                                                         {% if warning.metadata.wcag_full or warning.wcag_criteria %}
-                                                        <h6 class="text-warning mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
+                                                        <h4 class="text-warning mb-2 mt-4">{{ _('Relevant test criteria:') }}</h4>
                                                         <div class="mb-3">
                                                             {% if warning.metadata.wcag_full %}
                                                             <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -2391,7 +2391,7 @@
                             </p>
                                                         {% endif %}
                                                         {% if warning.html %}
-                                                        <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
+                                                        <h4 class="mt-3">{{ _('Code Snippet') }}</h4>
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
                                                         {% endif %}
                                                     </div>
@@ -2455,17 +2455,17 @@
                             {% if warning.metadata and warning.metadata.title %}
                             <!-- Enhanced description available -->
                             <div class="alert alert-warning mb-3">
-                                <h6 class="alert-heading">
+                                <h4 class="alert-heading">
                                     {% if warning.metadata.what_generic_en or warning.metadata.what_generic_fr %}
                                         <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ warning.metadata.what_generic_en }}</span>
                                         <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ warning.metadata.what_generic_fr }}</span>
                                     {% else %}
                                         {{ warning.metadata.title|translate_issue }}
                                     {% endif %}
-                                </h6>
+                                </h4>
                             </div>
 
-                            <h6 class="text-warning mb-2">{{ _('About this issue:') }}</h6>
+                            <h4 class="text-warning mb-2">{{ _('About this issue:') }}</h4>
 
                             <div class="mb-3">
                                 <strong>{{ _('What the issue is:') }}</strong>
@@ -2491,7 +2491,7 @@
                             </div>
 
                             {% if warning.metadata.wcag_full or warning.wcag_criteria %}
-                            <h6 class="text-warning mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
+                            <h4 class="text-warning mb-2 mt-4">{{ _('Relevant test criteria:') }}</h4>
                             <div class="mb-3">
                                 {% if warning.metadata.wcag_full %}
                                 <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -2580,7 +2580,7 @@
                             {% endif %}
                             {% if warning.html %}
                             <div class="mt-3">
-                                <h6>{{ _('Code Snippet') }}</h6>
+                                <h4>{{ _('Code Snippet') }}</h4>
                                 {% if 'ErrSkippedHeadingLevel' in warning.id and warning.metadata and 'previousHeadingHtml' in warning.metadata %}
                                 <p class="mb-2"><strong>Previous heading (h{{ warning.metadata.skippedFrom }}):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.metadata.previousHeadingHtml|e }}</code></pre>
@@ -2589,7 +2589,7 @@
                                 {% elif 'ErrDuplicateLandmarkWithoutName' in warning.id and warning.metadata and 'allInstances' in warning.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ warning.html|e }}</code></pre>
-                                                        <h6 class="mt-4">All {{ warning.metadata.totalCount }} {{ warning.metadata.role }} landmarks on page:</h6>
+                                                        <h4 class="mt-4">All {{ warning.metadata.totalCount }} {{ warning.metadata.role }} landmarks on page:</h4>
                                                         {% for instance in warning.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
@@ -2620,7 +2620,7 @@
 
                             <!-- Thumbnail of the page at time of test -->
                             {% if screenshot_filename %}
-                            <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
+                            <h4 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h4>
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                 <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
                                      alt="Thumbnail of {{ page.url }}"
@@ -2677,7 +2677,7 @@
 
                             <!-- Thumbnail of the page at time of test -->
                             {% if screenshot_filename %}
-                            <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
+                            <h4 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h4>
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                 <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
                                      alt="Thumbnail of {{ page.url }}"
@@ -2781,10 +2781,10 @@
                                                         {% if info.metadata and info.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert alert-info mb-3">
-                                                            <h6 class="alert-heading">{{ (info.metadata.what if info.metadata.what else info.description)|translate_issue }}</h6>
+                                                            <h4 class="alert-heading">{{ (info.metadata.what if info.metadata.what else info.description)|translate_issue }}</h4>
                                                         </div>
 
-                                                        <h6 class="text-info mb-2">{{ _('About this issue:') }}</h6>
+                                                        <h4 class="text-info mb-2">{{ _('About this issue:') }}</h4>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What the issue is:') }}</strong>
@@ -2810,7 +2810,7 @@
                                                         </div>
 
                                                         {% if info.metadata.wcag_full or info.wcag_criteria %}
-                                                        <h6 class="text-info mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
+                                                        <h4 class="text-info mb-2 mt-4">{{ _('Relevant test criteria:') }}</h4>
                                                         <div class="mb-3">
                                                             {% if info.metadata.wcag_full %}
                                                             <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -2850,7 +2850,7 @@
                             </p>
                                                         {% endif %}
                                                         {% if info.html %}
-                                                        <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
+                                                        <h4 class="mt-3">{{ _('Code Snippet') }}</h4>
                                                         {% if 'ErrSkippedHeadingLevel' in info.id and info.metadata and 'previousHeadingHtml' in info.metadata %}
                                                         <p class="mb-2"><strong>Previous heading (h{{ info.metadata.skippedFrom }}):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousHeadingHtml|e }}</code></pre>
@@ -2859,7 +2859,7 @@
                                                         {% elif 'ErrDuplicateLandmarkWithoutName' in info.id and info.metadata and 'allInstances' in info.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.html|e }}</code></pre>
-                                                        <h6 class="mt-4">All {{ info.metadata.totalCount }} {{ info.metadata.role }} landmarks on page:</h6>
+                                                        <h4 class="mt-4">All {{ info.metadata.totalCount }} {{ info.metadata.role }} landmarks on page:</h4>
                                                         {% for instance in info.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
@@ -2939,17 +2939,17 @@
                             {% if info.metadata and info.metadata.title %}
                             <!-- Enhanced description available -->
                             <div class="alert alert-info mb-3">
-                                <h6 class="alert-heading">
+                                <h4 class="alert-heading">
                                     {% if info.metadata.what_generic_en or info.metadata.what_generic_fr %}
                                         <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ info.metadata.what_generic_en }}</span>
                                         <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ info.metadata.what_generic_fr }}</span>
                                     {% else %}
                                         {{ info.metadata.title|translate_issue }}
                                     {% endif %}
-                                </h6>
+                                </h4>
                             </div>
 
-                            <h6 class="text-info mb-2">{{ _('About this issue:') }}</h6>
+                            <h4 class="text-info mb-2">{{ _('About this issue:') }}</h4>
 
                             <div class="mb-3">
                                 <strong>{{ _('What the issue is:') }}</strong>
@@ -2975,7 +2975,7 @@
                             </div>
 
                             {% if info.metadata.wcag_full or info.wcag_criteria %}
-                            <h6 class="text-info mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
+                            <h4 class="text-info mb-2 mt-4">{{ _('Relevant test criteria:') }}</h4>
                             <div class="mb-3">
                                 {% if info.metadata.wcag_full %}
                                 <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -3011,7 +3011,7 @@
                             {% endif %}
                             {% if info.html %}
                             <div class="mt-3">
-                                <h6>{{ _('Code Snippet') }}</h6>
+                                <h4>{{ _('Code Snippet') }}</h4>
                                 {% if 'ErrSkippedHeadingLevel' in info.id and info.metadata and 'previousHeadingHtml' in info.metadata %}
                                 <p class="mb-2"><strong>Previous heading (h{{ info.metadata.skippedFrom }}):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.metadata.previousHeadingHtml|e }}</code></pre>
@@ -3020,7 +3020,7 @@
                                 {% elif 'ErrDuplicateLandmarkWithoutName' in info.id and info.metadata and 'allInstances' in info.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ info.html|e }}</code></pre>
-                                                        <h6 class="mt-4">All {{ info.metadata.totalCount }} {{ info.metadata.role }} landmarks on page:</h6>
+                                                        <h4 class="mt-4">All {{ info.metadata.totalCount }} {{ info.metadata.role }} landmarks on page:</h4>
                                                         {% for instance in info.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
@@ -3097,7 +3097,7 @@
 
                             <!-- Thumbnail of the page at time of test -->
                             {% if screenshot_filename %}
-                            <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
+                            <h4 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h4>
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                 <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
                                      alt="Thumbnail of {{ page.url }}"
@@ -3208,7 +3208,7 @@
                                                         {% if discovery.metadata and discovery.metadata.title %}
                                                         <!-- Enhanced description available -->
                                                         <div class="alert mb-3" style="background-color: #f3f0ff; border-color: #6f42c1;">
-                                                            <h6 class="alert-heading" style="color: #6f42c1;">
+                                                            <h4 class="alert-heading" style="color: #6f42c1;">
                                                                 {% if discovery.metadata.get('what_generic_en') or discovery.metadata.get('what_generic_fr') %}
                                                                     <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata['what_generic_en'] }}</span>
                                                                     <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata['what_generic_fr'] }}</span>
@@ -3218,10 +3218,10 @@
                                                                 {% else %}
                                                                     {{ (discovery.metadata.what if discovery.metadata.what else discovery.description)|translate_issue }}
                                                                 {% endif %}
-                                                            </h6>
+                                                            </h4>
                                                         </div>
 
-                                                        <h6 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h6>
+                                                        <h4 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h4>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What was found:') }}</strong>
@@ -3252,7 +3252,7 @@
                                                         </div>
 
                                                         {% if discovery.metadata.wcag_full or discovery.wcag_criteria %}
-                                                        <h6 style="color: #6f42c1;" class="mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
+                                                        <h4 style="color: #6f42c1;" class="mb-2 mt-4">{{ _('Relevant test criteria:') }}</h4>
                                                         <div class="mb-3">
                                                             {% if discovery.metadata.wcag_full %}
                                                             <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -3294,7 +3294,7 @@
                             </p>
                                                         {% endif %}
                                                         {% if discovery.html %}
-                                                        <h6 class="mt-3">{{ _('Code Snippet') }}</h6>
+                                                        <h4 class="mt-3">{{ _('Code Snippet') }}</h4>
                                                         {% if 'ErrSkippedHeadingLevel' in discovery.id and discovery.metadata and 'previousHeadingHtml' in discovery.metadata %}
                                                         <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Previous heading</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Titre précédent</span> (h{{ discovery.metadata.skippedFrom }}):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
@@ -3303,7 +3303,7 @@
                                                         {% elif 'ErrDuplicateLandmarkWithoutName' in discovery.id and discovery.metadata and 'allInstances' in discovery.metadata %}
                                                         <p class="mb-2"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">This instance (missing accessible name):</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Cette instance (nom accessible manquant) :</span></strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
-                                                        <h6 class="mt-4"><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">All {{ discovery.metadata.totalCount }} {{ discovery.metadata.role }} landmarks on page:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Tous les {{ discovery.metadata.totalCount }} points de repère {{ discovery.metadata.role }} sur la page :</span></h6>
+                                                        <h4 class="mt-4"><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">All {{ discovery.metadata.totalCount }} {{ discovery.metadata.role }} landmarks on page:</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Tous les {{ discovery.metadata.totalCount }} points de repère {{ discovery.metadata.role }} sur la page :</span></h4>
                                                         {% for instance in discovery.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong><span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">Instance</span><span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">Instance</span> {{ instance.index }}:</strong> {{ instance.name }}</p>
@@ -3404,7 +3404,7 @@
                             {% if discovery.metadata and discovery.metadata.title %}
                             <!-- Enhanced description available -->
                             <div class="alert mb-3" style="background-color: #f3f0ff; border-color: #6f42c1;">
-                                <h6 class="alert-heading" style="color: #6f42c1;">
+                                <h4 class="alert-heading" style="color: #6f42c1;">
                                     {% if discovery.metadata.what_generic_en or discovery.metadata.what_generic_fr %}
                                         <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata.what_generic_en }}</span>
                                         <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata.what_generic_fr }}</span>
@@ -3414,10 +3414,10 @@
                                     {% else %}
                                         {{ discovery.metadata.title|translate_issue }}
                                     {% endif %}
-                                </h6>
+                                </h4>
                             </div>
 
-                            <h6 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h6>
+                            <h4 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h4>
 
                             <div class="mb-3">
                                 <strong>{{ _('What was found:') }}</strong>
@@ -3448,7 +3448,7 @@
                             </div>
 
                             {% if discovery.metadata.wcag_full or discovery.wcag_criteria %}
-                            <h6 style="color: #6f42c1;" class="mb-2 mt-4">{{ _('Relevant test criteria:') }}</h6>
+                            <h4 style="color: #6f42c1;" class="mb-2 mt-4">{{ _('Relevant test criteria:') }}</h4>
                             <div class="mb-3">
                                 {% if discovery.metadata.wcag_full %}
                                 <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -3487,7 +3487,7 @@
                             {% endif %}
                             {% if discovery.html %}
                             <div class="mt-3">
-                                <h6>{{ _('Code Snippet') }}</h6>
+                                <h4>{{ _('Code Snippet') }}</h4>
                                 {% if 'ErrSkippedHeadingLevel' in discovery.id and discovery.metadata and 'previousHeadingHtml' in discovery.metadata %}
                                 <p class="mb-2"><strong>Previous heading (h{{ discovery.metadata.skippedFrom }}):</strong></p>
                                 <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.metadata.previousHeadingHtml|e }}</code></pre>
@@ -3496,7 +3496,7 @@
                                 {% elif 'ErrDuplicateLandmarkWithoutName' in discovery.id and discovery.metadata and 'allInstances' in discovery.metadata %}
                                                         <p class="mb-2"><strong>This instance (missing accessible name):</strong></p>
                                                         <pre class="bg-dark text-light p-3 rounded mb-3"><code>{{ discovery.html|e }}</code></pre>
-                                                        <h6 class="mt-4">All {{ discovery.metadata.totalCount }} {{ discovery.metadata.role }} landmarks on page:</h6>
+                                                        <h4 class="mt-4">All {{ discovery.metadata.totalCount }} {{ discovery.metadata.role }} landmarks on page:</h4>
                                                         {% for instance in discovery.metadata.allInstances %}
                                                         <div class="mb-3">
                                                             <p class="mb-1"><strong>{{ _('Instance') }} {{ instance.index }}:</strong> {{ instance.name }}</p>
@@ -3543,7 +3543,7 @@
 
                             <!-- Thumbnail of the page at time of test -->
                             {% if screenshot_filename %}
-                            <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
+                            <h4 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h4>
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                 <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
                                      alt="Thumbnail of {{ page.url }}"
@@ -3590,7 +3590,7 @@
 
                             <!-- Thumbnail of the page at time of test -->
                             {% if screenshot_filename %}
-                            <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
+                            <h4 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h4>
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
                                 <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
                                      alt="Thumbnail of {{ page.url }}"
@@ -3726,7 +3726,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="testModalTitle">{{ _('Running Test') }}</h5>
+                <h2 class="modal-title" id="testModalTitle">{{ _('Running Test') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body text-center">

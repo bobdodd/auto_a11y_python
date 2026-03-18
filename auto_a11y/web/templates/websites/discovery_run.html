@@ -197,7 +197,7 @@
     <!-- Pages List -->
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">Discovered Pages ({{ pages|length }})</h5>
+            <h2 class="mb-0">Discovered Pages ({{ pages|length }})</h2>
         </div>
         <div class="card-body">
             {% if pages %}
@@ -254,7 +254,7 @@
     <!-- Failed Pages -->
     <div class="card mt-4 border-warning">
         <div class="card-header bg-warning">
-            <h5 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Discovery Issues ({{ discovery_run.failed_pages_details|length }})</h5>
+            <h2 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Discovery Issues ({{ discovery_run.failed_pages_details|length }})</h2>
         </div>
         <div class="card-body">
             <p class="text-muted">{{ discovery_run.failed_pages_details|length }} page(s) could not be discovered:</p>
@@ -273,7 +273,7 @@
     <!-- Error Details -->
     <div class="card mt-4 border-danger">
         <div class="card-header bg-danger text-white">
-            <h5 class="mb-0">Error Details</h5>
+            <h2 class="mb-0">Error Details</h2>
         </div>
         <div class="card-body">
             <pre class="text-danger">{{ discovery_run.error_message }}</pre>

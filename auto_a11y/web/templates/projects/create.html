@@ -591,34 +591,34 @@ function showTestDetails(testId) {
                     </div>
 
                     <div class="test-details-section">
-                        <h6><i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ _('What This Test Detects') }}</h6>
+                        <h3><i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ _('What This Test Detects') }}</h3>
                         <p>${test.description}</p>
                     </div>
 
                     ${test.why_it_matters ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ _('Why It Matters') }}</h6>
+                        <h3><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ _('Why It Matters') }}</h3>
                         <p>${test.why_it_matters}</p>
                     </div>
                     ` : ''}
 
                     ${test.who_it_affects ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-people me-2" aria-hidden="true"></i>{{ _('Who It Affects') }}</h6>
+                        <h3><i class="bi bi-people me-2" aria-hidden="true"></i>{{ _('Who It Affects') }}</h3>
                         <p>${test.who_it_affects}</p>
                     </div>
                     ` : ''}
 
                     ${test.how_to_fix ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-wrench me-2" aria-hidden="true"></i>{{ _('How to Fix') }}</h6>
+                        <h3><i class="bi bi-wrench me-2" aria-hidden="true"></i>{{ _('How to Fix') }}</h3>
                         <p>${test.how_to_fix}</p>
                     </div>
                     ` : ''}
 
                     ${test.message_template && (test.message_template.title || test.message_template.what) ? `
                     <div class="test-details-section bg-light border rounded p-3">
-                        <h6><i class="bi bi-chat-square-text me-2" aria-hidden="true"></i>{{ _('Violation Message Templates') }}</h6>
+                        <h3><i class="bi bi-chat-square-text me-2" aria-hidden="true"></i>{{ _('Violation Message Templates') }}</h3>
                         <p class="text-muted small mb-3">{{ _('These are the actual message templates shown to users when violations are detected. Placeholders like {totalCount}, {role}, {element}, etc. are filled in dynamically.') }}</p>
 
                         ${test.message_template.title ? `
@@ -790,34 +790,34 @@ function refreshTestDetailsContent(testId) {
                     </div>
 
                     <div class="test-details-section">
-                        <h6><i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ _('What This Test Detects') }}</h6>
+                        <h3><i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ _('What This Test Detects') }}</h3>
                         <p>${test.description}</p>
                     </div>
 
                     ${test.why_it_matters ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ _('Why It Matters') }}</h6>
+                        <h3><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ _('Why It Matters') }}</h3>
                         <p>${test.why_it_matters}</p>
                     </div>
                     ` : ''}
 
                     ${test.who_it_affects ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-people me-2" aria-hidden="true"></i>{{ _('Who It Affects') }}</h6>
+                        <h3><i class="bi bi-people me-2" aria-hidden="true"></i>{{ _('Who It Affects') }}</h3>
                         <p>${test.who_it_affects}</p>
                     </div>
                     ` : ''}
 
                     ${test.how_to_fix ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-wrench me-2" aria-hidden="true"></i>{{ _('How to Fix') }}</h6>
+                        <h3><i class="bi bi-wrench me-2" aria-hidden="true"></i>{{ _('How to Fix') }}</h3>
                         <p>${test.how_to_fix}</p>
                     </div>
                     ` : ''}
 
                     ${test.message_template && (test.message_template.title || test.message_template.what) ? `
                     <div class="test-details-section bg-light border rounded p-3">
-                        <h6><i class="bi bi-chat-square-text me-2" aria-hidden="true"></i>{{ _('Violation Message Templates') }}</h6>
+                        <h3><i class="bi bi-chat-square-text me-2" aria-hidden="true"></i>{{ _('Violation Message Templates') }}</h3>
                         <p class="text-muted small mb-3">{{ _('These are the actual message templates shown to users when violations are detected. Placeholders like {totalCount}, {role}, {element}, etc. are filled in dynamically.') }}</p>
 
                         ${test.message_template.title ? `

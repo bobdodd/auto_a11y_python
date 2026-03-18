@@ -230,7 +230,7 @@
     </h5>
 </div>
 
-<h5 class="text-{{ alert_type }} mb-2 h6" data-i18n="about_this_issue">{{ t.get('about_this_issue', 'About this issue:') }}</h5>
+<h5 class="text-{{ alert_type }} mb-2" data-i18n="about_this_issue">{{ t.get('about_this_issue', 'About this issue:') }}</h5>
 
 <div class="mb-3">
     <strong data-i18n="what_the_issue_is">{{ t.get('what_the_issue_is', 'What the issue is:') }}</strong>
@@ -263,7 +263,7 @@
 {% endif %}
 
 {% if violation.metadata.wcag_full %}
-<h5 class="text-{{ alert_type }} mb-2 mt-4 h6" data-i18n="relevant_test_criteria">{{ t.get('relevant_test_criteria', 'Relevant test criteria:') }}</h5>
+<h5 class="text-{{ alert_type }} mb-2 mt-4" data-i18n="relevant_test_criteria">{{ t.get('relevant_test_criteria', 'Relevant test criteria:') }}</h5>
 <div class="mb-3">
     <strong>WCAG <span data-i18n="success_criteria">{{ t.get('success_criteria', 'Success Criteria:') }}</span></strong>
     <ul>
@@ -365,7 +365,7 @@
 {% endif %}
 
 {% if violation.html_snippet %}
-<h5 class="mt-3 h6" data-i18n="code_snippet">{{ t.get('code_snippet', 'Code Snippet') }}</h5>
+<h5 class="mt-3" data-i18n="code_snippet">{{ t.get('code_snippet', 'Code Snippet') }}</h5>
 <pre class="bg-dark text-light p-3 rounded"><code>{{ violation.html_snippet|e }}</code></pre>
 {% endif %}
 {% endmacro %}
@@ -500,7 +500,7 @@
     <!-- Issue Breakdown -->
     <div class="card mb-4">
         <div class="card-header">
-            <h2 class="mb-0 h5">
+            <h2 class="mb-0">
                 <i class="bi bi-bug" aria-hidden="true"></i>
                 <span data-i18n="issues_found">{{ t['issues_found'] }}</span>
                 (<span data-i18n="non_component_issues_only">{{ t.get('non_component_issues_only', 'Non-Component Issues Only') }}</span>)
@@ -553,7 +553,7 @@
     {% if violations or warnings or info or discovery %}
     <div class="filter-panel">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="mb-0 h5"><i class="bi bi-funnel" aria-hidden="true"></i> <span data-i18n="filter_test_results">{{ t.get('filter_test_results', 'Filter Test Results') }}</span></h2>
+            <h2 class="mb-0"><i class="bi bi-funnel" aria-hidden="true"></i> <span data-i18n="filter_test_results">{{ t.get('filter_test_results', 'Filter Test Results') }}</span></h2>
             <button class="btn btn-sm btn-outline-secondary" id="clearFilters">
                 <i class="bi bi-x-circle" aria-hidden="true"></i> <span data-i18n="clear_all_filters">{{ t.get('clear_all_filters', 'Clear All Filters') }}</span>
             </button>
@@ -657,7 +657,7 @@
     <!-- Test Results -->
     <div class="card test-results-card mt-4">
         <div class="card-header">
-            <h2 class="mb-0 h5">
+            <h2 class="mb-0">
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Non-Component Issues for This Page</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Problèmes hors composants pour cette page</span>
             </h2>
@@ -670,7 +670,7 @@
 
     <!-- Violations -->
     {% if violations %}
-    <h3 class="text-danger mb-3 h6">
+    <h3 class="text-danger mb-3">
         <i class="bi bi-x-circle" aria-hidden="true"></i> <span data-i18n="errors">{{ t['errors'] }}</span> ({{ violations|length }})
     </h3>
     <div class="accordion mb-4" id="violationsAccordion">
@@ -763,7 +763,7 @@
 
     <!-- Warnings -->
     {% if warnings %}
-    <h3 class="text-warning mb-3 h6">
+    <h3 class="text-warning mb-3">
         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> <span data-i18n="warnings">{{ t['warnings'] }}</span> ({{ warnings|length }})
     </h3>
     <div class="accordion mb-4" id="warningsAccordion">
@@ -856,7 +856,7 @@
 
     <!-- Info -->
     {% if info %}
-    <h3 class="text-info mb-3 h6">
+    <h3 class="text-info mb-3">
         <i class="bi bi-info-circle" aria-hidden="true"></i> <span data-i18n="info">{{ t['info'] }}</span> ({{ info|length }})
     </h3>
     <div class="accordion mb-4" id="infoAccordion">
@@ -951,7 +951,7 @@
 
     <!-- Discovery -->
     {% if discovery %}
-    <h3 class="mb-3 h6" style="color: #6f42c1;">
+    <h3 class="mb-3" style="color: #6f42c1;">
         <i class="bi bi-search" aria-hidden="true"></i> <span data-i18n="discovery">{{ t['discovery'] }}</span> ({{ discovery|length }})
     </h3>
     <div class="accordion mb-4" id="discoveryAccordion">

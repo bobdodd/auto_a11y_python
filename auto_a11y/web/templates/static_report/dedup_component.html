@@ -102,7 +102,7 @@
         border-radius: 8px 8px 0 0;
     }
 
-    .section-header h5 {
+    .section-header h3 {
         margin: 0;
         font-size: 1.1rem;
     }
@@ -276,7 +276,7 @@
     </h5>
 </div>
 
-<h5 class="text-{{ alert_type }} mb-2 h6">
+<h5 class="text-{{ alert_type }} mb-2">
     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['about_this_issue'] }}</span>
     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['about_this_issue'] }}</span>
 </h5>
@@ -329,7 +329,7 @@
 
 <!-- WCAG Criteria -->
 {% if issue.wcag_full %}
-<h5 class="text-{{ alert_type }} mb-2 mt-4 h6">
+<h5 class="text-{{ alert_type }} mb-2 mt-4">
     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['relevant_test_criteria'] }}</span>
     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['relevant_test_criteria'] }}</span>
 </h5>
@@ -448,7 +448,7 @@
 <!-- Element Details -->
 {% if issue.element or issue.xpath %}
 <hr>
-<h5 class="text-{{ alert_type }} mb-2 h6">
+<h5 class="text-{{ alert_type }} mb-2">
     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['element_details'] }}</span>
     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['element_details'] }}</span>
 </h5>
@@ -582,7 +582,7 @@
     {% if issues %}
     <div class="filter-panel">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="mb-0 h5">
+            <h2 class="mb-0">
                 <i class="bi bi-funnel" aria-hidden="true"></i>
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get('filter_test_results', 'Filter Test Results') }}</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('filter_test_results', 'Filtrer les résultats de test') }}</span>
@@ -731,7 +731,7 @@
     {% if issues %}
     <div class="card test-results-card">
         <div class="card-header">
-            <h2 class="mb-0 h5">
+            <h2 class="mb-0">
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get('component_issues', 'Component Issues') }}</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('component_issues', 'Problèmes du composant') }}</span>
             </h2>
@@ -746,7 +746,7 @@
             {% if violations %}
             <div class="section-panel errors-section mb-4" style="border: 2px solid #dc3545; border-radius: 8px; overflow: hidden;">
                 <div class="section-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white;">
-                    <h3 class="mb-0 h5">
+                    <h3 class="mb-0">
                         <i class="bi bi-x-circle-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['errors'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['errors'] }}</span>
@@ -781,7 +781,7 @@
             {% if warnings %}
             <div class="section-panel warnings-section mb-4" style="border: 2px solid #ffc107; border-radius: 8px; overflow: hidden;">
                 <div class="section-header" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #000;">
-                    <h3 class="mb-0 h5">
+                    <h3 class="mb-0">
                         <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['warnings'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['warnings'] }}</span>
@@ -816,7 +816,7 @@
             {% if info_items %}
             <div class="section-panel info-section mb-4" style="border: 2px solid #0e7490; border-radius: 8px; overflow: hidden;">
                 <div class="section-header" style="background: linear-gradient(135deg, #0e7490 0%, #0aa2c0 100%); color: white;">
-                    <h3 class="mb-0 h5">
+                    <h3 class="mb-0">
                         <i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['info'] }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['info'] }}</span>
@@ -851,7 +851,7 @@
             {% if discovery_items %}
             <div class="section-panel discovery-section mb-4" style="border: 2px solid #6f42c1; border-radius: 8px; overflow: hidden;">
                 <div class="section-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white;">
-                    <h3 class="mb-0 h5">
+                    <h3 class="mb-0">
                         <i class="bi bi-lightbulb-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get('discovery', 'Discovery') }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get('discovery', 'Découverte') }}</span>

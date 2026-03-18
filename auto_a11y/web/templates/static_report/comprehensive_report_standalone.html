@@ -480,20 +480,21 @@
             <div class="row">
                 <!-- Impact Chart -->
                 <div class="col-md-6 mb-4">
-                    <h4>
+                    <h3>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.issues_by_impact }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.issues_by_impact }}</span>
-                    </h4>
+                    </h3>
                     <canvas id="impactChart" style="max-height: 300px;" role="img" aria-label="Issues by impact level chart"></canvas>
                 </div>
 
                 <!-- Impact Breakdown Table -->
                 <div class="col-md-6">
-                    <h4>
+                    <h3>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.impact_breakdown }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.impact_breakdown }}</span>
-                    </h4>
-                    <table class="table table-striped" aria-label="Impact breakdown table">
+                    </h3>
+                    <table class="table table-striped">
+                        <caption class="visually-hidden">Impact breakdown table</caption>
                         <thead>
                             <tr>
                                 <th scope="col">
@@ -560,10 +561,10 @@
             <div class="row">
                 <!-- WCAG Chart -->
                 <div class="col-md-6 mb-4">
-                    <h4>
+                    <h3>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.wcag_criteria_violations }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.wcag_criteria_violations }}</span>
-                    </h4>
+                    </h3>
                     <canvas id="wcagChart" style="max-height: 400px;" role="img" aria-label="WCAG criteria violations chart"></canvas>
                 </div>
 
@@ -659,12 +660,13 @@
                                     '4.1.3': {'en': 'Status Messages', 'fr': 'Messages d\'état'},
                                     '5.2.4': {'en': 'Accessibility Supported', 'fr': 'Accessibilité prise en charge'}
                                 } %}
-                    <h4>
+                    <h3>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Top WCAG Criteria</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Principaux critères WCAG</span>
-                    </h4>
+                    </h3>
                     <div style="max-height: 400px; overflow-y: auto;">
-                        <table class="table table-sm" aria-label="Top WCAG criteria details">
+                        <table class="table table-sm">
+                            <caption class="visually-hidden">Top WCAG criteria details</caption>
                             <thead style="position: sticky; top: 0; background: white;">
                                 <tr>
                                     <th scope="col">
@@ -718,10 +720,10 @@
             <div class="row">
                 <!-- Category Chart -->
                 <div class="col-md-6 mb-4">
-                    <h4>
+                    <h3>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.findings_by_type }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.findings_by_type }}</span>
-                    </h4>
+                    </h3>
                     <canvas id="categoryChart" style="max-height: 300px;" role="img" aria-label="Findings by category type chart"></canvas>
                 </div>
 
@@ -790,10 +792,10 @@
 
             <!-- Understanding Categories -->
             <div class="alert alert-info mt-4">
-                <h5>
+                <h3>
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.understanding_categories }}</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.understanding_categories }}</span>
-                </h5>
+                </h3>
                 <dl class="mb-0">
                     <dt class="mt-2">
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">🔴 Errors & Warnings (Violations)</span>
@@ -854,12 +856,13 @@
                 'videos': {'en': 'Videos', 'fr': 'Vidéos'}
             } %}
             <div class="mt-4">
-                <h4>
+                <h3>
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Distribution by Touchpoint</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Distribution par point de contact</span>
-                </h4>
+                </h3>
                 <div class="table-responsive">
-                    <table class="table table-striped" aria-label="Distribution by touchpoint">
+                    <table class="table table-striped">
+                        <caption class="visually-hidden">Distribution by touchpoint</caption>
                         <thead>
                             <tr>
                                 <th scope="col">
@@ -901,10 +904,10 @@
             </h2>
 
             <div class="alert alert-info">
-                <h5>
+                <h3>
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.current_snapshot }}</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.current_snapshot }}</span>
-                </h5>
+                </h3>
                 <p class="mb-0">
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.trend_note }}</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.trend_note }}</span>
@@ -915,10 +918,10 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">
+                            <h3 class="card-title">
                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Total Issues</span>
                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Total des problèmes</span>
-                            </h5>
+                            </h3>
                             <p class="display-6">{{ analytics.total_violations }}</p>
                         </div>
                     </div>
@@ -926,10 +929,10 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">
+                            <h3 class="card-title">
                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">High Impact Issues</span>
                                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Problèmes à impact élevé</span>
-                            </h5>
+                            </h3>
                             <p class="display-6">{{ analytics.by_impact.high }}</p>
                         </div>
                     </div>
@@ -946,6 +949,7 @@
 
             <div class="table-responsive">
                 <table class="table table-striped">
+                    <caption class="visually-hidden">Top issues details</caption>
                     <thead>
                         <tr>
                             <th>
@@ -1019,6 +1023,7 @@
 
             <div class="table-responsive">
                 <table class="table table-striped">
+                    <caption class="visually-hidden">Page-by-page analysis</caption>
                     <thead>
                         <tr>
                             <th>
@@ -1087,10 +1092,10 @@
                 </p>
             </div>
 
-            <h4 class="mb-3">
+            <h3 class="mb-3">
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.priority_matrix }}</span>
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.priority_matrix }}</span>
-            </h4>
+            </h3>
 
             <!-- Critical Priority Issues -->
             {% set critical_issues = [] %}
@@ -1112,10 +1117,10 @@
             {% if critical_issues|length > 0 %}
             <div class="card border-danger mb-3">
                 <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0">
+                    <h4 class="mb-0">
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.critical_priority }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.critical_priority }}</span>
-                    </h5>
+                    </h4>
                 </div>
                 <div class="card-body">
                     <ul class="mb-0">
@@ -1160,10 +1165,10 @@
             {% if high_issues|length > 0 %}
             <div class="card border-warning mb-3">
                 <div class="card-header bg-warning">
-                    <h5 class="mb-0">
+                    <h4 class="mb-0">
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.high_priority }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.high_priority }}</span>
-                    </h5>
+                    </h4>
                 </div>
                 <div class="card-body">
                     <ul class="mb-0">
@@ -1208,10 +1213,10 @@
             {% if medium_issues|length > 0 %}
             <div class="card border-info mb-3">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">
+                    <h4 class="mb-0">
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.medium_priority }}</span>
                         <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.medium_priority }}</span>
-                    </h5>
+                    </h4>
                 </div>
                 <div class="card-body">
                     <ul class="mb-0">

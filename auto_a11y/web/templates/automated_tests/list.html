@@ -22,9 +22,9 @@
     <!-- Filters Section -->
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-funnel" aria-hidden="true"></i> Filters
-            </h5>
+            </h2>
         </div>
         <div class="card-body">
             <form id="filterForm">
@@ -100,7 +100,7 @@
     <!-- Test Results Table -->
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">Test Results</h5>
+            <h2 class="mb-0">Test Results</h2>
         </div>
         <div class="card-body">
             <div id="resultsContainer">
@@ -161,11 +161,11 @@
 </div>
 
 <!-- Upload Progress Modal -->
-<div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalTitle">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Uploading to Drupal</h5>
+                <h2 class="modal-title" id="uploadModalTitle">Uploading to Drupal</h2>
             </div>
             <div class="modal-body">
                 <div id="uploadProgress">
@@ -182,13 +182,13 @@
                 </div>
                 <div id="uploadComplete" class="d-none">
                     <div class="alert alert-success">
-                        <h6>Upload Complete!</h6>
+                        <h3>Upload Complete!</h3>
                         <ul id="uploadResultsList" class="mb-0"></ul>
                     </div>
                 </div>
                 <div id="uploadError" class="d-none">
                     <div class="alert alert-danger">
-                        <h6>Upload Failed</h6>
+                        <h3>Upload Failed</h3>
                         <p id="uploadErrorMessage"></p>
                     </div>
                 </div>

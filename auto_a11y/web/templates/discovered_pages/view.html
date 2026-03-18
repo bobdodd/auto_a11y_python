@@ -13,7 +13,7 @@
                     <li class="breadcrumb-item active">Discovered Page</li>
                 </ol>
             </nav>
-            <h1 class="h2 mb-0" id="pageTitle">{{ page.title }}</h1>
+            <h1 class="mb-0" id="pageTitle">{{ page.title }}</h1>
         </div>
         <div>
             <button type="button" class="btn btn-primary me-2" id="editBtn" onclick="toggleEditMode()">
@@ -40,23 +40,23 @@
             <!-- Basic Information -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> Page Information</h5>
+                    <h2 class="mb-0"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> Page Information</h2>
                 </div>
                 <div class="card-body">
                     <!-- View Mode -->
                     <div id="viewMode">
-                        <div class="row">
+                        <dl class="row">
                             <div class="col-12 mb-3">
-                                <h6 class="text-muted mb-1">Title</h6>
-                                <p class="mb-0">{{ page.title }}</p>
+                                <dt class="text-muted mb-1">Title</dt>
+                                <dd class="mb-0">{{ page.title }}</dd>
                             </div>
                             <div class="col-12 mb-3">
-                                <h6 class="text-muted mb-1">URL</h6>
-                                <p class="mb-0"><a href="{{ page.url }}" target="_blank">{{ page.url }}</a></p>
+                                <dt class="text-muted mb-1">URL</dt>
+                                <dd class="mb-0"><a href="{{ page.url }}" target="_blank">{{ page.url }}</a></dd>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <h6 class="text-muted mb-1">Source Type</h6>
-                                <p class="mb-0">
+                                <dt class="text-muted mb-1">Source Type</dt>
+                                <dd class="mb-0">
                                     {% if page.source_type == 'drupal_import' %}
                                         <span class="badge bg-info">Drupal Import</span>
                                     {% elif page.source_type == 'manual' %}
@@ -64,11 +64,11 @@
                                     {% else %}
                                         {{ page.source_type }}
                                     {% endif %}
-                                </p>
+                                </dd>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <h6 class="text-muted mb-1">Status</h6>
-                                <p class="mb-0">
+                                <dt class="text-muted mb-1">Status</dt>
+                                <dd class="mb-0">
                                     {% if page.audited %}
                                         <span class="badge bg-success">Audited</span>
                                     {% else %}
@@ -80,9 +80,9 @@
                                     {% if page.include_in_report %}
                                         <span class="badge bg-primary">Include in Report</span>
                                     {% endif %}
-                                </p>
+                                </dd>
                             </div>
-                        </div>
+                        </dl>
                     </div>
 
                     <!-- Edit Mode -->
@@ -124,14 +124,15 @@
             <!-- Discovery Details -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-search" aria-hidden="true"></i> Discovery Details</h5>
+                    <h2 class="mb-0"><i class="bi bi-search" aria-hidden="true"></i> Discovery Details</h2>
                 </div>
                 <div class="card-body">
                     <!-- View Mode -->
                     <div id="discoveryViewMode">
-                        <div class="row">
+                        <dl class="row">
                             <div class="col-12 mb-3">
-                                <h6 class="text-muted mb-1">Interested Because</h6>
+                                <dt class="text-muted mb-1">Interested Because</dt>
+                                <dd class="mb-0">
                                 {% if page.interested_because %}
                                     <div class="d-flex flex-wrap gap-2">
                                         {% for reason in page.interested_because %}
@@ -139,11 +140,13 @@
                                         {% endfor %}
                                     </div>
                                 {% else %}
-                                    <p class="text-muted mb-0">No reasons specified</p>
+                                    <span class="text-muted">No reasons specified</span>
                                 {% endif %}
+                                </dd>
                             </div>
                             <div class="col-12 mb-3">
-                                <h6 class="text-muted mb-1">Page Elements</h6>
+                                <dt class="text-muted mb-1">Page Elements</dt>
+                                <dd class="mb-0">
                                 {% if page.page_elements %}
                                     <div class="d-flex flex-wrap gap-2">
                                         {% for element in page.page_elements %}
@@ -151,10 +154,11 @@
                                         {% endfor %}
                                     </div>
                                 {% else %}
-                                    <p class="text-muted mb-0">No elements specified</p>
+                                    <span class="text-muted">No elements specified</span>
                                 {% endif %}
+                                </dd>
                             </div>
-                        </div>
+                        </dl>
                     </div>
 
                     <!-- Edit Mode -->
@@ -220,29 +224,33 @@
             <!-- Notes -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-journal-text" aria-hidden="true"></i> Notes</h5>
+                    <h2 class="mb-0"><i class="bi bi-journal-text" aria-hidden="true"></i> Notes</h2>
                 </div>
                 <div class="card-body">
                     <!-- View Mode -->
                     <div id="notesViewMode">
-                        <div class="row">
+                        <dl class="row">
                             <div class="col-12 mb-3">
-                                <h6 class="text-muted mb-1">Private Notes</h6>
+                                <dt class="text-muted mb-1">Private Notes</dt>
+                                <dd class="mb-0">
                                 {% if page.private_notes %}
-                                    <p class="mb-0">{{ page.private_notes }}</p>
+                                    {{ page.private_notes }}
                                 {% else %}
-                                    <p class="text-muted mb-0">No private notes</p>
+                                    <span class="text-muted">No private notes</span>
                                 {% endif %}
+                                </dd>
                             </div>
                             <div class="col-12 mb-3">
-                                <h6 class="text-muted mb-1">Public Notes</h6>
+                                <dt class="text-muted mb-1">Public Notes</dt>
+                                <dd class="mb-0">
                                 {% if page.public_notes %}
-                                    <p class="mb-0">{{ page.public_notes }}</p>
+                                    {{ page.public_notes }}
                                 {% else %}
-                                    <p class="text-muted mb-0">No public notes</p>
+                                    <span class="text-muted">No public notes</span>
                                 {% endif %}
+                                </dd>
                             </div>
-                        </div>
+                        </dl>
                     </div>
 
                     <!-- Edit Mode -->
@@ -265,7 +273,7 @@
             {% if page.document_links %}
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-link-45deg" aria-hidden="true"></i> Document Links</h5>
+                    <h2 class="mb-0"><i class="bi bi-link-45deg" aria-hidden="true"></i> Document Links</h2>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled">
@@ -287,38 +295,40 @@
             <!-- Sync Status -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-cloud-arrow-up-down" aria-hidden="true"></i> Drupal Sync</h5>
+                    <h2 class="mb-0"><i class="bi bi-cloud-arrow-up-down" aria-hidden="true"></i> Drupal Sync</h2>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <h6 class="text-muted mb-1">Sync Status</h6>
-                        <p class="mb-0">
-                            {% if page.drupal_sync_status.value == 'synced' %}
-                                <span class="badge bg-success">Synced</span>
-                            {% elif page.drupal_sync_status.value == 'sync_failed' %}
-                                <span class="badge bg-danger">Failed</span>
-                            {% elif page.drupal_sync_status.value == 'pending' %}
-                                <span class="badge bg-warning">Pending</span>
-                            {% else %}
-                                <span class="badge bg-secondary">Not Synced</span>
-                            {% endif %}
-                        </p>
-                    </div>
-                    {% if page.drupal_uuid %}
-                    <div class="mb-3">
-                        <h6 class="text-muted mb-1">Drupal UUID</h6>
-                        <p class="mb-0"><small class="font-monospace">{{ page.drupal_uuid }}</small></p>
-                    </div>
-                    {% endif %}
-                    {% if page.drupal_last_synced %}
-                    <div class="mb-3">
-                        <h6 class="text-muted mb-1">Last Synced</h6>
-                        <p class="mb-0">{{ page.drupal_last_synced.strftime('%Y-%m-%d %H:%M') }}</p>
-                    </div>
-                    {% endif %}
+                    <dl>
+                        <div class="mb-3">
+                            <dt class="text-muted mb-1">Sync Status</dt>
+                            <dd class="mb-0">
+                                {% if page.drupal_sync_status.value == 'synced' %}
+                                    <span class="badge bg-success">Synced</span>
+                                {% elif page.drupal_sync_status.value == 'sync_failed' %}
+                                    <span class="badge bg-danger">Failed</span>
+                                {% elif page.drupal_sync_status.value == 'pending' %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Not Synced</span>
+                                {% endif %}
+                            </dd>
+                        </div>
+                        {% if page.drupal_uuid %}
+                        <div class="mb-3">
+                            <dt class="text-muted mb-1">Drupal UUID</dt>
+                            <dd class="mb-0"><small class="font-monospace">{{ page.drupal_uuid }}</small></dd>
+                        </div>
+                        {% endif %}
+                        {% if page.drupal_last_synced %}
+                        <div class="mb-3">
+                            <dt class="text-muted mb-1">Last Synced</dt>
+                            <dd class="mb-0">{{ page.drupal_last_synced.strftime('%Y-%m-%d %H:%M') }}</dd>
+                        </div>
+                        {% endif %}
+                    </dl>
                     {% if page.drupal_error_message %}
                     <div class="alert alert-danger mb-0">
-                        <h6 class="alert-heading">Sync Error</h6>
+                        <strong>Sync Error</strong>
                         <p class="mb-0 small">{{ page.drupal_error_message }}</p>
                     </div>
                     {% endif %}
@@ -328,23 +338,25 @@
             <!-- Metadata -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> Metadata</h5>
+                    <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> Metadata</h2>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <h6 class="text-muted mb-1">Created</h6>
-                        <p class="mb-0">{{ page.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
-                    </div>
-                    <div class="mb-3">
-                        <h6 class="text-muted mb-1">Last Updated</h6>
-                        <p class="mb-0">{{ page.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
-                    </div>
-                    {% if page.created_by %}
-                    <div class="mb-3">
-                        <h6 class="text-muted mb-1">Created By</h6>
-                        <p class="mb-0">{{ page.created_by }}</p>
-                    </div>
-                    {% endif %}
+                    <dl>
+                        <div class="mb-3">
+                            <dt class="text-muted mb-1">Created</dt>
+                            <dd class="mb-0">{{ page.created_at.strftime('%Y-%m-%d %H:%M') }}</dd>
+                        </div>
+                        <div class="mb-3">
+                            <dt class="text-muted mb-1">Last Updated</dt>
+                            <dd class="mb-0">{{ page.updated_at.strftime('%Y-%m-%d %H:%M') }}</dd>
+                        </div>
+                        {% if page.created_by %}
+                        <div class="mb-3">
+                            <dt class="text-muted mb-1">Created By</dt>
+                            <dd class="mb-0">{{ page.created_by }}</dd>
+                        </div>
+                        {% endif %}
+                    </dl>
                 </div>
             </div>
         </div>

@@ -13,7 +13,7 @@
                     <li class="breadcrumb-item active">Drupal Sync</li>
                 </ol>
             </nav>
-            <h1 class="h2">
+            <h1>
                 <i class="bi bi-cloud-arrow-up-down" aria-hidden="true"></i> Drupal Synchronization
             </h1>
             <p class="text-muted">Manage synchronization between Auto A11y and Drupal for {{ project.name }}</p>
@@ -25,16 +25,20 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted">Drupal Audit</h6>
-                    <h4 id="drupalAuditName">Loading...</h4>
+                    <dl class="mb-0">
+                        <dt class="text-muted">Drupal Audit</dt>
+                        <dd class="mb-0" id="drupalAuditName">Loading...</dd>
+                    </dl>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted">Discovered Pages</h6>
-                    <h4><span class="text-success" id="pagesSynced">0</span> / <span id="pagesTotal">0</span></h4>
+                    <dl class="mb-0">
+                        <dt class="text-muted">Discovered Pages</dt>
+                        <dd class="mb-0"><span class="text-success" id="pagesSynced">0</span> / <span id="pagesTotal">0</span></dd>
+                    </dl>
                     <small class="text-muted"><span id="pagesPending">0</span> pending</small>
                 </div>
             </div>
@@ -42,8 +46,10 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted">Recordings</h6>
-                    <h4><span class="text-success" id="recordingsSynced">0</span> / <span id="recordingsTotal">0</span></h4>
+                    <dl class="mb-0">
+                        <dt class="text-muted">Recordings</dt>
+                        <dd class="mb-0"><span class="text-success" id="recordingsSynced">0</span> / <span id="recordingsTotal">0</span></dd>
+                    </dl>
                     <small class="text-muted"><span id="recordingsPending">0</span> pending</small>
                 </div>
             </div>
@@ -51,8 +57,10 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted">Last Sync</h6>
-                    <h4 class="small" id="lastSyncTime">Never</h4>
+                    <dl class="mb-0">
+                        <dt class="text-muted">Last Sync</dt>
+                        <dd class="mb-0" id="lastSyncTime">Never</dd>
+                    </dl>
                 </div>
             </div>
         </div>
@@ -99,7 +107,7 @@
         <div class="tab-pane fade show active" id="pull" role="tabpanel">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Pull Discovered Pages from Drupal</h5>
+                    <h2 class="mb-0">Pull Discovered Pages from Drupal</h2>
                 </div>
                 <div class="card-body">
                     <div id="importAlert" class="alert alert-info" style="display: none;">
@@ -107,7 +115,7 @@
                         <span id="importAlertMessage"></span>
                     </div>
 
-                    <h6>What this will do:</h6>
+                    <h3>What this will do:</h3>
                     <ul>
                         <li>Fetch all discovered pages associated with this audit in Drupal</li>
                         <li>Import them into your local Auto A11y project</li>
@@ -133,7 +141,7 @@
                     <!-- Results Display -->
                     <div id="importResults" class="mt-3" style="display: none;">
                         <div class="alert alert-success">
-                            <h6><i class="bi bi-check-circle" aria-hidden="true"></i> Import Complete</h6>
+                            <h3><i class="bi bi-check-circle" aria-hidden="true"></i> Import Complete</h3>
                             <ul class="mb-0">
                                 <li><strong>Imported:</strong> <span id="importedCount">0</span> new pages</li>
                                 <li><strong>Updated:</strong> <span id="updatedCount">0</span> existing pages</li>
@@ -149,7 +157,7 @@
         <div class="tab-pane fade" id="push" role="tabpanel">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Push Content to Drupal</h5>
+                    <h2 class="mb-0">Push Content to Drupal</h2>
                 </div>
                 <div class="card-body">
                     <!-- Discovered Pages -->
@@ -272,7 +280,7 @@
             <!-- Push Progress (hidden initially) -->
             <div class="card mt-4" id="pushProgressCard" style="display: none;">
                 <div class="card-header">
-                    <h5 class="mb-0">Upload Progress</h5>
+                    <h2 class="mb-0">Upload Progress</h2>
                 </div>
                 <div class="card-body">
                     <div class="progress mb-3" style="height: 30px;">
@@ -300,7 +308,7 @@
         <div class="tab-pane fade" id="history" role="tabpanel">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Synchronization History</h5>
+                    <h2 class="mb-0">Synchronization History</h2>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">

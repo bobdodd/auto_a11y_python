@@ -1,9 +1,9 @@
 <!-- Access Labs Portal Sync Card - Include this in project view -->
 <div class="card mb-4" id="drupalSyncCard">
     <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
-        <h5 class="mb-0">
+        <h2 class="mb-0">
             <i class="bi bi-cloud-upload" aria-hidden="true"></i> {{ _('Access Labs Portal Sync') }}
-        </h5>
+        </h2>
         <div>
             <span class="badge bg-info" id="drupalAuditBadge">
                 <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Loading...') }}
@@ -23,17 +23,17 @@
 </div>
 
 <!-- Upload Modal -->
-<div class="modal fade" id="uploadModal" tabindex="-1">
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalTitle">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Upload to Access Labs Portal') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h2 class="modal-title" id="uploadModalTitle">{{ _('Upload to Access Labs Portal') }}</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body">
                 <!-- Step 1: Select Content -->
                 <div id="uploadStep1">
-                    <h6>{{ _('Select Content to Upload') }}</h6>
+                    <h3>{{ _('Select Content to Upload') }}</h3>
 
                     <!-- Discovered Pages -->
                     <div class="card mb-3">
@@ -64,7 +64,7 @@
 
                 <!-- Step 2: Upload Progress -->
                 <div id="uploadStep2" style="display:none;">
-                    <h6>{{ _('Uploading to Access Labs Portal...') }}</h6>
+                    <h3>{{ _('Uploading to Access Labs Portal...') }}</h3>
 
                     <div class="progress mb-3" style="height: 30px;">
                         <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated"
@@ -88,18 +88,22 @@
                 <!-- Step 3: Complete -->
                 <div id="uploadStep3" style="display:none;">
                     <div class="alert alert-success">
-                        <h4><i class="bi bi-check-circle"></i> {{ _('Upload Complete!') }}</h4>
+                        <h3><i class="bi bi-check-circle" aria-hidden="true"></i> {{ _('Upload Complete!') }}</h3>
                         <p>{{ _('Successfully uploaded') }} <strong><span id="successCount">0</span></strong> {{ _('items to Access Labs Portal.') }}</p>
                     </div>
 
                     <div class="d-flex flex-wrap gap-3 mb-3">
                         <div class="stat-card text-center p-3 border rounded flex-fill" style="min-width: 140px;">
-                            <h4 id="uploadedPages">0</h4>
-                            <small>{{ _('Discovered Pages') }}</small>
+                            <dl class="mb-0">
+                                <dd class="mb-0" id="uploadedPages">0</dd>
+                                <dt>{{ _('Discovered Pages') }}</dt>
+                            </dl>
                         </div>
                         <div class="stat-card text-center p-3 border rounded flex-fill" style="min-width: 140px;">
-                            <h4 id="uploadedRecordings">0</h4>
-                            <small>{{ _('Recordings') }}</small>
+                            <dl class="mb-0">
+                                <dd class="mb-0" id="uploadedRecordings">0</dd>
+                                <dt>{{ _('Recordings') }}</dt>
+                            </dl>
                         </div>
                     </div>
 

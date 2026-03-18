@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h2">{{ _('Reports') }}</h1>
+        <h1>{{ _('Reports') }}</h1>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#generateReportModal">
             <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Generate Report') }}
         </button>
@@ -127,7 +127,7 @@
                         <i class="bi bi-file-earmark-check display-3 icon-summary" aria-hidden="true"></i>
                     </div>
                     <div class="content-wrapper">
-                        <h5 class="card-title mt-3">{{ _('Accessibility Report') }}</h5>
+                        <h2 class="card-title mt-3">{{ _('Accessibility Report') }}</h2>
                         <p class="card-text text-muted">{{ _('Comprehensive accessibility testing results') }}</p>
                     </div>
                     <div class="btn-wrapper">
@@ -145,7 +145,7 @@
                         <i class="bi bi-search display-3 icon-html" aria-hidden="true"></i>
                     </div>
                     <div class="content-wrapper">
-                        <h5 class="card-title mt-3">{{ _('Discovery Report') }}</h5>
+                        <h2 class="card-title mt-3">{{ _('Discovery Report') }}</h2>
                         <p class="card-text text-muted">{{ _('Discover content requiring manual inspection') }}</p>
                     </div>
                     <div class="btn-wrapper">
@@ -163,7 +163,7 @@
                         <i class="bi bi-diagram-3 display-3 icon-summary" aria-hidden="true"></i>
                     </div>
                     <div class="content-wrapper">
-                        <h5 class="card-title mt-3">{{ _('Site Structure') }}</h5>
+                        <h2 class="card-title mt-3">{{ _('Site Structure') }}</h2>
                         <p class="card-text text-muted">{{ _('Hierarchical view of website organization') }}</p>
                     </div>
                     <div class="btn-wrapper">
@@ -185,7 +185,7 @@
                         <i class="bi bi-file-earmark-zip display-3 icon-html" aria-hidden="true"></i>
                     </div>
                     <div class="content-wrapper">
-                        <h5 class="card-title mt-3">{{ _('Offline Report (Static HTML)') }}</h5>
+                        <h2 class="card-title mt-3">{{ _('Offline Report (Static HTML)') }}</h2>
                         <p class="card-text text-muted">{{ _('Multi-page offline report with filters, scores, and full issue details (ZIP download)') }}</p>
                     </div>
                     <div class="btn-wrapper">
@@ -203,7 +203,7 @@
                         <i class="bi bi-file-earmark-zip display-3 icon-summary" aria-hidden="true"></i>
                     </div>
                     <div class="content-wrapper">
-                        <h5 class="card-title mt-3">{{ _('Deduplicated Offline Report') }}</h5>
+                        <h2 class="card-title mt-3">{{ _('Deduplicated Offline Report') }}</h2>
                         <p class="card-text text-muted">{{ _('Single-page offline report with issues grouped by common components (ZIP download)') }}</p>
                     </div>
                     <div class="btn-wrapper">
@@ -221,7 +221,7 @@
                         <i class="bi bi-mic display-3 icon-pdf" aria-hidden="true"></i>
                     </div>
                     <div class="content-wrapper">
-                        <h5 class="card-title mt-3">{{ _('Recordings Report') }}</h5>
+                        <h2 class="card-title mt-3">{{ _('Recordings Report') }}</h2>
                         <p class="card-text text-muted">{{ _('Manual accessibility audit findings from recorded testing sessions') }}</p>
                     </div>
                     <div class="btn-wrapper">
@@ -235,9 +235,10 @@
     </div>
 
     <!-- Recent Reports -->
+    <section aria-labelledby="recent-reports-heading">
     <div class="card">
         <div class="card-header">
-            <h5 class="mb-0">{{ _('Recent Reports') }}</h5>
+            <h2 class="mb-0" id="recent-reports-heading">{{ _('Recent Reports') }}</h2>
         </div>
         <div class="card-body">
             {% if reports %}
@@ -303,6 +304,7 @@
             {% endif %}
         </div>
     </div>
+    </section>
 </div>
 
 <!-- Generate Report Modal -->
@@ -310,7 +312,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="generateReportModalTitle">{{ _('Generate Report') }}</h5>
+                <h2 class="modal-title" id="generateReportModalTitle">{{ _('Generate Report') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <form id="generateReportForm">
@@ -856,7 +858,7 @@ function generateDiscoveryReport() {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="siteStructureModalTitle">{{ _('Generate Site Structure Report') }}</h5>
+                <h2 class="modal-title" id="siteStructureModalTitle">{{ _('Generate Site Structure Report') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <form id="siteStructureForm">
@@ -903,7 +905,7 @@ function generateDiscoveryReport() {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="discoveryModalTitle">{{ _('Generate Discovery Report') }}</h5>
+                <h2 class="modal-title" id="discoveryModalTitle">{{ _('Generate Discovery Report') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <form id="discoveryForm">
@@ -970,7 +972,7 @@ function generateDiscoveryReport() {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticHtmlModalTitle">{{ _('Generate Offline Report (Static HTML)') }}</h5>
+                <h2 class="modal-title" id="staticHtmlModalTitle">{{ _('Generate Offline Report (Static HTML)') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <form id="staticHtmlForm">
@@ -1137,7 +1139,7 @@ if (staticHtmlModal) {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deduplicatedModalTitle">{{ _('Generate Deduplicated Report') }}</h5>
+                <h2 class="modal-title" id="deduplicatedModalTitle">{{ _('Generate Deduplicated Report') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <form id="deduplicatedForm">
@@ -1277,7 +1279,7 @@ if (deduplicatedModal) {
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="recordingsModalTitle">{{ _('Generate Recordings Report') }}</h5>
+                <h2 class="modal-title" id="recordingsModalTitle">{{ _('Generate Recordings Report') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <form id="recordingsForm">
@@ -1358,7 +1360,7 @@ if (deduplicatedModal) {
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="messageModalTitle">{{ _('Notice') }}</h5>
+                <h2 class="modal-title" id="messageModalTitle">{{ _('Notice') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body">

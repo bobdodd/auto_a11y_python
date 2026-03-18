@@ -4,10 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}{% if project %} - {{ project.name }}{% endif %}</title>
+    <script>
+    (function(){try{var p=localStorage.getItem('theme-preference');if(p==='dark'||p==='light'){document.documentElement.setAttribute('data-theme',p);}}catch(e){}})();
+    </script>
     <link rel="stylesheet" href="{{ url_for('public.static', filename='css/reset.css') }}">
     <link rel="stylesheet" href="{{ url_for('public.static', filename='css/tokens.css') }}">
     <link rel="stylesheet" href="{{ url_for('public.static', filename='css/main.css') }}">
     <link rel="stylesheet" href="{{ url_for('public.static', filename='css/print.css') }}" media="print">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-toggle.css') }}">
 </head>
 <body>
     <a class="skip-link" href="#main-content">{{ _('Skip to main content') }}</a>
@@ -30,6 +34,8 @@
                    {% if get_locale() == 'fr' %}aria-current="true"{% endif %}
                    lang="fr">Fran&ccedil;ais</a>
             </nav>
+
+            {% include 'components/theme_toggle.html' %}
 
             {% if current_user.is_authenticated %}
             <nav aria-label="{{ _('Account') }}" class="account-nav">
@@ -71,5 +77,6 @@
     <div class="sr-live" aria-live="polite" id="live-region"></div>
 
     <script src="{{ url_for('public.static', filename='js/enhancements.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/theme-toggle.js') }}"></script>
 </body>
 </html>

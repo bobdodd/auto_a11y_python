@@ -1,49 +1,119 @@
 /*
- * Design tokens for the public frontend.
- * This is the ONLY file clients change for white-labelling.
- * All colour tokens are verified at 4.5:1 contrast minimum against their backgrounds.
+ * Design tokens for the Auto A11y application.
+ * All colour tokens have both light and dark mode values.
+ * All text colours meet WCAG 2.2 AA (4.5:1+).
+ * All non-text UI components meet 3:1+ per SC 1.4.11.
  */
 
+/* ===== LIGHT MODE (default) ===== */
 :root {
     /* Brand */
-    --color-primary: #1a5276;
-    --color-primary-light: #2980b9;
-    --color-primary-dark: #0e2f44;
+    --color-brand: #1a5276;
+    --color-brand-hover: #0e2f44;
+    --color-brand-subtle: #f4f6f7;
 
     /* Text */
     --color-text: #1c1c1c;
     --color-text-muted: #4a4a4a;
     --color-text-inverse: #ffffff;
+    --color-text-heading: #1c1c1c;
+    --color-text-code: #dd1144;
+
+    /* Links */
+    --color-link: #0a58ca;
+    --color-link-hover: #084298;
+    --color-link-visited: #1a5276;
 
     /* Backgrounds */
     --color-bg: #ffffff;
     --color-bg-subtle: #f4f6f7;
+    --color-bg-elevated: #ffffff;
     --color-bg-header: #1a5276;
+    --color-bg-footer: #f8f9fa;
+    --color-bg-code: #f4f4f4;
+    --color-bg-input: #ffffff;
+    --color-bg-scrollbar: #f1f1f1;
+    --color-bg-overlay: rgba(0, 0, 0, 0.5);
 
     /* Borders */
     --color-border: #d5d8dc;
     --color-border-strong: #85929e;
+    --color-border-input: #86868b;
+    --color-border-input-focus: #0a58ca;
+    --color-border-table: #dee2e6;
 
-    /* Severity (all ≥ 4.5:1 on white) */
+    /* Focus & Interaction */
+    --color-focus-ring: #0a58ca;
+    --color-button-primary-bg: #1a5276;
+    --color-button-primary-text: #ffffff;
+    --color-button-primary-hover: #0e2f44;
+    --color-scrollbar-thumb: #888888;
+
+    /* Severity */
     --color-severity-high: #922b21;
+    --color-severity-high-bg: #fdedec;
+    --color-severity-high-border: #922b21;
     --color-severity-medium: #7d6608;
+    --color-severity-medium-bg: #fff3cd;
+    --color-severity-medium-border: #b38600;
     --color-severity-low: #2c3e50;
     --color-severity-pass: #1e8449;
+    --color-severity-pass-bg: #eafaf1;
+    --color-severity-pass-border: #1e8449;
+    --color-info: #0e7490;
+    --color-info-bg: #d1ecf1;
+    --color-info-border: #0e7490;
 
-    /* Focus */
-    --focus-outline: 3px solid #1a5276;
-    --focus-offset: 2px;
+    /* Discovery */
+    --color-discovery: #6f42c1;
+    --color-discovery-bg: #f3eefa;
+    --color-discovery-border: #6f42c1;
+    --color-discovery-hover: #5a32a3;
+
+    /* Severity gradient endpoints (for report section headers) */
+    --color-severity-high-gradient-end: #c82333;
+    --color-severity-medium-gradient-end: #e0a800;
+    --color-severity-pass-gradient-end: #148040;
+    --color-info-gradient-end: #0aa2c0;
+    --color-discovery-gradient-end: #5a32a3;
+
+    /* Shadows */
+    --color-shadow-subtle: rgba(0, 0, 0, 0.08);
+    --color-shadow-medium: rgba(0, 0, 0, 0.1);
+    --color-shadow-strong: rgba(0, 0, 0, 0.15);
+
+    /* Progress & Animation */
+    --color-progress-track: #e9ecef;
+    --color-progress-fill: #198754;
+    --color-spinner-overlay: rgba(255, 255, 255, 0.8);
+    --color-pulse-ring: rgba(25, 135, 84, 0.4);
+
+    /* Help System */
+    --color-help-icon: #3498db;
+    --color-help-icon-hover: #2980b9;
+    --color-help-heading: #2c3e50;
+
+    /* SSO Buttons (brand-mandated, same in both modes) */
+    --color-sso-microsoft-bg: #2f2f2f;
+    --color-sso-microsoft-hover: #1a1a1a;
+    --color-sso-google-bg: #ffffff;
+    --color-sso-google-text: #3c4043;
+    --color-sso-google-border: #dadce0;
+    --color-sso-google-hover: #f7f8f8;
+
+    /* Demo Site */
+    --color-demo-brand: #004d99;
+    --color-demo-brand-hover: #003d7a;
+    --color-demo-cookie-link: #aaddff;
 
     /* Typography */
     --font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-mono: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, monospace;
-
     --font-size-sm: 0.875rem;
     --font-size-base: 1rem;
     --font-size-lg: 1.125rem;
     --font-size-xl: 1.5rem;
     --font-size-2xl: 2rem;
-
     --line-height: 1.6;
     --line-height-tight: 1.3;
 
@@ -58,4 +128,252 @@
     /* Layout */
     --container-max: 72rem;
     --border-radius: 4px;
+}
+
+/* ===== DARK MODE (OS preference) ===== */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --color-brand: #5da9e9;
+        --color-brand-hover: #6db3f2;
+        --color-brand-subtle: #252542;
+
+        --color-text: #e0e0e6;
+        --color-text-muted: #8a8a9a;
+        --color-text-inverse: #ffffff;
+        --color-text-heading: #ffffff;
+        --color-text-code: #f28b82;
+
+        --color-link: #6db3f2;
+        --color-link-hover: #7ebcfa;
+        --color-link-visited: #5da9e9;
+
+        --color-bg: #1a1a2e;
+        --color-bg-subtle: #252542;
+        --color-bg-elevated: #2d2d4a;
+        --color-bg-header: #12122a;
+        --color-bg-footer: #151530;
+        --color-bg-code: #252542;
+        --color-bg-input: #252542;
+        --color-bg-scrollbar: #1a1a2e;
+        --color-bg-overlay: rgba(0, 0, 0, 0.7);
+
+        --color-border: #6a6a8c;
+        --color-border-strong: #7a7a9a;
+        --color-border-input: #7a7a9a;
+        --color-border-input-focus: #5da9e9;
+        --color-border-table: #6a6a8c;
+
+        --color-focus-ring: #6db3f2;
+        --color-button-primary-bg: #5da9e9;
+        --color-button-primary-text: #0e1525;
+        --color-button-primary-hover: #6db3f2;
+        --color-scrollbar-thumb: #6a6a8a;
+
+        --color-severity-high: #f28b82;
+        --color-severity-high-bg: #3d1f1f;
+        --color-severity-high-border: #f28b82;
+        --color-severity-medium: #f9a825;
+        --color-severity-medium-bg: #3d3520;
+        --color-severity-medium-border: #f9a825;
+        --color-severity-low: #b0b0bc;
+        --color-severity-pass: #81c784;
+        --color-severity-pass-bg: #1f3d2a;
+        --color-severity-pass-border: #81c784;
+        --color-info: #64b5f6;
+        --color-info-bg: #1f2d3d;
+        --color-info-border: #64b5f6;
+
+        --color-discovery: #b39ddb;
+        --color-discovery-bg: #2d1f4a;
+        --color-discovery-border: #b39ddb;
+        --color-discovery-hover: #c4b0e0;
+
+        --color-severity-high-gradient-end: #d95050;
+        --color-severity-medium-gradient-end: #d4a020;
+        --color-severity-pass-gradient-end: #6aab6d;
+        --color-info-gradient-end: #509dbf;
+        --color-discovery-gradient-end: #9070c0;
+
+        --color-shadow-subtle: rgba(0, 0, 0, 0.3);
+        --color-shadow-medium: rgba(0, 0, 0, 0.4);
+        --color-shadow-strong: rgba(0, 0, 0, 0.5);
+
+        --color-progress-track: #3a3a5c;
+        --color-progress-fill: #81c784;
+        --color-spinner-overlay: rgba(0, 0, 0, 0.6);
+        --color-pulse-ring: rgba(129, 199, 132, 0.4);
+
+        --color-help-icon: #64b5f6;
+        --color-help-icon-hover: #6db3f2;
+        --color-help-heading: #e0e0e6;
+
+        --color-demo-brand: #5da9e9;
+        --color-demo-brand-hover: #6db3f2;
+        --color-demo-cookie-link: #6db3f2;
+    }
+}
+
+/* ===== DARK MODE (manual override — always wins) ===== */
+[data-theme="dark"] {
+    --color-brand: #5da9e9;
+    --color-brand-hover: #6db3f2;
+    --color-brand-subtle: #252542;
+
+    --color-text: #e0e0e6;
+    --color-text-muted: #8a8a9a;
+    --color-text-inverse: #ffffff;
+    --color-text-heading: #ffffff;
+    --color-text-code: #f28b82;
+
+    --color-link: #6db3f2;
+    --color-link-hover: #7ebcfa;
+    --color-link-visited: #5da9e9;
+
+    --color-bg: #1a1a2e;
+    --color-bg-subtle: #252542;
+    --color-bg-elevated: #2d2d4a;
+    --color-bg-header: #12122a;
+    --color-bg-footer: #151530;
+    --color-bg-code: #252542;
+    --color-bg-input: #252542;
+    --color-bg-scrollbar: #1a1a2e;
+    --color-bg-overlay: rgba(0, 0, 0, 0.7);
+
+    --color-border: #6a6a8c;
+    --color-border-strong: #7a7a9a;
+    --color-border-input: #7a7a9a;
+    --color-border-input-focus: #5da9e9;
+    --color-border-table: #6a6a8c;
+
+    --color-focus-ring: #6db3f2;
+    --color-button-primary-bg: #5da9e9;
+    --color-button-primary-text: #0e1525;
+    --color-button-primary-hover: #6db3f2;
+    --color-scrollbar-thumb: #6a6a8a;
+
+    --color-severity-high: #f28b82;
+    --color-severity-high-bg: #3d1f1f;
+    --color-severity-high-border: #f28b82;
+    --color-severity-medium: #f9a825;
+    --color-severity-medium-bg: #3d3520;
+    --color-severity-medium-border: #f9a825;
+    --color-severity-low: #b0b0bc;
+    --color-severity-pass: #81c784;
+    --color-severity-pass-bg: #1f3d2a;
+    --color-severity-pass-border: #81c784;
+    --color-info: #64b5f6;
+    --color-info-bg: #1f2d3d;
+    --color-info-border: #64b5f6;
+
+    --color-discovery: #b39ddb;
+    --color-discovery-bg: #2d1f4a;
+    --color-discovery-border: #b39ddb;
+    --color-discovery-hover: #c4b0e0;
+
+    --color-severity-high-gradient-end: #d95050;
+    --color-severity-medium-gradient-end: #d4a020;
+    --color-severity-pass-gradient-end: #6aab6d;
+    --color-info-gradient-end: #509dbf;
+    --color-discovery-gradient-end: #9070c0;
+
+    --color-shadow-subtle: rgba(0, 0, 0, 0.3);
+    --color-shadow-medium: rgba(0, 0, 0, 0.4);
+    --color-shadow-strong: rgba(0, 0, 0, 0.5);
+
+    --color-progress-track: #3a3a5c;
+    --color-progress-fill: #81c784;
+    --color-spinner-overlay: rgba(0, 0, 0, 0.6);
+    --color-pulse-ring: rgba(129, 199, 132, 0.4);
+
+    --color-help-icon: #64b5f6;
+    --color-help-icon-hover: #6db3f2;
+    --color-help-heading: #e0e0e6;
+
+    --color-demo-brand: #5da9e9;
+    --color-demo-brand-hover: #6db3f2;
+    --color-demo-cookie-link: #6db3f2;
+}
+
+/* ===== PRINT (force light mode regardless of theme) ===== */
+@media print {
+    :root,
+    :root[data-theme="dark"] {
+        --color-brand: #1a5276;
+        --color-brand-hover: #0e2f44;
+        --color-brand-subtle: #f4f6f7;
+
+        --color-text: #1c1c1c;
+        --color-text-muted: #4a4a4a;
+        --color-text-inverse: #ffffff;
+        --color-text-heading: #1c1c1c;
+        --color-text-code: #dd1144;
+
+        --color-link: #0a58ca;
+        --color-link-hover: #084298;
+        --color-link-visited: #1a5276;
+
+        --color-bg: #ffffff;
+        --color-bg-subtle: #f4f6f7;
+        --color-bg-elevated: #ffffff;
+        --color-bg-header: #1a5276;
+        --color-bg-footer: #f8f9fa;
+        --color-bg-code: #f4f4f4;
+        --color-bg-input: #ffffff;
+        --color-bg-scrollbar: #f1f1f1;
+        --color-bg-overlay: rgba(0, 0, 0, 0.5);
+
+        --color-border: #d5d8dc;
+        --color-border-strong: #85929e;
+        --color-border-input: #86868b;
+        --color-border-input-focus: #0a58ca;
+        --color-border-table: #dee2e6;
+
+        --color-focus-ring: #0a58ca;
+        --color-button-primary-bg: #1a5276;
+        --color-button-primary-text: #ffffff;
+        --color-button-primary-hover: #0e2f44;
+        --color-scrollbar-thumb: #888888;
+
+        --color-severity-high: #922b21;
+        --color-severity-high-bg: #fdedec;
+        --color-severity-high-border: #922b21;
+        --color-severity-medium: #7d6608;
+        --color-severity-medium-bg: #fff3cd;
+        --color-severity-medium-border: #b38600;
+        --color-severity-low: #2c3e50;
+        --color-severity-pass: #1e8449;
+        --color-severity-pass-bg: #eafaf1;
+        --color-severity-pass-border: #1e8449;
+        --color-info: #0e7490;
+        --color-info-bg: #d1ecf1;
+        --color-info-border: #0e7490;
+
+        --color-discovery: #6f42c1;
+        --color-discovery-bg: #f3eefa;
+        --color-discovery-border: #6f42c1;
+        --color-discovery-hover: #5a32a3;
+
+        --color-severity-high-gradient-end: #c82333;
+        --color-severity-medium-gradient-end: #e0a800;
+        --color-severity-pass-gradient-end: #148040;
+        --color-info-gradient-end: #0aa2c0;
+        --color-discovery-gradient-end: #5a32a3;
+
+        --color-shadow-subtle: rgba(0, 0, 0, 0.08);
+        --color-shadow-medium: rgba(0, 0, 0, 0.1);
+        --color-shadow-strong: rgba(0, 0, 0, 0.15);
+
+        --color-progress-track: #e9ecef;
+        --color-progress-fill: #198754;
+        --color-spinner-overlay: rgba(255, 255, 255, 0.8);
+        --color-pulse-ring: rgba(25, 135, 84, 0.4);
+
+        --color-help-icon: #3498db;
+        --color-help-icon-hover: #2980b9;
+        --color-help-heading: #2c3e50;
+
+        --color-demo-brand: #004d99;
+        --color-demo-brand-hover: #003d7a;
+        --color-demo-cookie-link: #aaddff;
+    }
 }

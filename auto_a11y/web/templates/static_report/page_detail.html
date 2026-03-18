@@ -69,7 +69,7 @@
     }
 
     .touchpoint-header {
-        background-color: #f8f9fa;
+        background-color: var(--color-bg-subtle);
         padding: 8px;
         margin-top: 1rem;
         margin-bottom: 0.5rem;
@@ -78,7 +78,7 @@
 
     /* Filter Panel Styling */
     .filter-panel {
-        background: #f8f9fa;
+        background: var(--color-bg-subtle);
         border-radius: 8px;
         padding: 1.5rem;
         margin-bottom: 2rem;
@@ -191,7 +191,7 @@
     /* Language Switcher */
     .lang-switcher {
         display: inline-flex;
-        background: #f8f9fa;
+        background: var(--color-bg-subtle);
         border-radius: 6px;
         padding: 4px;
         gap: 4px;
@@ -426,7 +426,7 @@
     <div class="col-md-6">
         {% if violation.metadata and violation.metadata.wcag_full %}
             {% for criterion in violation.metadata.wcag_full|sort %}
-            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+            <div style="margin-top: 15px; padding: 10px; background: var(--color-bg-subtle); border-left: 3px solid var(--color-link);">
                 <p style="margin: 0 0 8px 0; font-weight: bold;">
                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">WCAG {{ criterion|translate_wcag('en')|safe }}</span>
                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">WCAG {{ criterion|translate_wcag('fr')|safe }}</span>
@@ -956,7 +956,7 @@
                     <div class="accordion mb-4" id="violationsAccordion_{{ loop.index0 }}">
                         {% set viol_counter = namespace(value=0) %}
                         {% for touchpoint, touchpoint_violations in state.violations|groupby('touchpoint') %}
-                            <div class="touchpoint-header mt-3 mb-2 ps-2 border-severity-high" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid;">
+                            <div class="touchpoint-header mt-3 mb-2 ps-2 border-severity-high" style="background-color: var(--color-bg-subtle); padding: 8px; border-left: 4px solid;">
                                 <strong>
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'Général') }}</span>
@@ -1082,7 +1082,7 @@
                     <!-- Warnings for {{ state.description }} -->
                     {% if state.warnings %}
                     <div class="section-panel warnings-section mb-4 border-severity-medium" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
-                        <div class="section-header severity-header-medium" style="color: #212529; padding: 12px 16px;">
+                        <div class="section-header severity-header-medium" style="color: var(--color-text); padding: 12px 16px;">
                             <h3 class="mb-0">
                                 <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
                                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['warnings'] }}</span>
@@ -1098,7 +1098,7 @@
                     <div class="accordion mb-4" id="warningsAccordion_{{ loop.index0 }}">
                         {% set warn_counter = namespace(value=0) %}
                         {% for touchpoint, touchpoint_warnings in state.warnings|groupby('touchpoint') %}
-                            <div class="touchpoint-header mt-3 mb-2 ps-2 border-severity-medium" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid;">
+                            <div class="touchpoint-header mt-3 mb-2 ps-2 border-severity-medium" style="background-color: var(--color-bg-subtle); padding: 8px; border-left: 4px solid;">
                                 <strong>
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'Général') }}</span>
@@ -1240,7 +1240,7 @@
                     <div class="accordion mb-4" id="informationalAccordion_{{ loop.index0 }}">
                         {% set info_counter = namespace(value=0) %}
                         {% for touchpoint, touchpoint_info in state.informational|groupby('touchpoint') %}
-                            <div class="touchpoint-header mt-3 mb-2 ps-2 border-info-custom" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid;">
+                            <div class="touchpoint-header mt-3 mb-2 ps-2 border-info-custom" style="background-color: var(--color-bg-subtle); padding: 8px; border-left: 4px solid;">
                                 <strong>
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'Général') }}</span>
@@ -1307,7 +1307,7 @@
                     <div class="accordion mb-4" id="discoveryAccordion_{{ loop.index0 }}">
                         {% set disco_counter = namespace(value=0) %}
                         {% for touchpoint, touchpoint_discovery in state.discovery|groupby('touchpoint') %}
-                            <div class="touchpoint-header mt-3 mb-2 ps-2 border-discovery" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid;">
+                            <div class="touchpoint-header mt-3 mb-2 ps-2 border-discovery" style="background-color: var(--color-bg-subtle); padding: 8px; border-left: 4px solid;">
                                 <strong>
                                     <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'General') }}</span>
                                     <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr.get(touchpoint|lower, touchpoint|replace('_', ' ')|title if touchpoint else 'Général') }}</span>
@@ -1516,7 +1516,7 @@
             <!-- Warnings -->
             {% if warnings %}
             <div class="section-panel warnings-section mb-4 border-severity-medium" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
-                <div class="section-header severity-header-medium" style="color: #212529; padding: 12px 16px;">
+                <div class="section-header severity-header-medium" style="color: var(--color-text); padding: 12px 16px;">
                     <h3 class="mb-0">
                         <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
                         <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ translations_en['warnings'] }}</span>

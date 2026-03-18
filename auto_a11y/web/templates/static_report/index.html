@@ -22,7 +22,7 @@
 
     .page-card {
         background: white;
-        border: 1px solid #dee2e6;
+        border: 1px solid var(--color-border-table);
         border-radius: 8px;
         padding: 1.5rem;
         margin-bottom: 1rem;
@@ -47,13 +47,13 @@
     .page-title {
         font-size: 1.25rem;
         font-weight: 600;
-        color: #212529;
+        color: var(--color-text);
         margin: 0 0 0.25rem 0;
         flex: 1;
     }
 
     .page-url {
-        color: #6c757d;
+        color: var(--color-text-muted);
         font-size: 0.875rem;
         word-break: break-all;
         margin-bottom: 0.5rem;
@@ -100,14 +100,14 @@
 
     .issue-badge.info {
         background-color: var(--color-info-bg);
-        color: #0c5a8a;
+        color: var(--color-info);
         border: 1px solid var(--color-info);
     }
 
     .issue-badge.discovery {
-        background-color: #f0f0f0;
-        color: #495057;
-        border: 1px solid #6c757d;
+        background-color: var(--color-discovery-bg);
+        color: var(--color-discovery);
+        border: 1px solid var(--color-discovery-border);
     }
 
     .page-card-footer {
@@ -116,13 +116,13 @@
         align-items: center;
         margin-top: auto;
         padding-top: 1rem;
-        border-top: 1px solid #e9ecef;
+        border-top: 1px solid var(--color-border-table);
     }
 
     .view-details-btn {
         text-decoration: none;
         color: white;
-        background-color: var(--primary-color);
+        background-color: var(--color-brand);
         padding: 0.5rem 1rem;
         border-radius: 6px;
         font-weight: 500;
@@ -133,7 +133,7 @@
     }
 
     .view-details-btn:hover {
-        background-color: #0b5ed7;
+        background-color: var(--color-brand-hover);
         color: white;
     }
 
@@ -151,7 +151,7 @@
     }
 
     .results-summary {
-        color: #6c757d;
+        color: var(--color-text-muted);
         font-size: 0.875rem;
         margin-top: 1rem;
     }
@@ -159,7 +159,7 @@
     .no-results {
         text-align: center;
         padding: 3rem;
-        color: #6c757d;
+        color: var(--color-text-muted);
     }
 
     .no-results i {
@@ -169,7 +169,7 @@
     }
 
     .test-info {
-        background: #f8f9fa;
+        background: var(--color-bg-subtle);
         padding: 1.5rem;
         border-radius: 8px;
         margin-bottom: 2rem;
@@ -193,7 +193,7 @@
 
     .test-info-label {
         font-weight: 600;
-        color: #495057;
+        color: var(--color-text-muted);
         font-size: 0.875rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -201,7 +201,7 @@
     }
 
     .test-info-value {
-        color: #212529;
+        color: var(--color-text);
         font-size: 1rem;
     }
 </style>
@@ -304,7 +304,7 @@
                 <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">Informatifs</span>
             </div>
         </div>
-        <div class="stat-card" style="background-color: #f0f0f0;">
+        <div class="stat-card bg-discovery-subtle">
             <div class="stat-value text-muted">{{ summary.total_discovery|default(0) }}</div>
             <div class="stat-label">
                 <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">Discovery Items</span>

@@ -18,30 +18,23 @@
 {% endif %}
 
 <dl class="stats">
-    <div class="stat-card">
-        <dt>{{ _('Pages Tested') }}</dt>
-        <dd>{{ stats.tested_pages }} / {{ stats.total_pages }}</dd>
-    </div>
-    <div class="stat-card">
-        <dt>{{ _('Test Coverage') }}</dt>
-        <dd>
-            <meter min="0" max="100" value="{{ stats.test_coverage|round(1) }}"
-                   aria-label="{{ _('Test coverage') }}">{{ stats.test_coverage|round(1) }}%</meter>
-            {{ stats.test_coverage|round(1) }}%
-        </dd>
-    </div>
-    <div class="stat-card">
-        <dt>{{ _('Violations') }}</dt>
-        <dd>{{ stats.total_violations }}</dd>
-    </div>
-    <div class="stat-card">
-        <dt>{{ _('Warnings') }}</dt>
-        <dd>{{ stats.total_warnings }}</dd>
-    </div>
+    <dt>{{ _('Pages Tested') }}</dt>
+    <dd>{{ stats.tested_pages }} / {{ stats.total_pages }}</dd>
+    <dt>{{ _('Test Coverage') }}</dt>
+    <dd>
+        <meter min="0" max="100" value="{{ stats.test_coverage|round(1) }}"
+               aria-label="{{ _('Test coverage') }}">{{ stats.test_coverage|round(1) }}%</meter>
+        {{ stats.test_coverage|round(1) }}%
+    </dd>
+    <dt>{{ _('Violations') }}</dt>
+    <dd>{{ stats.total_violations }}</dd>
+    <dt>{{ _('Warnings') }}</dt>
+    <dd>{{ stats.total_warnings }}</dd>
 </dl>
 
 {% if websites %}
-<h2>{{ _('Websites') }}</h2>
+<section aria-labelledby="websites-heading">
+<h2 id="websites-heading">{{ _('Websites') }}</h2>
 <ul class="website-list">
     {% for website in websites %}
     <li>
@@ -58,5 +51,6 @@
     </li>
     {% endfor %}
 </ul>
+</section>
 {% endif %}
 {% endblock %}

@@ -34,6 +34,8 @@
 {% endmacro %}
 
 {% if pages %}
+<section aria-labelledby="pages-heading">
+<h2 id="pages-heading">{{ _('Pages') }}</h2>
 <table class="data-table" data-enhance="sortable">
     <caption class="visually-hidden">{{ _('Pages tested on %(url)s', url=website.url) }}</caption>
     <thead>
@@ -73,6 +75,7 @@
         {% endfor %}
     </tbody>
 </table>
+</section>
 {% else %}
 <p>{{ _('No pages have been tested yet.') }}</p>
 {% endif %}

@@ -9,15 +9,17 @@
 <ul class="website-list">
     {% for item in project_data %}
     <li>
-        <a href="{{ url_for('public.client_project', project_id=item.project.id) }}">
-            {{ item.project.name }}
-        </a>
-        <br>
-        <small>
-            {{ _('%(tested)s of %(total)s pages tested', tested=item.stats.tested_pages, total=item.stats.total_pages) }}
-            &middot;
-            {{ _('%(count)s violations', count=item.stats.total_violations) }}
-        </small>
+        <article>
+            <a href="{{ url_for('public.client_project', project_id=item.project.id) }}">
+                {{ item.project.name }}
+            </a>
+            <br>
+            <small>
+                {{ _('%(tested)s of %(total)s pages tested', tested=item.stats.tested_pages, total=item.stats.total_pages) }}
+                &middot;
+                {{ _('%(count)s violations', count=item.stats.total_violations) }}
+            </small>
+        </article>
     </li>
     {% endfor %}
 </ul>

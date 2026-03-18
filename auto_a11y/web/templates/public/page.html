@@ -24,22 +24,14 @@
 
 {% if test_result %}
 <dl class="stats">
-    <div class="stat-card">
-        <dt>{{ _('Violations') }}</dt>
-        <dd>{{ test_result.violation_count }}</dd>
-    </div>
-    <div class="stat-card">
-        <dt>{{ _('Warnings') }}</dt>
-        <dd>{{ test_result.warning_count }}</dd>
-    </div>
-    <div class="stat-card">
-        <dt>{{ _('Informational') }}</dt>
-        <dd>{{ test_result.info_count }}</dd>
-    </div>
-    <div class="stat-card">
-        <dt>{{ _('Last Tested') }}</dt>
-        <dd>{{ test_result.test_date|datetimeformat }}</dd>
-    </div>
+    <dt>{{ _('Violations') }}</dt>
+    <dd>{{ test_result.violation_count }}</dd>
+    <dt>{{ _('Warnings') }}</dt>
+    <dd>{{ test_result.warning_count }}</dd>
+    <dt>{{ _('Informational') }}</dt>
+    <dd>{{ test_result.info_count }}</dd>
+    <dt>{{ _('Last Tested') }}</dt>
+    <dd>{{ test_result.test_date|datetimeformat }}</dd>
 </dl>
 
 {# Macro to render a group of issues in an accordion #}
@@ -111,18 +103,24 @@
 {% endmacro %}
 
 {% if violation_groups %}
-<h2>{{ _('Violations') }}</h2>
+<section aria-labelledby="violations-heading">
+<h2 id="violations-heading">{{ _('Violations') }}</h2>
 {{ render_issue_groups(violation_groups, 'badge-high', _('Violation')) }}
+</section>
 {% endif %}
 
 {% if warning_groups %}
-<h2>{{ _('Warnings') }}</h2>
+<section aria-labelledby="warnings-heading">
+<h2 id="warnings-heading">{{ _('Warnings') }}</h2>
 {{ render_issue_groups(warning_groups, 'badge-warning', _('Warning')) }}
+</section>
 {% endif %}
 
 {% if info_groups %}
-<h2>{{ _('Informational') }}</h2>
+<section aria-labelledby="info-heading">
+<h2 id="info-heading">{{ _('Informational') }}</h2>
 {{ render_issue_groups(info_groups, 'badge-info', _('Info')) }}
+</section>
 {% endif %}
 
 {% if not violation_groups and not warning_groups and not info_groups %}

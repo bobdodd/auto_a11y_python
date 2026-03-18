@@ -16,7 +16,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2">
+            <h1>
                 <i class="bi bi-people" aria-hidden="true"></i> {{ _('Test Users') }}
             </h1>
             <p class="text-muted">{{ _('Manage authenticated test users for %(name)s', name=project.name) }}</p>
@@ -49,10 +49,10 @@
     {% if users %}
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">
+            <h2 class="h5 mb-0">
                 <i class="bi bi-people" aria-hidden="true"></i> {{ _('Test Users') }}
                 <span class="badge bg-light text-dark">{{ users|length }}</span>
-            </h5>
+            </h2>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -131,7 +131,7 @@
                                     </a>
                                     <button type="button" class="btn btn-outline-{% if user.enabled %}success{% else %}secondary{% endif %}"
                                             onclick="toggleUser('{{ user.id }}')" title="{% if user.enabled %}{{ _('Disable') }}{% else %}{{ _('Enable') }}{% endif %}">
-                                        <i class="bi bi-toggle-{% if user.enabled %}on{% else %}off{% endif %}"></i>
+                                        <i class="bi bi-toggle-{% if user.enabled %}on{% else %}off{% endif %}" aria-hidden="true"></i>
                                     </button>
                                     <button type="button" class="btn btn-outline-danger"
                                             onclick="deleteUser('{{ user.id }}')" title="{{ _('Delete') }}">
@@ -150,7 +150,7 @@
     {% if all_roles %}
     <div class="card mt-4">
         <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-tags" aria-hidden="true"></i> {{ _('User Roles in Use') }}</h5>
+            <h2 class="h5 mb-0"><i class="bi bi-tags" aria-hidden="true"></i> {{ _('User Roles in Use') }}</h2>
         </div>
         <div class="card-body">
             {% for role in all_roles %}

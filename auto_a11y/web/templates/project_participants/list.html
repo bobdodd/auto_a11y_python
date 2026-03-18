@@ -16,7 +16,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2">
+            <h1>
                 <i class="bi bi-people" aria-hidden="true"></i> {{ _('Testing Participants') }}
             </h1>
             <p class="text-muted">{{ _('Manage lived experience testers and test supervisors for %(name)s', name=project.name) }}</p>
@@ -45,10 +45,10 @@
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
             <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
+                <h2 class="h5 mb-0">
                     <i class="bi bi-person-badge" aria-hidden="true"></i> {{ _('Lived Experience Testers') }}
                     <span class="badge bg-light text-dark">{{ testers|length }}</span>
-                </h5>
+                </h2>
                 <a href="{{ url_for('project_participants.create_tester', project_id=project.id) }}" class="btn btn-light btn-sm">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Add Tester') }}
                 </a>
@@ -133,10 +133,10 @@
     <div class="card">
         <div class="card-header bg-success text-white">
             <div class="d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">
+                <h2 class="h5 mb-0">
                     <i class="bi bi-person-check" aria-hidden="true"></i> {{ _('Test Supervisors') }}
                     <span class="badge bg-light text-dark">{{ supervisors|length }}</span>
-                </h5>
+                </h2>
                 <a href="{{ url_for('project_participants.create_supervisor', project_id=project.id) }}" class="btn btn-light btn-sm">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Add Supervisor') }}
                 </a>

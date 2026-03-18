@@ -22,22 +22,22 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2">
-                <i class="bi bi-person"></i> {{ user.name_display }}
+            <h1>
+                <i class="bi bi-person" aria-hidden="true"></i> {{ user.name_display }}
             </h1>
             {% if user.enabled %}
             <span class="badge bg-success">
-                <i class="bi bi-check-circle"></i> {{ _('Enabled') }}
+                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ _('Enabled') }}
             </span>
             {% else %}
             <span class="badge bg-secondary">
-                <i class="bi bi-pause-circle"></i> {{ _('Disabled') }}
+                <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ _('Disabled') }}
             </span>
             {% endif %}
         </div>
         <div>
             <a href="{{ url_for('website_users.edit_user', user_id=user.id) }}" class="btn btn-primary">
-                <i class="bi bi-pencil"></i> {{ _('Edit User') }}
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ _('Edit User') }}
             </a>
         </div>
     </div>
@@ -47,7 +47,7 @@
             <!-- User Information -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> {{ _('User Information') }}</h5>
+                    <h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('User Information') }}</h2>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
@@ -90,7 +90,7 @@
             <!-- Login Configuration -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-key"></i> {{ _('Login Configuration') }}</h5>
+                    <h2 class="h5 mb-0"><i class="bi bi-key" aria-hidden="true"></i> {{ _('Login Configuration') }}</h2>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
@@ -106,7 +106,7 @@
                         <dd class="col-sm-7">
                             <a href="{{ user.login_config.login_url }}" target="_blank">
                                 {{ user.login_config.login_url }}
-                                <i class="bi bi-box-arrow-up-right"></i>
+                                <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                             </a>
                         </dd>
                         {% endif %}
@@ -145,7 +145,7 @@
             <!-- Usage History -->
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> {{ _('Usage History') }}</h5>
+                    <h2 class="h5 mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ _('Usage History') }}</h2>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
@@ -156,12 +156,12 @@
                         <dd class="col-sm-10">
                             {% if user.last_login_success == True %}
                             <span class="badge bg-success">
-                                <i class="bi bi-check-circle"></i> {{ _('Login Successful') }}
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ _('Login Successful') }}
                             </span>
                             <span class="text-muted">{{ _('- User authenticated successfully') }}</span>
                             {% elif user.last_login_success == False %}
                             <span class="badge bg-danger">
-                                <i class="bi bi-x-circle"></i> {{ _('Login Failed') }}
+                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Login Failed') }}
                             </span>
                             {% if user.last_login_error %}
                             <br><code class="text-danger mt-2 d-inline-block">{{ user.last_login_error }}</code>
@@ -180,13 +180,13 @@
     <!-- Actions -->
     <div class="d-flex gap-2">
         <a href="{{ url_for('website_users.edit_user', user_id=user.id) }}" class="btn btn-primary">
-            <i class="bi bi-pencil"></i> {{ _('Edit User') }}
+            <i class="bi bi-pencil" aria-hidden="true"></i> {{ _('Edit User') }}
         </a>
         <a href="{{ url_for('website_users.list_users', website_id=website.id) }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> {{ _('Back to List') }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ _('Back to List') }}
         </a>
         <button class="btn btn-danger" onclick="deleteUser('{{ user.id }}')">
-            <i class="bi bi-trash"></i> {{ _('Delete User') }}
+            <i class="bi bi-trash" aria-hidden="true"></i> {{ _('Delete User') }}
         </button>
     </div>
 </div>

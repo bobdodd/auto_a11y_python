@@ -17,8 +17,8 @@
         </ol>
     </nav>
 
-    <h1 class="h2 mb-4">
-        <i class="bi bi-person-check"></i> {{ _('Add Test Supervisor') }}
+    <h1 class="mb-4">
+        <i class="bi bi-person-check" aria-hidden="true"></i> {{ _('Add Test Supervisor') }}
     </h1>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -37,52 +37,60 @@
             <div class="col-md-8">
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-person"></i> {{ _('Supervisor Information') }}</h5>
+                        <h2 class="h5 mb-0"><i class="bi bi-person" aria-hidden="true"></i> {{ _('Supervisor Information') }}</h2>
                     </div>
                     <div class="card-body">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">{{ _('Name') }} <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="name" name="name" required
-                                   placeholder="{{ _('e.g., Dr. Sarah Johnson') }}">
-                            <div class="form-text">{{ _('Full name of the test supervisor') }}</div>
-                        </div>
+                        <fieldset>
+                            <legend class="visually-hidden">{{ _('Supervisor Information') }}</legend>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">{{ _('Name') }} <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="name" name="name" required
+                                       placeholder="{{ _('e.g., Dr. Sarah Johnson') }}"
+                                       aria-describedby="name-help">
+                                <div class="form-text" id="name-help">{{ _('Full name of the test supervisor') }}</div>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="email" class="form-label">{{ _('Email') }}</label>
-                            <input type="email" class="form-control" id="email" name="email"
-                                   placeholder="{{ _('e.g., sarah.johnson@example.com') }}">
-                            <div class="form-text">{{ _('Contact email for the supervisor (optional)') }}</div>
-                        </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">{{ _('Email') }}</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       placeholder="{{ _('e.g., sarah.johnson@example.com') }}"
+                                       aria-describedby="email-help">
+                                <div class="form-text" id="email-help">{{ _('Contact email for the supervisor (optional)') }}</div>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="role" class="form-label">{{ _('Role') }}</label>
-                            <input type="text" class="form-control" id="role" name="role"
-                                   placeholder="{{ _('e.g., Accessibility Specialist, Research Lead') }}"
-                                   list="common-roles">
-                            <datalist id="common-roles">
-                                <option value="{{ _('Accessibility Specialist') }}">
-                                <option value="{{ _('Research Lead') }}">
-                                <option value="{{ _('UX Researcher') }}">
-                                <option value="{{ _('Accessibility Consultant') }}">
-                                <option value="{{ _('Project Manager') }}">
-                                <option value="{{ _('Quality Assurance Lead') }}">
-                            </datalist>
-                            <div class="form-text">{{ _('Job title or role (optional)') }}</div>
-                        </div>
+                            <div class="mb-3">
+                                <label for="role" class="form-label">{{ _('Role') }}</label>
+                                <input type="text" class="form-control" id="role" name="role"
+                                       placeholder="{{ _('e.g., Accessibility Specialist, Research Lead') }}"
+                                       list="common-roles"
+                                       aria-describedby="role-help">
+                                <datalist id="common-roles">
+                                    <option value="{{ _('Accessibility Specialist') }}">
+                                    <option value="{{ _('Research Lead') }}">
+                                    <option value="{{ _('UX Researcher') }}">
+                                    <option value="{{ _('Accessibility Consultant') }}">
+                                    <option value="{{ _('Project Manager') }}">
+                                    <option value="{{ _('Quality Assurance Lead') }}">
+                                </datalist>
+                                <div class="form-text" id="role-help">{{ _('Job title or role (optional)') }}</div>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="organization" class="form-label">{{ _('Organization') }}</label>
-                            <input type="text" class="form-control" id="organization" name="organization"
-                                   placeholder="{{ _('e.g., Accessibility Research Institute') }}">
-                            <div class="form-text">{{ _('Organization or company name (optional)') }}</div>
-                        </div>
+                            <div class="mb-3">
+                                <label for="organization" class="form-label">{{ _('Organization') }}</label>
+                                <input type="text" class="form-control" id="organization" name="organization"
+                                       placeholder="{{ _('e.g., Accessibility Research Institute') }}"
+                                       aria-describedby="organization-help">
+                                <div class="form-text" id="organization-help">{{ _('Organization or company name (optional)') }}</div>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="notes" class="form-label">{{ _('Notes') }}</label>
-                            <textarea class="form-control" id="notes" name="notes" rows="3"
-                                      placeholder="{{ _('Additional information about this supervisor...') }}"></textarea>
-                            <div class="form-text">{{ _('Optional notes (e.g., areas of expertise, contact preferences)') }}</div>
-                        </div>
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">{{ _('Notes') }}</label>
+                                <textarea class="form-control" id="notes" name="notes" rows="3"
+                                          placeholder="{{ _('Additional information about this supervisor...') }}"
+                                          aria-describedby="notes-help"></textarea>
+                                <div class="form-text" id="notes-help">{{ _('Optional notes (e.g., areas of expertise, contact preferences)') }}</div>
+                            </div>
+                        </fieldset>
                     </div>
                 </div>
             </div>
@@ -91,15 +99,15 @@
             <div class="col-md-4">
                 <div class="card sticky-top" style="top: 20px;">
                     <div class="card-header bg-info text-white">
-                        <h5 class="mb-0"><i class="bi bi-question-circle"></i> {{ _('Help') }}</h5>
+                        <h2 class="h5 mb-0"><i class="bi bi-question-circle" aria-hidden="true"></i> {{ _('Help') }}</h2>
                     </div>
                     <div class="card-body">
-                        <h6>{{ _('About Test Supervisors') }}</h6>
+                        <h3 class="h6">{{ _('About Test Supervisors') }}</h3>
                         <p class="small">{{ _('Test supervisors are accessibility experts who oversee and coordinate lived experience testing sessions.') }}</p>
 
                         <hr>
 
-                        <h6>{{ _('Common Supervisor Roles') }}</h6>
+                        <h3 class="h6">{{ _('Common Supervisor Roles') }}</h3>
                         <ul class="small">
                             <li>{{ _('Accessibility Specialist') }}</li>
                             <li>{{ _('Research Lead') }}</li>
@@ -111,7 +119,7 @@
 
                         <hr>
 
-                        <h6>{{ _('Supervisor Responsibilities') }}</h6>
+                        <h3 class="h6">{{ _('Supervisor Responsibilities') }}</h3>
                         <p class="small">{{ _('Test supervisors typically:') }}</p>
                         <ul class="small">
                             <li>{{ _('Coordinate testing sessions') }}</li>
@@ -129,10 +137,10 @@
             <div class="col-md-8">
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-check-circle"></i> {{ _('Add Supervisor') }}
+                        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ _('Add Supervisor') }}
                     </button>
                     <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Cancel') }}
                     </a>
                 </div>
             </div>

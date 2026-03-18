@@ -85,7 +85,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2">
+            <h1>
                 <i class="bi bi-grid-3x3" aria-hidden="true"></i> {{ _('Configure Test Matrix') }}
             </h1>
             <p class="text-muted">{{ page.url }}</p>
@@ -123,7 +123,7 @@
 
     <!-- Info Box -->
     <div class="info-box">
-        <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('About Test Combinations') }}</h5>
+        <h2 class="h5"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('About Test Combinations') }}</h2>
         <p class="mb-2">
             {{ _('Each row defines one test run. Select which state each script should be in for that test.') }}
         </p>
@@ -135,10 +135,11 @@
     </div>
 
     <!-- Script Execution Order -->
-    <div class="card mb-4">
-        <div class="card-header bg-secondary text-white">
-            <h5 class="mb-0"><i class="bi bi-sort-numeric-down" aria-hidden="true"></i> {{ _('Script Execution Order') }}</h5>
-        </div>
+    <section aria-labelledby="execution-order-heading">
+        <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h2 id="execution-order-heading" class="mb-0 h5"><i class="bi bi-sort-numeric-down" aria-hidden="true"></i> {{ _('Script Execution Order') }}</h2>
+            </div>
         <div class="card-body">
             <p class="text-muted mb-3">{{ _('Drag to reorder scripts. Scripts execute from left to right.') }}</p>
             <div id="script-order-list" class="d-flex flex-wrap gap-2">
@@ -150,7 +151,8 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
+        </div>
+    </section>
 
     <!-- Preset Buttons -->
     <div class="preset-buttons">
@@ -172,15 +174,16 @@
     </div>
 
     <!-- Combinations Table -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">{{ _('Test Combinations') }}</h5>
-            <span class="badge bg-light text-dark"><span id="combinations-count">0</span> {{ _('combinations') }}</span>
-        </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <caption class="visually-hidden">{{ _('Test script combinations configuration') }}</caption>
+    <section aria-labelledby="combinations-heading">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h2 id="combinations-heading" class="mb-0 h5">{{ _('Test Combinations') }}</h2>
+                <span class="badge bg-light text-dark"><span id="combinations-count">0</span> {{ _('combinations') }}</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <caption class="visually-hidden">{{ _('Test script combinations configuration') }}</caption>
                     <thead>
                         <tr>
                             <th scope="col" style="width: 40px;"></th>
@@ -197,7 +200,8 @@
                 </table>
             </div>
         </div>
-    </div>
+        </div>
+    </section>
 
     <!-- Save Form -->
     <form method="POST" id="matrix-form">

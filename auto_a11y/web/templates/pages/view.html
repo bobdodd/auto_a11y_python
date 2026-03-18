@@ -136,7 +136,7 @@
 
     <div class="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mb-4 gap-3">
         <div>
-            <h1 class="h2">{{ page.title or _('Untitled Page') }}</h1>
+            <h1>{{ page.title or _('Untitled Page') }}</h1>
             <p class="text-muted mb-0 text-break">
                 <a href="{{ page.url }}" target="_blank">
                     <span class="d-none d-md-inline">{{ page.url }}</span>
@@ -360,69 +360,72 @@
     <!-- Two-section layout for clarity -->
     <div class="mb-4">
         <!-- Section 1: Issue Types Found -->
-        <div class="card mb-3">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">
-                    <i class="bi bi-bug" aria-hidden="true"></i> {{ _('Accessibility Issues Found') }}
-                    <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
-                            title="{{ _('Number of unique issue types discovered. Each type may have multiple instances throughout the page.') }}">
-                        <i class="bi bi-question-circle" aria-hidden="true"></i>
-                    </button>
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="d-flex flex-wrap gap-3">
-                    <div class="card text-center flex-fill" style="min-width: 140px;">
-                        <div class="card-body py-3">
-                            <h6 class="text-danger mb-1">
-                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Errors') }}
-                            </h6>
-                            <p class="display-6 mb-0 text-danger">{{ page.violation_count }}</p>
-                            <small class="text-muted">{{ _('types found') }}</small>
+        <section aria-labelledby="issues-found-heading">
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <h2 id="issues-found-heading" class="mb-0 h5">
+                        <i class="bi bi-bug" aria-hidden="true"></i> {{ _('Accessibility Issues Found') }}
+                        <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
+                                title="{{ _('Number of unique issue types discovered. Each type may have multiple instances throughout the page.') }}">
+                            <i class="bi bi-question-circle" aria-hidden="true"></i>
+                        </button>
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="card text-center flex-fill" style="min-width: 140px;">
+                            <div class="card-body py-3">
+                                <h3 class="text-danger mb-1 h6">
+                                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Errors') }}
+                                </h3>
+                                <p class="display-6 mb-0 text-danger">{{ page.violation_count }}</p>
+                                <small class="text-muted">{{ _('types found') }}</small>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card text-center flex-fill" style="min-width: 140px;">
-                        <div class="card-body py-3">
-                            <h6 class="text-warning mb-1">
-                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Warnings') }}
-                            </h6>
-                            <p class="display-6 mb-0 text-warning">{{ page.warning_count }}</p>
-                            <small class="text-muted">{{ _('types found') }}</small>
+                        <div class="card text-center flex-fill" style="min-width: 140px;">
+                            <div class="card-body py-3">
+                                <h3 class="text-warning mb-1 h6">
+                                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Warnings') }}
+                                </h3>
+                                <p class="display-6 mb-0 text-warning">{{ page.warning_count }}</p>
+                                <small class="text-muted">{{ _('types found') }}</small>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card text-center flex-fill" style="min-width: 140px;">
-                        <div class="card-body py-3">
-                            <h6 class="text-info mb-1">
-                                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Info') }}
-                            </h6>
-                            <p class="display-6 mb-0 text-info">{{ page.info_count|default(0) }}</p>
-                            <small class="text-muted">{{ _('types found') }}</small>
+                        <div class="card text-center flex-fill" style="min-width: 140px;">
+                            <div class="card-body py-3">
+                                <h3 class="text-info mb-1 h6">
+                                    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Info') }}
+                                </h3>
+                                <p class="display-6 mb-0 text-info">{{ page.info_count|default(0) }}</p>
+                                <small class="text-muted">{{ _('types found') }}</small>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card text-center flex-fill" style="min-width: 140px;">
-                        <div class="card-body py-3">
-                            <h6 class="mb-1" style="color: #6f42c1;">
-                                <i class="bi bi-search" aria-hidden="true"></i> {{ _('Discovery') }}
-                            </h6>
-                            <p class="display-6 mb-0" style="color: #6f42c1;">{{ page.discovery_count|default(0) }}</p>
-                            <small class="text-muted">{{ _('types found') }}</small>
+                        <div class="card text-center flex-fill" style="min-width: 140px;">
+                            <div class="card-body py-3">
+                                <h3 class="mb-1 h6" style="color: #6f42c1;">
+                                    <i class="bi bi-search" aria-hidden="true"></i> {{ _('Discovery') }}
+                                </h3>
+                                <p class="display-6 mb-0" style="color: #6f42c1;">{{ page.discovery_count|default(0) }}</p>
+                                <small class="text-muted">{{ _('types found') }}</small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
+        </section>
+
         <!-- Section 2: Test Checks Performance -->
-        <div class="card">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">
-                    <i class="bi bi-check2-square" aria-hidden="true"></i> {{ _('Accessibility Checks Performance') }}
-                    <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
-                            title="{{ _('Total individual checks performed on all page elements. High pass rate is good but doesn\'t guarantee full compliance if critical issues exist.') }}">
-                        <i class="bi bi-question-circle" aria-hidden="true"></i>
-                    </button>
-                </h5>
-            </div>
+        <section aria-labelledby="checks-performance-heading">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h2 id="checks-performance-heading" class="mb-0 h5">
+                        <i class="bi bi-check2-square" aria-hidden="true"></i> {{ _('Accessibility Checks Performance') }}
+                        <button type="button" class="btn btn-sm btn-link p-0 ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
+                                title="{{ _('Total individual checks performed on all page elements. High pass rate is good but doesn\'t guarantee full compliance if critical issues exist.') }}">
+                            <i class="bi bi-question-circle" aria-hidden="true"></i>
+                        </button>
+                    </h2>
+                </div>
             <div class="card-body">
                 {# Calculate actual totals from metadata if available, otherwise use page counts #}
                 {% if score_data %}
@@ -516,16 +519,17 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
     {% endif %}
 
     <!-- Check Results Detail (if available) -->
     {% if latest_result and latest_result.metadata and latest_result.metadata.checks %}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">{{ _('Test Check Details') }}</h5>
-        </div>
+    <section aria-labelledby="check-details-heading">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 id="check-details-heading" class="mb-0 h5">{{ _('Test Check Details') }}</h2>
+            </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-sm">
@@ -610,19 +614,21 @@
                 </table>
             </div>
         </div>
-    </div>
+        </div>
+    </section>
     {% endif %}
 
     <!-- Test Results Detail -->
     {% if latest_result %}
     {% set screenshot_filename = latest_result.screenshot_path.split('/')[-1] if latest_result.screenshot_path else none %}
-    <div class="card test-results-card" data-filterable="true">
-        <div class="card-header">
-            <h5 class="mb-0">{{ _('Latest Test Results') }}</h5>
-            <small class="text-muted">
-                {{ _('Tested on') }} {{ latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}
-            </small>
-        </div>
+    <section aria-labelledby="test-results-heading">
+        <div class="card test-results-card" data-filterable="true">
+            <div class="card-header">
+                <h2 id="test-results-heading" class="mb-0 h5">{{ _('Latest Test Results') }}</h2>
+                <small class="text-muted">
+                    {{ _('Tested on') }} {{ latest_result.test_date.strftime('%Y-%m-%d %H:%M:%S') }}
+                </small>
+            </div>
 
         <!-- Multi-State Selector -->
         {% if state_results and state_results|length > 1 %}
@@ -674,16 +680,17 @@
 
             <!-- Errors (Violations) -->
             {% if latest_result.violations %}
-            <div class="section-panel errors-section mb-4" style="border: 2px solid #dc3545; border-radius: 8px; overflow: hidden;">
-                <div class="section-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 12px 16px;">
-                    <h5 class="mb-0">
-                        <i class="bi bi-x-circle-fill me-2" aria-hidden="true"></i> {{ _('Errors') }} 
-                        <span class="badge bg-light text-danger ms-2">{{ latest_result.violations|length }}</span>
-                    </h5>
-                    <small class="opacity-75">{{ _('Issues that must be fixed for WCAG compliance') }}</small>
-                </div>
-                <div class="section-body" style="padding: 16px; background: #fff5f5;">
-            <div class="accordion" id="violationsAccordion">
+            <section aria-labelledby="errors-heading">
+                <div class="section-panel errors-section mb-4" style="border: 2px solid #dc3545; border-radius: 8px; overflow: hidden;">
+                    <div class="section-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 12px 16px;">
+                        <h3 id="errors-heading" class="mb-0 h5">
+                            <i class="bi bi-x-circle-fill me-2" aria-hidden="true"></i> {{ _('Errors') }}
+                            <span class="badge bg-light text-danger ms-2">{{ latest_result.violations|length }}</span>
+                        </h3>
+                        <small class="opacity-75">{{ _('Issues that must be fixed for WCAG compliance') }}</small>
+                    </div>
+                    <div class="section-body" style="padding: 16px; background: #fff5f5;">
+                <div class="accordion" id="violationsAccordion">
                 {% set viol_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_violations in latest_result.violations|groupby('touchpoint') %}
                     <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #dc3545;">
@@ -696,7 +703,7 @@
                         {% set has_breakpoints = group_list[0].metadata and group_list[0].metadata.get('breakpoint') is not none %}
                         {% if group_list|length > 1 or has_breakpoints %}
                             <!-- Multiple instances - create sub-accordion -->
-                            <div class="accordion-item">
+                            <article class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" 
                                             data-bs-toggle="collapse" 
@@ -726,7 +733,7 @@
                                             {% for breakpoint, breakpoint_violations in breakpoint_groups %}
                                                 {% set breakpoint_list = breakpoint_violations|list %}
                                                 {% set breakpoint_id = viol_counter.value ~ '-bp-' ~ (breakpoint if breakpoint else 'none') %}
-                                                <div class="accordion-item">
+                                                <article class="accordion-item">
                                                     <h2 class="accordion-header">
                                                         <button class="accordion-button collapsed" type="button"
                                                                 data-bs-toggle="collapse"
@@ -743,7 +750,7 @@
                                                             {% for violation in breakpoint_list %}
                                                             {% set instance_id = breakpoint_id ~ '-' ~ loop.index %}
                                                             {# INSTANCE_HTML_START - Keep in sync with non-breakpoint path #}
-                                                            <div class="accordion-item">
+                                                            <article class="accordion-item">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed d-flex flex-column align-items-start" type="button"
                                                             data-bs-toggle="collapse"
@@ -919,7 +926,7 @@
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </div>
-                                                        </div>
+                                                        </article>
                                                         
                                                         {% if (violation.selector or violation.xpath) and 'ErrDuplicateNavNames' not in violation.id %}
                                                         <p>
@@ -1079,16 +1086,18 @@
 
                                                         <!-- Thumbnail of the page at time of test -->
                                                         {% if screenshot_filename %}
-                                                        <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
-                                                        <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
-                                                            <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
-                                                                 alt="{{ _('Thumbnail of') }} {{ page.url }}"
-                                                                 class="img-thumbnail"
-                                                                 style="max-width: 300px; height: auto; cursor: pointer;"
-                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('Thumbnail not available') }}</span>
-                                                        </a>
-                                                        <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
+                                                        <figure class="mt-4">
+                                                            <figcaption class="h6">{{ _('Page Thumbnail (at time of test)') }}</figcaption>
+                                                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                                                <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                                                     alt="{{ _('Thumbnail of') }} {{ page.url }}"
+                                                                     class="img-thumbnail"
+                                                                     style="max-width: 300px; height: auto; cursor: pointer;"
+                                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                                <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('Thumbnail not available') }}</span>
+                                                            </a>
+                                                            <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
+                                                        </figure>
                                                         {% endif %}
 
                                                         {% if violation.metadata.ai_detected %}
@@ -1102,7 +1111,7 @@
                                                         {% endif %}
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </article>
                                             {# INSTANCE_HTML_END #}
                                             {% endfor %}
                                                             </div> {# Close viol-breakpoint-instances #}
@@ -1117,7 +1126,7 @@
                                             {% for violation in group_list %}
                                             {% set instance_id = viol_counter.value ~ '-' ~ loop.index %}
                                             {# INSTANCE_HTML_START - Keep in sync with breakpoint path #}
-                                                            <div class="accordion-item">
+                                                            <article class="accordion-item">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed d-flex flex-column align-items-start" type="button"
                                                             data-bs-toggle="collapse"
@@ -1293,7 +1302,7 @@
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </div>
-                                                        </div>
+                                                        </article>
                                                         
                                                         {% if (violation.selector or violation.xpath) and 'ErrDuplicateNavNames' not in violation.id %}
                                                         <p>
@@ -1453,16 +1462,18 @@
 
                                                         <!-- Thumbnail of the page at time of test -->
                                                         {% if screenshot_filename %}
-                                                        <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
-                                                        <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
-                                                            <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
-                                                                 alt="{{ _('Thumbnail of') }} {{ page.url }}"
-                                                                 class="img-thumbnail"
-                                                                 style="max-width: 300px; height: auto; cursor: pointer;"
-                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('Thumbnail not available') }}</span>
-                                                        </a>
-                                                        <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
+                                                        <figure class="mt-4">
+                                                            <figcaption class="h6">{{ _('Page Thumbnail (at time of test)') }}</figcaption>
+                                                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                                                <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                                                     alt="{{ _('Thumbnail of') }} {{ page.url }}"
+                                                                     class="img-thumbnail"
+                                                                     style="max-width: 300px; height: auto; cursor: pointer;"
+                                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                                <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('Thumbnail not available') }}</span>
+                                                            </a>
+                                                            <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
+                                                        </figure>
                                                         {% endif %}
 
                                                         {% if violation.metadata.ai_detected %}
@@ -1479,7 +1490,7 @@
                                             </div>
                                             {# INSTANCE_HTML_END #}
                                             {% endfor %}
-                                            </div>
+                                            </article>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -1487,7 +1498,7 @@
                         {% else %}
                             <!-- Single instance - show as before -->
                             {% for violation in group_list %}
-                            <div class="accordion-item">
+                            <article class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed d-flex flex-column align-items-start" type="button"
                                             data-bs-toggle="collapse"
@@ -1674,7 +1685,7 @@
                                         {% endfor %}
                                     {% endif %}
                                 </div>
-                            </div>
+                            </article>
                             
                             {% if (violation.selector or violation.xpath) and 'ErrDuplicateNavNames' not in violation.id %}
                             <p>
@@ -1956,21 +1967,23 @@
                 {% endfor %}
             </div>
                 </div>
-            </div>
+                </div>
+            </section>
             {% endif %}
 
             <!-- Warnings -->
             {% if latest_result.warnings %}
-            <div class="section-panel warnings-section mb-4" style="border: 2px solid #ffc107; border-radius: 8px; overflow: hidden;">
-                <div class="section-header" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #212529; padding: 12px 16px;">
-                    <h5 class="mb-0">
-                        <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i> {{ _('Warnings') }} 
-                        <span class="badge bg-dark text-warning ms-2">{{ latest_result.warnings|length }}</span>
-                    </h5>
-                    <small class="opacity-75">{{ _('Potential issues that should be reviewed') }}</small>
-                </div>
-                <div class="section-body" style="padding: 16px; background: #fffef5;">
-            <div class="accordion" id="warningsAccordion">
+            <section aria-labelledby="warnings-heading">
+                <div class="section-panel warnings-section mb-4" style="border: 2px solid #ffc107; border-radius: 8px; overflow: hidden;">
+                    <div class="section-header" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #212529; padding: 12px 16px;">
+                        <h3 id="warnings-heading" class="mb-0 h5">
+                            <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i> {{ _('Warnings') }}
+                            <span class="badge bg-dark text-warning ms-2">{{ latest_result.warnings|length }}</span>
+                        </h3>
+                        <small class="opacity-75">{{ _('Potential issues that should be reviewed') }}</small>
+                    </div>
+                    <div class="section-body" style="padding: 16px; background: #fffef5;">
+                <div class="accordion" id="warningsAccordion">
                 {% set warn_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_warnings in latest_result.warnings|groupby('touchpoint') %}
                     <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #ffc107;">
@@ -1983,7 +1996,7 @@
                         {% set has_breakpoints = group_list[0].metadata and group_list[0].metadata.get('breakpoint') is not none %}
                         {% if group_list|length > 1 or has_breakpoints %}
                             <!-- Multiple instances - create sub-accordion -->
-                            <div class="accordion-item">
+                            <article class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" 
                                             data-bs-toggle="collapse" 
@@ -2013,7 +2026,7 @@
                                             {% for breakpoint, breakpoint_warnings in breakpoint_groups %}
                                                 {% set breakpoint_list = breakpoint_warnings|list %}
                                                 {% set breakpoint_id = warn_counter.value ~ '-bp-' ~ (breakpoint if breakpoint else 'none') %}
-                                                <div class="accordion-item">
+                                                <article class="accordion-item">
                                                     <h2 class="accordion-header">
                                                         <button class="accordion-button collapsed" type="button"
                                                                 data-bs-toggle="collapse"
@@ -2029,7 +2042,7 @@
                                                             <div class="accordion" id="warn-breakpoint-instances-{{ breakpoint_id }}">
                                                             {% for warning in breakpoint_list %}
                                                             {% set warn_instance_id = breakpoint_id ~ '-' ~ loop.index %}
-                                                            <div class="accordion-item">
+                                                            <article class="accordion-item">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed d-flex flex-column align-items-start" type="button" 
                                                             data-bs-toggle="collapse" 
@@ -2186,7 +2199,7 @@
                                                                     {% endfor %}
                                                                 {% endif %}
                                                             </div>
-                                                        </div>
+                                                        </article>
 
                                                         {% if warning.xpath %}
                                                         <p>
@@ -2236,20 +2249,22 @@
 
                                                         <!-- Thumbnail of the page at time of test -->
                                                         {% if screenshot_filename %}
-                                                        <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
-                                                        <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
-                                                            <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
-                                                                 alt="{{ _('Thumbnail of') }} {{ page.url }}"
-                                                                 class="img-thumbnail"
-                                                                 style="max-width: 300px; height: auto; cursor: pointer;"
-                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('Thumbnail not available') }}</span>
-                                                        </a>
-                                                        <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
+                                                        <figure class="mt-4">
+                                                            <figcaption class="h6">{{ _('Page Thumbnail (at time of test)') }}</figcaption>
+                                                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                                                <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                                                     alt="{{ _('Thumbnail of') }} {{ page.url }}"
+                                                                     class="img-thumbnail"
+                                                                     style="max-width: 300px; height: auto; cursor: pointer;"
+                                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                                <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('Thumbnail not available') }}</span>
+                                                            </a>
+                                                            <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
+                                                        </figure>
                                                         {% endif %}
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </article>
                                             {% endfor %}
                                                             </div> {# Close warn-breakpoint-instances #}
                                                         </div> {# Close accordion-body #}
@@ -2262,7 +2277,7 @@
                                             <div class="accordion" id="warn-instances-{{ warn_counter.value }}">
                                             {% for warning in group_list %}
                                             {% set warn_instance_id = warn_counter.value ~ '-' ~ loop.index %}
-                                            <div class="accordion-item">
+                                            <article class="accordion-item">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed d-flex flex-column align-items-start" type="button" 
                                                             data-bs-toggle="collapse" 
@@ -2380,18 +2395,18 @@
                                                         <pre class="bg-dark text-light p-3 rounded"><code>{{ warning.html|e }}</code></pre>
                                                         {% endif %}
                                                     </div>
-                                                </div>
+                                                </article>
                                             </div>
                                             {% endfor %}
                                             </div> {# Close warn-instances #}
                                         {% endif %}
                                     </div>
                                 </div>
-                            </div>
+                            </article>
                         {% else %}
                             <!-- Single instance - show as before -->
                             {% for warning in group_list %}
-                            <div class="accordion-item">
+                            <article class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed d-flex flex-column align-items-start" type="button" 
                                             data-bs-toggle="collapse" 
@@ -2553,7 +2568,7 @@
                                         {% endfor %}
                                     {% endif %}
                                 </div>
-                            </div>
+                            </article>
 
                             {% if warning.xpath %}
                             <p>
@@ -2683,21 +2698,23 @@
                 {% endfor %}
             </div>
                 </div>
-            </div>
+                </div>
+            </section>
             {% endif %}
 
             <!-- Info Notes -->
             {% if latest_result.info %}
-            <div class="section-panel info-section mb-4" style="border: 2px solid #0e7490; border-radius: 8px; overflow: hidden;">
-                <div class="section-header" style="background: linear-gradient(135deg, #0e7490 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
-                    <h5 class="mb-0">
-                        <i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i> {{ _('Info Notes') }} 
-                        <span class="badge bg-light text-info ms-2">{{ latest_result.info|length }}</span>
-                    </h5>
-                    <small class="opacity-75">{{ _('Additional information and best practice recommendations') }}</small>
-                </div>
-                <div class="section-body" style="padding: 16px; background: #f0fcff;">
-            <div class="accordion" id="infoAccordion">
+            <section aria-labelledby="info-heading">
+                <div class="section-panel info-section mb-4" style="border: 2px solid #0e7490; border-radius: 8px; overflow: hidden;">
+                    <div class="section-header" style="background: linear-gradient(135deg, #0e7490 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
+                        <h3 id="info-heading" class="mb-0 h5">
+                            <i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i> {{ _('Info Notes') }}
+                            <span class="badge bg-light text-info ms-2">{{ latest_result.info|length }}</span>
+                        </h3>
+                        <small class="opacity-75">{{ _('Additional information and best practice recommendations') }}</small>
+                    </div>
+                    <div class="section-body" style="padding: 16px; background: #f0fcff;">
+                <div class="accordion" id="infoAccordion">
                 {% set info_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_infos in latest_result.info|groupby('touchpoint') %}
                     <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #0e7490;">
@@ -2709,7 +2726,7 @@
                         {% set info_counter.value = info_counter.value + 1 %}
                         {% if group_list|length > 1 %}
                             <!-- Multiple instances - create sub-accordion -->
-                            <div class="accordion-item">
+                            <article class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" 
                                             data-bs-toggle="collapse" 
@@ -2737,7 +2754,7 @@
                                         <div class="accordion" id="info-instances-{{ info_counter.value }}">
                                             {% for info in group_list %}
                                             {% set info_instance_id = info_counter.value ~ '-' ~ loop.index %}
-                                            <div class="accordion-item">
+                                            <article class="accordion-item">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed" type="button" 
                                                             data-bs-toggle="collapse" 
@@ -2872,29 +2889,31 @@
 
                                                         <!-- Thumbnail of the page at time of test -->
                                                         {% if screenshot_filename %}
-                                                        <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
-                                                        <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
-                                                            <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
-                                                                 alt="{{ _('Thumbnail of') }} {{ page.url }}"
-                                                                 class="img-thumbnail"
-                                                                 style="max-width: 300px; height: auto; cursor: pointer;"
-                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('Thumbnail not available') }}</span>
-                                                        </a>
-                                                        <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
+                                                        <figure class="mt-4">
+                                                            <figcaption class="h6">{{ _('Page Thumbnail (at time of test)') }}</figcaption>
+                                                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                                                <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                                                     alt="{{ _('Thumbnail of') }} {{ page.url }}"
+                                                                     class="img-thumbnail"
+                                                                     style="max-width: 300px; height: auto; cursor: pointer;"
+                                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                                <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('Thumbnail not available') }}</span>
+                                                            </a>
+                                                            <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
+                                                        </figure>
                                                         {% endif %}
                                                     </div>
-                                                </div>
+                                                </article>
                                             </div>
                                             {% endfor %}
                                         </div>
-                                    </div>
+                                    </article>
                                 </div>
                             </div>
                         {% else %}
                             <!-- Single instance - show as before -->
                             {% for info in group_list %}
-                            <div class="accordion-item">
+                            <article class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button"
                                             data-bs-toggle="collapse"
@@ -3030,16 +3049,18 @@
 
                                                         <!-- Thumbnail of the page at time of test -->
                                                         {% if screenshot_filename %}
-                                                        <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
-                                                        <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
-                                                            <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
-                                                                 alt="{{ _('Thumbnail of') }} {{ page.url }}"
-                                                                 class="img-thumbnail"
-                                                                 style="max-width: 300px; height: auto; cursor: pointer;"
-                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('Thumbnail not available') }}</span>
-                                                        </a>
-                                                        <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
+                                                        <figure class="mt-4">
+                                                            <figcaption class="h6">{{ _('Page Thumbnail (at time of test)') }}</figcaption>
+                                                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                                                <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                                                     alt="{{ _('Thumbnail of') }} {{ page.url }}"
+                                                                     class="img-thumbnail"
+                                                                     style="max-width: 300px; height: auto; cursor: pointer;"
+                                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                                <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('Thumbnail not available') }}</span>
+                                                            </a>
+                                                            <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
+                                                        </figure>
                                                         {% endif %}
                             </div>
                             {% endif %}
@@ -3088,7 +3109,7 @@
                             <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                             {% endif %}
                             {% endif %}
-                        </div>
+                        </article>
                     </div>
                 </div>
                             {% endfor %}
@@ -3097,21 +3118,23 @@
                 {% endfor %}
             </div>
                 </div>
-            </div>
+                </div>
+            </section>
             {% endif %}
 
             <!-- Discovery Items -->
             {% if latest_result.discovery %}
-            <div class="section-panel discovery-section mb-4" style="border: 2px solid #6f42c1; border-radius: 8px; overflow: hidden;">
-                <div class="section-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; padding: 12px 16px;">
-                    <h5 class="mb-0">
-                        <i class="bi bi-search me-2" aria-hidden="true"></i> {{ _('Discovery Items') }} 
-                        <span class="badge bg-light text-purple ms-2" style="color: #6f42c1 !important;">{{ latest_result.discovery|length }}</span>
-                    </h5>
-                    <small class="opacity-75">{{ _('Elements found that may need manual review') }}</small>
-                </div>
-                <div class="section-body" style="padding: 16px; background: #f8f5ff;">
-            <div class="accordion" id="discoveryAccordion">
+            <section aria-labelledby="discovery-heading">
+                <div class="section-panel discovery-section mb-4" style="border: 2px solid #6f42c1; border-radius: 8px; overflow: hidden;">
+                    <div class="section-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; padding: 12px 16px;">
+                        <h3 id="discovery-heading" class="mb-0 h5">
+                            <i class="bi bi-search me-2" aria-hidden="true"></i> {{ _('Discovery Items') }}
+                            <span class="badge bg-light text-purple ms-2" style="color: #6f42c1 !important;">{{ latest_result.discovery|length }}</span>
+                        </h3>
+                        <small class="opacity-75">{{ _('Elements found that may need manual review') }}</small>
+                    </div>
+                    <div class="section-body" style="padding: 16px; background: #f8f5ff;">
+                <div class="accordion" id="discoveryAccordion">
                 {% set disc_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_discoveries in latest_result.discovery|groupby('touchpoint') %}
                     <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #6f42c1;">
@@ -3123,7 +3146,7 @@
                         {% set disc_counter.value = disc_counter.value + 1 %}
                         {% if group_list|length > 1 %}
                             <!-- Multiple instances - create sub-accordion -->
-                            <div class="accordion-item">
+                            <article class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" 
                                             data-bs-toggle="collapse" 
@@ -3151,7 +3174,7 @@
                                         <div class="accordion" id="disc-instances-{{ disc_counter.value }}">
                                             {% for discovery in group_list %}
                                             {% set disc_instance_id = disc_counter.value ~ '-' ~ loop.index %}
-                                            <div class="accordion-item">
+                                            <article class="accordion-item">
                                                 <h2 class="accordion-header">
                                                     <button class="accordion-button collapsed" type="button" 
                                                             data-bs-toggle="collapse" 
@@ -3326,29 +3349,31 @@
 
                                                         <!-- Thumbnail of the page at time of test -->
                                                         {% if screenshot_filename %}
-                                                        <h6 class="mt-4">{{ _('Page Thumbnail (at time of test)') }}</h6>
-                                                        <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
-                                                            <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
-                                                                 alt="{{ _('Thumbnail of') }} {{ page.url }}"
-                                                                 class="img-thumbnail"
-                                                                 style="max-width: 300px; height: auto; cursor: pointer;"
-                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                                            <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('Thumbnail not available') }}</span>
-                                                        </a>
-                                                        <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
+                                                        <figure class="mt-4">
+                                                            <figcaption class="h6">{{ _('Page Thumbnail (at time of test)') }}</figcaption>
+                                                            <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=screenshot_filename) }}', '{{ page.url }}'); return false;">
+                                                                <img src="{{ url_for('serve_screenshot', filename=screenshot_filename) }}"
+                                                                     alt="{{ _('Thumbnail of') }} {{ page.url }}"
+                                                                     class="img-thumbnail"
+                                                                     style="max-width: 300px; height: auto; cursor: pointer;"
+                                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                                <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('Thumbnail not available') }}</span>
+                                                            </a>
+                                                            <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
+                                                        </figure>
                                                         {% endif %}
                                                     </div>
-                                                </div>
+                                                </article>
                                             </div>
                                             {% endfor %}
                                         </div>
-                                    </div>
+                                    </article>
                                 </div>
                             </div>
                         {% else %}
                             <!-- Single instance - show as before -->
                             {% for discovery in group_list %}
-                            <div class="accordion-item">
+                            <article class="accordion-item">
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button"
                                             data-bs-toggle="collapse"
@@ -3577,7 +3602,7 @@
                             <p class="text-muted small mt-1">{{ _('Click to view full size') }}</p>
                             {% endif %}
                             {% endif %}
-                        </div>
+                        </article>
                     </div>
                 </div>
                             {% endfor %}
@@ -3605,7 +3630,8 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
+    </section>
     {% elif page.status.value != 'tested' %}
     <div class="alert alert-info">
         <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This page has not been tested yet. Click "Run Test" to start accessibility testing.') }}
@@ -3614,10 +3640,11 @@
 
     <!-- Test History -->
     {% if test_history %}
-    <div class="card mt-4">
-        <div class="card-header">
-            <h5 class="mb-0">{{ _('Test History') }}</h5>
-        </div>
+    <section aria-labelledby="test-history-heading">
+        <div class="card mt-4">
+            <div class="card-header">
+                <h2 id="test-history-heading" class="mb-0 h5">{{ _('Test History') }}</h2>
+            </div>
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -3667,7 +3694,8 @@
                 </table>
             </div>
         </div>
-    </div>
+        </div>
+    </section>
     {% endif %}
 </div>
 
@@ -3676,7 +3704,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="screenshotModalTitle">{{ _('Page Screenshot') }}</h5>
+                <h2 class="modal-title h5" id="screenshotModalTitle">{{ _('Page Screenshot') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body text-center">

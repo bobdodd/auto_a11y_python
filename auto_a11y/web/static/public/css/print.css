@@ -34,12 +34,12 @@
 
     /* Black on white */
     body {
-        color: #000;
-        background: #fff;
+        color: var(--color-text);
+        background: var(--color-bg);
     }
 
     a {
-        color: #000;
+        color: var(--color-text);
         text-decoration: underline;
     }
 
@@ -47,7 +47,7 @@
     a[href]::after {
         content: " (" attr(href) ")";
         font-size: 0.8em;
-        color: #555;
+        color: var(--color-text-muted);
     }
 
     /* Remove backgrounds */

@@ -1,0 +1,34 @@
+/* Theme toggle button */
+.theme-toggle {
+    background: none;
+    border: 2px solid var(--color-text-inverse);
+    border-radius: var(--border-radius, 4px);
+    color: var(--color-text-inverse);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    font-size: 1.1rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.theme-toggle:hover {
+    background: var(--color-shadow-subtle);
+}
+.theme-toggle:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+}
+
+/* Screen reader only announcement region */
+#theme-announce {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}

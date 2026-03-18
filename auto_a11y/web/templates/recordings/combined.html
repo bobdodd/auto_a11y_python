@@ -105,11 +105,11 @@
                                     <div>
                                         {% if issue.timecodes %}
                                         <span class="badge bg-info me-2">
-                                            <i class="bi bi-clock"></i> {{ issue.timecodes|length }} timecode(s)
+                                            <i class="bi bi-clock" aria-hidden="true"></i> {{ issue.timecodes|length }} timecode(s)
                                         </span>
                                         {% endif %}
                                         <small class="text-muted">
-                                            <i class="bi bi-mic"></i> {{ issue.recording_ref.recording_id }}
+                                            <i class="bi bi-mic" aria-hidden="true"></i> {{ issue.recording_ref.recording_id }}
                                         </small>
                                     </div>
                                 </div>
@@ -128,7 +128,7 @@
                                         <div class="col-md-6">
                                             <strong>Auditor/Tester:</strong> {{ issue.recording_ref.auditor_name or '-' }}<br>
                                             <a href="{{ url_for('recordings.view_recording', recording_id=issue.recording_ref.id) }}" class="btn btn-sm btn-outline-primary mt-2">
-                                                <i class="bi bi-eye"></i> View Recording
+                                                <i class="bi bi-eye" aria-hidden="true"></i> View Recording
                                             </a>
                                         </div>
                                     </div>

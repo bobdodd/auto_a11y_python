@@ -578,7 +578,7 @@ async function importDiscoveredPages() {
 
     // Disable button and show progress
     btn.disabled = true;
-    btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Importing...';
+    btn.innerHTML = '<i class="bi bi-hourglass-split" aria-hidden="true"></i> Importing...';
     progress.style.display = 'block';
 
     try {

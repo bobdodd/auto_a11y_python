@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Change button text
-document.querySelector('form button[type="submit"]').innerHTML = '<i class="bi bi-save"></i> {{ _('Update Script') }}';
+document.querySelector('form button[type="submit"]').innerHTML = '<i class="bi bi-save" aria-hidden="true"></i> {{ _('Update Script') }}';
 document.querySelector('h1').innerHTML = '<i class="bi bi-pencil-square" aria-hidden="true"></i> {{ _('Edit Page Setup Script') }}';
 </script>
 {% endblock %}

@@ -72,13 +72,13 @@
             <!-- Fixture Status Notice -->
             {% if debug_mode %}
             <div class="alert alert-warning mb-3">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
                 <strong>{{ _('Debug Mode Active:') }}</strong> {{ _('All tests are available regardless of fixture status.') }}
                 <a href="{{ url_for('testing.fixture_status') }}" class="alert-link float-end">{{ _('View Fixture Status') }}</a>
             </div>
             {% else %}
             <div class="alert alert-info mb-3">
-                <i class="bi bi-info-circle-fill me-2"></i>
+                <i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i>
                 <strong>{{ _('Test Availability:') }}</strong> {{ _('Only tests that passed fixture validation are enabled.') }}
                 <a href="{{ url_for('testing.fixture_status') }}" class="alert-link float-end">{{ _('View Fixture Status') }}</a>
             </div>
@@ -233,7 +233,7 @@
                                         <button class="btn btn-sm btn-link p-0 me-2" type="button" 
                                                 data-bs-toggle="collapse" data-bs-target="#tests_{{ touchpoint_id }}"
                                                 aria-expanded="false" aria-controls="tests_{{ touchpoint_id }}">
-                                            <i class="bi bi-chevron-right" id="chevron_{{ touchpoint_id }}"></i>
+                                            <i class="bi bi-chevron-right" aria-hidden="true" id="chevron_{{ touchpoint_id }}"></i>
                                         </button>
                                         
                                         <!-- Touchpoint checkbox -->
@@ -243,7 +243,7 @@
                                                    checked
                                                    onchange="toggleTouchpoint('{{ touchpoint_id }}')">
                                             <label class="form-check-label fw-bold" for="touchpoint_{{ touchpoint_id }}">
-                                                <i class="bi bi-folder2 me-1"></i>{{ touchpoint_name }}
+                                                <i class="bi bi-folder2 me-1" aria-hidden="true"></i>{{ touchpoint_name }}
                                                 {% set available_count = test_ids|select('in', passing_tests)|list|length %}
                                                 {% set total_count = test_ids|length %}
                                                 {% if debug_mode %}
@@ -275,14 +275,14 @@
                                                        data-touchpoint="{{ touchpoint_id }}"
                                                        {% if test_available %}checked{% else %}disabled{% endif %}>
                                                 <label class="form-check-label small" for="test_{{ touchpoint_id }}_{{ test_id }}">
-                                                    <i class="bi bi-file-earmark-code me-1"></i>
+                                                    <i class="bi bi-file-earmark-code me-1" aria-hidden="true"></i>
                                                     <code>{{ test_id }}</code>
                                                 </label>
                                             </div>
                                             <button type="button" class="btn btn-sm btn-outline-info test-help-btn"
                                                     onclick="showTestDetails('{{ test_id }}')"
                                                     title="View test details">
-                                                <i class="bi bi-question-circle"></i>
+                                                <i class="bi bi-question-circle" aria-hidden="true"></i>
                                             </button>
                                             {% if not test_passed %}
                                                 {% if test_status %}
@@ -381,10 +381,10 @@
 
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle"></i> {{ _('Create Project') }}
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ _('Create Project') }}
                             </button>
                             <a href="{{ url_for('projects.list_projects') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
+                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Cancel') }}
                             </a>
                         </div>
                     </form>
@@ -400,7 +400,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title" id="testDetailsModalLabel">
-                    <i class="bi bi-info-circle me-2"></i>
+                    <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                     <span id="testDetailsTitle">{{ _('Test Details') }}</span>
                 </h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
@@ -555,8 +555,8 @@ function showTestDetails(testId) {
                 // Build modal content
                 // Build production ready toggle
                 const productionReadyBadge = test.production_ready ?
-                    '<span class="badge bg-success me-2"><i class="bi bi-check-circle me-1"></i>{{ _("Production Ready") }}</span>' :
-                    '<span class="badge bg-warning me-2"><i class="bi bi-exclamation-circle me-1"></i>{{ _("Pending Review") }}</span>';
+                    '<span class="badge bg-success me-2"><i class="bi bi-check-circle me-1" aria-hidden="true"></i>{{ _("Production Ready") }}</span>' :
+                    '<span class="badge bg-warning me-2"><i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>{{ _("Pending Review") }}</span>';
 
                 bodyEl.innerHTML = `
                     <div class="mb-3">
@@ -584,41 +584,41 @@ function showTestDetails(testId) {
                             <button type="button" class="btn btn-sm btn-${test.production_ready ? 'outline-warning' : 'outline-success'} ms-3"
                                     onclick="toggleProductionReady('${test.id}', ${!test.production_ready})"
                                     id="productionReadyToggle">
-                                <i class="bi bi-${test.production_ready ? 'x-circle' : 'check-circle'} me-1"></i>
+                                <i class="bi bi-${test.production_ready ? 'x-circle' : 'check-circle'} me-1" aria-hidden="true"></i>
                                 {{ _('Mark as') }} ${test.production_ready ? '{{ _("Pending") }}' : '{{ _("Ready") }}'}
                             </button>
                         </div>
                     </div>
 
                     <div class="test-details-section">
-                        <h6><i class="bi bi-info-circle me-2"></i>{{ _('What This Test Detects') }}</h6>
+                        <h6><i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ _('What This Test Detects') }}</h6>
                         <p>${test.description}</p>
                     </div>
 
                     ${test.why_it_matters ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-exclamation-triangle me-2"></i>{{ _('Why It Matters') }}</h6>
+                        <h6><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ _('Why It Matters') }}</h6>
                         <p>${test.why_it_matters}</p>
                     </div>
                     ` : ''}
 
                     ${test.who_it_affects ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-people me-2"></i>{{ _('Who It Affects') }}</h6>
+                        <h6><i class="bi bi-people me-2" aria-hidden="true"></i>{{ _('Who It Affects') }}</h6>
                         <p>${test.who_it_affects}</p>
                     </div>
                     ` : ''}
 
                     ${test.how_to_fix ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-wrench me-2"></i>{{ _('How to Fix') }}</h6>
+                        <h6><i class="bi bi-wrench me-2" aria-hidden="true"></i>{{ _('How to Fix') }}</h6>
                         <p>${test.how_to_fix}</p>
                     </div>
                     ` : ''}
 
                     ${test.message_template && (test.message_template.title || test.message_template.what) ? `
                     <div class="test-details-section bg-light border rounded p-3">
-                        <h6><i class="bi bi-chat-square-text me-2"></i>{{ _('Violation Message Templates') }}</h6>
+                        <h6><i class="bi bi-chat-square-text me-2" aria-hidden="true"></i>{{ _('Violation Message Templates') }}</h6>
                         <p class="text-muted small mb-3">{{ _('These are the actual message templates shown to users when violations are detected. Placeholders like {totalCount}, {role}, {element}, etc. are filled in dynamically.') }}</p>
 
                         ${test.message_template.title ? `
@@ -654,7 +654,7 @@ function showTestDetails(testId) {
             } else {
                 bodyEl.innerHTML = `
                     <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
                         <strong>{{ _('Test Information Not Available') }}</strong>
                         <p class="mb-0 mt-2">{{ _('Details for test') }} <code>${testId}</code> {{ _('are not available in the catalog.') }}</p>
                     </div>
@@ -665,7 +665,7 @@ function showTestDetails(testId) {
             console.error('Error fetching test details:', error);
             bodyEl.innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="bi bi-x-circle me-2"></i>
+                    <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
                     <strong>{{ _('Error Loading Test Details') }}</strong>
                     <p class="mb-0 mt-2">{{ _('An error occurred while loading the test details. Please try again.') }}</p>
                 </div>
@@ -754,8 +754,8 @@ function refreshTestDetailsContent(testId) {
 
                 // Build production ready toggle
                 const productionReadyBadge = test.production_ready ?
-                    '<span class="badge bg-success me-2"><i class="bi bi-check-circle me-1"></i>{{ _("Production Ready") }}</span>' :
-                    '<span class="badge bg-warning me-2"><i class="bi bi-exclamation-circle me-1"></i>{{ _("Pending Review") }}</span>';
+                    '<span class="badge bg-success me-2"><i class="bi bi-check-circle me-1" aria-hidden="true"></i>{{ _("Production Ready") }}</span>' :
+                    '<span class="badge bg-warning me-2"><i class="bi bi-exclamation-circle me-1" aria-hidden="true"></i>{{ _("Pending Review") }}</span>';
 
                 bodyEl.innerHTML = `
                     <div class="mb-3">
@@ -783,41 +783,41 @@ function refreshTestDetailsContent(testId) {
                             <button type="button" class="btn btn-sm btn-${test.production_ready ? 'outline-warning' : 'outline-success'} ms-3"
                                     onclick="toggleProductionReady('${test.id}', ${!test.production_ready})"
                                     id="productionReadyToggle">
-                                <i class="bi bi-${test.production_ready ? 'x-circle' : 'check-circle'} me-1"></i>
+                                <i class="bi bi-${test.production_ready ? 'x-circle' : 'check-circle'} me-1" aria-hidden="true"></i>
                                 {{ _('Mark as') }} ${test.production_ready ? '{{ _("Pending") }}' : '{{ _("Ready") }}'}
                             </button>
                         </div>
                     </div>
 
                     <div class="test-details-section">
-                        <h6><i class="bi bi-info-circle me-2"></i>{{ _('What This Test Detects') }}</h6>
+                        <h6><i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ _('What This Test Detects') }}</h6>
                         <p>${test.description}</p>
                     </div>
 
                     ${test.why_it_matters ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-exclamation-triangle me-2"></i>{{ _('Why It Matters') }}</h6>
+                        <h6><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ _('Why It Matters') }}</h6>
                         <p>${test.why_it_matters}</p>
                     </div>
                     ` : ''}
 
                     ${test.who_it_affects ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-people me-2"></i>{{ _('Who It Affects') }}</h6>
+                        <h6><i class="bi bi-people me-2" aria-hidden="true"></i>{{ _('Who It Affects') }}</h6>
                         <p>${test.who_it_affects}</p>
                     </div>
                     ` : ''}
 
                     ${test.how_to_fix ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-wrench me-2"></i>{{ _('How to Fix') }}</h6>
+                        <h6><i class="bi bi-wrench me-2" aria-hidden="true"></i>{{ _('How to Fix') }}</h6>
                         <p>${test.how_to_fix}</p>
                     </div>
                     ` : ''}
 
                     ${test.message_template && (test.message_template.title || test.message_template.what) ? `
                     <div class="test-details-section bg-light border rounded p-3">
-                        <h6><i class="bi bi-chat-square-text me-2"></i>{{ _('Violation Message Templates') }}</h6>
+                        <h6><i class="bi bi-chat-square-text me-2" aria-hidden="true"></i>{{ _('Violation Message Templates') }}</h6>
                         <p class="text-muted small mb-3">{{ _('These are the actual message templates shown to users when violations are detected. Placeholders like {totalCount}, {role}, {element}, etc. are filled in dynamically.') }}</p>
 
                         ${test.message_template.title ? `
@@ -853,7 +853,7 @@ function refreshTestDetailsContent(testId) {
             } else {
                 bodyEl.innerHTML = `
                     <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
                         <strong>{{ _('Test Information Not Available') }}</strong>
                         <p class="mb-0 mt-2">{{ _('Details for test') }} <code>${testId}</code> {{ _('are not available in the catalog.') }}</p>
                     </div>
@@ -864,7 +864,7 @@ function refreshTestDetailsContent(testId) {
             console.error('Error fetching test details:', error);
             bodyEl.innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="bi bi-x-circle me-2"></i>
+                    <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
                     <strong>{{ _('Error Loading Test Details') }}</strong>
                     <p class="mb-0 mt-2">{{ _('An error occurred while loading the test details. Please try again.') }}</p>
                 </div>

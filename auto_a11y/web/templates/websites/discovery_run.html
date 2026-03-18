@@ -32,7 +32,7 @@
         </div>
         <div>
             <a href="{{ url_for('websites.view_discovery_history', website_id=website.id) }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left"></i> Back to History
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to History
             </a>
         </div>
     </div>
@@ -98,7 +98,7 @@
         <div class="card mb-4">
             <div class="card-header">
                 <h2 id="comparison-heading" class="mb-0">
-                    <i class="bi bi-arrow-left-right"></i> Changes from Previous Run
+                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i> Changes from Previous Run
                     {% if previous_run %}
                     <small class="text-muted">({{ previous_run.started_at.strftime('%Y-%m-%d %H:%M') }})</small>
                     {% endif %}
@@ -108,19 +108,19 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="alert alert-success">
-                            <h3><i class="bi bi-plus-circle"></i> Pages Added</h3>
+                            <h3><i class="bi bi-plus-circle" aria-hidden="true"></i> Pages Added</h3>
                             <p class="h3 mb-0">{{ comparison.added_count }}</p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="alert alert-danger">
-                            <h3><i class="bi bi-dash-circle"></i> Pages Removed</h3>
+                            <h3><i class="bi bi-dash-circle" aria-hidden="true"></i> Pages Removed</h3>
                             <p class="h3 mb-0">{{ comparison.removed_count }}</p>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="alert alert-info">
-                            <h3><i class="bi bi-check-circle"></i> Pages Unchanged</h3>
+                            <h3><i class="bi bi-check-circle" aria-hidden="true"></i> Pages Unchanged</h3>
                             <p class="h3 mb-0">{{ comparison.unchanged_count }}</p>
                         </div>
                     </div>
@@ -132,7 +132,7 @@
                 <div class="list-group" style="max-height: 200px; overflow-y: auto;">
                     {% for url in comparison.pages_added[:10] %}
                     <div class="list-group-item list-group-item-success">
-                        <i class="bi bi-plus"></i> {{ url }}
+                        <i class="bi bi-plus" aria-hidden="true"></i> {{ url }}
                     </div>
                     {% endfor %}
                     {% if comparison.pages_added|length > 10 %}
@@ -150,7 +150,7 @@
                 <div class="list-group" style="max-height: 200px; overflow-y: auto;">
                     {% for url in comparison.pages_removed[:10] %}
                     <div class="list-group-item list-group-item-danger">
-                        <i class="bi bi-dash"></i> {{ url }}
+                        <i class="bi bi-dash" aria-hidden="true"></i> {{ url }}
                     </div>
                     {% endfor %}
                     {% if comparison.pages_removed|length > 10 %}
@@ -254,7 +254,7 @@
     <!-- Failed Pages -->
     <div class="card mt-4 border-warning">
         <div class="card-header bg-warning">
-            <h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Discovery Issues ({{ discovery_run.failed_pages_details|length }})</h5>
+            <h5 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Discovery Issues ({{ discovery_run.failed_pages_details|length }})</h5>
         </div>
         <div class="card-body">
             <p class="text-muted">{{ discovery_run.failed_pages_details|length }} page(s) could not be discovered:</p>

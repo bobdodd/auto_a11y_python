@@ -24,7 +24,7 @@
         </div>
         <div>
             <button class="btn btn-primary" onclick="startDiscovery()">
-                <i class="bi bi-arrow-clockwise"></i> Start New Discovery
+                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Start New Discovery
             </button>
         </div>
     </div>
@@ -91,12 +91,12 @@
                             <td>
                                 <a href="{{ url_for('websites.view_discovery_run', website_id=website.id, discovery_run_id=run.id) }}" 
                                    class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye"></i> View
+                                    <i class="bi bi-eye" aria-hidden="true"></i> View
                                 </a>
                                 {% if not run.is_latest and run.status.value == 'completed' %}
                                 <button class="btn btn-sm btn-outline-info" 
                                         onclick="compareWithLatest('{{ run.id }}')">
-                                    <i class="bi bi-arrow-left-right"></i> Compare
+                                    <i class="bi bi-arrow-left-right" aria-hidden="true"></i> Compare
                                 </button>
                                 {% endif %}
                             </td>
@@ -107,7 +107,7 @@
             </div>
             {% else %}
             <div class="alert alert-info">
-                <i class="bi bi-info-circle"></i> No discovery runs found. Click "Start New Discovery" to begin.
+                <i class="bi bi-info-circle" aria-hidden="true"></i> No discovery runs found. Click "Start New Discovery" to begin.
             </div>
             {% endif %}
         </div>

@@ -34,7 +34,7 @@
         <div class="card mb-4">
             <div class="card-header">
                 <h2 id="internal-docs-heading" class="mb-0">
-                    <i class="bi bi-house-door"></i> Internal Documents
+                    <i class="bi bi-house-door" aria-hidden="true"></i> Internal Documents
                     <span class="badge bg-secondary ms-2">{{ internal_docs|length }}</span>
                 </h2>
             </div>
@@ -61,7 +61,7 @@
                             <td>
                                 <a href="{{ doc.document_url }}" target="_blank" class="text-break">
                                     {{ doc.document_url|truncate(60, True) }}
-                                    <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                    <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i>
                                 </a>
                             </td>
                             <td>
@@ -112,7 +112,7 @@
         <div class="card">
             <div class="card-header">
                 <h2 id="external-docs-heading" class="mb-0">
-                    <i class="bi bi-globe"></i> External Documents
+                    <i class="bi bi-globe" aria-hidden="true"></i> External Documents
                     <span class="badge bg-secondary ms-2">{{ external_docs|length }}</span>
                 </h2>
             </div>
@@ -139,7 +139,7 @@
                             <td>
                                 <a href="{{ doc.document_url }}" target="_blank" class="text-break">
                                     {{ doc.document_url|truncate(60, True) }}
-                                    <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                    <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i>
                                 </a>
                             </td>
                             <td>
@@ -172,7 +172,7 @@
                             <td>
                                 {% if doc.via_redirect %}
                                 <span class="badge bg-warning" title="Found through address rewriting/redirect">
-                                    <i class="bi bi-arrow-right-circle"></i> Yes
+                                    <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> Yes
                                 </span>
                                 {% else %}
                                 <span class="text-muted">No</span>

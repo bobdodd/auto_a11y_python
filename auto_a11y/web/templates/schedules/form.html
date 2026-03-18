@@ -332,10 +332,10 @@
         <!-- Actions -->
         <div class="d-flex justify-content-between mb-4">
             <a href="{{ url_for('schedules.list_schedules', website_id=website.id) }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> {{ _('Cancel') }}
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ _('Cancel') }}
             </a>
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check-lg"></i> {% if is_edit %}{{ _('Save Changes') }}{% else %}{{ _('Create Schedule') }}{% endif %}
+                <i class="bi bi-check-lg" aria-hidden="true"></i> {% if is_edit %}{{ _('Save Changes') }}{% else %}{{ _('Create Schedule') }}{% endif %}
             </button>
         </div>
     </form>

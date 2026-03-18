@@ -141,7 +141,7 @@
                                     </a>
                                     <button type="button" class="btn btn-outline-{% if script.enabled %}success{% else %}secondary{% endif %}"
                                             onclick="toggleScript('{{ script.id }}')" title="{% if script.enabled %}{{ _('Disable') }}{% else %}{{ _('Enable') }}{% endif %}">
-                                        <i class="bi bi-toggle-{% if script.enabled %}on{% else %}off{% endif %}"></i>
+                                        <i class="bi bi-toggle-{% if script.enabled %}on{% else %}off{% endif %}" aria-hidden="true"></i>
                                     </button>
                                     <button type="button" class="btn btn-outline-danger"
                                             onclick="deleteScript('{{ script.id }}')" title="{{ _('Delete') }}">
@@ -156,7 +156,7 @@
             </div>
             {% else %}
             <div class="text-center py-5">
-                <i class="bi bi-code-slash" style="font-size: 3rem; color: #ddd;"></i>
+                <i class="bi bi-code-slash" aria-hidden="true" style="font-size: 3rem; color: #ddd;"></i>
                 <p class="text-muted mt-3">{{ _('No page-specific scripts yet') }}</p>
                 <a href="{{ url_for('scripts.create_page_script', page_id=page.id) }}" class="btn btn-primary">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Create Your First Script') }}

@@ -36,7 +36,7 @@
         </div>
         <div>
             <a href="{{ url_for('scripts.edit_script', script_id=script.id) }}" class="btn btn-primary">
-                <i class="bi bi-pencil"></i> {{ _('Edit Script') }}
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ _('Edit Script') }}
             </a>
         </div>
     </div>
@@ -116,13 +116,13 @@
                                     <div class="fw-bold">{{ step.action_type.value.replace('_', ' ').title() }}</div>
                                     {% if step.selector %}
                                     <div class="text-muted small">
-                                        <i class="bi bi-bullseye"></i> {{ _('Selector') }}:
+                                        <i class="bi bi-bullseye" aria-hidden="true"></i> {{ _('Selector') }}:
                                         <code>{{ step.selector }}</code>
                                     </div>
                                     {% endif %}
                                     {% if step.value %}
                                     <div class="text-muted small">
-                                        <i class="bi bi-input-cursor-text"></i> {{ _('Value') }}: {{ step.value }}
+                                        <i class="bi bi-input-cursor-text" aria-hidden="true"></i> {{ _('Value') }}: {{ step.value }}
                                     </div>
                                     {% endif %}
                                     {% if step.description %}
@@ -187,13 +187,13 @@
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="{{ url_for('scripts.edit_script', script_id=script.id) }}" class="btn btn-primary">
-                            <i class="bi bi-pencil"></i> {{ _('Edit Script') }}
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ _('Edit Script') }}
                         </a>
                         <button class="btn btn-outline-info" onclick="toggleScript('{{ script.id }}')">
-                            <i class="bi bi-toggle-on"></i> {{ _('Disable') if script.enabled else _('Enable') }} {{ _('Script') }}
+                            <i class="bi bi-toggle-on" aria-hidden="true"></i> {{ _('Disable') if script.enabled else _('Enable') }} {{ _('Script') }}
                         </button>
                         <button class="btn btn-outline-danger" onclick="deleteScript('{{ script.id }}')">
-                            <i class="bi bi-trash"></i> {{ _('Delete Script') }}
+                            <i class="bi bi-trash" aria-hidden="true"></i> {{ _('Delete Script') }}
                         </button>
                     </div>
                 </div>

@@ -37,15 +37,15 @@
         <div class="btn-group">
             <a href="{{ url_for('schedules.edit_schedule', website_id=website.id, schedule_id=schedule.id) }}"
                class="btn btn-outline-primary">
-                <i class="bi bi-pencil"></i> {{ _('Edit') }}
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ _('Edit') }}
             </a>
             <button type="button" class="btn btn-outline-{% if schedule.enabled %}warning{% else %}success{% endif %}"
                     onclick="toggleSchedule()">
-                <i class="bi bi-toggle-{% if schedule.enabled %}on{% else %}off{% endif %}"></i>
+                <i class="bi bi-toggle-{% if schedule.enabled %}on{% else %}off{% endif %}" aria-hidden="true"></i>
                 {% if schedule.enabled %}{{ _('Disable') }}{% else %}{{ _('Enable') }}{% endif %}
             </button>
             <button type="button" class="btn btn-primary" onclick="runNow()">
-                <i class="bi bi-play-fill"></i> {{ _('Run Now') }}
+                <i class="bi bi-play-fill" aria-hidden="true"></i> {{ _('Run Now') }}
             </button>
         </div>
     </div>
@@ -267,7 +267,7 @@
                     <ul class="list-group list-group-flush">
                         {% for user_id in schedule.project_user_ids %}
                         <li class="list-group-item">
-                            <i class="bi bi-person"></i> {{ user_id }}
+                            <i class="bi bi-person" aria-hidden="true"></i> {{ user_id }}
                         </li>
                         {% endfor %}
                     </ul>

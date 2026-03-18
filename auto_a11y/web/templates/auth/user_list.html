@@ -107,7 +107,7 @@
                 </div>
                 <small class="text-muted">
                     {% if user.last_login %}
-                    <i class="bi bi-clock"></i> {{ user.last_login.strftime('%Y-%m-%d') }}
+                    <i class="bi bi-clock" aria-hidden="true"></i> {{ user.last_login.strftime('%Y-%m-%d') }}
                     {% else %}
                     {{ _('Never logged in') }}
                     {% endif %}

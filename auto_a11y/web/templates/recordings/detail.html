@@ -19,10 +19,10 @@
         </div>
         <div>
             <button type="button" class="btn btn-outline-primary" id="editBtn" onclick="toggleEditMode()">
-                <i class="bi bi-pencil"></i> {{ _('Edit') }}
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ _('Edit') }}
             </button>
             <button type="button" class="btn btn-success" id="saveBtn" style="display: none;" onclick="saveRecording()">
-                <i class="bi bi-check-lg"></i> {{ _('Save') }}
+                <i class="bi bi-check-lg" aria-hidden="true"></i> {{ _('Save') }}
             </button>
             <button type="button" class="btn btn-outline-secondary" id="cancelBtn" style="display: none;" onclick="cancelEdit()">
                 {{ _('Cancel') }}
@@ -30,7 +30,7 @@
             <form method="post" action="{{ url_for('recordings.delete_recording', recording_id=recording.id) }}"
                   onsubmit="return confirm('{{ _('Are you sure you want to delete this recording?') }}')" class="d-inline">
                 <button type="submit" class="btn btn-outline-danger">
-                    <i class="bi bi-trash"></i> {{ _('Delete') }}
+                    <i class="bi bi-trash" aria-hidden="true"></i> {{ _('Delete') }}
                 </button>
             </form>
         </div>
@@ -376,14 +376,14 @@
                         </div>
                         <div class="text-center mt-3">
                             <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#criteriaBreakdownModal">
-                                <i class="bi bi-list-check"></i> {{ _('View Criteria Details') }}
+                                <i class="bi bi-list-check" aria-hidden="true"></i> {{ _('View Criteria Details') }}
                             </button>
                         </div>
                     </div>
                     {% else %}
                     <div class="alert alert-info mb-0">
                         <small>
-                            <i class="bi bi-info-circle"></i>
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
                             {{ _('Manual compliance score requires testing scope to be defined during upload.') }}
                         </small>
                     </div>
@@ -403,7 +403,7 @@
             <h2 class="accordion-header" id="headingKeyTakeaways">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseKeyTakeaways" aria-expanded="false" aria-controls="collapseKeyTakeaways">
-                    <i class="bi bi-list-ol me-2"></i> <strong>{{ _('Key Takeaways') }} ({{ key_takeaways_list|length }})</strong>
+                    <i class="bi bi-list-ol me-2" aria-hidden="true"></i> <strong>{{ _('Key Takeaways') }} ({{ key_takeaways_list|length }})</strong>
                 </button>
             </h2>
             <div id="collapseKeyTakeaways" class="accordion-collapse collapse"
@@ -416,7 +416,7 @@
                             <p>{{ takeaway.description }}</p>
                             {% if takeaway.timecodes %}
                             <p class="text-muted small mb-0">
-                                <i class="bi bi-clock"></i>
+                                <i class="bi bi-clock" aria-hidden="true"></i>
                                 {% for tc in takeaway.timecodes %}
                                     <code>{{ tc.start }} - {{ tc.end }}</code>{% if not loop.last %}, {% endif %}
                                 {% endfor %}
@@ -437,7 +437,7 @@
             <h2 class="accordion-header" id="headingPainpoints">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapsePainpoints" aria-expanded="false" aria-controls="collapsePainpoints">
-                    <i class="bi bi-exclamation-triangle me-2"></i> <strong>{{ _('User Painpoints') }} ({{ user_painpoints_list|length }})</strong>
+                    <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i> <strong>{{ _('User Painpoints') }} ({{ user_painpoints_list|length }})</strong>
                 </button>
             </h2>
             <div id="collapsePainpoints" class="accordion-collapse collapse"
@@ -465,7 +465,7 @@
                                 <strong class="text-primary">{{ _('Timecode') }}{% if painpoint.timecodes|length > 1 %}{{ _('s') }}{% endif %}:</strong>
                                 {% for timecode in painpoint.timecodes %}
                                 <div class="ms-3 mb-2">
-                                    <i class="bi bi-clock"></i>
+                                    <i class="bi bi-clock" aria-hidden="true"></i>
                                     <span class="text-muted small">
                                         {{ _('Start:') }} <code>{{ timecode.start }}</code> |
                                         {{ _('End:') }} <code>{{ timecode.end }}</code> |
@@ -490,7 +490,7 @@
             <h2 class="accordion-header" id="headingAssertions">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseAssertions" aria-expanded="false" aria-controls="collapseAssertions">
-                    <i class="bi bi-chat-quote me-2"></i> <strong>{{ _('User Assertions') }} ({{ user_assertions_list|length }})</strong>
+                    <i class="bi bi-chat-quote me-2" aria-hidden="true"></i> <strong>{{ _('User Assertions') }} ({{ user_assertions_list|length }})</strong>
                 </button>
             </h2>
             <div id="collapseAssertions" class="accordion-collapse collapse"
@@ -511,7 +511,7 @@
                                 <strong class="text-primary">{{ _('Timecode') }}{% if assertion.timecodes|length > 1 %}{{ _('s') }}{% endif %}:</strong>
                                 {% for timecode in assertion.timecodes %}
                                 <div class="ms-3 mb-2">
-                                    <i class="bi bi-clock"></i>
+                                    <i class="bi bi-clock" aria-hidden="true"></i>
                                     <span class="text-muted small">
                                         <code>{{ timecode.start }}</code> - <code>{{ timecode.end }}</code>
                                         ({{ _('Duration:') }} <code>{{ timecode.duration }}</code>)
@@ -539,7 +539,7 @@
             <h2 class="accordion-header" id="headingIssues">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapseIssues" aria-expanded="true" aria-controls="collapseIssues">
-                    <i class="bi bi-bug me-2"></i> <strong>{{ _('Accessibility Issues') }} ({{ issues|length }})</strong>
+                    <i class="bi bi-bug me-2" aria-hidden="true"></i> <strong>{{ _('Accessibility Issues') }} ({{ issues|length }})</strong>
                 </button>
             </h2>
             <div id="collapseIssues" class="accordion-collapse collapse show"
@@ -568,7 +568,7 @@
                                         </span>
                                         {% if issue.timecodes %}
                                         <span class="badge bg-info">
-                                            <i class="bi bi-clock"></i> {{ issue.timecodes|length }} {{ _('timecode(s)') }}
+                                            <i class="bi bi-clock" aria-hidden="true"></i> {{ issue.timecodes|length }} {{ _('timecode(s)') }}
                                         </span>
                                         {% endif %}
                                     </div>
@@ -717,7 +717,7 @@ function updateIssueStatus(issueId, status) {
                             {% for scope_key, is_tested in recording.testing_scope.items() %}
                             <div class="col-md-4 mb-2">
                                 <span class="badge {% if is_tested %}bg-success{% else %}bg-secondary{% endif %}">
-                                    {% if is_tested %}<i class="bi bi-check"></i>{% else %}<i class="bi bi-x"></i>{% endif %}
+                                    {% if is_tested %}<i class="bi bi-check" aria-hidden="true"></i>{% else %}<i class="bi bi-x" aria-hidden="true"></i>{% endif %}
                                     {{ scope_key|replace('_', ' ')|title }}
                                 </span>
                             </div>
@@ -730,12 +730,12 @@ function updateIssueStatus(issueId, status) {
                 <ul class="nav nav-tabs mb-3" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="applicable-tab" data-bs-toggle="tab" data-bs-target="#applicable-criteria" type="button" role="tab">
-                            <i class="bi bi-check-circle text-success"></i> {{ _('Applicable Criteria') }} ({{ applicable_criteria|length }})
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ _('Applicable Criteria') }} ({{ applicable_criteria|length }})
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="removed-tab" data-bs-toggle="tab" data-bs-target="#removed-criteria" type="button" role="tab">
-                            <i class="bi bi-x-circle text-secondary"></i> {{ _('Excluded Criteria') }} ({{ removed_criteria|length }})
+                            <i class="bi bi-x-circle text-secondary" aria-hidden="true"></i> {{ _('Excluded Criteria') }} ({{ removed_criteria|length }})
                         </button>
                     </li>
                 </ul>
@@ -816,7 +816,7 @@ function updateIssueStatus(issueId, status) {
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
                 <a href="https://www.w3.org/WAI/WCAG22/quickref/" target="_blank" class="btn btn-primary">
-                    <i class="bi bi-box-arrow-up-right"></i> {{ _('View WCAG Quick Reference') }}
+                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> {{ _('View WCAG Quick Reference') }}
                 </a>
             </div>
         </div>

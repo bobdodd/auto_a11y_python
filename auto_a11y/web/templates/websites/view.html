@@ -19,7 +19,7 @@
             <h1>{{ website.display_name }}</h1>
             <p class="text-muted mb-0 text-break">
                 <a href="{{ website.url }}" target="_blank">
-                    {{ website.url }} <i class="bi bi-box-arrow-up-right"></i>
+                    {{ website.url }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                 </a>
             </p>
         </div>
@@ -29,7 +29,7 @@
             {% if website_users %}
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="discoveryUserSelectionBtn">
-                    <i class="bi bi-person-check"></i> {{ _('Discovery Users') }}: <span id="discoveryUserSelectionCount">{{ _('Guest') }}</span>
+                    <i class="bi bi-person-check" aria-hidden="true"></i> {{ _('Discovery Users') }}: <span id="discoveryUserSelectionCount">{{ _('Guest') }}</span>
                 </button>
                 <ul class="dropdown-menu p-2" style="min-width: 280px;">
                     <li class="px-2 mb-2"><strong>{{ _('Select users for discovery:') }}</strong></li>
@@ -60,15 +60,15 @@
             </div>
             {% endif %}
             <button class="btn btn-success" id="discoverBtn">
-                <i class="bi bi-search"></i> {{ _('Discover Pages') }}
+                <i class="bi bi-search" aria-hidden="true"></i> {{ _('Discover Pages') }}
             </button>
             <button class="btn btn-danger" id="cancelDiscoveryBtn" style="display: none;">
-                <i class="bi bi-stop-circle-fill"></i> {{ _('Abort') }}
+                <i class="bi bi-stop-circle-fill" aria-hidden="true"></i> {{ _('Abort') }}
             </button>
             {% if website_users %}
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="userSelectionBtn">
-                    <i class="bi bi-person-check"></i> {{ _('Test Users') }}: <span id="userSelectionCount">{{ _('Guest') }}</span>
+                    <i class="bi bi-person-check" aria-hidden="true"></i> {{ _('Test Users') }}: <span id="userSelectionCount">{{ _('Guest') }}</span>
                 </button>
                 <ul class="dropdown-menu p-2" style="min-width: 280px;">
                     <li class="px-2 mb-2"><strong>{{ _('Select users to test:') }}</strong></li>
@@ -99,47 +99,47 @@
             </div>
             {% endif %}
             <button class="btn btn-primary" id="testAllBtn">
-                <i class="bi bi-play-fill"></i> {{ _('Test All Pages') }}
+                <i class="bi bi-play-fill" aria-hidden="true"></i> {{ _('Test All Pages') }}
             </button>
             <button class="btn btn-warning" id="cancelTestingBtn" style="display: none;">
-                <i class="bi bi-stop-circle"></i> {{ _('Cancel') }}
+                <i class="bi bi-stop-circle" aria-hidden="true"></i> {{ _('Cancel') }}
             </button>
         </div>
         
         <!-- Secondary Actions -->
         <div class="d-flex flex-wrap gap-2">
             <a href="{{ url_for('websites.view_discovery_history', website_id=website.id) }}" class="btn btn-outline-info">
-                <i class="bi bi-clock-history"></i> {{ _('Discovery History') }}
+                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ _('Discovery History') }}
             </a>
             <a href="{{ url_for('websites.view_documents', website_id=website.id) }}" class="btn btn-outline-info">
-                <i class="bi bi-file-earmark"></i> {{ _('Documents') }}
+                <i class="bi bi-file-earmark" aria-hidden="true"></i> {{ _('Documents') }}
             </a>
             <a href="{{ url_for('scripts.list_website_scripts', website_id=website.id) }}" class="btn btn-outline-primary">
-                <i class="bi bi-code-square"></i> {{ _('Setup Scripts') }}
+                <i class="bi bi-code-square" aria-hidden="true"></i> {{ _('Setup Scripts') }}
             </a>
             <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-outline-success">
-                <i class="bi bi-people"></i> {{ _('Test Users') }}
+                <i class="bi bi-people" aria-hidden="true"></i> {{ _('Test Users') }}
             </a>
             <a href="{{ url_for('schedules.list_schedules', website_id=website.id) }}" class="btn btn-outline-warning">
-                <i class="bi bi-calendar-event"></i> {{ _('Schedules') }}
+                <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ _('Schedules') }}
             </a>
             <div class="btn-group">
                 <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                    <i class="bi bi-file-earmark-text"></i> {{ _('Reports') }}
+                    <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ _('Reports') }}
                 </button>
                 <ul class="dropdown-menu">
                     <li><div class="dropdown-header">{{ _('Site Structure') }}</div></li>
-                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('html')"><i class="bi bi-filetype-html"></i> HTML</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('json')"><i class="bi bi-filetype-json"></i> JSON</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('csv')"><i class="bi bi-filetype-csv"></i> CSV</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('html')"><i class="bi bi-filetype-html" aria-hidden="true"></i> HTML</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('json')"><i class="bi bi-filetype-json" aria-hidden="true"></i> JSON</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateSiteStructureReport('csv')"><i class="bi bi-filetype-csv" aria-hidden="true"></i> CSV</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><div class="dropdown-header">{{ _('Accessibility Report') }}</div></li>
-                    <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('html')"><i class="bi bi-filetype-html"></i> HTML</a></li>
-                    <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('xlsx')"><i class="bi bi-filetype-xlsx"></i> Excel</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('html')"><i class="bi bi-filetype-html" aria-hidden="true"></i> HTML</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="generateAccessibilityReport('xlsx')"><i class="bi bi-filetype-xlsx" aria-hidden="true"></i> Excel</a></li>
                 </ul>
             </div>
             <a href="{{ url_for('websites.edit_website', website_id=website.id) }}" class="btn btn-outline-primary">
-                <i class="bi bi-pencil"></i> {{ _('Edit') }}
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ _('Edit') }}
             </a>
         </div>
     </div>
@@ -179,7 +179,7 @@
     {% set failed_pages = pages | selectattr('status.value', 'equalto', 'discovery_failed') | list %}
     {% if failed_pages %}
     <div class="alert alert-warning mb-3">
-        <h2 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> {{ _('Discovery Issues') }}</h2>
+        <h2 class="alert-heading"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ _('Discovery Issues') }}</h2>
         <p class="mb-2">{{ failed_pages|length }} {{ _('page(s) could not be discovered:') }}</p>
         {% if failed_pages|length <= 5 %}
         <ul class="mb-0">
@@ -211,9 +211,9 @@
         <div class="card mb-3">
             <div class="card-header" data-bs-toggle="collapse" data-bs-target="#discoveryHistory" style="cursor: pointer;">
                 <h2 id="discovery-history-heading" class="mb-0">
-                    <i class="bi bi-clock-history"></i> {{ _('Discovery History') }}
+                    <i class="bi bi-clock-history" aria-hidden="true"></i> {{ _('Discovery History') }}
                     <small class="text-muted">({{ website.discovery_history|length }} {{ _('attempts') }})</small>
-                    <i class="bi bi-chevron-down float-end"></i>
+                    <i class="bi bi-chevron-down float-end" aria-hidden="true"></i>
                 </h2>
             </div>
             <div id="discoveryHistory" class="collapse">
@@ -252,7 +252,7 @@
                                 <td>
                                     {% if attempt.error %}
                                         <span class="text-danger" title="{{ attempt.error }}" data-bs-toggle="tooltip">
-                                            <i class="bi bi-exclamation-circle"></i> {{ _('Error') }}
+                                            <i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ _('Error') }}
                                         </span>
                                     {% else %}
                                         <span class="text-muted">{{ _('Max') }}: {{ attempt.max_pages }} {{ _('pages') }}, {{ attempt.max_depth }} {{ _('depth') }}</span>
@@ -280,7 +280,7 @@
                 </span>
                 {% endif %}
                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addPageModal">
-                    <i class="bi bi-plus-circle"></i> <span class="d-none d-sm-inline">{{ _('Add Page') }}</span><span class="d-sm-none">{{ _('Add') }}</span>
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i> <span class="d-none d-sm-inline">{{ _('Add Page') }}</span><span class="d-sm-none">{{ _('Add') }}</span>
                 </button>
             </div>
         </div>
@@ -362,33 +362,33 @@
                             {% if page.status.value in ['queued', 'testing'] %}
                             <span class="spinner-border spinner-border-sm me-1" role="status" style="width: 10px; height: 10px;"></span>
                             {% elif page.status.value == 'discovery_failed' %}
-                            <i class="bi bi-exclamation-triangle"></i>
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             {% endif %}
                             {{ page.status.value|replace('_', ' ')|title }}
                         </span>
                     </div>
                     <div class="d-flex flex-wrap gap-3 mb-3 small text-muted">
                         <span class="{% if page.violation_count > 0 %}text-danger{% else %}text-success{% endif %}">
-                            <i class="bi bi-x-circle"></i> {{ page.violation_count }} {{ _('violations') }}
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ page.violation_count }} {{ _('violations') }}
                         </span>
                         <span class="{% if page.warning_count > 0 %}text-warning{% else %}text-muted{% endif %}">
-                            <i class="bi bi-exclamation-triangle"></i> {{ page.warning_count }} {{ _('warnings') }}
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ page.warning_count }} {{ _('warnings') }}
                         </span>
                         <span>
-                            <i class="bi bi-clock"></i> {{ page.last_tested.strftime('%Y-%m-%d %H:%M') if page.last_tested else _('Not tested') }}
+                            <i class="bi bi-clock" aria-hidden="true"></i> {{ page.last_tested.strftime('%Y-%m-%d %H:%M') if page.last_tested else _('Not tested') }}
                         </span>
                     </div>
                     <div class="d-flex flex-wrap gap-2">
                         <a href="{{ url_for('pages.view_page', page_id=page.id) }}" class="btn btn-sm btn-primary">
-                            <i class="bi bi-eye"></i> {{ _('View') }}
+                            <i class="bi bi-eye" aria-hidden="true"></i> {{ _('View') }}
                         </a>
                         {% if page.status.value in ['queued', 'testing'] %}
                         <button class="btn btn-sm btn-danger page-test-btn" data-page-id="{{ page.id }}" onclick="cancelPageTest('{{ page.id }}')">
-                            <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Cancel') }}
                         </button>
                         {% else %}
                         <button class="btn btn-sm btn-success page-test-btn" data-page-id="{{ page.id }}" onclick="testPage('{{ page.id }}')">
-                            <i class="bi bi-play"></i> {{ _('Test') }}
+                            <i class="bi bi-play" aria-hidden="true"></i> {{ _('Test') }}
                         </button>
                         {% endif %}
                         <button class="btn btn-sm btn-outline-danger" onclick="deletePage('{{ page.id }}', '{{ page.url }}')">
@@ -466,13 +466,13 @@
                         <small class="text-muted">{{ _('Limit the number of pages to discover. Default is unlimited (up to 1 million pages).') }}</small>
                     </div>
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i> {{ _('Discovery will crawl your website starting from the home page, following links to find all accessible pages.') }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Discovery will crawl your website starting from the home page, following links to find all accessible pages.') }}
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-search"></i> {{ _('Start Discovery') }}
+                        <i class="bi bi-search" aria-hidden="true"></i> {{ _('Start Discovery') }}
                     </button>
                 </div>
             </form>
@@ -524,13 +524,13 @@
             <form id="testAllForm">
                 <div class="modal-body">
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i> {{ _('This will run accessibility tests on all pages with the selected test user(s). Testing multiple users will increase the total test time.') }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('This will run accessibility tests on all pages with the selected test user(s). Testing multiple users will increase the total test time.') }}
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-play-fill"></i> {{ _('Start Testing') }}
+                        <i class="bi bi-play-fill" aria-hidden="true"></i> {{ _('Start Testing') }}
                     </button>
                 </div>
             </form>
@@ -551,7 +551,7 @@
             </div>
             <div class="modal-footer">
                 <a id="screenshotModalLink" href="" target="_blank" class="btn btn-primary">
-                    <i class="bi bi-box-arrow-up-right"></i> {{ _('Open in New Tab') }}
+                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> {{ _('Open in New Tab') }}
                 </a>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Close') }}</button>
             </div>
@@ -774,7 +774,7 @@ function stopWebsiteStatusPolling() {
     const testBtn = document.getElementById('testAllBtn');
     if (testBtn) {
         testBtn.disabled = false;
-        testBtn.innerHTML = '<i class="bi bi-play-fill"></i> {{ _("Test All Pages") }}';
+        testBtn.innerHTML = '<i class="bi bi-play-fill" aria-hidden="true"></i> {{ _("Test All Pages") }}';
     }
 }
 
@@ -932,13 +932,13 @@ $(document).ready(function() {
                     // Start polling for discovery progress
                     startDiscoveryPolling();
                 } else {
-                    btn.prop('disabled', false).html('<i class="bi bi-search"></i> {{ _("Discover Pages") }}');
+                    btn.prop('disabled', false).html('<i class="bi bi-search" aria-hidden="true"></i> {{ _("Discover Pages") }}');
                     $('#cancelDiscoveryBtn').hide();
                     alert(data.message || '{{ _("Failed to start discovery") }}');
                 }
             }
         }).fail(function() {
-            btn.prop('disabled', false).html('<i class="bi bi-search"></i> {{ _("Discover Pages") }}');
+            btn.prop('disabled', false).html('<i class="bi bi-search" aria-hidden="true"></i> {{ _("Discover Pages") }}');
             $('#cancelDiscoveryBtn').hide();
             alert('{{ _("Failed to start page discovery") }}');
         });
@@ -1024,13 +1024,13 @@ $(document).ready(function() {
 
                 } else {
                     alert(data.message || '{{ _("Failed to queue tests") }}');
-                    btn.prop('disabled', false).html('<i class="bi bi-play-fill"></i> {{ _("Test All Pages") }}');
+                    btn.prop('disabled', false).html('<i class="bi bi-play-fill" aria-hidden="true"></i> {{ _("Test All Pages") }}');
                 }
             }
         }).fail(function(error) {
             console.error('Failed to start testing:', error);
             alert('{{ _("Failed to start testing") }}');
-            btn.prop('disabled', false).html('<i class="bi bi-play-fill"></i> {{ _("Test All Pages") }}');
+            btn.prop('disabled', false).html('<i class="bi bi-play-fill" aria-hidden="true"></i> {{ _("Test All Pages") }}');
         });
     });
     
@@ -1083,7 +1083,7 @@ function testPage(pageId) {
             btn.classList.remove('btn-success');
             btn.classList.add('btn-danger');
             btn.onclick = function() { cancelPageTest(pageId); };
-            btn.innerHTML = '<i class="bi bi-x-circle"></i>';
+            btn.innerHTML = '<i class="bi bi-x-circle" aria-hidden="true"></i>';
             btn.disabled = false;
             
             if (window.showNotification) {
@@ -1096,12 +1096,12 @@ function testPage(pageId) {
             }
         } else {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-play"></i>';
+            btn.innerHTML = '<i class="bi bi-play" aria-hidden="true"></i>';
             alert('{{ _("Failed to start test") }}');
         }
     }).fail(function() {
         btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-play"></i>';
+        btn.innerHTML = '<i class="bi bi-play" aria-hidden="true"></i>';
         alert('{{ _("Failed to start test") }}');
     });
 }
@@ -1128,7 +1128,7 @@ function cancelPageTest(pageId) {
                 btn.classList.remove('btn-danger');
                 btn.classList.add('btn-success');
                 btn.onclick = function() { testPage(pageId); };
-                btn.innerHTML = '<i class="bi bi-play"></i>';
+                btn.innerHTML = '<i class="bi bi-play" aria-hidden="true"></i>';
                 btn.disabled = false;
             }
             
@@ -1149,14 +1149,14 @@ function cancelPageTest(pageId) {
             alert('{{ _("Failed to cancel test") }}: ' + (data.message || '{{ _("Unknown error") }}'));
             if (btn) {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-x-circle"></i>';
+                btn.innerHTML = '<i class="bi bi-x-circle" aria-hidden="true"></i>';
             }
         }
     }).fail(function() {
         alert('{{ _("Failed to cancel test") }}');
         if (btn) {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-x-circle"></i>';
+            btn.innerHTML = '<i class="bi bi-x-circle" aria-hidden="true"></i>';
         }
     });
 }
@@ -1181,7 +1181,7 @@ function deletePage(pageId, pageUrl) {
     }).fail(function(xhr) {
         if (btn) {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-trash"></i>';
+            btn.innerHTML = '<i class="bi bi-trash" aria-hidden="true"></i>';
         }
         alert('{{ _("Failed to delete page") }}: ' + (xhr.responseJSON?.error || '{{ _("Unknown error") }}'));
     });
@@ -1208,7 +1208,7 @@ function cancelDiscovery() {
                 
                 // Hide cancel button and reset discover button
                 cancelBtn.hide().prop('disabled', false);
-                btn.prop('disabled', false).html('<i class="bi bi-search"></i> {{ _("Discover Pages") }}');
+                btn.prop('disabled', false).html('<i class="bi bi-search" aria-hidden="true"></i> {{ _("Discover Pages") }}');
 
                 // Remove from global tracking
                 if (typeof TestTracker !== 'undefined') {
@@ -1310,7 +1310,7 @@ function startDiscoveryPolling() {
                 btn.prop('disabled', false)
                    .removeClass('btn-danger')
                    .addClass('btn-success')
-                   .html('<i class="bi bi-check-circle"></i> {{ _("Discovery Complete") }}');
+                   .html('<i class="bi bi-check-circle" aria-hidden="true"></i> {{ _("Discovery Complete") }}');
 
                 // Remove from global tracking if available
                 if (typeof TestTracker !== 'undefined') {
@@ -1332,7 +1332,7 @@ function startDiscoveryPolling() {
                 btn.prop('disabled', false)
                    .removeClass('btn-danger')
                    .addClass('btn-warning')
-                   .html('<i class="bi bi-x-circle"></i> {{ _("Discovery Failed") }}');
+                   .html('<i class="bi bi-x-circle" aria-hidden="true"></i> {{ _("Discovery Failed") }}');
 
                 // Remove from global tracking
                 if (typeof TestTracker !== 'undefined') {
@@ -1346,7 +1346,7 @@ function startDiscoveryPolling() {
                 setTimeout(() => {
                     btn.removeClass('btn-warning')
                        .addClass('btn-success')
-                       .html('<i class="bi bi-search"></i> {{ _("Discover Pages") }}');
+                       .html('<i class="bi bi-search" aria-hidden="true"></i> {{ _("Discover Pages") }}');
                 }, 3000);
             }
         }).fail(function() {
@@ -1372,7 +1372,7 @@ function stopDiscoveryPolling() {
             .prop('disabled', false)
             .removeClass('btn-danger btn-warning')
             .addClass('btn-success')
-            .html('<i class="bi bi-search"></i> {{ _("Discover Pages") }}');
+            .html('<i class="bi bi-search" aria-hidden="true"></i> {{ _("Discover Pages") }}');
     }, 3000);
 }
 
@@ -1406,7 +1406,7 @@ function startTestingStatusPolling() {
 
                 // Update button
                 btn.prop('disabled', false)
-                   .html('<i class="bi bi-check-circle"></i> {{ _("Testing Complete") }}');
+                   .html('<i class="bi bi-check-circle" aria-hidden="true"></i> {{ _("Testing Complete") }}');
 
                 // Remove from global tracking
                 if (typeof TestTracker !== 'undefined') {
@@ -1426,7 +1426,7 @@ function startTestingStatusPolling() {
 
                 // Update button
                 btn.prop('disabled', false)
-                   .html('<i class="bi bi-x-circle"></i> {{ _("Testing Cancelled") }}');
+                   .html('<i class="bi bi-x-circle" aria-hidden="true"></i> {{ _("Testing Cancelled") }}');
 
                 // Remove from global tracking
                 if (typeof TestTracker !== 'undefined') {
@@ -1440,14 +1440,14 @@ function startTestingStatusPolling() {
 
                 // Reset button after delay
                 setTimeout(() => {
-                    btn.html('<i class="bi bi-play-fill"></i> {{ _("Test All Pages") }}');
+                    btn.html('<i class="bi bi-play-fill" aria-hidden="true"></i> {{ _("Test All Pages") }}');
                 }, 3000);
             } else if (data.status === 'failed') {
                 stopTestingStatusPolling();
 
                 // Update button
                 btn.prop('disabled', false)
-                   .html('<i class="bi bi-x-circle"></i> {{ _("Testing Failed") }}');
+                   .html('<i class="bi bi-x-circle" aria-hidden="true"></i> {{ _("Testing Failed") }}');
 
                 // Remove from global tracking
                 if (typeof TestTracker !== 'undefined') {
@@ -1459,7 +1459,7 @@ function startTestingStatusPolling() {
 
                 // Reset button after delay
                 setTimeout(() => {
-                    btn.html('<i class="bi bi-play-fill"></i> {{ _("Test All Pages") }}');
+                    btn.html('<i class="bi bi-play-fill" aria-hidden="true"></i> {{ _("Test All Pages") }}');
                 }, 3000);
             }
         }).fail(function() {
@@ -1507,7 +1507,7 @@ function cancelTesting() {
                 
                 // Hide cancel button and reset test button
                 cancelBtn.hide().prop('disabled', false);
-                btn.prop('disabled', false).html('<i class="bi bi-play-fill"></i> {{ _("Test All Pages") }}');
+                btn.prop('disabled', false).html('<i class="bi bi-play-fill" aria-hidden="true"></i> {{ _("Test All Pages") }}');
 
                 // Remove from global tracking
                 if (typeof TestTracker !== 'undefined') {

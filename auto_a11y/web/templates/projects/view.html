@@ -20,22 +20,22 @@
         <!-- Action Buttons - flex wrap for all screen sizes -->
         <div class="d-flex flex-wrap gap-2 mt-3">
             <button type="button" class="btn btn-success" onclick="testAllWebsites()">
-                <i class="bi bi-play-fill"></i> {{ _('Test All Websites') }}
+                <i class="bi bi-play-fill" aria-hidden="true"></i> {{ _('Test All Websites') }}
             </button>
             <a href="{{ url_for('project_users.list_users', project_id=project.id) }}" class="btn btn-outline-secondary">
-                <i class="bi bi-people"></i> {{ _('Test Users') }}
+                <i class="bi bi-people" aria-hidden="true"></i> {{ _('Test Users') }}
             </a>
             <a href="{{ url_for('project_participants.list_participants', project_id=project.id) }}" class="btn btn-outline-info">
-                <i class="bi bi-person-badge"></i> {{ _('Participants') }}
+                <i class="bi bi-person-badge" aria-hidden="true"></i> {{ _('Participants') }}
             </a>
             <a href="{{ url_for('automated_tests.project_automated_tests', project_id=project.id) }}" class="btn btn-outline-primary">
-                <i class="bi bi-robot"></i> {{ _('Automated Tests') }}
+                <i class="bi bi-robot" aria-hidden="true"></i> {{ _('Automated Tests') }}
             </a>
             <a href="{{ url_for('projects.edit_project', project_id=project.id) }}" class="btn btn-outline-primary">
-                <i class="bi bi-pencil"></i> {{ _('Edit') }}
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ _('Edit') }}
             </a>
             <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                <i class="bi bi-trash"></i> {{ _('Delete') }}
+                <i class="bi bi-trash" aria-hidden="true"></i> {{ _('Delete') }}
             </button>
         </div>
     </div>
@@ -75,7 +75,7 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0" id="websites-heading">{{ _('Websites') }}</h2>
             <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addWebsiteModal">
-                <i class="bi bi-plus-circle"></i> {{ _('Add Website') }}
+                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Add Website') }}
             </button>
         </div>
         <div class="card-body">
@@ -88,7 +88,7 @@
                         <div class="flex-grow-1" style="min-width: 200px;">
                             <h3 class="card-title mb-1">{{ website.display_name }}</h3>
                             <a href="{{ website.url }}" target="_blank" class="small text-muted text-break">
-                                {{ website.url }} <i class="bi bi-box-arrow-up-right"></i>
+                                {{ website.url }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                             </a>
                         </div>
                         <div class="d-flex flex-wrap gap-2">
@@ -102,23 +102,23 @@
                     </div>
                     
                     <div class="d-flex flex-wrap gap-3 mb-3 small text-muted">
-                        <span><i class="bi bi-files"></i> {{ website.page_count }} {{ _('pages') }}</span>
+                        <span><i class="bi bi-files" aria-hidden="true"></i> {{ website.page_count }} {{ _('pages') }}</span>
                         <span class="website-status" data-website-id="{{ website.id }}">
                             <span class="status-content">
-                                <i class="bi bi-clock"></i> {{ website.last_tested.strftime('%Y-%m-%d %H:%M') if website.last_tested else _('Never tested') }}
+                                <i class="bi bi-clock" aria-hidden="true"></i> {{ website.last_tested.strftime('%Y-%m-%d %H:%M') if website.last_tested else _('Never tested') }}
                             </span>
                         </span>
                     </div>
                     
                     <div class="d-flex flex-wrap gap-2">
                         <a href="{{ url_for('websites.view_website', website_id=website.id) }}" class="btn btn-sm btn-primary">
-                            <i class="bi bi-eye"></i> {{ _('View') }}
+                            <i class="bi bi-eye" aria-hidden="true"></i> {{ _('View') }}
                         </a>
                         <button class="btn btn-sm btn-success" onclick="discoverPages('{{ website.id }}')">
-                            <i class="bi bi-search"></i> {{ _('Discover') }}
+                            <i class="bi bi-search" aria-hidden="true"></i> {{ _('Discover') }}
                         </button>
                         <button class="btn btn-sm btn-info" onclick="testWebsite('{{ website.id }}')">
-                            <i class="bi bi-play"></i> {{ _('Test') }}
+                            <i class="bi bi-play" aria-hidden="true"></i> {{ _('Test') }}
                         </button>
                     </div>
                 </div>
@@ -134,7 +134,7 @@
     <section class="card mb-4" aria-labelledby="discovered-pages-heading">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0" id="discovered-pages-heading">
-                <i class="bi bi-file-earmark-text"></i> {{ _('Discovered Pages') }}
+                <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ _('Discovered Pages') }}
             </h2>
             <span class="badge bg-primary">{{ discovered_pages|length }}</span>
         </div>
@@ -161,7 +161,7 @@
                             <td>{{ page.title }}</td>
                             <td>
                                 <a href="{{ page.url }}" target="_blank" class="text-truncate d-inline-block" style="max-width: 300px;">
-                                    {{ page.url }} <i class="bi bi-box-arrow-up-right"></i>
+                                    {{ page.url }} <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
                                 </a>
                             </td>
                             <td>
@@ -246,7 +246,7 @@
             </div>
             {% else %}
             <div class="alert alert-info">
-                <i class="bi bi-info-circle"></i>
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
                 {{ _('No discovered pages yet. Pull pages from Drupal using the synchronization page below.') }}
             </div>
             {% endif %}
@@ -260,10 +260,10 @@
     <section class="card" aria-labelledby="recordings-heading">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0" id="recordings-heading">
-                <i class="bi bi-mic"></i> {{ _('Recordings') }}
+                <i class="bi bi-mic" aria-hidden="true"></i> {{ _('Recordings') }}
             </h2>
             <a href="{{ url_for('recordings.upload_recording') }}" class="btn btn-sm btn-primary">
-                <i class="bi bi-plus-circle"></i> <span class="d-none d-sm-inline">{{ _('Add Recording') }}</span><span class="d-sm-none">{{ _('Add') }}</span>
+                <i class="bi bi-plus-circle" aria-hidden="true"></i> <span class="d-none d-sm-inline">{{ _('Add Recording') }}</span><span class="d-sm-none">{{ _('Add') }}</span>
             </a>
         </div>
         <div class="card-body">
@@ -309,7 +309,7 @@
                             <td>
                                 <a href="{{ url_for('recordings.view_recording', recording_id=recording.id) }}"
                                    class="btn btn-sm btn-primary">
-                                    <i class="bi bi-eye"></i> {{ _('View') }}
+                                    <i class="bi bi-eye" aria-hidden="true"></i> {{ _('View') }}
                                 </a>
                             </td>
                         </tr>
@@ -338,7 +338,7 @@
                             <td>
                                 <a href="{{ url_for('recordings.view_combined_recordings', project_id=project.id) }}"
                                    class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-list-ul"></i> {{ _('View Combined') }}
+                                    <i class="bi bi-list-ul" aria-hidden="true"></i> {{ _('View Combined') }}
                                 </a>
                             </td>
                         </tr>
@@ -376,7 +376,7 @@
                 {% endfor %}
                 {% if recordings|length > 1 %}
                 <a href="{{ url_for('recordings.view_combined_recordings', project_id=project.id) }}" class="btn btn-outline-primary w-100 mt-2">
-                    <i class="bi bi-list-ul"></i> {{ _('View All Combined') }}
+                    <i class="bi bi-list-ul" aria-hidden="true"></i> {{ _('View All Combined') }}
                 </a>
                 {% endif %}
             </div>
@@ -454,7 +454,7 @@
                             {% endif %}
                         </div>
                         <small class="text-muted mt-2 d-block">
-                            <i class="bi bi-info-circle"></i> {{ _('Discovery will run with the selected user(s).') }}
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Discovery will run with the selected user(s).') }}
                             {% if project_users %}
                             <a href="{{ url_for('project_users.list_users', project_id=project.id) }}">{{ _('Manage test users') }}</a>
                             {% else %}
@@ -469,13 +469,13 @@
                         <small class="text-muted">{{ _('Limit the number of pages to discover (useful for large sites)') }}</small>
                     </div>
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i> {{ _('Discovery will crawl the website starting from the home page, following links to find all accessible pages.') }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Discovery will crawl the website starting from the home page, following links to find all accessible pages.') }}
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-search"></i> {{ _('Start Discovery') }}
+                        <i class="bi bi-search" aria-hidden="true"></i> {{ _('Start Discovery') }}
                     </button>
                 </div>
             </form>
@@ -496,7 +496,7 @@
                     <p>{{ _('This will test all websites in the project') }} "{{ project.name }}".</p>
 
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle"></i>
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
                         <strong>{{ websites|length }} {{ _('website(s)') }}</strong> {{ _('will be tested across multiple base URLs.') }}
                     </div>
 
@@ -524,7 +524,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-play-fill"></i> {{ _('Start Testing All Websites') }}
+                        <i class="bi bi-play-fill" aria-hidden="true"></i> {{ _('Start Testing All Websites') }}
                     </button>
                 </div>
             </form>
@@ -669,7 +669,7 @@ $('#discoveryForm').submit(function(e) {
 
     // Find the button for this website
     const btn = document.querySelector(`button[onclick="discoverPages('${websiteId}')"]`);
-    const originalHtml = btn ? btn.innerHTML : '<i class="bi bi-search"></i><span class="d-none d-lg-inline"> {{ _("Discover") }}</span>';
+    const originalHtml = btn ? btn.innerHTML : '<i class="bi bi-search" aria-hidden="true"></i><span class="d-none d-lg-inline"> {{ _("Discover") }}</span>';
 
     // Hide modal
     $('#discoveryModal').modal('hide');
@@ -740,7 +740,7 @@ function cancelDiscovery(websiteId, btn) {
         return;
     }
 
-    const originalHtml = '<i class="bi bi-search"></i><span class="d-none d-lg-inline"> {{ _("Discover") }}</span>';
+    const originalHtml = '<i class="bi bi-search" aria-hidden="true"></i><span class="d-none d-lg-inline"> {{ _("Discover") }}</span>';
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> {{ _("Cancelling...") }}';
     
     $.post(`/websites/${websiteId}/cancel-discovery`, { job_id: jobId }, function(data) {
@@ -773,13 +773,13 @@ function startDiscoveryPolling(websiteId, btn) {
         return;
     }
     
-    const originalHtml = '<i class="bi bi-search"></i><span class="d-none d-lg-inline"> {{ _("Discover") }}</span>';
+    const originalHtml = '<i class="bi bi-search" aria-hidden="true"></i><span class="d-none d-lg-inline"> {{ _("Discover") }}</span>';
 
     // Change button to show cancel option
     btn.disabled = false;
     btn.classList.remove('btn-success');
     btn.classList.add('btn-danger');
-    btn.innerHTML = '<i class="bi bi-x-circle"></i><span class="d-none d-lg-inline"> {{ _("Cancel") }}</span>';
+    btn.innerHTML = '<i class="bi bi-x-circle" aria-hidden="true"></i><span class="d-none d-lg-inline"> {{ _("Cancel") }}</span>';
     btn.onclick = function() {
         if (confirm('{{ _("Cancel the discovery process?") }}')) {
             cancelDiscovery(websiteId, btn);
@@ -804,7 +804,7 @@ function startDiscoveryPolling(websiteId, btn) {
                 stopDiscoveryPolling(websiteId);
 
                 // Update button
-                btn.innerHTML = `<i class="bi bi-check-circle"></i><span class="d-none d-lg-inline"> {{ _("Found") }} ${data.pages_found} {{ _("pages") }}</span>`;
+                btn.innerHTML = `<i class="bi bi-check-circle" aria-hidden="true"></i><span class="d-none d-lg-inline"> {{ _("Found") }} ${data.pages_found} {{ _("pages") }}</span>`;
                 btn.disabled = false;
                 btn.classList.remove('btn-danger');
                 btn.classList.add('btn-success');
@@ -827,7 +827,7 @@ function startDiscoveryPolling(websiteId, btn) {
                 stopDiscoveryPolling(websiteId);
 
                 // Update button
-                btn.innerHTML = '<i class="bi bi-x-circle"></i><span class="d-none d-lg-inline"> {{ _("Failed") }}</span>';
+                btn.innerHTML = '<i class="bi bi-x-circle" aria-hidden="true"></i><span class="d-none d-lg-inline"> {{ _("Failed") }}</span>';
                 btn.disabled = false;
                 btn.classList.remove('btn-danger');
                 btn.classList.add('btn-warning');
@@ -893,15 +893,15 @@ function testWebsite(websiteId) {
             
             // Re-enable button but change text
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-hourglass-split"></i><span class="d-none d-lg-inline"> Testing...</span>';
+            btn.innerHTML = '<i class="bi bi-hourglass-split" aria-hidden="true"></i><span class="d-none d-lg-inline"> Testing...</span>';
         } else {
             btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-play"></i><span class="d-none d-lg-inline"> Test</span>';
+            btn.innerHTML = '<i class="bi bi-play" aria-hidden="true"></i><span class="d-none d-lg-inline"> Test</span>';
             alert(data.message);
         }
     }).fail(function() {
         btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-play"></i><span class="d-none d-lg-inline"> Test</span>';
+        btn.innerHTML = '<i class="bi bi-play" aria-hidden="true"></i><span class="d-none d-lg-inline"> Test</span>';
         alert('Failed to start testing');
     });
 }

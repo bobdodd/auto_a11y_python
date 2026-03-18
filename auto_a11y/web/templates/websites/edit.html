@@ -99,11 +99,11 @@
 
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle"></i> {{ _('Update Website') }}
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ _('Update Website') }}
                             </button>
                             <a href="{{ url_for('websites.view_website', website_id=website.id) }}"
                                class="btn btn-outline-secondary">
-                                <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
+                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Cancel') }}
                             </a>
                         </div>
                     </form>

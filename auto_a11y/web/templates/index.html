@@ -7,7 +7,7 @@
     <div class="row mt-5">
         <div class="col-lg-8 mx-auto text-center">
             <h1 class="display-4 mb-4">
-                <i class="bi bi-universal-access-circle text-primary"></i>
+                <i class="bi bi-universal-access-circle text-primary" aria-hidden="true"></i>
                 {{ _('Auto A11y') }}
             </h1>
             <p class="lead">{{ _('Automated Accessibility Testing Platform') }}</p>
@@ -17,10 +17,10 @@
 
             <div class="mt-5">
                 <a href="{{ url_for('projects.create_project') }}" class="btn btn-primary btn-lg me-3">
-                    <i class="bi bi-plus-circle"></i> {{ _('New Project') }}
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('New Project') }}
                 </a>
                 <a href="{{ url_for('projects.list_projects') }}" class="btn btn-outline-primary btn-lg">
-                    <i class="bi bi-folder"></i> {{ _('View Projects') }}
+                    <i class="bi bi-folder" aria-hidden="true"></i> {{ _('View Projects') }}
                 </a>
             </div>
         </div>
@@ -32,7 +32,7 @@
         <div class="col-md-4 mb-4">
             <div class="card h-100">
                 <div class="card-body text-center">
-                    <i class="bi bi-robot display-4 text-primary"></i>
+                    <i class="bi bi-robot display-4 text-primary" aria-hidden="true"></i>
                     <h2 class="card-title mt-3">{{ _('AI-Powered Analysis') }}</h2>
                     <p class="card-text">
                         {{ _('Claude AI detects complex accessibility issues that require visual understanding') }}
@@ -43,7 +43,7 @@
         <div class="col-md-4 mb-4">
             <div class="card h-100">
                 <div class="card-body text-center">
-                    <i class="bi bi-browser-chrome display-4 text-primary"></i>
+                    <i class="bi bi-browser-chrome display-4 text-primary" aria-hidden="true"></i>
                     <h2 class="card-title mt-3">{{ _('Browser Testing') }}</h2>
                     <p class="card-text">
                         {{ _('Real browser testing with Puppeteer ensures accurate DOM-based results') }}
@@ -54,7 +54,7 @@
         <div class="col-md-4 mb-4">
             <div class="card h-100">
                 <div class="card-body text-center">
-                    <i class="bi bi-file-earmark-check display-4 text-primary"></i>
+                    <i class="bi bi-file-earmark-check display-4 text-primary" aria-hidden="true"></i>
                     <h2 class="card-title mt-3">{{ _('WCAG Compliance') }}</h2>
                     <p class="card-text">
                         {{ _('Comprehensive testing against WCAG 2.1 Level A, AA, and AAA guidelines') }}

@@ -315,7 +315,7 @@
                                         <button class="btn btn-sm btn-link p-0 me-2" type="button" 
                                                 data-bs-toggle="collapse" data-bs-target="#tests_{{ touchpoint_id }}"
                                                 aria-expanded="false" aria-controls="tests_{{ touchpoint_id }}">
-                                            <i class="bi bi-chevron-right" id="chevron_{{ touchpoint_id }}"></i>
+                                            <i class="bi bi-chevron-right" aria-hidden="true" id="chevron_{{ touchpoint_id }}"></i>
                                         </button>
                                         
                                         <!-- Touchpoint checkbox -->
@@ -325,7 +325,7 @@
                                                    {% if project.config.get('touchpoints', {}).get(touchpoint_id, {}).get('enabled', True) %}checked{% endif %}
                                                    onchange="toggleTouchpoint('{{ touchpoint_id }}')">
                                             <label class="form-check-label fw-bold" for="touchpoint_{{ touchpoint_id }}">
-                                                <i class="bi bi-folder2 me-1"></i>{{ touchpoint_name }}
+                                                <i class="bi bi-folder2 me-1" aria-hidden="true"></i>{{ touchpoint_name }}
                                                 <span class="badge bg-secondary ms-2">{{ test_ids|length }}</span>
                                             </label>
                                         </div>
@@ -341,12 +341,12 @@
                                                    data-touchpoint="{{ touchpoint_id }}"
                                                    {% if project.config.get('touchpoints', {}).get(touchpoint_id, {}).get('tests', {}).get(test_id, True) %}checked{% endif %}>
                                             <label class="form-check-label small" for="test_{{ touchpoint_id }}_{{ test_id }}">
-                                                <i class="bi bi-file-earmark-code me-1"></i>
+                                                <i class="bi bi-file-earmark-code me-1" aria-hidden="true"></i>
                                                 <code>{{ test_id }}</code>
                                                 <button type="button" class="btn btn-sm btn-outline-info test-help-btn"
                                                         onclick="showTestDetails('{{ test_id }}')"
                                                         title="View test details">
-                                                    <i class="bi bi-question-circle"></i>
+                                                    <i class="bi bi-question-circle" aria-hidden="true"></i>
                                                 </button>
                                             </label>
                                         </div>
@@ -435,11 +435,11 @@
 
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle"></i> {{ _('Update Project') }}
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ _('Update Project') }}
                             </button>
                             <a href="{{ url_for('projects.view_project', project_id=project.id) }}"
                                class="btn btn-outline-secondary">
-                                <i class="bi bi-x-circle"></i> {{ _('Cancel') }}
+                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ _('Cancel') }}
                             </a>
                         </div>
                     </form>
@@ -455,7 +455,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title" id="testDetailsModalLabel">
-                    <i class="bi bi-info-circle me-2"></i>
+                    <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                     <span id="testDetailsTitle">{{ _('Test Details') }}</span>
                 </h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
@@ -658,27 +658,27 @@ function showTestDetails(testId) {
                     </div>
 
                     <div class="test-details-section">
-                        <h6><i class="bi bi-info-circle me-2"></i>{{ _('What This Test Detects') }}</h6>
+                        <h6><i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ _('What This Test Detects') }}</h6>
                         <p>${test.description}</p>
                     </div>
 
                     ${test.why_it_matters ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-exclamation-triangle me-2"></i>{{ _('Why It Matters') }}</h6>
+                        <h6><i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ _('Why It Matters') }}</h6>
                         <p>${test.why_it_matters}</p>
                     </div>
                     ` : ''}
 
                     ${test.who_it_affects ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-people me-2"></i>{{ _('Who It Affects') }}</h6>
+                        <h6><i class="bi bi-people me-2" aria-hidden="true"></i>{{ _('Who It Affects') }}</h6>
                         <p>${test.who_it_affects}</p>
                     </div>
                     ` : ''}
 
                     ${test.how_to_fix ? `
                     <div class="test-details-section">
-                        <h6><i class="bi bi-wrench me-2"></i>{{ _('How to Fix') }}</h6>
+                        <h6><i class="bi bi-wrench me-2" aria-hidden="true"></i>{{ _('How to Fix') }}</h6>
                         <p>${test.how_to_fix}</p>
                     </div>
                     ` : ''}
@@ -686,7 +686,7 @@ function showTestDetails(testId) {
             } else {
                 bodyEl.innerHTML = `
                     <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
                         <strong>{{ _('Test Information Not Available') }}</strong>
                         <p class="mb-0 mt-2">{{ _('Details for test') }} <code>${testId}</code> {{ _('are not available in the catalog.') }}</p>
                     </div>
@@ -697,7 +697,7 @@ function showTestDetails(testId) {
             console.error('Error fetching test details:', error);
             bodyEl.innerHTML = `
                 <div class="alert alert-danger">
-                    <i class="bi bi-x-circle me-2"></i>
+                    <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
                     <strong>{{ _('Error Loading Test Details') }}</strong>
                     <p class="mb-0 mt-2">{{ _('An error occurred while loading the test details. Please try again.') }}</p>
                 </div>

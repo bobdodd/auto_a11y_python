@@ -71,7 +71,7 @@
             </h1>
 
             <div class="alert alert-info">
-                <i class="bi bi-info-circle"></i>
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
                 {% if is_website_script %}
                 <strong>{{ _('What are Website-Level Scripts?') }}</strong><br>
                 {{ _('Scripts that run for <strong>all pages</strong> in this website (e.g., dismiss cookie banners, handle login). Perfect for cookie notices that appear across the entire site!') }}
@@ -322,10 +322,10 @@
                 <!-- Form Actions -->
                 <div class="d-flex justify-content-between mt-4">
                     <a href="{{ url_for('scripts.list_page_scripts', page_id=page.id) }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> {{ _('Cancel') }}
+                        <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ _('Cancel') }}
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save"></i> {{ _('Create Script') }}
+                        <i class="bi bi-save" aria-hidden="true"></i> {{ _('Create Script') }}
                     </button>
                 </div>
 
@@ -395,7 +395,7 @@ function addStep(stepData = null) {
                 </div>
                 <div>
                     <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeStep(${stepIndex})">
-                        <i class="bi bi-trash"></i> {{ _('Remove') }}
+                        <i class="bi bi-trash" aria-hidden="true"></i> {{ _('Remove') }}
                     </button>
                 </div>
             </div>

@@ -179,7 +179,7 @@
 </head>
 <body>
     <a class="skip-link" href="#main-content" style="position:absolute;top:-40px;left:0;background:#0d6efd;color:white;padding:8px;text-decoration:none;z-index:1100;">Skip to main content</a>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary no-print">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary no-print" aria-label="{{ _('Report navigation') }}">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ index_path }}index.html">
                 <i class="bi bi-universal-access-circle" aria-hidden="true"></i>
@@ -200,11 +200,11 @@
                     </li>
                     {% if navigation %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <button type="button" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="bi bi-list" aria-hidden="true"></i>
                             <span data-lang="en" class="{{ 'lang-active' if language == 'en' else 'lang-inactive' }}">{{ t['pages'] }}</span>
                             <span data-lang="fr" class="{{ 'lang-active' if language == 'fr' else 'lang-inactive' }}">{{ translations_fr['pages'] }}</span>
-                        </a>
+                        </button>
                         <ul class="dropdown-menu dropdown-menu-end" style="max-height: 400px; overflow-y: auto;">
                             {% for nav_page in navigation.pages %}
                             <li>

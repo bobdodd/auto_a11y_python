@@ -1,12 +1,28 @@
 /* Auto A11y Custom Styles */
 
+/* Re-point Bootstrap variables to our design tokens */
 :root {
-    --primary-color: #0d6efd;
-    --secondary-color: #6c757d;
-    --success-color: #198754;
-    --danger-color: #dc3545;
-    --warning-color: #ffc107;
-    --info-color: #0dcaf0;
+    --bs-primary: var(--color-brand);
+    --bs-primary-rgb: 26, 82, 118;
+    --bs-info: var(--color-info);
+    --bs-info-rgb: 14, 116, 144;
+    --bs-success: var(--color-severity-pass);
+    --bs-danger: var(--color-severity-high);
+    --bs-warning: var(--color-severity-medium);
+    --bs-body-color: var(--color-text);
+    --bs-body-bg: var(--color-bg);
+    --bs-border-color: var(--color-border);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bs-primary-rgb: 93, 169, 233;
+        --bs-info-rgb: 100, 181, 246;
+    }
+}
+[data-theme="dark"] {
+    --bs-primary-rgb: 93, 169, 233;
+    --bs-info-rgb: 100, 181, 246;
 }
 
 * {
@@ -44,7 +60,7 @@ main {
 .navbar-brand {
     font-weight: bold;
     font-size: 1.3rem;
-    color: #fff !important;
+    color: var(--color-text-inverse) !important;
 }
 
 .navbar-brand i {
@@ -53,12 +69,12 @@ main {
 }
 
 .navbar-dark .nav-link {
-    color: #fff !important;
+    color: var(--color-text-inverse) !important;
 }
 
 .navbar-dark .nav-link:hover,
 .navbar-dark .nav-link:focus {
-    color: #e0e0e0 !important;
+    color: var(--color-border) !important;
 }
 
 /* Card hover effects */
@@ -68,12 +84,12 @@ main {
 
 .card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px var(--color-shadow-medium);
 }
 
 /* Table improvements */
 .table-hover tbody tr:hover {
-    background-color: rgba(0,0,0,0.02);
+    background-color: var(--color-shadow-subtle);
 }
 
 /* Badge adjustments */
@@ -83,7 +99,7 @@ main {
 
 /* Progress bar */
 .progress {
-    background-color: #e9ecef;
+    background-color: var(--color-progress-track);
 }
 
 /* Alert improvements */
@@ -95,8 +111,8 @@ main {
 /* Footer */
 .footer {
     margin-top: auto;
-    background-color: #f8f9fa;
-    border-top: 1px solid #dee2e6;
+    background-color: var(--color-bg-subtle);
+    border-top: 1px solid var(--color-border-table);
 }
 
 /* Loading spinner */
@@ -106,7 +122,7 @@ main {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255,255,255,0.8);
+    background: var(--color-spinner-overlay);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -119,7 +135,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-    outline: 2px solid var(--primary-color);
+    outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
 }
 
@@ -129,7 +145,7 @@ button:focus,
 input:focus,
 select:focus,
 textarea:focus {
-    outline: 2px solid var(--primary-color);
+    outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
 }
 
@@ -144,8 +160,8 @@ button:focus:not(:focus-visible) {
     position: absolute;
     top: -40px;
     left: 0;
-    background: var(--primary-color);
-    color: white;
+    background: var(--color-brand);
+    color: var(--color-text-inverse);
     padding: 8px;
     text-decoration: none;
     z-index: 100;
@@ -168,35 +184,35 @@ button:focus:not(:focus-visible) {
     .navbar-brand {
         font-size: 1.1rem;
     }
-    
+
     .card-body {
         padding: 0.75rem;
     }
-    
+
     .display-6 {
         font-size: 2rem;
     }
-    
+
     .btn-sm {
         padding: 0.25rem 0.5rem;
         font-size: 0.75rem;
     }
-    
+
     .table {
         font-size: 0.8rem;
     }
-    
+
     .table td, .table th {
         padding: 0.3rem;
     }
-    
+
     /* Stack table buttons vertically on mobile */
     .table .btn-group {
         display: flex;
         flex-direction: column;
         gap: 0.25rem;
     }
-    
+
     .table .btn-group .btn {
         width: 100%;
     }
@@ -207,12 +223,12 @@ button:focus:not(:focus-visible) {
     .table-responsive {
         font-size: 0.875rem;
     }
-    
+
     .table td, .table th {
         padding: 0.5rem;
         white-space: nowrap;
     }
-    
+
     /* Make cards stack on tablets */
     .row .col-md-3 {
         margin-bottom: 1rem;
@@ -276,19 +292,19 @@ button:focus:not(:focus-visible) {
 }
 
 .status-indicator.active {
-    background-color: var(--success-color);
+    background-color: var(--color-severity-pass);
     animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.4);
+        box-shadow: 0 0 0 0 var(--color-pulse-ring);
     }
     70% {
-        box-shadow: 0 0 0 10px rgba(25, 135, 84, 0);
+        box-shadow: 0 0 0 10px transparent;
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(25, 135, 84, 0);
+        box-shadow: 0 0 0 0 transparent;
     }
 }
 
@@ -307,109 +323,101 @@ button:focus:not(:focus-visible) {
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--color-bg-scrollbar);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #666;
+    background: var(--color-scrollbar-thumb);
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: var(--color-text-muted);
 }
 
 /* WCAG AA Contrast Overrides */
 /* Override Bootstrap primary color for WCAG AA contrast (4.5:1 minimum) */
-:root {
-    --bs-primary: #0a58ca;
-    --bs-primary-rgb: 10, 88, 202;
-}
 .btn-primary {
-    background-color: #0a58ca !important;
-    border-color: #0a58ca !important;
+    background-color: var(--color-link) !important;
+    border-color: var(--color-link) !important;
 }
 .btn-primary:hover,
 .btn-primary:active {
-    background-color: #084298 !important;
-    border-color: #084298 !important;
+    background-color: var(--color-link-hover) !important;
+    border-color: var(--color-link-hover) !important;
 }
 .btn-outline-primary.active,
 .btn-outline-primary:active {
-    background-color: #0a58ca !important;
-    border-color: #0a58ca !important;
+    background-color: var(--color-link) !important;
+    border-color: var(--color-link) !important;
 }
 .bg-primary {
-    background-color: #0a58ca !important;
+    background-color: var(--color-link) !important;
 }
 .text-primary {
-    color: #0a58ca !important;
+    color: var(--color-link) !important;
 }
 .border-primary {
-    border-color: #0a58ca !important;
+    border-color: var(--color-link) !important;
 }
 
 /* Override Bootstrap info color for WCAG AA contrast (4.5:1 minimum) */
-:root {
-    --bs-info: #0e7490;
-    --bs-info-rgb: 14, 116, 144;
-}
 .bg-info {
-    background-color: #0e7490 !important;
+    background-color: var(--color-info) !important;
 }
 .text-info {
-    color: #0e7490 !important;
+    color: var(--color-info) !important;
 }
 .border-info {
-    border-color: #0e7490 !important;
+    border-color: var(--color-info) !important;
 }
 
 /* Override Bootstrap warning colors for WCAG AA contrast */
-/* Keep bright yellow background but ensure dark text */
+/* Warning backgrounds are bright yellow/amber — always use dark text */
 .bg-warning {
-    background-color: #ffc107 !important;
-    color: #212529 !important; /* Dark text on yellow background */
+    background-color: var(--color-severity-medium) !important;
+    color: var(--color-text) !important;
 }
 .badge.bg-warning {
-    background-color: #ffc107 !important;
-    color: #212529 !important;
+    background-color: var(--color-severity-medium) !important;
+    color: var(--color-text) !important;
 }
 .alert-warning {
-    background-color: #ffc107 !important;
-    color: #212529 !important;
+    background-color: var(--color-severity-medium) !important;
+    color: var(--color-text) !important;
 }
 .progress-bar.bg-warning {
-    background-color: #ffc107 !important;
-    color: #212529 !important;
+    background-color: var(--color-severity-medium) !important;
+    color: var(--color-text) !important;
 }
 
 /* Override text-warning for contrast on white backgrounds */
 .text-warning {
-    color: #856404 !important; /* Dark yellow/brown with 4.6:1 contrast on white */
+    color: var(--color-severity-medium) !important;
 }
 
 /* Fix outline warning buttons to use proper contrast */
 .btn-outline-warning {
-    color: #856404 !important;
-    border-color: #b38600 !important; /* 3.2:1 contrast on white */
+    color: var(--color-severity-medium) !important;
+    border-color: var(--color-severity-medium-border) !important;
 }
 .btn-outline-warning:hover,
 .btn-outline-warning:active,
 .btn-outline-warning.active {
-    background-color: #ffc107 !important;
-    border-color: #ffc107 !important;
-    color: #212529 !important; /* Dark text on yellow background */
+    background-color: var(--color-severity-medium) !important;
+    border-color: var(--color-severity-medium) !important;
+    color: var(--color-text) !important;
 }
 
 /* Ensure progress bar gray has sufficient contrast with yellow (3:1 for non-text) */
 .progress-bar.bg-secondary {
-    background-color: #495057 !important; /* Darker gray for 3:1 contrast with #ffc107 */
+    background-color: var(--color-text-muted) !important;
 }
 
 /* Override Bootstrap form borders for WCAG 1.4.11 Non-text Contrast (3:1 minimum) */
 .form-control,
 .form-select {
-    border-color: #86868b;
+    border-color: var(--color-border-input);
 }
 
 /* ===== Semantic HTML Element Resets ===== */
@@ -440,7 +448,7 @@ dl {
 
 dt {
     font-weight: 600;
-    color: #495057;
+    color: var(--color-text-muted);
 }
 
 dd {
@@ -455,7 +463,7 @@ figure {
 
 figcaption {
     font-size: 0.95rem;
-    color: #6c757d;
+    color: var(--color-text-muted);
     margin-top: 0.5rem;
 }
 
@@ -482,5 +490,47 @@ table caption {
     * {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
+    }
+}
+
+/* Respect high contrast preferences (WCAG 1.4.11) */
+@media (prefers-contrast: more) {
+    .card {
+        border: 2px solid var(--color-text);
+    }
+
+    .btn {
+        border-width: 2px;
+    }
+
+    .form-control,
+    .form-select {
+        border-color: var(--color-text);
+        border-width: 2px;
+    }
+
+    .navbar {
+        border-bottom: 2px solid var(--color-text);
+    }
+
+    .footer {
+        border-top: 2px solid var(--color-text);
+    }
+
+    .badge {
+        border: 1px solid var(--color-text);
+    }
+
+    .alert {
+        border: 2px solid currentColor;
+    }
+
+    .dropdown-menu {
+        border: 2px solid var(--color-text);
+    }
+
+    .nav-link:focus,
+    .btn:focus {
+        outline-width: 3px;
     }
 }

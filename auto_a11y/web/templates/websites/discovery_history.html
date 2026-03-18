@@ -19,7 +19,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2">Discovery History</h1>
+            <h1>Discovery History</h1>
             <p class="text-muted">All discovery runs for {{ website.name }}</p>
         </div>
         <div>
@@ -115,46 +115,49 @@
 
     <!-- Statistics Summary -->
     {% if discovery_runs %}
-    <div class="row mt-4">
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Total Runs</h5>
-                    <p class="h2">{{ discovery_runs|length }}</p>
+    <section aria-labelledby="statistics-heading">
+        <h2 id="statistics-heading" class="visually-hidden">Statistics Summary</h2>
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Total Runs</h3>
+                        <p class="h2">{{ discovery_runs|length }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Successful</h3>
+                        <p class="h2 text-success">{{ discovery_runs|selectattr('status.value', 'equalto', 'completed')|list|length }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Failed</h3>
+                        <p class="h2 text-danger">{{ discovery_runs|selectattr('status.value', 'equalto', 'failed')|list|length }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h3 class="card-title">Average Duration</h3>
+                        {% set completed_runs = discovery_runs|selectattr('duration_seconds')|list %}
+                        {% if completed_runs %}
+                        {% set avg_duration = (completed_runs|map(attribute='duration_seconds')|sum) / completed_runs|length %}
+                        <p class="h2">{{ (avg_duration / 60)|round(1) }}m</p>
+                        {% else %}
+                        <p class="h2">-</p>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Successful</h5>
-                    <p class="h2 text-success">{{ discovery_runs|selectattr('status.value', 'equalto', 'completed')|list|length }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Failed</h5>
-                    <p class="h2 text-danger">{{ discovery_runs|selectattr('status.value', 'equalto', 'failed')|list|length }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h5 class="card-title">Average Duration</h5>
-                    {% set completed_runs = discovery_runs|selectattr('duration_seconds')|list %}
-                    {% if completed_runs %}
-                    {% set avg_duration = (completed_runs|map(attribute='duration_seconds')|sum) / completed_runs|length %}
-                    <p class="h2">{{ (avg_duration / 60)|round(1) }}m</p>
-                    {% else %}
-                    <p class="h2">-</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
+    </section>
     {% endif %}
 </div>
 

@@ -22,7 +22,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2">Discovery Run Details</h1>
+            <h1>Discovery Run Details</h1>
             <p class="text-muted">
                 Started: {{ discovery_run.started_at.strftime('%Y-%m-%d %H:%M') }}
                 {% if discovery_run.is_latest %}
@@ -38,11 +38,13 @@
     </div>
 
     <!-- Run Summary -->
-    <div class="row mb-4">
-        <div class="col-md-2">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Status</h6>
+    <section aria-labelledby="run-summary-heading">
+        <h2 id="run-summary-heading" class="visually-hidden">Run Summary</h2>
+        <div class="row mb-4">
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-subtitle mb-2 text-muted">Status</h3>
                     {% if discovery_run.status.value == 'completed' %}
                     <span class="badge bg-success fs-6">Completed</span>
                     {% elif discovery_run.status.value == 'running' %}
@@ -55,76 +57,78 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Pages Discovered</h6>
-                    <p class="h4 mb-0">{{ discovery_run.pages_discovered }}</p>
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-subtitle mb-2 text-muted">Pages Discovered</h3>
+                        <p class="h4 mb-0">{{ discovery_run.pages_discovered }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card{% if discovery_run.pages_failed > 0 %} border-warning{% endif %}">
+                    <div class="card-body">
+                        <h3 class="card-subtitle mb-2 text-muted">Pages Failed</h3>
+                        <p class="h4 mb-0{% if discovery_run.pages_failed > 0 %} text-warning{% endif %}">{{ discovery_run.pages_failed }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-subtitle mb-2 text-muted">Documents Found</h3>
+                        <p class="h4 mb-0">{{ discovery_run.documents_found }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-subtitle mb-2 text-muted">Duration</h3>
+                        <p class="h4 mb-0">{{ discovery_run.duration_display }}</p>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="card{% if discovery_run.pages_failed > 0 %} border-warning{% endif %}">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Pages Failed</h6>
-                    <p class="h4 mb-0{% if discovery_run.pages_failed > 0 %} text-warning{% endif %}">{{ discovery_run.pages_failed }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Documents Found</h6>
-                    <p class="h4 mb-0">{{ discovery_run.documents_found }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Duration</h6>
-                    <p class="h4 mb-0">{{ discovery_run.duration_display }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    </section>
 
     <!-- Comparison with Previous Run -->
     {% if comparison %}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">
-                <i class="bi bi-arrow-left-right"></i> Changes from Previous Run
-                {% if previous_run %}
-                <small class="text-muted">({{ previous_run.started_at.strftime('%Y-%m-%d %H:%M') }})</small>
-                {% endif %}
-            </h5>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="alert alert-success">
-                        <h6><i class="bi bi-plus-circle"></i> Pages Added</h6>
-                        <p class="h3 mb-0">{{ comparison.added_count }}</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="alert alert-danger">
-                        <h6><i class="bi bi-dash-circle"></i> Pages Removed</h6>
-                        <p class="h3 mb-0">{{ comparison.removed_count }}</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="alert alert-info">
-                        <h6><i class="bi bi-check-circle"></i> Pages Unchanged</h6>
-                        <p class="h3 mb-0">{{ comparison.unchanged_count }}</p>
-                    </div>
-                </div>
+    <section aria-labelledby="comparison-heading">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 id="comparison-heading" class="mb-0">
+                    <i class="bi bi-arrow-left-right"></i> Changes from Previous Run
+                    {% if previous_run %}
+                    <small class="text-muted">({{ previous_run.started_at.strftime('%Y-%m-%d %H:%M') }})</small>
+                    {% endif %}
+                </h2>
             </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="alert alert-success">
+                            <h3><i class="bi bi-plus-circle"></i> Pages Added</h3>
+                            <p class="h3 mb-0">{{ comparison.added_count }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="alert alert-danger">
+                            <h3><i class="bi bi-dash-circle"></i> Pages Removed</h3>
+                            <p class="h3 mb-0">{{ comparison.removed_count }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="alert alert-info">
+                            <h3><i class="bi bi-check-circle"></i> Pages Unchanged</h3>
+                            <p class="h3 mb-0">{{ comparison.unchanged_count }}</p>
+                        </div>
+                    </div>
+                </div>
 
-            {% if comparison.pages_added %}
-            <div class="mt-3">
-                <h6>New Pages Found:</h6>
+                {% if comparison.pages_added %}
+                <div class="mt-3">
+                    <h3>New Pages Found:</h3>
                 <div class="list-group" style="max-height: 200px; overflow-y: auto;">
                     {% for url in comparison.pages_added[:10] %}
                     <div class="list-group-item list-group-item-success">
@@ -140,9 +144,9 @@
             </div>
             {% endif %}
 
-            {% if comparison.pages_removed %}
-            <div class="mt-3">
-                <h6>Pages No Longer Found:</h6>
+                {% if comparison.pages_removed %}
+                <div class="mt-3">
+                    <h3>Pages No Longer Found:</h3>
                 <div class="list-group" style="max-height: 200px; overflow-y: auto;">
                     {% for url in comparison.pages_removed[:10] %}
                     <div class="list-group-item list-group-item-danger">
@@ -156,16 +160,18 @@
                     {% endif %}
                 </div>
             </div>
-            {% endif %}
+                {% endif %}
+            </div>
         </div>
-    </div>
+    </section>
     {% endif %}
 
     <!-- Discovery Parameters -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">Discovery Parameters</h5>
-        </div>
+    <section aria-labelledby="discovery-params-heading">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 id="discovery-params-heading" class="mb-0">Discovery Parameters</h2>
+            </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
@@ -186,7 +192,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Pages List -->
     <div class="card">
@@ -242,7 +248,7 @@
             <p class="text-muted">No pages found in this discovery run.</p>
             {% endif %}
         </div>
-    </div>
+    </section>
 
     {% if discovery_run.failed_pages_details %}
     <!-- Failed Pages -->
@@ -260,7 +266,7 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
+    </section>
     {% endif %}
 
     {% if discovery_run.error_message %}
@@ -272,7 +278,7 @@
         <div class="card-body">
             <pre class="text-danger">{{ discovery_run.error_message }}</pre>
         </div>
-    </div>
+    </section>
     {% endif %}
 </div>
 {% endblock %}

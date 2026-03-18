@@ -16,80 +16,87 @@
                 </ol>
             </nav>
 
-            <h1 class="h2 mb-4">{{ _('Edit Website') }}</h1>
-            
+            <h1 class="mb-4">{{ _('Edit Website') }}</h1>
+
             <div class="card">
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('websites.edit_website', website_id=website.id) }}">
-                        <h5 class="card-title mb-3">{{ _('Basic Information') }}</h5>
-                        
-                        <div class="mb-3">
-                            <label for="name" class="form-label">{{ _('Website Name') }}</label>
-                            <input type="text" class="form-control" id="name" name="name"
-                                   value="{{ website.name or '' }}" placeholder="{{ _('Optional display name') }}">
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="url" class="form-label">{{ _('Website URL') }} *</label>
-                            <input type="url" class="form-control" id="url" name="url"
-                                   value="{{ website.url }}" required autocomplete="url">
-                        </div>
-                        
+                        <fieldset>
+                            <legend id="basic-info-heading">{{ _('Basic Information') }}</legend>
+
+                            <div class="mb-3">
+                                <label for="name" class="form-label">{{ _('Website Name') }}</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                       value="{{ website.name or '' }}" placeholder="{{ _('Optional display name') }}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="url" class="form-label">{{ _('Website URL') }} *</label>
+                                <input type="url" class="form-control" id="url" name="url"
+                                       value="{{ website.url }}" required autocomplete="url">
+                            </div>
+                        </fieldset>
+
                         <hr class="my-4">
+
+                        <fieldset>
+                            <legend id="scraping-config-heading">{{ _('Scraping Configuration') }}</legend>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="max_pages" class="form-label">{{ _('Max Pages') }}</label>
+                                    <input type="number" class="form-control" id="max_pages" name="max_pages"
+                                           value="{{ website.scraping_config.max_pages }}" min="1" max="9999999"
+                                           aria-describedby="max-pages-help">
+                                    <div id="max-pages-help" class="form-text">{{ _('Maximum number of pages to discover (default: unlimited)') }}</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="max_depth" class="form-label">{{ _('Max Depth') }}</label>
+                                    <input type="number" class="form-control" id="max_depth" name="max_depth"
+                                           value="{{ website.scraping_config.max_depth }}" min="1" max="50"
+                                           aria-describedby="max-depth-help">
+                                    <div id="max-depth-help" class="form-text">{{ _('How many clicks away from the starting page (default: 10)') }}</div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="request_delay" class="form-label">{{ _('Request Delay (seconds)') }}</label>
+                                    <input type="number" class="form-control" id="request_delay" name="request_delay"
+                                           value="{{ website.scraping_config.request_delay }}" min="0" max="10" step="0.1"
+                                           aria-describedby="request-delay-help">
+                                    <div id="request-delay-help" class="form-text">{{ _('Delay between requests') }}</div>
+                                </div>
+                            </div>
                         
-                        <h5 class="card-title mb-3">{{ _('Scraping Configuration') }}</h5>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="max_pages" class="form-label">{{ _('Max Pages') }}</label>
-                                <input type="number" class="form-control" id="max_pages" name="max_pages"
-                                       value="{{ website.scraping_config.max_pages }}" min="1" max="9999999">
-                                <div class="form-text">{{ _('Maximum number of pages to discover (default: unlimited)') }}</div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="follow_external"
+                                           name="follow_external" {% if website.scraping_config.follow_external %}checked{% endif %}>
+                                    <label class="form-check-label" for="follow_external">
+                                        {{ _('Follow external links') }}
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="include_subdomains"
+                                           name="include_subdomains" {% if website.scraping_config.include_subdomains %}checked{% endif %}>
+                                    <label class="form-check-label" for="include_subdomains">
+                                        {{ _('Include subdomains') }}
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="respect_robots"
+                                           name="respect_robots" {% if website.scraping_config.respect_robots %}checked{% endif %}>
+                                    <label class="form-check-label" for="respect_robots">
+                                        {{ _('Respect robots.txt') }}
+                                    </label>
+                                </div>
                             </div>
-                            
-                            <div class="col-md-6 mb-3">
-                                <label for="max_depth" class="form-label">{{ _('Max Depth') }}</label>
-                                <input type="number" class="form-control" id="max_depth" name="max_depth"
-                                       value="{{ website.scraping_config.max_depth }}" min="1" max="50">
-                                <div class="form-text">{{ _('How many clicks away from the starting page (default: 10)') }}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="request_delay" class="form-label">{{ _('Request Delay (seconds)') }}</label>
-                                <input type="number" class="form-control" id="request_delay" name="request_delay"
-                                       value="{{ website.scraping_config.request_delay }}" min="0" max="10" step="0.1">
-                                <div class="form-text">{{ _('Delay between requests') }}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="follow_external" 
-                                       name="follow_external" {% if website.scraping_config.follow_external %}checked{% endif %}>
-                                <label class="form-check-label" for="follow_external">
-                                    {{ _('Follow external links') }}
-                                </label>
-                            </div>
-                            
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="include_subdomains" 
-                                       name="include_subdomains" {% if website.scraping_config.include_subdomains %}checked{% endif %}>
-                                <label class="form-check-label" for="include_subdomains">
-                                    {{ _('Include subdomains') }}
-                                </label>
-                            </div>
-                            
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="respect_robots" 
-                                       name="respect_robots" {% if website.scraping_config.respect_robots %}checked{% endif %}>
-                                <label class="form-check-label" for="respect_robots">
-                                    {{ _('Respect robots.txt') }}
-                                </label>
-                            </div>
-                        </div>
-                        
+                        </fieldset>
+
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-check-circle"></i> {{ _('Update Website') }}

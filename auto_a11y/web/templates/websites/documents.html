@@ -19,7 +19,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2">Electronic Documents</h1>
+            <h1>Electronic Documents</h1>
             <p class="text-muted">Documents found during website discovery</p>
         </div>
         <div>
@@ -30,13 +30,14 @@
     </div>
 
     <!-- Internal Documents -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">
-                <i class="bi bi-house-door"></i> Internal Documents
-                <span class="badge bg-secondary ms-2">{{ internal_docs|length }}</span>
-            </h5>
-        </div>
+    <section aria-labelledby="internal-docs-heading">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h2 id="internal-docs-heading" class="mb-0">
+                    <i class="bi bi-house-door"></i> Internal Documents
+                    <span class="badge bg-secondary ms-2">{{ internal_docs|length }}</span>
+                </h2>
+            </div>
         <div class="card-body">
             {% if internal_docs %}
             <div class="table-responsive">
@@ -104,16 +105,17 @@
             <p class="text-muted">No internal documents found.</p>
             {% endif %}
         </div>
-    </div>
+    </section>
 
     <!-- External Documents -->
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">
-                <i class="bi bi-globe"></i> External Documents
-                <span class="badge bg-secondary ms-2">{{ external_docs|length }}</span>
-            </h5>
-        </div>
+    <section aria-labelledby="external-docs-heading">
+        <div class="card">
+            <div class="card-header">
+                <h2 id="external-docs-heading" class="mb-0">
+                    <i class="bi bi-globe"></i> External Documents
+                    <span class="badge bg-secondary ms-2">{{ external_docs|length }}</span>
+                </h2>
+            </div>
         <div class="card-body">
             {% if external_docs %}
             <div class="table-responsive">
@@ -185,13 +187,14 @@
             <p class="text-muted">No external documents found.</p>
             {% endif %}
         </div>
-    </div>
+    </section>
 
     <!-- Summary Statistics -->
-    <div class="card mt-4">
-        <div class="card-header">
-            <h5 class="mb-0">Document Type Summary</h5>
-        </div>
+    <section aria-labelledby="doc-type-summary-heading">
+        <div class="card mt-4">
+            <div class="card-header">
+                <h2 id="doc-type-summary-heading" class="mb-0">Document Type Summary</h2>
+            </div>
         <div class="card-body">
             <div class="row">
                 {% set doc_types = {} %}
@@ -213,13 +216,14 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Language Summary -->
-    <div class="card mt-4">
-        <div class="card-header">
-            <h5 class="mb-0">Document Language Summary</h5>
-        </div>
+    <section aria-labelledby="doc-language-summary-heading">
+        <div class="card mt-4">
+            <div class="card-header">
+                <h2 id="doc-language-summary-heading" class="mb-0">Document Language Summary</h2>
+            </div>
         <div class="card-body">
             <div class="row">
                 {% set doc_languages = {} %}
@@ -250,7 +254,7 @@
                 {% endif %}
             </div>
         </div>
-    </div>
+    </section>
 </div>
 
 <script>

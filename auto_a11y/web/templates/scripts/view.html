@@ -27,8 +27,8 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2">
-                <i class="bi bi-code-square"></i> {{ script.name }}
+            <h1>
+                <i class="bi bi-code-square" aria-hidden="true"></i> {{ script.name }}
             </h1>
             {% if script.description %}
             <p class="text-muted">{{ script.description }}</p>
@@ -44,69 +44,67 @@
     <div class="row">
         <div class="col-lg-8">
             <!-- Script Details -->
+            <section aria-labelledby="script-config-heading">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> {{ _('Script Configuration') }}</h5>
+                    <h2 id="script-config-heading" class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Script Configuration') }}</h2>
                 </div>
                 <div class="card-body">
-                    <table class="table table-sm">
-                        <tr>
-                            <th style="width: 200px;">{{ _('Status') }}</th>
-                            <td>
-                                {% if script.enabled %}
-                                <span class="badge bg-success">
-                                    <i class="bi bi-check-circle"></i> {{ _('Enabled') }}
-                                </span>
-                                {% else %}
-                                <span class="badge bg-secondary">
-                                    <i class="bi bi-pause-circle"></i> {{ _('Disabled') }}
-                                </span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>{{ _('Scope') }}</th>
-                            <td>
-                                {% if script.scope.value == 'page' %}
-                                <span class="badge bg-primary">{{ _('Page-Level') }}</span>
-                                {% elif script.scope.value == 'website' %}
-                                <span class="badge bg-info">{{ _('Website-Wide') }}</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>{{ _('Execution Trigger') }}</th>
-                            <td>{{ script.trigger.value.replace('_', ' ').title() }}</td>
-                        </tr>
-                        <tr>
-                            <th>{{ _('Multi-State Testing') }}</th>
-                            <td>
-                                {% if script.test_before_execution %}
-                                <span class="badge bg-success">
-                                    <i class="bi bi-check"></i> {{ _('Test Before Execution') }}
-                                </span>
-                                {% endif %}
-                                {% if script.test_after_execution %}
-                                <span class="badge bg-success">
-                                    <i class="bi bi-check"></i> {{ _('Test After Execution') }}
-                                </span>
-                                {% endif %}
-                                {% if not script.test_before_execution and not script.test_after_execution %}
-                                <span class="text-muted">{{ _('No testing configured') }}</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    </table>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">{{ _('Status') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if script.enabled %}
+                            <span class="badge bg-success">
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ _('Enabled') }}
+                            </span>
+                            {% else %}
+                            <span class="badge bg-secondary">
+                                <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ _('Disabled') }}
+                            </span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">{{ _('Scope') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if script.scope.value == 'page' %}
+                            <span class="badge bg-primary">{{ _('Page-Level') }}</span>
+                            {% elif script.scope.value == 'website' %}
+                            <span class="badge bg-info">{{ _('Website-Wide') }}</span>
+                            {% endif %}
+                        </dd>
+
+                        <dt class="col-sm-4">{{ _('Execution Trigger') }}</dt>
+                        <dd class="col-sm-8">{{ script.trigger.value.replace('_', ' ').title() }}</dd>
+
+                        <dt class="col-sm-4">{{ _('Multi-State Testing') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if script.test_before_execution %}
+                            <span class="badge bg-success">
+                                <i class="bi bi-check" aria-hidden="true"></i> {{ _('Test Before Execution') }}
+                            </span>
+                            {% endif %}
+                            {% if script.test_after_execution %}
+                            <span class="badge bg-success">
+                                <i class="bi bi-check" aria-hidden="true"></i> {{ _('Test After Execution') }}
+                            </span>
+                            {% endif %}
+                            {% if not script.test_before_execution and not script.test_after_execution %}
+                            <span class="text-muted">{{ _('No testing configured') }}</span>
+                            {% endif %}
+                        </dd>
+                    </dl>
                 </div>
             </div>
+            </section>
 
             <!-- Script Steps -->
+            <section aria-labelledby="script-steps-heading">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-list-ol"></i> {{ _('Script Steps') }}
+                    <h2 id="script-steps-heading" class="mb-0">
+                        <i class="bi bi-list-ol" aria-hidden="true"></i> {{ _('Script Steps') }}
                         <span class="badge bg-secondary">{{ script.steps|length }}</span>
-                    </h5>
+                    </h2>
                 </div>
                 <div class="card-body">
                     {% if script.steps %}
@@ -146,16 +144,18 @@
                     {% endif %}
                 </div>
             </div>
+            </section>
 
             <!-- State Validation -->
             {% if script.expect_visible_after or script.expect_hidden_after %}
+            <section aria-labelledby="state-validation-heading">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-check2-square"></i> {{ _('State Validation') }}</h5>
+                    <h2 id="state-validation-heading" class="mb-0"><i class="bi bi-check2-square" aria-hidden="true"></i> {{ _('State Validation') }}</h2>
                 </div>
                 <div class="card-body">
                     {% if script.expect_visible_after %}
-                    <h6>{{ _('Expected Visible Elements:') }}</h6>
+                    <h3>{{ _('Expected Visible Elements:') }}</h3>
                     <ul class="font-monospace small">
                         {% for selector in script.expect_visible_after %}
                         <li>{{ selector }}</li>
@@ -164,7 +164,7 @@
                     {% endif %}
 
                     {% if script.expect_hidden_after %}
-                    <h6>{{ _('Expected Hidden Elements:') }}</h6>
+                    <h3>{{ _('Expected Hidden Elements:') }}</h3>
                     <ul class="font-monospace small">
                         {% for selector in script.expect_hidden_after %}
                         <li>{{ selector }}</li>
@@ -173,14 +173,16 @@
                     {% endif %}
                 </div>
             </div>
+            </section>
             {% endif %}
         </div>
 
         <!-- Sidebar -->
         <div class="col-lg-4">
+            <section aria-labelledby="actions-heading">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-gear"></i> {{ _('Actions') }}</h6>
+                    <h2 id="actions-heading" class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> {{ _('Actions') }}</h2>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -196,28 +198,27 @@
                     </div>
                 </div>
             </div>
+            </section>
 
+            <section aria-labelledby="metadata-heading">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-clock-history"></i> {{ _('Metadata') }}</h6>
+                    <h2 id="metadata-heading" class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ _('Metadata') }}</h2>
                 </div>
                 <div class="card-body">
-                    <table class="table table-sm table-borderless">
-                        <tr>
-                            <td class="text-muted">{{ _('Created:') }}</td>
-                            <td>{{ script.created_date.strftime('%Y-%m-%d %H:%M') if script.created_date else _('N/A') }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted">{{ _('Updated:') }}</td>
-                            <td>{{ script.updated_date.strftime('%Y-%m-%d %H:%M') if script.updated_date else _('N/A') }}</td>
-                        </tr>
-                        <tr>
-                            <td class="text-muted">{{ _('Script ID:') }}</td>
-                            <td><small><code>{{ script.id }}</code></small></td>
-                        </tr>
-                    </table>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5">{{ _('Created:') }}</dt>
+                        <dd class="col-sm-7">{{ script.created_date.strftime('%Y-%m-%d %H:%M') if script.created_date else _('N/A') }}</dd>
+
+                        <dt class="col-sm-5">{{ _('Updated:') }}</dt>
+                        <dd class="col-sm-7">{{ script.updated_date.strftime('%Y-%m-%d %H:%M') if script.updated_date else _('N/A') }}</dd>
+
+                        <dt class="col-sm-5">{{ _('Script ID:') }}</dt>
+                        <dd class="col-sm-7"><small><code>{{ script.id }}</code></small></dd>
+                    </dl>
                 </div>
             </div>
+            </section>
         </div>
     </div>
 </div>

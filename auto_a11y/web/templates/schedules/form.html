@@ -22,8 +22,8 @@
         </ol>
     </nav>
 
-    <h1 class="h2 mb-4">
-        <i class="bi bi-calendar-event"></i>
+    <h1 class="mb-4">
+        <i class="bi bi-calendar-event" aria-hidden="true"></i>
         {% if is_edit %}{{ _('Edit Schedule') }}{% else %}{{ _('Create Schedule') }}{% endif %}
     </h1>
 
@@ -43,9 +43,11 @@
             <!-- Left Column - Basic Info & Schedule -->
             <div class="col-lg-6">
                 <!-- Basic Info -->
+                <fieldset>
+                <legend class="visually-hidden">{{ _('Basic Information') }}</legend>
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> {{ _('Basic Information') }}</h5>
+                        <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ _('Basic Information') }}</h2>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
@@ -68,11 +70,14 @@
                         </div>
                     </div>
                 </div>
+                </fieldset>
 
                 <!-- Schedule Timing -->
+                <fieldset>
+                <legend class="visually-hidden">{{ _('Schedule Timing') }}</legend>
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-clock"></i> {{ _('Schedule Timing') }}</h5>
+                        <h2 class="mb-0"><i class="bi bi-clock" aria-hidden="true"></i> {{ _('Schedule Timing') }}</h2>
                     </div>
                     <div class="card-body">
                         <div class="mb-3">
@@ -153,12 +158,12 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label for="day_of_month" class="form-label">{{ _('Day of Month') }}</label>
-                                    <select class="form-select" id="day_of_month" name="day_of_month">
+                                    <select class="form-select" id="day_of_month" name="day_of_month" aria-describedby="day-of-month-help">
                                         {% for day in range(1, 29) %}
                                         <option value="{{ day }}" {% if schedule and schedule.preset_config.day_of_month == day %}selected{% endif %}>{{ day }}</option>
                                         {% endfor %}
                                     </select>
-                                    <small class="form-text text-muted">{{ _('Note: For months with fewer days, test runs on the last day') }}</small>
+                                    <small id="day-of-month-help" class="form-text text-muted">{{ _('Note: For months with fewer days, test runs on the last day') }}</small>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label for="monthly_time" class="form-label">{{ _('Time') }}</label>
@@ -174,8 +179,9 @@
                                 <label for="cron_expression" class="form-label">{{ _('Cron Expression') }}</label>
                                 <input type="text" class="form-control" id="cron_expression" name="cron_expression"
                                        value="{{ schedule.cron_expression if schedule else '' }}"
-                                       placeholder="0 2 * * *">
-                                <small class="form-text text-muted">
+                                       placeholder="0 2 * * *"
+                                       aria-describedby="cron-expression-help">
+                                <small id="cron-expression-help" class="form-text text-muted">
                                     {{ _('Format: minute hour day month weekday (e.g., "0 2 * * *" = daily at 2am)') }}
                                 </small>
                             </div>
@@ -196,14 +202,17 @@
                         </div>
                     </div>
                 </div>
+                </fieldset>
             </div>
 
             <!-- Right Column - Test Configuration -->
             <div class="col-lg-6">
                 <!-- AI Testing Configuration -->
+                <fieldset>
+                <legend class="visually-hidden">{{ _('AI Testing') }}</legend>
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-robot"></i> {{ _('AI Testing') }}</h5>
+                        <h2 class="mb-0"><i class="bi bi-robot" aria-hidden="true"></i> {{ _('AI Testing') }}</h2>
                     </div>
                     <div class="card-body">
                         <div class="form-check mb-3">
@@ -256,16 +265,19 @@
                                     </div>
                                     {% endfor %}
                                 </div>
-                                <small class="form-text text-muted">{{ pages|length }} {{ _('pages available') }}</small>
+                                <small id="page-selector-help" class="form-text text-muted">{{ pages|length }} {{ _('pages available') }}</small>
                             </div>
                         </div>
                     </div>
                 </div>
+                </fieldset>
 
                 <!-- Other Test Settings -->
+                <fieldset>
+                <legend class="visually-hidden">{{ _('Test Settings') }}</legend>
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-gear"></i> {{ _('Test Settings') }}</h5>
+                        <h2 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> {{ _('Test Settings') }}</h2>
                     </div>
                     <div class="card-body">
                         <div class="form-check mb-2">
@@ -285,12 +297,15 @@
                         </div>
                     </div>
                 </div>
+                </fieldset>
 
                 <!-- Test Users -->
                 {% if project_users %}
+                <fieldset>
+                <legend class="visually-hidden">{{ _('Test Users') }}</legend>
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h5 class="mb-0"><i class="bi bi-people"></i> {{ _('Test Users') }}</h5>
+                        <h2 class="mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ _('Test Users') }}</h2>
                     </div>
                     <div class="card-body">
                         <p class="text-muted small">{{ _('Select which users to test with. Leave unchecked to test as guest only.') }}</p>
@@ -309,6 +324,7 @@
                         {% endfor %}
                     </div>
                 </div>
+                </fieldset>
                 {% endif %}
             </div>
         </div>

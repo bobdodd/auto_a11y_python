@@ -24,7 +24,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h2">
+            <h1>
                 <i class="bi bi-code-square" aria-hidden="true"></i> {% if page %}{{ _('Page Setup Scripts') }}{% else %}{{ _('Website Setup Scripts') }}{% endif %}
             </h1>
             <p class="text-muted">{% if page %}{{ page.url }}{% else %}{{ website.display_name }}{% endif %}</p>
@@ -66,10 +66,10 @@
     <!-- Page-Level Scripts -->
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-file-code" aria-hidden="true"></i> {{ _('Page-Specific Scripts') }}
                 <span class="badge bg-light text-dark">{{ page_scripts|length }}</span>
-            </h5>
+            </h2>
         </div>
         <div class="card-body">
             {% if page_scripts %}
@@ -170,10 +170,10 @@
     {% if website_scripts %}
     <div class="card">
         <div class="card-header bg-secondary text-white">
-            <h5 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-globe" aria-hidden="true"></i> {{ _('Website-Wide Scripts') }}
                 <span class="badge bg-light text-dark">{{ website_scripts|length }}</span>
-            </h5>
+            </h2>
         </div>
         <div class="card-body">
             <p class="text-muted">

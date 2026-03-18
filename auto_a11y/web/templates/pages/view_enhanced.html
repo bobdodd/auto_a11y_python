@@ -6,7 +6,7 @@
 <style>
     /* Filter Controls Styling */
     .filter-panel {
-        background: #f8f9fa;
+        background: var(--color-bg-subtle);
         border-radius: 8px;
         padding: 1.5rem;
         margin-bottom: 2rem;
@@ -25,8 +25,8 @@
     
     .filter-chip {
         padding: 0.25rem 0.75rem;
-        background: white;
-        border: 1px solid #dee2e6;
+        background: var(--color-bg);
+        border: 1px solid var(--color-border-table);
         border-radius: 20px;
         cursor: pointer;
         transition: all 0.2s;
@@ -38,14 +38,14 @@
     }
     
     .filter-chip.active {
-        background: #0d6efd;
+        background: var(--color-brand);
         color: white;
-        border-color: #0d6efd;
+        border-color: var(--color-brand);
     }
     
     .active-filters {
         padding: 1rem;
-        background: #e7f3ff;
+        background: var(--color-info-bg);
         border-radius: 8px;
         margin-bottom: 1rem;
     }
@@ -53,7 +53,7 @@
     .active-filter-tag {
         display: inline-block;
         padding: 0.25rem 0.75rem;
-        background: #0d6efd;
+        background: var(--color-brand);
         color: white;
         border-radius: 15px;
         margin: 0.25rem;
@@ -67,9 +67,9 @@
     
     .filter-stats {
         padding: 0.75rem;
-        background: white;
+        background: var(--color-bg);
         border-radius: 8px;
-        border: 1px solid #dee2e6;
+        border: 1px solid var(--color-border-table);
         margin-bottom: 1rem;
     }
     
@@ -90,7 +90,7 @@
     
     .filter-tag {
         padding: 0.125rem 0.5rem;
-        background: #f8f9fa;
+        background: var(--color-bg-subtle);
         border-radius: 10px;
         font-size: 0.75rem;
         color: #6c757d;
@@ -162,9 +162,9 @@
             </div>
         </div>
         <div class="col-6 col-lg">
-            <div class="card" style="border-color: #6f42c1;">
+            <div class="card border-discovery">
                 <div class="card-body text-center">
-                    <h2 class="card-title" style="color: #6f42c1;">Discovery</h2>
+                    <h2 class="card-title text-discovery">Discovery</h2>
                     <p class="display-6 mb-0">{{ page.discovery_count|default(0) }}</p>
                 </div>
             </div>

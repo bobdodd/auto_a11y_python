@@ -20,10 +20,10 @@
         font-weight: 600;
     }
     .trend-improving {
-        color: #198754;
+        color: var(--color-severity-pass);
     }
     .trend-worsening {
-        color: #dc3545;
+        color: var(--color-severity-high);
     }
     .trend-stable {
         color: #6c757d;
@@ -37,7 +37,7 @@
         height: 250px;
     }
     .time-range-btn.active {
-        background-color: #0d6efd;
+        background-color: var(--color-brand);
         color: white;
     }
     .top-issues-table th {
@@ -49,7 +49,7 @@
     .issue-code {
         font-family: monospace;
         font-size: 0.9rem;
-        background: #f8f9fa;
+        background: var(--color-bg-subtle);
         padding: 2px 6px;
         border-radius: 3px;
     }
@@ -64,10 +64,10 @@
         opacity: 0.5;
     }
     .comparison-card {
-        border-left: 3px solid #6f42c1;
+        border-left: 3px solid var(--color-discovery);
     }
     .progress-card {
-        border-left: 3px solid #198754;
+        border-left: 3px solid var(--color-severity-pass);
     }
     .page-loading-overlay {
         position: fixed;
@@ -75,7 +75,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: #fff;
+        background: var(--color-bg);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -127,13 +127,13 @@
         transition: all 0.2s ease;
     }
     .filter-chip.active {
-        background-color: #0d6efd !important;
-        border-color: #0d6efd !important;
+        background-color: var(--color-brand) !important;
+        border-color: var(--color-brand) !important;
         color: white !important;
     }
     .filter-chip.active .badge {
         background-color: rgba(255,255,255,0.9) !important;
-        color: #0d6efd !important;
+        color: var(--color-brand) !important;
     }
     .filter-chip:hover:not(.active) {
         background-color: #f0f0f0;
@@ -151,7 +151,7 @@
     .filter-tag {
         display: inline-flex;
         align-items: center;
-        background: #0d6efd;
+        background: var(--color-brand);
         color: white;
         padding: 0.25rem 0.5rem;
         border-radius: 0.25rem;
@@ -289,7 +289,7 @@
             <div class="card-body">
                 <!-- Active Filters Display -->
                 <div id="activeFiltersDisplay" class="mb-3" style="display: none;">
-                    <div class="p-2 rounded" style="background: #e7f3ff;">
+                    <div class="p-2 rounded bg-info-subtle">
                         <strong class="small">{{ _('Active Filters:') }}</strong>
                         <div id="activeFilterTags" class="mt-2"></div>
                     </div>
@@ -609,7 +609,7 @@
         <div class="col-lg-6">
             <div class="card shadow-sm comparison-card">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0"><i class="bi bi-arrow-left-right" aria-hidden="true" style="color: #6f42c1;"></i> {{ _('Period Comparison') }}</h2>
+                    <h2 class="mb-0"><i class="bi bi-arrow-left-right text-discovery" aria-hidden="true"></i> {{ _('Period Comparison') }}</h2>
                     <button class="btn btn-sm btn-outline-secondary" id="refreshComparison">
                         <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
                     </button>
@@ -618,7 +618,7 @@
                     <!-- Loading overlay -->
                     <div class="card-loading-overlay" id="comparisonLoading">
                         <div class="loading-spinner">
-                            <div class="spinner-border" role="status" style="color: #6f42c1;">
+                            <div class="spinner-border text-discovery" role="status">
                                 <span class="visually-hidden">{{ _('Loading...') }}</span>
                             </div>
                             <span class="loading-text">{{ _('Comparing periods...') }}</span>

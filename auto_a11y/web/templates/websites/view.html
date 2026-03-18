@@ -194,7 +194,7 @@
             {% endfor %}
         </ul>
         <details class="mt-2">
-            <summary style="cursor: pointer; color: var(--bs-link-color);">{{ _('Show') }} {{ failed_pages|length - 5 }} {{ _('more failed pages...') }}</summary>
+            <summary class="text-link" style="cursor: pointer;">{{ _('Show') }} {{ failed_pages|length - 5 }} {{ _('more failed pages...') }}</summary>
             <ul class="mt-2" style="max-height: 300px; overflow-y: auto;">
                 {% for page in failed_pages[5:] %}
                 <li><strong>{{ page.url }}</strong>: {{ page.error_reason }}</li>
@@ -339,7 +339,7 @@
                             <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=page.screenshot_path) }}', '{{ page.url }}'); return false;" class="flex-shrink-0">
                                 <img src="{{ url_for('serve_screenshot', filename=page.screenshot_path) }}"
                                      alt="{{ _('Screenshot of') }} {{ page.url }}"
-                                     style="width: 60px; height: auto; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;"
+                                     class="border-subtle" style="width: 60px; height: auto; border: 1px solid; border-radius: 4px; cursor: pointer;"
                                      onerror="this.style.display='none';">
                             </a>
                             {% endif %}

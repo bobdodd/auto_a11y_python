@@ -19,11 +19,11 @@
         height: 4px;
     }
     .active-test-item {
-        border-left: 3px solid #0d6efd;
-        background: #f8f9fa;
+        border-left: 3px solid var(--color-brand);
+        background: var(--color-bg-subtle);
     }
     .schedule-item {
-        border-left: 3px solid #6f42c1;
+        border-left: 3px solid var(--color-discovery);
     }
     .filter-badge {
         font-size: 0.75rem;
@@ -54,10 +54,10 @@
     }
     .breadcrumb-link {
         text-decoration: underline;
-        color: #0d6efd !important;
+        color: var(--color-brand) !important;
     }
     .breadcrumb-link:hover {
-        color: #0a58ca !important;
+        color: var(--color-link-hover) !important;
     }
     /* Page loading overlay */
     .page-loading-overlay {
@@ -66,7 +66,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: #fff;
+        background: var(--color-bg);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -83,7 +83,7 @@
 
 {% block content %}
 <!-- Loading Overlay - inline styles ensure immediate visibility -->
-<div id="pageLoadingOverlay" class="page-loading-overlay" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;display:flex;justify-content:center;align-items:center;z-index:9999;">
+<div id="pageLoadingOverlay" class="page-loading-overlay bg-token" style="position:fixed;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;z-index:9999;">
     <div class="text-center">
         <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
             <span class="visually-hidden">{{ _('Loading...') }}</span>
@@ -442,8 +442,8 @@
             <!-- Scheduled Tests Panel -->
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0"><i class="bi bi-calendar-check" aria-hidden="true" style="color: #6f42c1;"></i> {{ _('Scheduled Tests') }}</h2>
-                    <span class="badge" style="background-color: #6f42c1;">{{ schedules|length }}</span>
+                    <h2 class="mb-0"><i class="bi bi-calendar-check text-discovery" aria-hidden="true"></i> {{ _('Scheduled Tests') }}</h2>
+                    <span class="badge" style="background-color: var(--color-discovery);">{{ schedules|length }}</span>
                 </div>
                 <div class="card-body">
                     {% if schedules %}

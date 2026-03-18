@@ -75,46 +75,46 @@
 
     /* Override Bootstrap info color for WCAG AA contrast (4.5:1 minimum) */
     :root {
-        --bs-info: #0e7490;
+        --bs-info: var(--color-info);
         --bs-info-rgb: 14, 116, 144;
     }
     .bg-info {
-        background-color: #0e7490 !important;
+        background-color: var(--color-info) !important;
     }
     .text-info {
-        color: #0e7490 !important;
+        color: var(--color-info) !important;
     }
     .border-info {
-        border-color: #0e7490 !important;
+        border-color: var(--color-info) !important;
     }
 
     /* Override Bootstrap warning colors for WCAG AA contrast */
     /* Keep bright yellow background but ensure dark text */
     .bg-warning {
-        background-color: #ffc107 !important;
-        color: #212529 !important; /* Dark text on yellow background */
+        background-color: var(--color-severity-medium) !important;
+        color: var(--color-text) !important; /* Dark text on yellow background */
     }
     .badge.bg-warning {
-        background-color: #ffc107 !important;
-        color: #212529 !important;
+        background-color: var(--color-severity-medium) !important;
+        color: var(--color-text) !important;
     }
     .alert-warning {
-        background-color: #ffc107 !important;
-        color: #212529 !important;
+        background-color: var(--color-severity-medium) !important;
+        color: var(--color-text) !important;
     }
     .progress-bar.bg-warning {
-        background-color: #ffc107 !important;
-        color: #212529 !important;
+        background-color: var(--color-severity-medium) !important;
+        color: var(--color-text) !important;
     }
 
     /* Override text-warning for contrast on white backgrounds */
     .text-warning {
-        color: #856404 !important; /* Dark yellow/brown with 4.6:1 contrast on white */
+        color: var(--color-severity-medium) !important;
     }
 
     /* Ensure progress bar gray has sufficient contrast with yellow (3:1 for non-text) */
     .progress-bar.bg-secondary {
-        background-color: #495057 !important; /* Darker gray for 3:1 contrast with #ffc107 */
+        background-color: #495057 !important; /* Darker gray for 3:1 contrast with warning */
     }
 </style>
 {% endblock %}
@@ -294,7 +294,7 @@
                     <a href="#" onclick="showScreenshot('{{ url_for('serve_screenshot', filename=page_screenshot_filename) }}', '{{ page.url }}'); return false;">
                         <img src="{{ url_for('serve_screenshot', filename=page_screenshot_filename) }}"
                              alt="{{ _('Screenshot of') }} {{ page.url }}"
-                             style="width: 120px; height: auto; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;"
+                             class="border-subtle" style="width: 120px; height: auto; border: 1px solid; border-radius: 4px; cursor: pointer;"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                         <span style="display: none; font-size: 0.9em; color: #6e6e6e;">{{ _('No screenshot available') }}</span>
                     </a>
@@ -402,10 +402,10 @@
                         </div>
                         <div class="card text-center flex-fill" style="min-width: 140px;">
                             <div class="card-body py-3">
-                                <h3 class="mb-1" style="color: #6f42c1;">
+                                <h3 class="mb-1 text-discovery">
                                     <i class="bi bi-search" aria-hidden="true"></i> {{ _('Discovery') }}
                                 </h3>
-                                <p class="display-6 mb-0" style="color: #6f42c1;">{{ page.discovery_count|default(0) }}</p>
+                                <p class="display-6 mb-0 text-discovery">{{ page.discovery_count|default(0) }}</p>
                                 <small class="text-muted">{{ _('types found') }}</small>
                             </div>
                         </div>
@@ -681,22 +681,22 @@
             <!-- Errors (Violations) -->
             {% if latest_result.violations %}
             <section aria-labelledby="errors-heading">
-                <div class="section-panel errors-section mb-4" style="border: 2px solid #dc3545; border-radius: 8px; overflow: hidden;">
-                    <div class="section-header" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; padding: 12px 16px;">
+                <div class="section-panel errors-section mb-4 border-severity-high" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
+                    <div class="section-header severity-header-high" style="padding: 12px 16px;">
                         <h3 id="errors-heading" class="mb-0">
                             <i class="bi bi-x-circle-fill me-2" aria-hidden="true"></i> {{ _('Errors') }}
                             <span class="badge bg-light text-danger ms-2">{{ latest_result.violations|length }}</span>
                         </h3>
                         <small class="opacity-75">{{ _('Issues that must be fixed for WCAG compliance') }}</small>
                     </div>
-                    <div class="section-body" style="padding: 16px; background: #fff5f5;">
+                    <div class="section-body bg-severity-high-subtle" style="padding: 16px;">
                 <div class="accordion" id="violationsAccordion">
                 {% set viol_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_violations in latest_result.violations|groupby('touchpoint') %}
-                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #dc3545;">
+                    <div class="touchpoint-header mt-3 mb-2 ps-2 bg-token-subtle border-severity-high" style="padding: 8px; border-left: 4px solid;">
                         <strong>{{ touchpoint_names.get(touchpoint, touchpoint|replace('_', ' ')|title) }}</strong>
                     </div>
-                    
+
                     {% for error_code, description_group in touchpoint_violations|groupby('id') %}
                         {% set group_list = description_group|list %}
                         {% set viol_counter.value = viol_counter.value + 1 %}
@@ -886,7 +886,7 @@
                                                             <div class="col-md-6">
                                                                 {% if violation.metadata.wcag_full %}
                                                                     {% for criterion in violation.metadata.wcag_full|sort %}
-                                                                    <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                                                    <div class="bg-token-subtle" style="margin-top: 15px; padding: 10px; border-left: 3px solid var(--color-brand);">
                                                                         <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                                             WCAG {{ criterion|safe }}
                                                                         </p>
@@ -906,7 +906,7 @@
                                                                     {% endfor %}
                                                                 {% elif violation.wcag_criteria %}
                                                                     {% for wcag_criterion in violation.wcag_criteria|sort %}
-                                                                    <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                                                    <div class="bg-token-subtle" style="margin-top: 15px; padding: 10px; border-left: 3px solid var(--color-brand);">
                                                                         <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                                             WCAG {{ wcag_criterion }}
                                                                         </p>
@@ -1262,7 +1262,7 @@
                                                             <div class="col-md-6">
                                                                 {% if violation.metadata.wcag_full %}
                                                                     {% for criterion in violation.metadata.wcag_full|sort %}
-                                                                    <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                                                    <div class="bg-token-subtle" style="margin-top: 15px; padding: 10px; border-left: 3px solid var(--color-brand);">
                                                                         <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                                             WCAG {{ criterion|safe }}
                                                                         </p>
@@ -1282,7 +1282,7 @@
                                                                     {% endfor %}
                                                                 {% elif violation.wcag_criteria %}
                                                                     {% for wcag_criterion in violation.wcag_criteria|sort %}
-                                                                    <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                                                    <div class="bg-token-subtle" style="margin-top: 15px; padding: 10px; border-left: 3px solid var(--color-brand);">
                                                                         <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                                             WCAG {{ wcag_criterion }}
                                                                         </p>
@@ -1645,7 +1645,7 @@
                                 <div class="col-md-6">
                                     {% if violation.metadata.wcag_full %}
                                         {% for criterion in violation.metadata.wcag_full|sort %}
-                                        <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                        <div class="bg-token-subtle" style="margin-top: 15px; padding: 10px; border-left: 3px solid var(--color-brand);">
                                             <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                 WCAG {{ criterion|safe }}
                                             </p>
@@ -1665,7 +1665,7 @@
                                         {% endfor %}
                                     {% elif violation.wcag_criteria %}
                                         {% for wcag_criterion in violation.wcag_criteria|sort %}
-                                        <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #0066cc;">
+                                        <div class="bg-token-subtle" style="margin-top: 15px; padding: 10px; border-left: 3px solid var(--color-brand);">
                                             <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                 WCAG {{ wcag_criterion }}
                                             </p>
@@ -1974,22 +1974,22 @@
             <!-- Warnings -->
             {% if latest_result.warnings %}
             <section aria-labelledby="warnings-heading">
-                <div class="section-panel warnings-section mb-4" style="border: 2px solid #ffc107; border-radius: 8px; overflow: hidden;">
-                    <div class="section-header" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #212529; padding: 12px 16px;">
+                <div class="section-panel warnings-section mb-4 border-severity-medium" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
+                    <div class="section-header severity-header-medium" style="padding: 12px 16px;">
                         <h3 id="warnings-heading" class="mb-0">
                             <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i> {{ _('Warnings') }}
                             <span class="badge bg-dark text-warning ms-2">{{ latest_result.warnings|length }}</span>
                         </h3>
                         <small class="opacity-75">{{ _('Potential issues that should be reviewed') }}</small>
                     </div>
-                    <div class="section-body" style="padding: 16px; background: #fffef5;">
+                    <div class="section-body bg-severity-medium-subtle" style="padding: 16px;">
                 <div class="accordion" id="warningsAccordion">
                 {% set warn_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_warnings in latest_result.warnings|groupby('touchpoint') %}
-                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #ffc107;">
+                    <div class="touchpoint-header mt-3 mb-2 ps-2 bg-token-subtle border-severity-medium" style="padding: 8px; border-left: 4px solid;">
                         <strong>{{ touchpoint_names.get(touchpoint, touchpoint|replace('_', ' ')|title) }}</strong>
                     </div>
-                    
+
                     {% for error_code, description_group in touchpoint_warnings|groupby('id') %}
                         {% set group_list = description_group|list %}
                         {% set warn_counter.value = warn_counter.value + 1 %}
@@ -2159,7 +2159,7 @@
                                                             <div class="col-md-6">
                                                                 {% if warning.metadata.wcag_full %}
                                                                     {% for criterion in warning.metadata.wcag_full|sort %}
-                                                                    <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #ffc107;">
+                                                                    <div class="bg-token-subtle border-severity-medium" style="margin-top: 15px; padding: 10px; border-left: 3px solid;">
                                                                         <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                                             WCAG {{ criterion|safe }}
                                                                         </p>
@@ -2179,7 +2179,7 @@
                                                                     {% endfor %}
                                                                 {% elif warning.wcag_criteria %}
                                                                     {% for wcag_criterion in warning.wcag_criteria|sort %}
-                                                                    <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #ffc107;">
+                                                                    <div class="bg-token-subtle border-severity-medium" style="margin-top: 15px; padding: 10px; border-left: 3px solid;">
                                                                         <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                                             WCAG {{ wcag_criterion }}
                                                                         </p>
@@ -2528,7 +2528,7 @@
                                 <div class="col-md-6">
                                     {% if warning.metadata.wcag_full %}
                                         {% for criterion in warning.metadata.wcag_full|sort %}
-                                        <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #ffc107;">
+                                        <div class="bg-token-subtle border-severity-medium" style="margin-top: 15px; padding: 10px; border-left: 3px solid;">
                                             <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                 WCAG {{ criterion|safe }}
                                             </p>
@@ -2548,7 +2548,7 @@
                                         {% endfor %}
                                     {% elif warning.wcag_criteria %}
                                         {% for wcag_criterion in warning.wcag_criteria|sort %}
-                                        <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #ffc107;">
+                                        <div class="bg-token-subtle border-severity-medium" style="margin-top: 15px; padding: 10px; border-left: 3px solid;">
                                             <p style="margin: 0 0 8px 0; font-weight: bold;">
                                                 WCAG {{ wcag_criterion }}
                                             </p>
@@ -2646,7 +2646,7 @@
                                 <div class="col-md-6">
                                     {% if warning.wcag_criteria %}
                             {% for wcag_criterion in warning.wcag_criteria|sort %}
-                            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #ffc107;">
+                            <div class="bg-token-subtle border-severity-medium" style="margin-top: 15px; padding: 10px; border-left: 3px solid;">
                                 <p style="margin: 0 0 8px 0; font-weight: bold;">
                                     WCAG {{ wcag_criterion }}
                                 </p>
@@ -2705,22 +2705,22 @@
             <!-- Info Notes -->
             {% if latest_result.info %}
             <section aria-labelledby="info-heading">
-                <div class="section-panel info-section mb-4" style="border: 2px solid #0e7490; border-radius: 8px; overflow: hidden;">
-                    <div class="section-header" style="background: linear-gradient(135deg, #0e7490 0%, #0aa2c0 100%); color: white; padding: 12px 16px;">
+                <div class="section-panel info-section mb-4 border-info-custom" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
+                    <div class="section-header severity-header-info" style="padding: 12px 16px;">
                         <h3 id="info-heading" class="mb-0">
                             <i class="bi bi-info-circle-fill me-2" aria-hidden="true"></i> {{ _('Info Notes') }}
                             <span class="badge bg-light text-info ms-2">{{ latest_result.info|length }}</span>
                         </h3>
                         <small class="opacity-75">{{ _('Additional information and best practice recommendations') }}</small>
                     </div>
-                    <div class="section-body" style="padding: 16px; background: #f0fcff;">
+                    <div class="section-body bg-info-subtle" style="padding: 16px;">
                 <div class="accordion" id="infoAccordion">
                 {% set info_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_infos in latest_result.info|groupby('touchpoint') %}
-                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #0e7490;">
+                    <div class="touchpoint-header mt-3 mb-2 ps-2 bg-token-subtle border-info-custom" style="padding: 8px; border-left: 4px solid;">
                         <strong>{{ touchpoint_names.get(touchpoint, touchpoint|replace('_', ' ')|title) }}</strong>
                     </div>
-                    
+
                     {% for error_code, description_group in touchpoint_infos|groupby('id') %}
                         {% set group_list = description_group|list %}
                         {% set info_counter.value = info_counter.value + 1 %}
@@ -3069,7 +3069,7 @@
                             <p><strong>{{ _('Touchpoint:') }}</strong> {{ touchpoint_names.get(info.touchpoint, info.touchpoint) }}</p>
                             {% if info.wcag_criteria %}
                             {% for wcag_criterion in info.wcag_criteria|sort %}
-                            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #17a2b8;">
+                            <div class="bg-token-subtle border-info-custom" style="margin-top: 15px; padding: 10px; border-left: 3px solid;">
                                 <p style="margin: 0 0 8px 0; font-weight: bold;">
                                     WCAG {{ wcag_criterion }}
                                 </p>
@@ -3125,22 +3125,22 @@
             <!-- Discovery Items -->
             {% if latest_result.discovery %}
             <section aria-labelledby="discovery-heading">
-                <div class="section-panel discovery-section mb-4" style="border: 2px solid #6f42c1; border-radius: 8px; overflow: hidden;">
-                    <div class="section-header" style="background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%); color: white; padding: 12px 16px;">
+                <div class="section-panel discovery-section mb-4 border-discovery" style="border: 2px solid; border-radius: 8px; overflow: hidden;">
+                    <div class="section-header severity-header-discovery" style="padding: 12px 16px;">
                         <h3 id="discovery-heading" class="mb-0">
                             <i class="bi bi-search me-2" aria-hidden="true"></i> {{ _('Discovery Items') }}
-                            <span class="badge bg-light text-purple ms-2" style="color: #6f42c1 !important;">{{ latest_result.discovery|length }}</span>
+                            <span class="badge bg-light text-discovery ms-2">{{ latest_result.discovery|length }}</span>
                         </h3>
                         <small class="opacity-75">{{ _('Elements found that may need manual review') }}</small>
                     </div>
-                    <div class="section-body" style="padding: 16px; background: #f8f5ff;">
+                    <div class="section-body bg-discovery-subtle" style="padding: 16px;">
                 <div class="accordion" id="discoveryAccordion">
                 {% set disc_counter = namespace(value=0) %}
                 {% for touchpoint, touchpoint_discoveries in latest_result.discovery|groupby('touchpoint') %}
-                    <div class="touchpoint-header mt-3 mb-2 ps-2" style="background-color: #f8f9fa; padding: 8px; border-left: 4px solid #6f42c1;">
+                    <div class="touchpoint-header mt-3 mb-2 ps-2 bg-token-subtle border-discovery" style="padding: 8px; border-left: 4px solid;">
                         <strong>{{ touchpoint_names.get(touchpoint, touchpoint|replace('_', ' ')|title) }}</strong>
                     </div>
-                    
+
                     {% for error_code, description_group in touchpoint_discoveries|groupby('id') %}
                         {% set group_list = description_group|list %}
                         {% set disc_counter.value = disc_counter.value + 1 %}
@@ -3207,8 +3207,8 @@
                                                         <!-- Full discovery details -->
                                                         {% if discovery.metadata and discovery.metadata.title %}
                                                         <!-- Enhanced description available -->
-                                                        <div class="alert mb-3" style="background-color: #f3f0ff; border-color: #6f42c1;">
-                                                            <h4 class="alert-heading" style="color: #6f42c1;">
+                                                        <div class="alert mb-3 bg-discovery-subtle border-discovery">
+                                                            <h4 class="alert-heading text-discovery">
                                                                 {% if discovery.metadata.get('what_generic_en') or discovery.metadata.get('what_generic_fr') %}
                                                                     <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata['what_generic_en'] }}</span>
                                                                     <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata['what_generic_fr'] }}</span>
@@ -3221,7 +3221,7 @@
                                                             </h4>
                                                         </div>
 
-                                                        <h4 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h4>
+                                                        <h4 class="mb-2 text-discovery">{{ _('About this discovery item:') }}</h4>
 
                                                         <div class="mb-3">
                                                             <strong>{{ _('What was found:') }}</strong>
@@ -3252,7 +3252,7 @@
                                                         </div>
 
                                                         {% if discovery.metadata.wcag_full or discovery.wcag_criteria %}
-                                                        <h4 style="color: #6f42c1;" class="mb-2 mt-4">{{ _('Relevant test criteria:') }}</h4>
+                                                        <h4 class="mb-2 mt-4 text-discovery">{{ _('Relevant test criteria:') }}</h4>
                                                         <div class="mb-3">
                                                             {% if discovery.metadata.wcag_full %}
                                                             <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -3403,8 +3403,8 @@
                         <div class="accordion-body">
                             {% if discovery.metadata and discovery.metadata.title %}
                             <!-- Enhanced description available -->
-                            <div class="alert mb-3" style="background-color: #f3f0ff; border-color: #6f42c1;">
-                                <h4 class="alert-heading" style="color: #6f42c1;">
+                            <div class="alert mb-3 bg-discovery-subtle border-discovery">
+                                <h4 class="alert-heading text-discovery">
                                     {% if discovery.metadata.what_generic_en or discovery.metadata.what_generic_fr %}
                                         <span data-lang="en" class="{{ 'lang-active' if get_locale()|string == 'en' else 'lang-inactive' }}">{{ discovery.metadata.what_generic_en }}</span>
                                         <span data-lang="fr" class="{{ 'lang-active' if get_locale()|string == 'fr' else 'lang-inactive' }}">{{ discovery.metadata.what_generic_fr }}</span>
@@ -3417,7 +3417,7 @@
                                 </h4>
                             </div>
 
-                            <h4 style="color: #6f42c1;" class="mb-2">{{ _('About this discovery item:') }}</h4>
+                            <h4 class="mb-2 text-discovery">{{ _('About this discovery item:') }}</h4>
 
                             <div class="mb-3">
                                 <strong>{{ _('What was found:') }}</strong>
@@ -3448,7 +3448,7 @@
                             </div>
 
                             {% if discovery.metadata.wcag_full or discovery.wcag_criteria %}
-                            <h4 style="color: #6f42c1;" class="mb-2 mt-4">{{ _('Relevant test criteria:') }}</h4>
+                            <h4 class="mb-2 mt-4 text-discovery">{{ _('Relevant test criteria:') }}</h4>
                             <div class="mb-3">
                                 {% if discovery.metadata.wcag_full %}
                                 <strong>{{ _('WCAG Success Criteria:') }}</strong>
@@ -3562,7 +3562,7 @@
                             </p>
                             {% if discovery.wcag_criteria %}
                             {% for wcag_criterion in discovery.wcag_criteria|sort %}
-                            <div style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-left: 3px solid #6c757d;">
+                            <div class="bg-token-subtle" style="margin-top: 15px; padding: 10px; border-left: 3px solid var(--bs-secondary);">
                                 <p style="margin: 0 0 8px 0; font-weight: bold;">
                                     WCAG {{ wcag_criterion }}
                                 </p>
@@ -3680,7 +3680,7 @@
                             <td><span class="badge bg-danger">{{ result.violation_count }}</span></td>
                             <td><span class="badge bg-warning text-dark">{{ result.warning_count }}</span></td>
                             <td><span class="badge bg-info">{{ result.info_count|default(0) }}</span></td>
-                            <td><span class="badge" style="background-color: #6f42c1;">{{ result.discovery_count|default(0) }}</span></td>
+                            <td><span class="badge" style="background-color: var(--color-discovery);">{{ result.discovery_count|default(0) }}</span></td>
                             <td><span class="badge bg-success">{{ result.pass_count }}</span></td>
                             <td>{{ "%.2f"|format(result.duration_ms / 1000) }}s</td>
                             <td>

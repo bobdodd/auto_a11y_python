@@ -67,7 +67,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-lg-9 mx-auto">
-            <h1 class="h2 mb-4">{{ _('Create New Project') }}</h1>
+            <h1 class="mb-4">{{ _('Create New Project') }}</h1>
             
             <!-- Fixture Status Notice -->
             {% if debug_mode %}
@@ -87,120 +87,128 @@
             <div class="card">
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('projects.create_project') }}">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">{{ _('Project Name') }} *</label>
-                            <input type="text" class="form-control" id="name" name="name"
-                                   required autofocus maxlength="100">
-                            <div class="form-text">{{ _('Choose a unique name for your project') }}</div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="description" class="form-label">{{ _('Description') }}</label>
-                            <textarea class="form-control" id="description" name="description"
-                                      rows="3" maxlength="500"></textarea>
-                            <div class="form-text">{{ _('Optional description of the project goals') }}</div>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="project_type" class="form-label">{{ _('Project Type') }} *</label>
-                            <select class="form-select" id="project_type" name="project_type" required onchange="updateProjectTypeFields()">
-                                <option value="website" selected>{{ _('Website') }}</option>
-                                <option value="app">{{ _('App') }}</option>
-                                <option value="tangible_device">{{ _('Tangible Device') }}</option>
-                                <option value="nav_and_wayfinding">{{ _('Nav and Wayfinding') }}</option>
-                            </select>
-                            <div class="form-text">{{ _('Select the type of project you\'re testing') }}</div>
-                        </div>
-
-                        <!-- Type-specific fields -->
-                        <div id="app_fields" class="mb-3" style="display: none;">
-                            <label for="app_identifier" class="form-label">{{ _('App Identifier') }}</label>
-                            <input type="text" class="form-control" id="app_identifier" name="app_identifier"
-                                   placeholder="{{ _('e.g., com.example.myapp or Bundle ID') }}">
-                            <div class="form-text">{{ _('Optional: Package name (Android) or Bundle ID (iOS)') }}</div>
-                        </div>
-
-                        <div id="device_fields" class="mb-3" style="display: none;">
-                            <label for="device_model" class="form-label">{{ _('Device Model') }}</label>
-                            <input type="text" class="form-control" id="device_model" name="device_model"
-                                   placeholder="{{ _('e.g., NCR SelfServ 84, Diebold ATM') }}">
-                            <div class="form-text">{{ _('Optional: Manufacturer and model of the device') }}</div>
-                        </div>
-
-                        <div id="location_fields" class="mb-3" style="display: none;">
-                            <label for="location" class="form-label">{{ _('Location') }}</label>
-                            <input type="text" class="form-control" id="location" name="location"
-                                   placeholder="{{ _('e.g., Building A, Floor 2 or Downtown Campus') }}">
-                            <div class="form-text">{{ _('Optional: Physical location of the navigation system') }}</div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="drupal_audit_name" class="form-label">{{ _('Drupal Audit (Optional)') }}</label>
-                            <select class="form-select" id="drupal_audit_name" name="drupal_audit_name">
-                                <option value="">{{ _('Auto-match by project name') }}</option>
-                                <option value="" disabled>{{ _('Loading audits...') }}</option>
-                            </select>
-                            <div class="form-text">
-                                {{ _('Select the corresponding audit in Drupal for synchronization. Leave as "Auto-match" to use the project name.') }}
+                        <fieldset class="mb-4">
+                            <legend class="h5">{{ _('Project Details') }}</legend>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">{{ _('Project Name') }} *</label>
+                                <input type="text" class="form-control" id="name" name="name"
+                                       required autofocus maxlength="100" aria-describedby="name-help">
+                                <div class="form-text" id="name-help">{{ _('Choose a unique name for your project') }}</div>
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="wcag_level" class="form-label">{{ _('WCAG Compliance Level') }} *</label>
-                            <select class="form-select" id="wcag_level" name="wcag_level" required>
-                                <option value="AA" selected>{{ _('Level AA (Recommended)') }}</option>
-                                <option value="AAA">{{ _('Level AAA (Enhanced)') }}</option>
-                            </select>
-                            <div class="form-text">
-                                <strong>{{ _('Level AA:') }}</strong> {{ _('Standard compliance (4.5:1 contrast for normal text, 3:1 for large text)') }}<br>
-                                <strong>{{ _('Level AAA:') }}</strong> {{ _('Enhanced compliance (7:1 contrast for normal text, 4.5:1 for large text)') }}
+                            <div class="mb-3">
+                                <label for="description" class="form-label">{{ _('Description') }}</label>
+                                <textarea class="form-control" id="description" name="description"
+                                          rows="3" maxlength="500" aria-describedby="description-help"></textarea>
+                                <div class="form-text" id="description-help">{{ _('Optional description of the project goals') }}</div>
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="page_load_strategy" class="form-label">{{ _('Page Load Strategy') }}</label>
-                            <select class="form-select" id="page_load_strategy" name="page_load_strategy">
+                            <div class="mb-3">
+                                <label for="project_type" class="form-label">{{ _('Project Type') }} *</label>
+                                <select class="form-select" id="project_type" name="project_type" required onchange="updateProjectTypeFields()" aria-describedby="project-type-help">
+                                    <option value="website" selected>{{ _('Website') }}</option>
+                                    <option value="app">{{ _('App') }}</option>
+                                    <option value="tangible_device">{{ _('Tangible Device') }}</option>
+                                    <option value="nav_and_wayfinding">{{ _('Nav and Wayfinding') }}</option>
+                                </select>
+                                <div class="form-text" id="project-type-help">{{ _('Select the type of project you\'re testing') }}</div>
+                            </div>
+
+                            <!-- Type-specific fields -->
+                            <div id="app_fields" class="mb-3" style="display: none;">
+                                <label for="app_identifier" class="form-label">{{ _('App Identifier') }}</label>
+                                <input type="text" class="form-control" id="app_identifier" name="app_identifier"
+                                       placeholder="{{ _('e.g., com.example.myapp or Bundle ID') }}" aria-describedby="app-identifier-help">
+                                <div class="form-text" id="app-identifier-help">{{ _('Optional: Package name (Android) or Bundle ID (iOS)') }}</div>
+                            </div>
+
+                            <div id="device_fields" class="mb-3" style="display: none;">
+                                <label for="device_model" class="form-label">{{ _('Device Model') }}</label>
+                                <input type="text" class="form-control" id="device_model" name="device_model"
+                                       placeholder="{{ _('e.g., NCR SelfServ 84, Diebold ATM') }}" aria-describedby="device-model-help">
+                                <div class="form-text" id="device-model-help">{{ _('Optional: Manufacturer and model of the device') }}</div>
+                            </div>
+
+                            <div id="location_fields" class="mb-3" style="display: none;">
+                                <label for="location" class="form-label">{{ _('Location') }}</label>
+                                <input type="text" class="form-control" id="location" name="location"
+                                       placeholder="{{ _('e.g., Building A, Floor 2 or Downtown Campus') }}" aria-describedby="location-help">
+                                <div class="form-text" id="location-help">{{ _('Optional: Physical location of the navigation system') }}</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="drupal_audit_name" class="form-label">{{ _('Drupal Audit (Optional)') }}</label>
+                                <select class="form-select" id="drupal_audit_name" name="drupal_audit_name" aria-describedby="drupal-audit-help">
+                                    <option value="">{{ _('Auto-match by project name') }}</option>
+                                    <option value="" disabled>{{ _('Loading audits...') }}</option>
+                                </select>
+                                <div class="form-text" id="drupal-audit-help">
+                                    {{ _('Select the corresponding audit in Drupal for synchronization. Leave as "Auto-match" to use the project name.') }}
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="mb-4">
+                            <legend class="h5">{{ _('Compliance Settings') }}</legend>
+                            <div class="mb-3">
+                                <label for="wcag_level" class="form-label">{{ _('WCAG Compliance Level') }} *</label>
+                                <select class="form-select" id="wcag_level" name="wcag_level" required aria-describedby="wcag-level-help">
+                                    <option value="AA" selected>{{ _('Level AA (Recommended)') }}</option>
+                                    <option value="AAA">{{ _('Level AAA (Enhanced)') }}</option>
+                                </select>
+                                <div class="form-text" id="wcag-level-help">
+                                    <strong>{{ _('Level AA:') }}</strong> {{ _('Standard compliance (4.5:1 contrast for normal text, 3:1 for large text)') }}<br>
+                                    <strong>{{ _('Level AAA:') }}</strong> {{ _('Enhanced compliance (7:1 contrast for normal text, 4.5:1 for large text)') }}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="page_load_strategy" class="form-label">{{ _('Page Load Strategy') }}</label>
+                                <select class="form-select" id="page_load_strategy" name="page_load_strategy" aria-describedby="page-load-strategy-help">
                                 <option value="networkidle2" selected>{{ _('Network Idle 2 (Default - Best for most sites)') }}</option>
                                 <option value="networkidle0">{{ _('Network Idle 0 (Very thorough, slowest)') }}</option>
-                                <option value="domcontentloaded">{{ _('DOM Content Loaded (Fast, for sites with heavy background activity)') }}</option>
-                                <option value="load">{{ _('Load Event (Middle ground)') }}</option>
-                            </select>
-                            <div class="form-text">
-                                {{ _('Controls when testing begins after navigating to a page:') }}<br>
-                                • <strong>{{ _('Network Idle 2') }}</strong>: {{ _('Wait until network has ≤2 connections (best for dynamic sites)') }}<br>
-                                • <strong>{{ _('Network Idle 0') }}</strong>: {{ _('Wait until network is completely idle (very thorough but slow)') }}<br>
-                                • <strong>{{ _('DOM Content Loaded') }}</strong>: {{ _('Test as soon as DOM is ready (use for BBC News, sites with continuous ads/analytics)') }}<br>
-                                • <strong>{{ _('Load Event') }}</strong>: {{ _('Wait for load event (faster than network idle)') }}
+                                    <option value="domcontentloaded">{{ _('DOM Content Loaded (Fast, for sites with heavy background activity)') }}</option>
+                                    <option value="load">{{ _('Load Event (Middle ground)') }}</option>
+                                </select>
+                                <div class="form-text" id="page-load-strategy-help">
+                                    {{ _('Controls when testing begins after navigating to a page:') }}<br>
+                                    • <strong>{{ _('Network Idle 2') }}</strong>: {{ _('Wait until network has ≤2 connections (best for dynamic sites)') }}<br>
+                                    • <strong>{{ _('Network Idle 0') }}</strong>: {{ _('Wait until network is completely idle (very thorough but slow)') }}<br>
+                                    • <strong>{{ _('DOM Content Loaded') }}</strong>: {{ _('Test as soon as DOM is ready (use for BBC News, sites with continuous ads/analytics)') }}<br>
+                                    • <strong>{{ _('Load Event') }}</strong>: {{ _('Wait for load event (faster than network idle)') }}
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="headless_browser" class="form-label">{{ _('Browser Display Mode') }}</label>
-                            <select class="form-select" id="headless_browser" name="headless_browser">
-                                <option value="true" selected>{{ _('Headless (No visible browser)') }}</option>
-                                <option value="false">{{ _('Visible Browser (Show Chrome window)') }}</option>
-                            </select>
-                            <div class="form-text">
-                                • <strong>{{ _('Headless') }}</strong>: {{ _('Run browser invisibly (faster, less resource intensive)') }}<br>
-                                • <strong>{{ _('Visible Browser') }}</strong>: {{ _('Show the Chrome window (useful for debugging)') }}
+                            <div class="mb-3">
+                                <label for="headless_browser" class="form-label">{{ _('Browser Display Mode') }}</label>
+                                <select class="form-select" id="headless_browser" name="headless_browser" aria-describedby="headless-browser-help">
+                                    <option value="true" selected>{{ _('Headless (No visible browser)') }}</option>
+                                    <option value="false">{{ _('Visible Browser (Show Chrome window)') }}</option>
+                                </select>
+                                <div class="form-text" id="headless-browser-help">
+                                    • <strong>{{ _('Headless') }}</strong>: {{ _('Run browser invisibly (faster, less resource intensive)') }}<br>
+                                    • <strong>{{ _('Visible Browser') }}</strong>: {{ _('Show the Chrome window (useful for debugging)') }}
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="stealth_mode" name="stealth_mode" value="true">
-                                <label class="form-check-label" for="stealth_mode">
-                                    {{ _('Enable Stealth Mode (for Cloudflare-protected sites)') }}
-                                </label>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="stealth_mode" name="stealth_mode" value="true" aria-describedby="stealth-mode-help">
+                                    <label class="form-check-label" for="stealth_mode">
+                                        {{ _('Enable Stealth Mode (for Cloudflare-protected sites)') }}
+                                    </label>
+                                </div>
+                                <div class="form-text" id="stealth-mode-help">
+                                    {{ _('Enables advanced bot detection bypass techniques. Use for sites protected by Cloudflare or similar services.') }}
+                                    <strong>{{ _('Note:') }}</strong> {{ _('Stealth mode significantly slows down page discovery and testing (~5-15 seconds per page).') }}
+                                </div>
                             </div>
-                            <div class="form-text">
-                                {{ _('Enables advanced bot detection bypass techniques. Use for sites protected by Cloudflare or similar services.') }}
-                                <strong>{{ _('Note:') }}</strong> {{ _('Stealth mode significantly slows down page discovery and testing (~5-15 seconds per page).') }}
-                            </div>
-                        </div>
+                        </fieldset>
 
                         <!-- Touchpoint Testing Configuration -->
-                        <div class="mb-3">
+                        <fieldset class="mb-4">
+                            <legend class="h5">{{ _('Touchpoint Tests') }}</legend>
+                            <div class="mb-3">
                             <label class="form-label">{{ _('Touchpoint Tests Configuration') }}</label>
                             <div class="form-text mb-2">
                                 {{ _('Configure which accessibility tests to run. Tests are organized by touchpoint (testing category).') }}
@@ -306,21 +314,23 @@
                                 {% endif %}
                                 {% endfor %}
                             </div>
-                        </div>
-                        
+                            </div>
+                        </fieldset>
+
                         <!-- AI Testing Configuration -->
-                        <div class="mb-3">
-                            <label class="form-label">{{ _('AI-Assisted Testing') }}</label>
-                            <div class="form-check form-switch mb-2">
-                                <input class="form-check-input" type="checkbox" id="enable_ai_testing" name="enable_ai_testing" onchange="toggleAITests()">
-                                <label class="form-check-label" for="enable_ai_testing">
-                                    {{ _('Enable AI-assisted accessibility testing') }}
-                                </label>
-                            </div>
-                            <div class="form-text mb-3">
-                                {{ _('AI testing uses Claude to analyze screenshots and HTML for issues that automated tests might miss.') }}
-                                <strong>{{ _('Note:') }}</strong> {{ _('AI testing incurs API costs based on usage.') }}
-                            </div>
+                        <fieldset class="mb-4">
+                            <legend class="h5">{{ _('AI-Assisted Testing') }}</legend>
+                            <div class="mb-3">
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="enable_ai_testing" name="enable_ai_testing" onchange="toggleAITests()" aria-describedby="ai-testing-help">
+                                    <label class="form-check-label" for="enable_ai_testing">
+                                        {{ _('Enable AI-assisted accessibility testing') }}
+                                    </label>
+                                </div>
+                                <div class="form-text mb-3" id="ai-testing-help">
+                                    {{ _('AI testing uses Claude to analyze screenshots and HTML for issues that automated tests might miss.') }}
+                                    <strong>{{ _('Note:') }}</strong> {{ _('AI testing incurs API costs based on usage.') }}
+                                </div>
 
                             <div id="ai_tests_selection" style="display: none;">
                                 <label class="form-label">{{ _('Select AI Tests to Run:') }}</label>
@@ -367,7 +377,7 @@
                                     <a href="#" onclick="deselectAllAITests(event)">{{ _('Deselect All') }}</a>
                                 </div>
                             </div>
-                        </div>
+                        </fieldset>
 
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
@@ -389,10 +399,10 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="testDetailsModalLabel">
+                <h2 class="modal-title" id="testDetailsModalLabel">
                     <i class="bi bi-info-circle me-2"></i>
                     <span id="testDetailsTitle">{{ _('Test Details') }}</span>
-                </h5>
+                </h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
             </div>
             <div class="modal-body" id="testDetailsBody">

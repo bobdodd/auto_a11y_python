@@ -8,7 +8,7 @@
     <div class="mb-4">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
             <div>
-                <h1 class="h2 mb-2">
+                <h1 class="mb-2">
                     {{ project.name }}
                     <span class="badge bg-{{ {'active': 'success', 'paused': 'warning', 'completed': 'info', 'archived': 'secondary'}[project.status.value] }}">
                         {{ project.status.value|title }}
@@ -44,26 +44,26 @@
     <div class="d-flex flex-wrap gap-3 mb-4">
         <div class="card text-center flex-fill" style="min-width: 140px;">
             <div class="card-body py-3">
-                <h6 class="card-title text-muted mb-1">{{ _('Websites') }}</h6>
+                <h2 class="card-title text-muted mb-1">{{ _('Websites') }}</h2>
                 <p class="display-6 mb-0">{{ stats.website_count }}</p>
             </div>
         </div>
         <div class="card text-center flex-fill" style="min-width: 140px;">
             <div class="card-body py-3">
-                <h6 class="card-title text-muted mb-1">{{ _('Pages') }}</h6>
+                <h2 class="card-title text-muted mb-1">{{ _('Pages') }}</h2>
                 <p class="display-6 mb-0">{{ stats.total_pages }}</p>
             </div>
         </div>
         <div class="card text-center flex-fill" style="min-width: 140px;">
             <div class="card-body py-3">
-                <h6 class="card-title text-muted mb-1">{{ _('Tested') }}</h6>
+                <h2 class="card-title text-muted mb-1">{{ _('Tested') }}</h2>
                 <p class="display-6 mb-0">{{ stats.tested_pages }}</p>
                 <small class="text-muted">{{ "%.1f"|format(stats.test_coverage) }}% {{ _('coverage') }}</small>
             </div>
         </div>
         <div class="card text-center flex-fill" style="min-width: 140px;">
             <div class="card-body py-3">
-                <h6 class="card-title text-muted mb-1">{{ _('Issues') }}</h6>
+                <h2 class="card-title text-muted mb-1">{{ _('Issues') }}</h2>
                 <p class="display-6 mb-0 text-danger">{{ stats.total_violations }}</p>
                 <small class="text-warning">{{ stats.total_warnings }} {{ _('warnings') }}</small>
             </div>
@@ -71,9 +71,9 @@
     </div>
 
     <!-- Websites -->
-    <div class="card mb-4">
+    <section class="card mb-4" aria-labelledby="websites-heading">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">{{ _('Websites') }}</h5>
+            <h2 class="mb-0" id="websites-heading">{{ _('Websites') }}</h2>
             <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addWebsiteModal">
                 <i class="bi bi-plus-circle"></i> {{ _('Add Website') }}
             </button>
@@ -82,11 +82,11 @@
             {% if websites %}
             {% for website in websites %}
             {% set ws_stats = website_stats.get(website.id, {'violations': 0, 'warnings': 0}) %}
-            <div class="card mb-3 shadow-sm">
+            <article class="card mb-3 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
                         <div class="flex-grow-1" style="min-width: 200px;">
-                            <h6 class="card-title mb-1">{{ website.display_name }}</h6>
+                            <h3 class="card-title mb-1">{{ website.display_name }}</h3>
                             <a href="{{ website.url }}" target="_blank" class="small text-muted text-break">
                                 {{ website.url }} <i class="bi bi-box-arrow-up-right"></i>
                             </a>
@@ -122,20 +122,20 @@
                         </button>
                     </div>
                 </div>
-            </div>
+            </article>
             {% endfor %}
             {% else %}
             <p class="text-muted">{{ _('No websites added yet. Add a website to start testing.') }}</p>
             {% endif %}
         </div>
-    </div>
+    </section>
 
     <!-- Discovered Pages -->
-    <div class="card mb-4">
+    <section class="card mb-4" aria-labelledby="discovered-pages-heading">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">
+            <h2 class="mb-0" id="discovered-pages-heading">
                 <i class="bi bi-file-earmark-text"></i> {{ _('Discovered Pages') }}
-            </h5>
+            </h2>
             <span class="badge bg-primary">{{ discovered_pages|length }}</span>
         </div>
         <div class="card-body">
@@ -143,6 +143,7 @@
             <!-- Desktop Table View -->
             <div class="table-responsive d-none d-lg-block">
                 <table class="table table-hover">
+                    <caption class="visually-hidden">{{ _('Discovered Pages') }}</caption>
                     <thead>
                         <tr>
                             <th>{{ _('Title') }}</th>
@@ -250,17 +251,17 @@
             </div>
             {% endif %}
         </div>
-    </div>
+    </section>
 
     <!-- Drupal Sync -->
     {% include 'drupal_sync/sync_card.html' %}
 
     <!-- Recordings -->
-    <div class="card">
+    <section class="card" aria-labelledby="recordings-heading">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">
+            <h2 class="mb-0" id="recordings-heading">
                 <i class="bi bi-mic"></i> {{ _('Recordings') }}
-            </h5>
+            </h2>
             <a href="{{ url_for('recordings.upload_recording') }}" class="btn btn-sm btn-primary">
                 <i class="bi bi-plus-circle"></i> <span class="d-none d-sm-inline">{{ _('Add Recording') }}</span><span class="d-sm-none">{{ _('Add') }}</span>
             </a>
@@ -270,6 +271,7 @@
             <!-- Desktop Table View -->
             <div class="table-responsive d-none d-md-block">
                 <table class="table table-hover">
+                    <caption class="visually-hidden">{{ _('Recordings') }}</caption>
                     <thead>
                         <tr>
                             <th>{{ _('ID') }}</th>
@@ -382,7 +384,7 @@
             <p class="text-muted">{{ _('No recordings added yet.') }} <a href="{{ url_for('recordings.upload_recording') }}">{{ _('Upload a recording') }}</a> {{ _('to track manual accessibility audits.') }}</p>
             {% endif %}
         </div>
-    </div>
+    </section>
 </div>
 
 <!-- Add Website Modal -->
@@ -390,7 +392,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Add Website') }}</h5>
+                <h2 class="modal-title">{{ _('Add Website') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{{ url_for('projects.add_website', project_id=project.id) }}">
@@ -420,7 +422,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Discovery Options') }}</h5>
+                <h2 class="modal-title">{{ _('Discovery Options') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="discoveryForm">
@@ -486,7 +488,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Test All Websites in Project') }}</h5>
+                <h2 class="modal-title">{{ _('Test All Websites in Project') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form id="testAllForm" method="POST" action="{{ url_for('projects.test_project', project_id=project.id) }}">
@@ -535,7 +537,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ _('Delete Project') }}</h5>
+                <h2 class="modal-title">{{ _('Delete Project') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">

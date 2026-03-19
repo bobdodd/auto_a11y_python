@@ -159,7 +159,7 @@ def client_projects():
     """List all projects (for logged-in clients)."""
     # For logged-in users (no token), filter by membership
     if g.access_scope is None and current_user.is_authenticated:
-        if current_user.is_admin():
+        if getattr(current_user, 'is_superadmin', False):
             projects = current_app.db.get_all_projects()
         else:
             projects = current_app.db.get_projects_for_user(str(current_user.get_id()))
@@ -177,7 +177,7 @@ def client_projects():
 def client_project(project_id):
     """Project overview (logged-in client)."""
     check_scope('project', project_id)
-    if g.access_scope is None and current_user.is_authenticated and not current_user.is_admin():
+    if g.access_scope is None and current_user.is_authenticated and not getattr(current_user, 'is_superadmin', False):
         role = get_effective_role(current_user, request, project_id=project_id)
         if role is None:
             abort(403)
@@ -197,7 +197,7 @@ def client_project(project_id):
 def client_website(project_id, website_id):
     """Website detail (logged-in client)."""
     check_scope('website', website_id)
-    if g.access_scope is None and current_user.is_authenticated and not current_user.is_admin():
+    if g.access_scope is None and current_user.is_authenticated and not getattr(current_user, 'is_superadmin', False):
         role = get_effective_role(current_user, request, project_id=project_id)
         if role is None:
             abort(403)

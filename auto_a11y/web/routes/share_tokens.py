@@ -131,7 +131,7 @@ def revoke_token(token_id):
     else:
         project_id = token.scope_id
 
-    if not current_user.is_admin():
+    if not getattr(current_user, 'is_superadmin', False):
         role = get_effective_role(current_user, request, project_id=project_id)
         if role not in (UserRole.ADMIN, UserRole.AUDITOR):
             return jsonify({'error': 'Insufficient permissions'}), 403

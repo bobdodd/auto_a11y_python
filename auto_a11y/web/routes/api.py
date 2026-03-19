@@ -108,7 +108,7 @@ def get_projects():
 
     skip = (page - 1) * limit
 
-    if current_user.is_authenticated and not current_user.is_admin():
+    if current_user.is_authenticated and not getattr(current_user, 'is_superadmin', False):
         projects = current_app.db.get_projects_for_user(str(current_user.get_id()))
         if status:
             try:

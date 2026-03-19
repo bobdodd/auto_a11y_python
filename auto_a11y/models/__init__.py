@@ -30,6 +30,7 @@ from .schedule import (
 )
 from .share_token import ShareToken, TokenScope
 from .project_member import ProjectMember
+from .permission_group import PermissionGroup
 
 __all__ = [
     'Project', 'ProjectStatus', 'ProjectType', 'LivedExperienceTester', 'TestSupervisor',
@@ -53,5 +54,6 @@ __all__ = [
     'TestSchedule', 'ScheduleType', 'AITestMode', 'ScheduleRunStatus',
     'ScheduleTestConfig', 'PresetConfig',
     'ShareToken', 'TokenScope',
-    'ProjectMember'
+    'ProjectMember',
+    'PermissionGroup'
 ]

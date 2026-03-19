@@ -1117,19 +1117,34 @@ from auto_a11y.web.routes.auth import project_role_required, get_effective_role
 from auto_a11y.models.app_user import UserRole
 ```
 
-- [ ] **Step 2: Filter testing dashboard data by membership**
+- [ ] **Step 2: Show empty dashboard for non-admin users**
 
-In the dashboard route handler (line ~1073), where project data is loaded, add membership filtering. The dashboard takes `project_id` and `website_id` as query params. Add filtering logic:
+In the dashboard route handler (line ~1073), non-admin users should see only a greeting — no stats, no project data, no charts. Replace the data loading with:
 
 ```python
-    # Filter projects by membership
-    if current_user.is_admin():
-        projects = current_app.db.get_all_projects()
-    else:
-        projects = current_app.db.get_projects_for_user(str(current_user.get_id()))
+    if not current_user.is_admin():
+        # Non-admin users see a simple greeting on the dashboard
+        return render_template('testing/dashboard.html',
+            greeting_only=True,
+            display_name=current_user.display_name or current_user.email,
+            projects=[], websites=[], recent_results=[],
+            stats={}, trends={}, schedules=[],
+        )
+    # Admin users see full dashboard
+    projects = current_app.db.get_all_projects()
 ```
 
-If a `project_id` query param is provided, verify the user has access before showing data.
+Then in `auto_a11y/web/templates/testing/dashboard.html`, wrap the existing dashboard content in a conditional:
+
+```jinja2
+{% if greeting_only %}
+  <h1>Hello, {{ display_name }}!</h1>
+{% else %}
+  {# ... existing dashboard content ... #}
+{% endif %}
+```
+
+This keeps the dashboard accessible to all authenticated users but only shows data to admins. Non-admin users access their assigned projects via the project list instead.
 
 - [ ] **Step 3: Add permission check to run-tests endpoints**
 

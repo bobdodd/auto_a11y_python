@@ -244,7 +244,7 @@ These use MongoDB `$push`, `$pull`, and positional `$set` on the embedded `membe
 
 | Route | Current | New |
 |---|---|---|
-| `GET /testing/dashboard` | `@login_required` | `@login_required` — filters data to user's projects |
+| `GET /testing/dashboard` | `@login_required` | `@login_required` — non-admin users see only "Hello, \<NAME\>!" greeting; admins see full dashboard |
 | `GET /testing/api/stats` | `@login_required` | Filter aggregate stats to user's projects |
 | `GET /testing/api/trends` | `@login_required` | Filter trends to user's projects |
 | `POST /testing/api/run-tests` | `@login_required` | `@project_role_required(ADMIN, AUDITOR)` |

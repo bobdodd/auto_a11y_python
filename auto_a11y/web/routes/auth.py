@@ -6,7 +6,7 @@ import hashlib
 import logging
 import secrets
 
-from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, session, g, abort
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, session, g, abort, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_babel import _
 from functools import wraps
@@ -73,6 +73,147 @@ def auditor_required(f):
             return redirect(url_for('index'))
         
         return f(*args, **kwargs)
+    return decorated_function
+
+
+# ------------------------------------------------------------------
+# Per-project/website permission helpers
+# ------------------------------------------------------------------
+
+def _get_db():
+    """Get database instance from current app."""
+    return current_app.db
+
+
+def get_effective_role(user, request_obj=None, project_id=None, website_id=None, page_id=None):
+    """Return the user's effective role for the given resource context.
+
+    Resolution order:
+    1. Global admin -> UserRole.ADMIN
+    2. page_id -> resolve to website_id
+    3. website_id -> check website members, then fall to project
+    4. project_id -> check project members
+    5. None -> no access
+    """
+    if user.is_admin():
+        return UserRole.ADMIN
+
+    db = _get_db()
+
+    # Resolve page to website
+    if page_id and not website_id:
+        page = db.get_page(page_id)
+        if not page:
+            return None
+        website_id = page.website_id
+
+    # Resolve website to project, check website override
+    if website_id:
+        website = db.get_website(website_id)
+        if not website:
+            return None
+        user_id = str(user.get_id())
+        for member in getattr(website, 'members', []):
+            if member.user_id == user_id:
+                return member.role
+        # Fall through to project
+        project_id = website.project_id
+
+    if project_id:
+        project = db.get_project(project_id)
+        if not project:
+            return None
+        user_id = str(user.get_id())
+        for member in getattr(project, 'members', []):
+            if member.user_id == user_id:
+                return member.role
+
+    return None  # No access
+
+
+def project_role_required(*roles):
+    """Decorator: requires user to have one of the given roles on the project/website.
+
+    Extracts project_id, website_id, or page_id from route kwargs.
+    Caches resolved role on g.effective_role.
+    Global admins bypass all checks.
+    """
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated:
+                if request.is_json:
+                    return jsonify({'error': 'Authentication required'}), 401
+                flash('Please log in to access this page.', 'warning')
+                return redirect(url_for('auth.login', next=request.url))
+
+            # Global admins bypass
+            if current_user.is_admin():
+                g.effective_role = UserRole.ADMIN
+                return f(*args, **kwargs)
+
+            project_id = kwargs.get('project_id')
+            website_id = kwargs.get('website_id')
+            page_id = kwargs.get('page_id')
+
+            effective_role = get_effective_role(
+                current_user, request, project_id, website_id, page_id
+            )
+
+            if effective_role not in roles:
+                if request.is_json:
+                    return jsonify({'error': 'Insufficient permissions'}), 403
+                flash('You do not have permission to access this resource.', 'danger')
+                abort(403)
+
+            g.effective_role = effective_role
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+
+def project_admin_required(f):
+    """Decorator: requires project-level ADMIN (ignores website overrides).
+
+    Used for membership management routes where a project admin should
+    retain management access even with a website-level override.
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            if request.is_json:
+                return jsonify({'error': 'Authentication required'}), 401
+            flash('Please log in to access this page.', 'warning')
+            return redirect(url_for('auth.login', next=request.url))
+
+        if current_user.is_admin():
+            return f(*args, **kwargs)
+
+        db = _get_db()
+        project_id = kwargs.get('project_id')
+        website_id = kwargs.get('website_id')
+
+        if website_id and not project_id:
+            website = db.get_website(website_id)
+            if website:
+                project_id = website.project_id
+
+        if not project_id:
+            abort(403)
+
+        project = db.get_project(project_id)
+        if not project:
+            abort(404)
+
+        user_id = str(current_user.get_id())
+        for member in getattr(project, 'members', []):
+            if member.user_id == user_id and member.role == UserRole.ADMIN:
+                return f(*args, **kwargs)
+
+        if request.is_json:
+            return jsonify({'error': 'Project admin access required'}), 403
+        flash('Project administrator access required.', 'danger')
+        abort(403)
     return decorated_function
 
 

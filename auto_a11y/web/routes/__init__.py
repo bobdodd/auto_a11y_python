@@ -16,7 +16,7 @@ from .recordings import recordings_bp
 from .drupal_sync import drupal_sync_bp
 from .discovered_pages import discovered_pages_bp
 from .automated_tests import bp as automated_tests_bp
-from .auth import auth_bp, role_required, admin_required, auditor_required
+from .auth import auth_bp, role_required, admin_required, auditor_required, project_role_required, project_admin_required, get_effective_role
 from .schedules import schedules_bp
 from .share_tokens import share_tokens_bp
 from .public import public_bp
@@ -40,6 +40,9 @@ __all__ = [
     'role_required',
     'admin_required',
     'auditor_required',
+    'project_role_required',
+    'project_admin_required',
+    'get_effective_role',
     'schedules_bp',
     'share_tokens_bp',
     'public_bp'

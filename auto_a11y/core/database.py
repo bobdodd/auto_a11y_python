@@ -73,9 +73,11 @@ class Database:
         self.projects.create_index("status")
         self.projects.create_index("project_type")
         self.projects.create_index([("project_type", 1), ("status", 1)])
-        
+        self.projects.create_index([("members.user_id", 1)])
+
         # Websites
         self.websites.create_index("project_id")
+        self.websites.create_index([("members.user_id", 1)])
         self.websites.create_index("url")
         
         # Pages
@@ -254,7 +256,73 @@ class Database:
         """Get all projects"""
         docs = self.projects.find()
         return [Project.from_dict(doc) for doc in docs]
-    
+
+    def get_projects_for_user(self, user_id: str) -> List[Project]:
+        """Return projects where user_id is a member."""
+        cursor = self.projects.find({"members.user_id": user_id})
+        return [Project.from_dict(doc) for doc in cursor]
+
+    # Project member operations
+
+    def add_project_member(self, project_id: str, user_id: str, role) -> bool:
+        """Add or update a member on a project."""
+        # Remove existing entry if present, then add new one
+        self.projects.update_one(
+            {"_id": ObjectId(project_id)},
+            {"$pull": {"members": {"user_id": user_id}}}
+        )
+        result = self.projects.update_one(
+            {"_id": ObjectId(project_id)},
+            {"$push": {"members": {"user_id": user_id, "role": role.value}}}
+        )
+        return result.modified_count > 0
+
+    def remove_project_member(self, project_id: str, user_id: str) -> bool:
+        """Remove a member from a project."""
+        result = self.projects.update_one(
+            {"_id": ObjectId(project_id)},
+            {"$pull": {"members": {"user_id": user_id}}}
+        )
+        return result.modified_count > 0
+
+    def update_project_member_role(self, project_id: str, user_id: str, role) -> bool:
+        """Change a member's role on a project."""
+        result = self.projects.update_one(
+            {"_id": ObjectId(project_id), "members.user_id": user_id},
+            {"$set": {"members.$.role": role.value}}
+        )
+        return result.modified_count > 0
+
+    # Website member operations
+
+    def add_website_member(self, website_id: str, user_id: str, role) -> bool:
+        """Add or update a member override on a website."""
+        self.websites.update_one(
+            {"_id": ObjectId(website_id)},
+            {"$pull": {"members": {"user_id": user_id}}}
+        )
+        result = self.websites.update_one(
+            {"_id": ObjectId(website_id)},
+            {"$push": {"members": {"user_id": user_id, "role": role.value}}}
+        )
+        return result.modified_count > 0
+
+    def remove_website_member(self, website_id: str, user_id: str) -> bool:
+        """Remove a member override from a website."""
+        result = self.websites.update_one(
+            {"_id": ObjectId(website_id)},
+            {"$pull": {"members": {"user_id": user_id}}}
+        )
+        return result.modified_count > 0
+
+    def update_website_member_role(self, website_id: str, user_id: str, role) -> bool:
+        """Change a member's override role on a website."""
+        result = self.websites.update_one(
+            {"_id": ObjectId(website_id), "members.user_id": user_id},
+            {"$set": {"members.$.role": role.value}}
+        )
+        return result.modified_count > 0
+
     def update_project(self, project: Project) -> bool:
         """Update existing project"""
         project.update_timestamp()

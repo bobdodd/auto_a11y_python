@@ -9,6 +9,7 @@ from pymongo.collection import Collection
 from bson import ObjectId
 from datetime import datetime
 import logging
+import re
 
 from auto_a11y.models import (
     Project, Website, Page, TestResult,
@@ -2514,6 +2515,49 @@ class Database:
             query["is_active"] = is_active
 
         docs = self.app_users.find(query).sort("email", 1).limit(limit).skip(skip)
+        return [AppUser.from_dict(doc) for doc in docs]
+
+    def search_app_users(
+        self,
+        query: str,
+        exclude_user_ids: Optional[List[str]] = None,
+        limit: int = 10
+    ) -> List[AppUser]:
+        """Search active app users by email or display_name.
+
+        Args:
+            query: Search string, split into terms. Each term is matched
+                   as a case-insensitive substring against email and display_name.
+                   All terms must match (AND logic).
+            exclude_user_ids: User IDs to exclude from results.
+            limit: Maximum results to return (capped at 20).
+        """
+        limit = min(limit, 20)
+        terms = query.strip().split()
+        if not terms:
+            return []
+
+        mongo_query: dict = {"is_active": True}
+
+        # Each term must match email OR display_name
+        and_conditions = []
+        for term in terms:
+            escaped = re.escape(term)
+            pattern = {"$regex": escaped, "$options": "i"}
+            and_conditions.append({
+                "$or": [
+                    {"email": pattern},
+                    {"display_name": pattern},
+                ]
+            })
+        mongo_query["$and"] = and_conditions
+
+        if exclude_user_ids:
+            mongo_query["_id"] = {
+                "$nin": [ObjectId(uid) for uid in exclude_user_ids]
+            }
+
+        docs = self.app_users.find(mongo_query).sort("email", 1).limit(limit)
         return [AppUser.from_dict(doc) for doc in docs]
 
     def count_app_users(self, role: Optional[UserRole] = None) -> int:

@@ -10,6 +10,8 @@ from auto_a11y.models import (
     TestSchedule, ScheduleType, AITestMode, ScheduleRunStatus,
     ScheduleTestConfig, PresetConfig
 )
+from auto_a11y.models.app_user import UserRole
+from auto_a11y.web.routes.auth import project_role_required
 from auto_a11y.core.scheduler import get_scheduler_service
 import logging
 
@@ -91,6 +93,7 @@ def schedules_dashboard():
 
 
 @schedules_bp.route('/websites/<website_id>/schedules')
+@project_role_required(UserRole.ADMIN, UserRole.AUDITOR)
 def list_schedules(website_id):
     """List all schedules for a website"""
     website = current_app.db.get_website(website_id)
@@ -110,6 +113,7 @@ def list_schedules(website_id):
 
 
 @schedules_bp.route('/websites/<website_id>/schedules/create', methods=['GET', 'POST'])
+@project_role_required(UserRole.ADMIN, UserRole.AUDITOR)
 def create_schedule(website_id):
     """Create a new schedule"""
     website = current_app.db.get_website(website_id)
@@ -227,6 +231,7 @@ def create_schedule(website_id):
 
 
 @schedules_bp.route('/websites/<website_id>/schedules/<schedule_id>')
+@project_role_required(UserRole.ADMIN, UserRole.AUDITOR)
 def view_schedule(website_id, schedule_id):
     """View schedule details"""
     website = current_app.db.get_website(website_id)
@@ -257,6 +262,7 @@ def view_schedule(website_id, schedule_id):
 
 
 @schedules_bp.route('/websites/<website_id>/schedules/<schedule_id>/edit', methods=['GET', 'POST'])
+@project_role_required(UserRole.ADMIN, UserRole.AUDITOR)
 def edit_schedule(website_id, schedule_id):
     """Edit an existing schedule"""
     website = current_app.db.get_website(website_id)
@@ -375,6 +381,7 @@ def edit_schedule(website_id, schedule_id):
 
 
 @schedules_bp.route('/websites/<website_id>/schedules/<schedule_id>/delete', methods=['POST'])
+@project_role_required(UserRole.ADMIN, UserRole.AUDITOR)
 def delete_schedule(website_id, schedule_id):
     """Delete a schedule"""
     schedule = current_app.db.get_test_schedule(schedule_id)
@@ -395,6 +402,7 @@ def delete_schedule(website_id, schedule_id):
 
 
 @schedules_bp.route('/websites/<website_id>/schedules/<schedule_id>/toggle', methods=['POST'])
+@project_role_required(UserRole.ADMIN, UserRole.AUDITOR)
 def toggle_schedule(website_id, schedule_id):
     """Enable or disable a schedule"""
     schedule = current_app.db.get_test_schedule(schedule_id)
@@ -431,6 +439,7 @@ def toggle_schedule(website_id, schedule_id):
 
 
 @schedules_bp.route('/websites/<website_id>/schedules/<schedule_id>/run-now', methods=['POST'])
+@project_role_required(UserRole.ADMIN, UserRole.AUDITOR)
 def run_now(website_id, schedule_id):
     """Trigger immediate execution of a schedule"""
     schedule = current_app.db.get_test_schedule(schedule_id)
@@ -465,6 +474,7 @@ def run_now(website_id, schedule_id):
 
 
 @schedules_bp.route('/websites/<website_id>/schedules/<schedule_id>/preview')
+@project_role_required(UserRole.ADMIN, UserRole.AUDITOR)
 def preview_runs(website_id, schedule_id):
     """Preview next run times for a schedule"""
     schedule = current_app.db.get_test_schedule(schedule_id)

@@ -13,8 +13,9 @@ from flask_babel import _
 from flask_login import current_user
 
 from auto_a11y.models import TokenScope, PageStatus
+from auto_a11y.models.app_user import UserRole
 from auto_a11y.reporting.issue_descriptions_translated import get_detailed_issue_description
-from auto_a11y.web.routes.auth import require_access, check_scope
+from auto_a11y.web.routes.auth import require_access, check_scope, get_effective_role
 
 public_bp = Blueprint(
     'public', __name__,
@@ -156,7 +157,14 @@ def token_page(token, website_id, page_id):
 @require_access
 def client_projects():
     """List all projects (for logged-in clients)."""
-    projects = current_app.db.get_all_projects()
+    # For logged-in users (no token), filter by membership
+    if g.access_scope is None and current_user.is_authenticated:
+        if current_user.is_admin():
+            projects = current_app.db.get_all_projects()
+        else:
+            projects = current_app.db.get_projects_for_user(str(current_user.get_id()))
+    else:
+        projects = current_app.db.get_all_projects()
     project_data = []
     for project in projects:
         stats = current_app.db.get_project_stats(project.id)
@@ -169,6 +177,10 @@ def client_projects():
 def client_project(project_id):
     """Project overview (logged-in client)."""
     check_scope('project', project_id)
+    if g.access_scope is None and current_user.is_authenticated and not current_user.is_admin():
+        role = get_effective_role(current_user, request, project_id=project_id)
+        if role is None:
+            abort(403)
     project = current_app.db.get_project(project_id)
     if not project:
         abort(404)
@@ -185,6 +197,10 @@ def client_project(project_id):
 def client_website(project_id, website_id):
     """Website detail (logged-in client)."""
     check_scope('website', website_id)
+    if g.access_scope is None and current_user.is_authenticated and not current_user.is_admin():
+        role = get_effective_role(current_user, request, project_id=project_id)
+        if role is None:
+            abort(403)
     website = current_app.db.get_website(website_id)
     if not website:
         abort(404)

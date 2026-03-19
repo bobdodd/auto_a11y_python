@@ -82,6 +82,14 @@
 {% endblock %}
 
 {% block content %}
+{% if greeting_only %}
+<div class="container-fluid">
+    <div class="mt-4">
+        <h1><i class="bi bi-hand-wave text-primary" aria-hidden="true"></i> Hello, {{ display_name }}!</h1>
+        <p class="text-muted">Use the <a href="{{ url_for('projects.list_projects') }}">Projects</a> page to view your assigned projects.</p>
+    </div>
+</div>
+{% else %}
 <!-- Loading Overlay - inline styles ensure immediate visibility -->
 <div id="pageLoadingOverlay" class="page-loading-overlay bg-token" style="position:fixed;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;z-index:9999;">
     <div class="text-center">
@@ -526,6 +534,7 @@
         <div class="toast-body" id="toastBody"></div>
     </div>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}

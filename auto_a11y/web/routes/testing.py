@@ -3,8 +3,10 @@ Testing and analysis routes
 """
 
 from flask import Blueprint, render_template, request, jsonify, current_app, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 from auto_a11y.models import PageStatus
+from auto_a11y.models.app_user import UserRole
+from auto_a11y.web.routes.auth import project_role_required, get_effective_role
 from auto_a11y.core.job_manager import JobType, JobStatus
 import asyncio
 import logging
@@ -1076,6 +1078,18 @@ def testing_dashboard():
     """Testing dashboard - comprehensive testing control center"""
     db = current_app.db
 
+    if not current_user.is_admin():
+        # Non-admin users see a simple greeting on the dashboard
+        return render_template('testing/dashboard.html',
+            greeting_only=True,
+            display_name=current_user.display_name or current_user.email,
+            projects=[], websites=[], recent_results=[],
+            stats={}, trend_data={}, schedules=[],
+            selected_project=None, selected_website=None,
+            selected_website_id=None, active_jobs=[],
+            project_users=[],
+        )
+
     # Get filter parameters from URL
     project_id = request.args.get('project_id')
     website_id = request.args.get('website_id')
@@ -1352,6 +1366,17 @@ def api_stats():
     project_id = request.args.get('project_id')
     website_id = request.args.get('website_id')
 
+    # Permission check for non-admin users
+    if not current_user.is_admin():
+        if project_id:
+            role = get_effective_role(current_user, request, project_id=project_id)
+            if role is None:
+                return jsonify({'error': 'Insufficient permissions'}), 403
+        elif website_id:
+            role = get_effective_role(current_user, request, website_id=website_id)
+            if role is None:
+                return jsonify({'error': 'Insufficient permissions'}), 403
+
     # Calculate stats based on filters
     if website_id:
         website = db.get_website(website_id)
@@ -1458,6 +1483,17 @@ def api_run_tests():
     if not website_id and not project_id:
         return jsonify({'error': 'Either website_id or project_id is required'}), 400
 
+    # Check permission on the website/project being tested
+    if not current_user.is_admin():
+        if website_id:
+            role = get_effective_role(current_user, request, website_id=website_id)
+        elif project_id:
+            role = get_effective_role(current_user, request, project_id=project_id)
+        else:
+            role = None
+        if role not in (UserRole.ADMIN, UserRole.AUDITOR):
+            return jsonify({'error': 'Insufficient permissions'}), 403
+
     # Validate at least one tester is selected
     if not tester_ids:
         return jsonify({'error': 'At least one tester must be selected'}), 400
@@ -1553,6 +1589,17 @@ def api_trends():
     website_id = request.args.get('website_id')
     days = int(request.args.get('days', 30))
 
+    # Permission check for non-admin users
+    if not current_user.is_admin():
+        if project_id:
+            role = get_effective_role(current_user, request, project_id=project_id)
+            if role is None:
+                return jsonify({'error': 'Insufficient permissions'}), 403
+        elif website_id:
+            role = get_effective_role(current_user, request, website_id=website_id)
+            if role is None:
+                return jsonify({'error': 'Insufficient permissions'}), 403
+
     trend_data = get_trend_data(db, project_id, website_id, days)
 
     return jsonify({
@@ -1569,6 +1616,18 @@ def api_trends_detailed():
 
     project_id = request.args.get('project_id')
     website_id = request.args.get('website_id')
+
+    # Permission check for non-admin users
+    if not current_user.is_admin():
+        if project_id:
+            role = get_effective_role(current_user, request, project_id=project_id)
+            if role is None:
+                return jsonify({'error': 'Insufficient permissions'}), 403
+        elif website_id:
+            role = get_effective_role(current_user, request, website_id=website_id)
+            if role is None:
+                return jsonify({'error': 'Insufficient permissions'}), 403
+
     granularity = request.args.get('granularity', 'daily')
     include_breakdown = request.args.get('include_breakdown', 'true').lower() == 'true'
 
@@ -1647,6 +1706,18 @@ def api_trends_compare():
 
     project_id = request.args.get('project_id')
     website_id = request.args.get('website_id')
+
+    # Permission check for non-admin users
+    if not current_user.is_admin():
+        if project_id:
+            role = get_effective_role(current_user, request, project_id=project_id)
+            if role is None:
+                return jsonify({'error': 'Insufficient permissions'}), 403
+        elif website_id:
+            role = get_effective_role(current_user, request, website_id=website_id)
+            if role is None:
+                return jsonify({'error': 'Insufficient permissions'}), 403
+
     compare_type = request.args.get('compare_type', 'periods')
 
     if compare_type == 'periods':
@@ -1732,6 +1803,17 @@ def api_trends_progress():
     project_id = request.args.get('project_id')
     website_id = request.args.get('website_id')
     days = int(request.args.get('days', 30))
+
+    # Permission check for non-admin users
+    if not current_user.is_admin():
+        if project_id:
+            role = get_effective_role(current_user, request, project_id=project_id)
+            if role is None:
+                return jsonify({'error': 'Insufficient permissions'}), 403
+        elif website_id:
+            role = get_effective_role(current_user, request, website_id=website_id)
+            if role is None:
+                return jsonify({'error': 'Insufficient permissions'}), 403
 
     if not project_id and not website_id:
         return jsonify({'error': 'Either project_id or website_id is required'}), 400

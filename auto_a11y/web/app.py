@@ -97,6 +97,20 @@ def create_app(config):
     # Initialize database connection (needed before Flask-Login)
     app.db = Database(config.MONGODB_URI, config.DATABASE_NAME)
 
+    # Warn about projects without members (pre-migration)
+    try:
+        empty_count = app.db.projects.count_documents({"$or": [
+            {"members": {"$exists": False}},
+            {"members": {"$size": 0}},
+        ]})
+        if empty_count > 0:
+            logger.warning(
+                f"{empty_count} project(s) have no members. "
+                "Run 'python migrate_add_project_members.py' to populate membership."
+            )
+    except Exception:
+        pass  # Don't block startup
+
     # Configure Flask-Login
     login_manager = LoginManager()
     login_manager.init_app(app)

@@ -20,6 +20,7 @@ from .auth import auth_bp, role_required, admin_required, auditor_required, proj
 from .schedules import schedules_bp
 from .share_tokens import share_tokens_bp
 from .public import public_bp
+from .members import members_bp
 
 __all__ = [
     'projects_bp',
@@ -45,5 +46,6 @@ __all__ = [
     'get_effective_role',
     'schedules_bp',
     'share_tokens_bp',
-    'public_bp'
+    'public_bp',
+    'members_bp'
 ]

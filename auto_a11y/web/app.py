@@ -28,7 +28,8 @@ from auto_a11y.web.routes import (
     auth_bp,
     schedules_bp,
     share_tokens_bp,
-    public_bp
+    public_bp,
+    members_bp
 )
 from auto_a11y.web.routes.demo import demo_bp
 from auto_a11y.reporting.issue_translations_inline import ISSUE_DESCRIPTION_TRANSLATIONS_FR
@@ -217,6 +218,7 @@ def create_app(config):
     app.register_blueprint(schedules_bp, url_prefix='')
     app.register_blueprint(share_tokens_bp, url_prefix='/share-tokens')
     app.register_blueprint(public_bp, url_prefix='')
+    app.register_blueprint(members_bp)
 
     # Global login requirement - protect all routes except auth, static, demo, and health
     @app.before_request

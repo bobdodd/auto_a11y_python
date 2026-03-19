@@ -111,6 +111,13 @@ def create_app(config):
     except Exception:
         pass  # Don't block startup
 
+    # Run group permissions migration (idempotent)
+    from auto_a11y.core.migrate_groups import run_migration
+    try:
+        run_migration(app.db)
+    except Exception as e:
+        logger.error(f"Group migration failed: {e}")
+
     # Configure Flask-Login
     login_manager = LoginManager()
     login_manager.init_app(app)
@@ -234,6 +241,9 @@ def create_app(config):
     app.register_blueprint(public_bp, url_prefix='')
     app.register_blueprint(members_bp)
 
+    from auto_a11y.web.routes.groups import groups_bp
+    app.register_blueprint(groups_bp, url_prefix='/groups')
+
     # Global login requirement - protect all routes except auth, static, demo, and health
     @app.before_request
     def require_login():
@@ -262,10 +272,14 @@ def create_app(config):
     # Template context processor - make user_has_projects available in all templates
     @app.context_processor
     def inject_user_has_projects():
-        if current_user.is_authenticated and not current_user.is_admin():
+        if current_user.is_authenticated and not getattr(current_user, 'is_superadmin', False):
             projects = app.db.get_projects_for_user(str(current_user.get_id()))
             return {'user_has_projects': len(projects) > 0}
         return {'user_has_projects': True}
+
+    # Register permission helpers (user_can, is_superadmin) as template context
+    from auto_a11y.core.permissions import inject_permission_helpers
+    inject_permission_helpers(app)
 
     # Custom Jinja filters
     @app.template_filter('error_code_only')
@@ -354,13 +368,13 @@ def create_app(config):
     def dashboard():
         """Main dashboard"""
         # Non-admin users only see stats for projects they are members of
-        if current_user.is_admin():
+        if getattr(current_user, 'is_superadmin', False):
             user_projects = app.db.get_projects()
         else:
             user_projects = app.db.get_projects_for_user(str(current_user.get_id()))
 
         # If user has no project access, show welcome page
-        if not user_projects and not current_user.is_admin():
+        if not user_projects and not getattr(current_user, 'is_superadmin', False):
             return render_template('dashboard.html', stats=None, config=app.app_config,
                                    has_projects=False)
 
@@ -368,7 +382,7 @@ def create_app(config):
         project_ids = [p.id for p in user_projects]
 
         # Get pages belonging to user's projects
-        if current_user.is_admin():
+        if getattr(current_user, 'is_superadmin', False):
             pages = list(app.db.pages.find({'status': 'tested'}))
             total_pages = app.db.pages.count_documents({})
             tested_pages = app.db.pages.count_documents({'status': 'tested'})

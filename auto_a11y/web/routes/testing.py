@@ -1078,7 +1078,7 @@ def testing_dashboard():
     """Testing dashboard - comprehensive testing control center"""
     db = current_app.db
 
-    if not current_user.is_admin():
+    if not getattr(current_user, 'is_superadmin', False):
         # Non-admin users see a simple greeting on the dashboard
         return render_template('testing/dashboard.html',
             greeting_only=True,
@@ -1367,7 +1367,7 @@ def api_stats():
     website_id = request.args.get('website_id')
 
     # Permission check for non-admin users
-    if not current_user.is_admin():
+    if not getattr(current_user, 'is_superadmin', False):
         if project_id:
             role = get_effective_role(current_user, request, project_id=project_id)
             if role is None:
@@ -1484,7 +1484,7 @@ def api_run_tests():
         return jsonify({'error': 'Either website_id or project_id is required'}), 400
 
     # Check permission on the website/project being tested
-    if not current_user.is_admin():
+    if not getattr(current_user, 'is_superadmin', False):
         if website_id:
             role = get_effective_role(current_user, request, website_id=website_id)
         elif project_id:
@@ -1590,7 +1590,7 @@ def api_trends():
     days = int(request.args.get('days', 30))
 
     # Permission check for non-admin users
-    if not current_user.is_admin():
+    if not getattr(current_user, 'is_superadmin', False):
         if project_id:
             role = get_effective_role(current_user, request, project_id=project_id)
             if role is None:
@@ -1618,7 +1618,7 @@ def api_trends_detailed():
     website_id = request.args.get('website_id')
 
     # Permission check for non-admin users
-    if not current_user.is_admin():
+    if not getattr(current_user, 'is_superadmin', False):
         if project_id:
             role = get_effective_role(current_user, request, project_id=project_id)
             if role is None:
@@ -1708,7 +1708,7 @@ def api_trends_compare():
     website_id = request.args.get('website_id')
 
     # Permission check for non-admin users
-    if not current_user.is_admin():
+    if not getattr(current_user, 'is_superadmin', False):
         if project_id:
             role = get_effective_role(current_user, request, project_id=project_id)
             if role is None:
@@ -1805,7 +1805,7 @@ def api_trends_progress():
     days = int(request.args.get('days', 30))
 
     # Permission check for non-admin users
-    if not current_user.is_admin():
+    if not getattr(current_user, 'is_superadmin', False):
         if project_id:
             role = get_effective_role(current_user, request, project_id=project_id)
             if role is None:

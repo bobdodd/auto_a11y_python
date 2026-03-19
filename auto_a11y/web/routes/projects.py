@@ -21,7 +21,7 @@ projects_bp = Blueprint('projects', __name__)
 def api_list_projects():
     """API endpoint to list projects the current user can access"""
     try:
-        if current_user.is_admin():
+        if getattr(current_user, 'is_superadmin', False):
             projects = current_app.db.get_all_projects()
         else:
             projects = current_app.db.get_projects_for_user(str(current_user.get_id()))
@@ -213,7 +213,7 @@ def list_projects():
     """List all projects"""
     status_filter = request.args.get('status')
     
-    if current_user.is_admin():
+    if getattr(current_user, 'is_superadmin', False):
         if status_filter:
             status = ProjectStatus(status_filter)
             projects = current_app.db.get_projects(status=status)
@@ -332,10 +332,10 @@ def create_project():
         )
         
         project_id = current_app.db.create_project(project)
-        # Auto-add creator as project admin
-        current_app.db.add_project_member(
-            project_id, str(current_user.get_id()), UserRole.ADMIN
-        )
+        # Auto-add creator as member with Admin group
+        admin_group = current_app.db.get_group_by_name('Admin')
+        if admin_group:
+            current_app.db.add_project_member(project_id, str(current_user.get_id()), [admin_group.id])
         flash(f'Project "{name}" created successfully', 'success')
         
         return redirect(url_for('projects.view_project', project_id=project_id))
@@ -513,7 +513,7 @@ def view_project(project_id):
     discovered_pages_cursor = current_app.db.discovered_pages.find({'project_id': project_id}).sort('created_at', -1)
     discovered_pages = list(discovered_pages_cursor)
 
-    is_project_admin = current_user.is_admin() or (
+    is_project_admin = getattr(current_user, 'is_superadmin', False) or (
         hasattr(g, 'effective_role') and g.effective_role == UserRole.ADMIN
     )
 

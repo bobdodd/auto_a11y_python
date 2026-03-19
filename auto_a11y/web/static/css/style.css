@@ -593,3 +593,1255 @@ table caption {
 .text-brand { color: var(--color-brand) !important; }
 .text-link { color: var(--color-link) !important; }
 .text-placeholder { color: var(--color-border) !important; }
+
+/* Dark mode: Bootstrap text-secondary override */
+[data-theme="dark"] .text-secondary {
+    color: var(--color-text-muted) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .text-secondary {
+        color: var(--color-text-muted) !important;
+    }
+}
+
+/* Dark mode: gradient severity headers use darker badge tokens */
+[data-theme="dark"] .severity-header-high {
+    background: linear-gradient(135deg, var(--color-severity-high-badge), var(--color-severity-high-gradient-end));
+    color: var(--color-text-inverse);
+}
+[data-theme="dark"] .severity-header-medium {
+    background: linear-gradient(135deg, var(--color-severity-medium-badge), var(--color-severity-medium-gradient-end));
+    color: var(--color-button-primary-text);
+}
+[data-theme="dark"] .severity-header-pass {
+    background: linear-gradient(135deg, var(--color-severity-pass-badge), var(--color-severity-pass-gradient-end));
+    color: var(--color-text-inverse);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .severity-header-high {
+        background: linear-gradient(135deg, var(--color-severity-high-badge), var(--color-severity-high-gradient-end));
+        color: var(--color-text-inverse);
+    }
+    :root:not([data-theme="light"]) .severity-header-medium {
+        background: linear-gradient(135deg, var(--color-severity-medium-badge), var(--color-severity-medium-gradient-end));
+        color: var(--color-button-primary-text);
+    }
+    :root:not([data-theme="light"]) .severity-header-pass {
+        background: linear-gradient(135deg, var(--color-severity-pass-badge), var(--color-severity-pass-gradient-end));
+        color: var(--color-text-inverse);
+    }
+}
+
+/* ============================================================
+   COMPREHENSIVE DARK-MODE BOOTSTRAP OVERRIDES
+   Override Bootstrap 5.1.3 hardcoded light-mode colours so that
+   every component meets WCAG AA contrast in dark mode.
+
+   Pattern: [data-theme="dark"] for manual toggle,
+   @media (prefers-color-scheme: dark) for OS preference.
+   ============================================================ */
+
+/* --- A. Core Bootstrap CSS Variables + root background --- */
+[data-theme="dark"] {
+    --bs-body-bg: var(--color-bg);
+    --bs-body-color: var(--color-text);
+    --bs-border-color: var(--color-border);
+    --bs-link-color: var(--color-link);
+    --bs-link-hover-color: var(--color-link-hover);
+    --bs-secondary-bg: var(--color-bg-subtle);
+    --bs-tertiary-bg: var(--color-bg-elevated);
+    --bs-emphasis-color: var(--color-text-heading);
+    --bs-secondary-color: var(--color-text-muted);
+    /* Explicit background on <html> so no white leaks through */
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    color-scheme: dark;
+}
+[data-theme="dark"] body {
+    background-color: var(--color-bg) !important;
+    color: var(--color-text) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bs-body-bg: var(--color-bg);
+        --bs-body-color: var(--color-text);
+        --bs-border-color: var(--color-border);
+        --bs-link-color: var(--color-link);
+        --bs-link-hover-color: var(--color-link-hover);
+        --bs-secondary-bg: var(--color-bg-subtle);
+        --bs-tertiary-bg: var(--color-bg-elevated);
+        --bs-emphasis-color: var(--color-text-heading);
+        --bs-secondary-color: var(--color-text-muted);
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        color-scheme: dark;
+    }
+    :root:not([data-theme="light"]) body {
+        background-color: var(--color-bg) !important;
+        color: var(--color-text) !important;
+    }
+}
+
+/* --- B. Background Utilities --- */
+[data-theme="dark"] .bg-light {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .bg-dark {
+    background-color: var(--color-bg-header) !important;
+    color: var(--color-text-inverse) !important;
+}
+[data-theme="dark"] .bg-success {
+    background-color: var(--color-severity-pass) !important;
+}
+[data-theme="dark"] .bg-danger {
+    background-color: var(--color-severity-high) !important;
+}
+[data-theme="dark"] .bg-secondary {
+    background-color: var(--color-severity-low-badge) !important;
+}
+[data-theme="dark"] .bg-white {
+    background-color: var(--color-bg-elevated) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .bg-body {
+    background-color: var(--color-bg) !important;
+    color: var(--color-text) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .bg-light {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .bg-dark {
+        background-color: var(--color-bg-header) !important;
+        color: var(--color-text-inverse) !important;
+    }
+    :root:not([data-theme="light"]) .bg-success {
+        background-color: var(--color-severity-pass) !important;
+    }
+    :root:not([data-theme="light"]) .bg-danger {
+        background-color: var(--color-severity-high) !important;
+    }
+    :root:not([data-theme="light"]) .bg-secondary {
+        background-color: var(--color-severity-low-badge) !important;
+    }
+    :root:not([data-theme="light"]) .bg-white {
+        background-color: var(--color-bg-elevated) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .bg-body {
+        background-color: var(--color-bg) !important;
+        color: var(--color-text) !important;
+    }
+}
+
+/* --- C. Text Utilities --- */
+[data-theme="dark"] .text-muted {
+    color: var(--color-text-muted) !important;
+}
+[data-theme="dark"] .text-dark {
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .text-body {
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .text-light {
+    color: var(--color-text-muted) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .text-muted {
+        color: var(--color-text-muted) !important;
+    }
+    :root:not([data-theme="light"]) .text-dark {
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .text-body {
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .text-light {
+        color: var(--color-text-muted) !important;
+    }
+}
+
+/* --- D. Card Component --- */
+/* Only set bg-elevated on cards that don't have an explicit bg-* colour class */
+[data-theme="dark"] .card:not(.bg-primary):not(.bg-secondary):not(.bg-success):not(.bg-danger):not(.bg-warning):not(.bg-info):not(.bg-dark) {
+    background-color: var(--color-bg-elevated) !important;
+}
+[data-theme="dark"] .card {
+    border-color: var(--color-border) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .card-header:not(.bg-white):not(.bg-primary):not(.bg-secondary):not(.bg-success):not(.bg-danger):not(.bg-warning):not(.bg-info) {
+    background-color: var(--color-bg-subtle) !important;
+}
+[data-theme="dark"] .card-header {
+    border-bottom-color: var(--color-border) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .card-footer {
+    background-color: var(--color-bg-subtle) !important;
+    border-top-color: var(--color-border) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .card-header.bg-warning.text-dark,
+[data-theme="dark"] .card-header.bg-info.text-dark,
+[data-theme="dark"] .card-header.bg-success.text-dark {
+    color: var(--color-text) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .card:not(.bg-primary):not(.bg-secondary):not(.bg-success):not(.bg-danger):not(.bg-warning):not(.bg-info):not(.bg-dark) {
+        background-color: var(--color-bg-elevated) !important;
+    }
+    :root:not([data-theme="light"]) .card {
+        border-color: var(--color-border) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .card-header:not(.bg-white):not(.bg-primary):not(.bg-secondary):not(.bg-success):not(.bg-danger):not(.bg-warning):not(.bg-info) {
+        background-color: var(--color-bg-subtle) !important;
+    }
+    :root:not([data-theme="light"]) .card-header {
+        border-bottom-color: var(--color-border) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .card-footer {
+        background-color: var(--color-bg-subtle) !important;
+        border-top-color: var(--color-border) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .card-header.bg-warning.text-dark,
+    :root:not([data-theme="light"]) .card-header.bg-info.text-dark,
+    :root:not([data-theme="light"]) .card-header.bg-success.text-dark {
+        color: var(--color-text) !important;
+    }
+}
+
+/* --- E. Table Component --- */
+[data-theme="dark"] .table {
+    color: var(--color-text) !important;
+    border-color: var(--color-border-table) !important;
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--color-text);
+    --bs-table-border-color: var(--color-border-table);
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.03);
+    --bs-table-hover-bg: var(--color-bg-subtle);
+}
+[data-theme="dark"] .table > :not(caption) > * > * {
+    border-bottom-color: var(--color-border-table) !important;
+    color: var(--color-text) !important;
+    background-color: transparent;
+}
+[data-theme="dark"] .table-light,
+[data-theme="dark"] .table-light > th,
+[data-theme="dark"] .table-light > td {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .table-hover > tbody > tr:hover > * {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .table-info,
+[data-theme="dark"] .table-info > th,
+[data-theme="dark"] .table-info > td {
+    background-color: var(--color-info-bg) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .table-warning,
+[data-theme="dark"] .table-warning > th,
+[data-theme="dark"] .table-warning > td {
+    background-color: var(--color-severity-medium-bg) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .table-danger,
+[data-theme="dark"] .table-danger > th,
+[data-theme="dark"] .table-danger > td {
+    background-color: var(--color-severity-high-bg) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .table-secondary,
+[data-theme="dark"] .table-secondary > th,
+[data-theme="dark"] .table-secondary > td {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .table-success,
+[data-theme="dark"] .table-success > th,
+[data-theme="dark"] .table-success > td {
+    background-color: var(--color-severity-pass-bg) !important;
+    color: var(--color-text) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .table {
+        color: var(--color-text) !important;
+        border-color: var(--color-border-table) !important;
+        --bs-table-bg: transparent;
+        --bs-table-color: var(--color-text);
+        --bs-table-border-color: var(--color-border-table);
+        --bs-table-striped-bg: rgba(255, 255, 255, 0.03);
+        --bs-table-hover-bg: var(--color-bg-subtle);
+    }
+    :root:not([data-theme="light"]) .table > :not(caption) > * > * {
+        border-bottom-color: var(--color-border-table) !important;
+        color: var(--color-text) !important;
+        background-color: transparent;
+    }
+    :root:not([data-theme="light"]) .table-light,
+    :root:not([data-theme="light"]) .table-light > th,
+    :root:not([data-theme="light"]) .table-light > td {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .table-hover > tbody > tr:hover > * {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .table-striped > tbody > tr:nth-of-type(odd) > * {
+        background-color: rgba(255, 255, 255, 0.03) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .table-info,
+    :root:not([data-theme="light"]) .table-info > th,
+    :root:not([data-theme="light"]) .table-info > td {
+        background-color: var(--color-info-bg) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .table-warning,
+    :root:not([data-theme="light"]) .table-warning > th,
+    :root:not([data-theme="light"]) .table-warning > td {
+        background-color: var(--color-severity-medium-bg) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .table-danger,
+    :root:not([data-theme="light"]) .table-danger > th,
+    :root:not([data-theme="light"]) .table-danger > td {
+        background-color: var(--color-severity-high-bg) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .table-secondary,
+    :root:not([data-theme="light"]) .table-secondary > th,
+    :root:not([data-theme="light"]) .table-secondary > td {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .table-success,
+    :root:not([data-theme="light"]) .table-success > th,
+    :root:not([data-theme="light"]) .table-success > td {
+        background-color: var(--color-severity-pass-bg) !important;
+        color: var(--color-text) !important;
+    }
+}
+
+/* --- F. Dropdown Component --- */
+[data-theme="dark"] .dropdown-menu {
+    background-color: var(--color-bg-elevated) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .dropdown-item {
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:focus {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .dropdown-item.active,
+[data-theme="dark"] .dropdown-item:active {
+    background-color: var(--color-brand) !important;
+    color: var(--color-text-inverse) !important;
+}
+[data-theme="dark"] .dropdown-divider {
+    border-top-color: var(--color-border) !important;
+}
+[data-theme="dark"] .dropdown-header {
+    color: var(--color-text-muted) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .dropdown-menu {
+        background-color: var(--color-bg-elevated) !important;
+        border-color: var(--color-border) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .dropdown-item {
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .dropdown-item:hover,
+    :root:not([data-theme="light"]) .dropdown-item:focus {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .dropdown-item.active,
+    :root:not([data-theme="light"]) .dropdown-item:active {
+        background-color: var(--color-brand) !important;
+        color: var(--color-text-inverse) !important;
+    }
+    :root:not([data-theme="light"]) .dropdown-divider {
+        border-top-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .dropdown-header {
+        color: var(--color-text-muted) !important;
+    }
+}
+
+/* --- G. Modal Component --- */
+[data-theme="dark"] .modal-content {
+    background-color: var(--color-bg-elevated) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .modal-header {
+    border-bottom-color: var(--color-border) !important;
+}
+[data-theme="dark"] .modal-footer {
+    border-top-color: var(--color-border) !important;
+}
+[data-theme="dark"] .modal-title {
+    color: var(--color-text-heading) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .modal-content {
+        background-color: var(--color-bg-elevated) !important;
+        border-color: var(--color-border) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .modal-header {
+        border-bottom-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .modal-footer {
+        border-top-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .modal-title {
+        color: var(--color-text-heading) !important;
+    }
+}
+
+/* --- H. Alert Component --- */
+[data-theme="dark"] .alert-info {
+    background-color: var(--color-info-bg) !important;
+    color: var(--color-info) !important;
+    border-color: var(--color-info-border) !important;
+}
+[data-theme="dark"] .alert-success {
+    background-color: var(--color-severity-pass-bg) !important;
+    color: var(--color-severity-pass) !important;
+    border-color: var(--color-severity-pass-border) !important;
+}
+[data-theme="dark"] .alert-danger {
+    background-color: var(--color-severity-high-bg) !important;
+    color: var(--color-severity-high) !important;
+    border-color: var(--color-severity-high-border) !important;
+}
+[data-theme="dark"] .alert-warning {
+    background-color: var(--color-severity-medium-bg) !important;
+    color: var(--color-severity-medium) !important;
+    border-color: var(--color-severity-medium-border) !important;
+}
+[data-theme="dark"] .alert-secondary {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+    border-color: var(--color-border) !important;
+}
+[data-theme="dark"] .alert a {
+    color: inherit !important;
+    text-decoration: underline !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .alert-info {
+        background-color: var(--color-info-bg) !important;
+        color: var(--color-info) !important;
+        border-color: var(--color-info-border) !important;
+    }
+    :root:not([data-theme="light"]) .alert-success {
+        background-color: var(--color-severity-pass-bg) !important;
+        color: var(--color-severity-pass) !important;
+        border-color: var(--color-severity-pass-border) !important;
+    }
+    :root:not([data-theme="light"]) .alert-danger {
+        background-color: var(--color-severity-high-bg) !important;
+        color: var(--color-severity-high) !important;
+        border-color: var(--color-severity-high-border) !important;
+    }
+    :root:not([data-theme="light"]) .alert-warning {
+        background-color: var(--color-severity-medium-bg) !important;
+        color: var(--color-severity-medium) !important;
+        border-color: var(--color-severity-medium-border) !important;
+    }
+    :root:not([data-theme="light"]) .alert-secondary {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+        border-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .alert a {
+        color: inherit !important;
+        text-decoration: underline !important;
+    }
+}
+
+/* --- I. Badge Component --- */
+[data-theme="dark"] .badge.bg-success {
+    background-color: var(--color-severity-pass-badge) !important;
+    color: var(--color-text-inverse) !important;
+}
+[data-theme="dark"] .badge.bg-danger {
+    background-color: var(--color-severity-high-badge) !important;
+    color: var(--color-text-inverse) !important;
+}
+[data-theme="dark"] .badge.bg-info {
+    background-color: var(--color-info) !important;
+    color: #0e1525 !important;
+}
+[data-theme="dark"] .badge.bg-secondary {
+    background-color: var(--color-severity-low-badge) !important;
+    color: var(--color-text-inverse) !important;
+}
+[data-theme="dark"] .badge.bg-light {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .badge.bg-success {
+        background-color: var(--color-severity-pass-badge) !important;
+        color: var(--color-text-inverse) !important;
+    }
+    :root:not([data-theme="light"]) .badge.bg-danger {
+        background-color: var(--color-severity-high-badge) !important;
+        color: var(--color-text-inverse) !important;
+    }
+    :root:not([data-theme="light"]) .badge.bg-info {
+        background-color: var(--color-info) !important;
+        color: #0e1525 !important;
+    }
+    :root:not([data-theme="light"]) .badge.bg-secondary {
+        background-color: var(--color-severity-low-badge) !important;
+        color: var(--color-text-inverse) !important;
+    }
+    :root:not([data-theme="light"]) .badge.bg-light {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+    }
+}
+
+/* --- J. Form Controls --- */
+[data-theme="dark"] .form-control {
+    background-color: var(--color-bg-input) !important;
+    color: var(--color-text) !important;
+    border-color: var(--color-border-input) !important;
+}
+[data-theme="dark"] .form-control::placeholder {
+    color: var(--color-text-muted) !important;
+}
+[data-theme="dark"] .form-control:focus {
+    background-color: var(--color-bg-input) !important;
+    color: var(--color-text) !important;
+    border-color: var(--color-border-input-focus) !important;
+}
+[data-theme="dark"] .form-control:disabled,
+[data-theme="dark"] .form-control[readonly] {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text-muted) !important;
+}
+[data-theme="dark"] .form-select {
+    background-color: var(--color-bg-input) !important;
+    color: var(--color-text) !important;
+    border-color: var(--color-border-input) !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239d9dae' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+[data-theme="dark"] .form-select:focus {
+    border-color: var(--color-border-input-focus) !important;
+}
+[data-theme="dark"] .input-group-text {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+    border-color: var(--color-border-input) !important;
+}
+[data-theme="dark"] .form-check-input {
+    background-color: var(--color-bg-input) !important;
+    border-color: var(--color-border-input) !important;
+}
+[data-theme="dark"] .form-check-input:checked {
+    background-color: var(--color-brand) !important;
+    border-color: var(--color-brand) !important;
+}
+[data-theme="dark"] .form-label {
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .form-text {
+    color: var(--color-text-muted) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .form-control {
+        background-color: var(--color-bg-input) !important;
+        color: var(--color-text) !important;
+        border-color: var(--color-border-input) !important;
+    }
+    :root:not([data-theme="light"]) .form-control::placeholder {
+        color: var(--color-text-muted) !important;
+    }
+    :root:not([data-theme="light"]) .form-control:focus {
+        background-color: var(--color-bg-input) !important;
+        color: var(--color-text) !important;
+        border-color: var(--color-border-input-focus) !important;
+    }
+    :root:not([data-theme="light"]) .form-control:disabled,
+    :root:not([data-theme="light"]) .form-control[readonly] {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text-muted) !important;
+    }
+    :root:not([data-theme="light"]) .form-select {
+        background-color: var(--color-bg-input) !important;
+        color: var(--color-text) !important;
+        border-color: var(--color-border-input) !important;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%239d9dae' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+    }
+    :root:not([data-theme="light"]) .form-select:focus {
+        border-color: var(--color-border-input-focus) !important;
+    }
+    :root:not([data-theme="light"]) .input-group-text {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+        border-color: var(--color-border-input) !important;
+    }
+    :root:not([data-theme="light"]) .form-check-input {
+        background-color: var(--color-bg-input) !important;
+        border-color: var(--color-border-input) !important;
+    }
+    :root:not([data-theme="light"]) .form-check-input:checked {
+        background-color: var(--color-brand) !important;
+        border-color: var(--color-brand) !important;
+    }
+    :root:not([data-theme="light"]) .form-label {
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .form-text {
+        color: var(--color-text-muted) !important;
+    }
+}
+
+/* --- K0. Base Button Overrides for dark mode --- */
+/* Give all outline buttons an explicit dark background so they never
+   inherit a white container background via transparency. */
+[data-theme="dark"] .btn-outline-primary,
+[data-theme="dark"] .btn-outline-secondary,
+[data-theme="dark"] .btn-outline-success,
+[data-theme="dark"] .btn-outline-danger,
+[data-theme="dark"] .btn-outline-warning,
+[data-theme="dark"] .btn-outline-info,
+[data-theme="dark"] .btn-outline-light,
+[data-theme="dark"] .btn-outline-dark {
+    background-color: var(--color-bg) !important;
+}
+/* btn-primary uses a light bg in dark mode — switch to dark text for AA contrast */
+[data-theme="dark"] .btn-primary {
+    color: var(--color-button-primary-text) !important;
+}
+[data-theme="dark"] .btn-primary:hover,
+[data-theme="dark"] .btn-primary:active {
+    color: var(--color-button-primary-text) !important;
+}
+/* btn-warning: bright yellow bg needs dark text */
+[data-theme="dark"] .btn-warning {
+    background-color: var(--color-severity-medium) !important;
+    border-color: var(--color-severity-medium) !important;
+    color: #0e1525 !important;
+}
+/* btn-dark: invert for dark mode */
+[data-theme="dark"] .btn-dark {
+    background-color: var(--color-text) !important;
+    border-color: var(--color-text) !important;
+    color: var(--color-bg) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .btn-outline-primary,
+    :root:not([data-theme="light"]) .btn-outline-secondary,
+    :root:not([data-theme="light"]) .btn-outline-success,
+    :root:not([data-theme="light"]) .btn-outline-danger,
+    :root:not([data-theme="light"]) .btn-outline-warning,
+    :root:not([data-theme="light"]) .btn-outline-info,
+    :root:not([data-theme="light"]) .btn-outline-light,
+    :root:not([data-theme="light"]) .btn-outline-dark {
+        background-color: var(--color-bg) !important;
+    }
+    :root:not([data-theme="light"]) .btn-primary {
+        color: var(--color-button-primary-text) !important;
+    }
+    :root:not([data-theme="light"]) .btn-primary:hover,
+    :root:not([data-theme="light"]) .btn-primary:active {
+        color: var(--color-button-primary-text) !important;
+    }
+    :root:not([data-theme="light"]) .btn-warning {
+        background-color: var(--color-severity-medium) !important;
+        border-color: var(--color-severity-medium) !important;
+        color: #0e1525 !important;
+    }
+    :root:not([data-theme="light"]) .btn-dark {
+        background-color: var(--color-text) !important;
+        border-color: var(--color-text) !important;
+        color: var(--color-bg) !important;
+    }
+}
+
+/* --- K. Button Variants --- */
+[data-theme="dark"] .btn-success {
+    background-color: var(--color-severity-pass) !important;
+    border-color: var(--color-severity-pass) !important;
+    color: #0e1525 !important;
+}
+[data-theme="dark"] .btn-success:hover {
+    background-color: var(--color-severity-pass-badge) !important;
+    border-color: var(--color-severity-pass-badge) !important;
+    color: var(--color-text-inverse) !important;
+}
+[data-theme="dark"] .btn-danger {
+    background-color: var(--color-severity-high) !important;
+    border-color: var(--color-severity-high) !important;
+    color: #0e1525 !important;
+}
+[data-theme="dark"] .btn-danger:hover {
+    background-color: var(--color-severity-high-badge) !important;
+    border-color: var(--color-severity-high-badge) !important;
+    color: var(--color-text-inverse) !important;
+}
+[data-theme="dark"] .btn-info {
+    background-color: var(--color-info) !important;
+    border-color: var(--color-info) !important;
+    color: #0e1525 !important;
+}
+[data-theme="dark"] .btn-secondary {
+    background-color: var(--color-severity-low-badge) !important;
+    border-color: var(--color-severity-low-badge) !important;
+    color: var(--color-text-inverse) !important;
+}
+[data-theme="dark"] .btn-light {
+    background-color: var(--color-bg-subtle) !important;
+    border-color: var(--color-border) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .btn-outline-success {
+    color: var(--color-severity-pass) !important;
+    border-color: var(--color-severity-pass) !important;
+}
+[data-theme="dark"] .btn-outline-success:hover,
+[data-theme="dark"] .btn-outline-success:active,
+[data-theme="dark"] .btn-outline-success.active {
+    background-color: var(--color-severity-pass) !important;
+    color: #0e1525 !important;
+}
+[data-theme="dark"] .btn-outline-danger {
+    color: var(--color-severity-high) !important;
+    border-color: var(--color-severity-high) !important;
+}
+[data-theme="dark"] .btn-outline-danger:hover,
+[data-theme="dark"] .btn-outline-danger:active,
+[data-theme="dark"] .btn-outline-danger.active {
+    background-color: var(--color-severity-high) !important;
+    color: #0e1525 !important;
+}
+[data-theme="dark"] .btn-outline-info {
+    color: var(--color-info) !important;
+    border-color: var(--color-info) !important;
+}
+[data-theme="dark"] .btn-outline-info:hover,
+[data-theme="dark"] .btn-outline-info:active,
+[data-theme="dark"] .btn-outline-info.active {
+    background-color: var(--color-info) !important;
+    color: #0e1525 !important;
+}
+[data-theme="dark"] .btn-outline-secondary {
+    color: var(--color-text-muted) !important;
+    border-color: var(--color-border) !important;
+}
+[data-theme="dark"] .btn-outline-secondary:hover,
+[data-theme="dark"] .btn-outline-secondary:active,
+[data-theme="dark"] .btn-outline-secondary.active {
+    background-color: var(--color-severity-low-badge) !important;
+    color: var(--color-text-inverse) !important;
+}
+[data-theme="dark"] .btn-outline-light {
+    color: var(--color-text) !important;
+    border-color: var(--color-border) !important;
+}
+[data-theme="dark"] .btn-outline-light:hover {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .btn-success {
+        background-color: var(--color-severity-pass) !important;
+        border-color: var(--color-severity-pass) !important;
+        color: #0e1525 !important;
+    }
+    :root:not([data-theme="light"]) .btn-success:hover {
+        background-color: var(--color-severity-pass-badge) !important;
+        border-color: var(--color-severity-pass-badge) !important;
+        color: var(--color-text-inverse) !important;
+    }
+    :root:not([data-theme="light"]) .btn-danger {
+        background-color: var(--color-severity-high) !important;
+        border-color: var(--color-severity-high) !important;
+        color: #0e1525 !important;
+    }
+    :root:not([data-theme="light"]) .btn-danger:hover {
+        background-color: var(--color-severity-high-badge) !important;
+        border-color: var(--color-severity-high-badge) !important;
+        color: var(--color-text-inverse) !important;
+    }
+    :root:not([data-theme="light"]) .btn-info {
+        background-color: var(--color-info) !important;
+        border-color: var(--color-info) !important;
+        color: #0e1525 !important;
+    }
+    :root:not([data-theme="light"]) .btn-secondary {
+        background-color: var(--color-severity-low-badge) !important;
+        border-color: var(--color-severity-low-badge) !important;
+        color: var(--color-text-inverse) !important;
+    }
+    :root:not([data-theme="light"]) .btn-light {
+        background-color: var(--color-bg-subtle) !important;
+        border-color: var(--color-border) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .btn-outline-success {
+        color: var(--color-severity-pass) !important;
+        border-color: var(--color-severity-pass) !important;
+    }
+    :root:not([data-theme="light"]) .btn-outline-success:hover,
+    :root:not([data-theme="light"]) .btn-outline-success:active,
+    :root:not([data-theme="light"]) .btn-outline-success.active {
+        background-color: var(--color-severity-pass) !important;
+        color: #0e1525 !important;
+    }
+    :root:not([data-theme="light"]) .btn-outline-danger {
+        color: var(--color-severity-high) !important;
+        border-color: var(--color-severity-high) !important;
+    }
+    :root:not([data-theme="light"]) .btn-outline-danger:hover,
+    :root:not([data-theme="light"]) .btn-outline-danger:active,
+    :root:not([data-theme="light"]) .btn-outline-danger.active {
+        background-color: var(--color-severity-high) !important;
+        color: #0e1525 !important;
+    }
+    :root:not([data-theme="light"]) .btn-outline-info {
+        color: var(--color-info) !important;
+        border-color: var(--color-info) !important;
+    }
+    :root:not([data-theme="light"]) .btn-outline-info:hover,
+    :root:not([data-theme="light"]) .btn-outline-info:active,
+    :root:not([data-theme="light"]) .btn-outline-info.active {
+        background-color: var(--color-info) !important;
+        color: #0e1525 !important;
+    }
+    :root:not([data-theme="light"]) .btn-outline-secondary {
+        color: var(--color-text-muted) !important;
+        border-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .btn-outline-secondary:hover,
+    :root:not([data-theme="light"]) .btn-outline-secondary:active,
+    :root:not([data-theme="light"]) .btn-outline-secondary.active {
+        background-color: var(--color-severity-low-badge) !important;
+        color: var(--color-text-inverse) !important;
+    }
+    :root:not([data-theme="light"]) .btn-outline-light {
+        color: var(--color-text) !important;
+        border-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .btn-outline-light:hover {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+    }
+}
+
+/* --- L. Breadcrumb, Pagination, List Group --- */
+[data-theme="dark"] .breadcrumb {
+    color: var(--color-text-muted) !important;
+}
+[data-theme="dark"] .breadcrumb-item + .breadcrumb-item::before {
+    color: var(--color-text-muted) !important;
+}
+[data-theme="dark"] .breadcrumb-item a {
+    color: var(--color-link) !important;
+}
+[data-theme="dark"] .breadcrumb-item.active {
+    color: var(--color-text-muted) !important;
+}
+[data-theme="dark"] .page-link {
+    background-color: var(--color-bg-elevated) !important;
+    color: var(--color-link) !important;
+    border-color: var(--color-border) !important;
+}
+[data-theme="dark"] .page-link:hover {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-link-hover) !important;
+}
+[data-theme="dark"] .page-item.active .page-link {
+    background-color: var(--color-brand) !important;
+    border-color: var(--color-brand) !important;
+    color: var(--color-text-inverse) !important;
+}
+[data-theme="dark"] .page-item.disabled .page-link {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text-muted) !important;
+    border-color: var(--color-border) !important;
+}
+[data-theme="dark"] .list-group-item {
+    background-color: var(--color-bg-elevated) !important;
+    color: var(--color-text) !important;
+    border-color: var(--color-border) !important;
+}
+[data-theme="dark"] .list-group-item.active {
+    background-color: var(--color-brand) !important;
+    border-color: var(--color-brand) !important;
+    color: var(--color-text-inverse) !important;
+}
+[data-theme="dark"] .list-group-item-action:hover,
+[data-theme="dark"] .list-group-item-action:focus {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .breadcrumb {
+        color: var(--color-text-muted) !important;
+    }
+    :root:not([data-theme="light"]) .breadcrumb-item + .breadcrumb-item::before {
+        color: var(--color-text-muted) !important;
+    }
+    :root:not([data-theme="light"]) .breadcrumb-item a {
+        color: var(--color-link) !important;
+    }
+    :root:not([data-theme="light"]) .breadcrumb-item.active {
+        color: var(--color-text-muted) !important;
+    }
+    :root:not([data-theme="light"]) .page-link {
+        background-color: var(--color-bg-elevated) !important;
+        color: var(--color-link) !important;
+        border-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .page-link:hover {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-link-hover) !important;
+    }
+    :root:not([data-theme="light"]) .page-item.active .page-link {
+        background-color: var(--color-brand) !important;
+        border-color: var(--color-brand) !important;
+        color: var(--color-text-inverse) !important;
+    }
+    :root:not([data-theme="light"]) .page-item.disabled .page-link {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text-muted) !important;
+        border-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .list-group-item {
+        background-color: var(--color-bg-elevated) !important;
+        color: var(--color-text) !important;
+        border-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .list-group-item.active {
+        background-color: var(--color-brand) !important;
+        border-color: var(--color-brand) !important;
+        color: var(--color-text-inverse) !important;
+    }
+    :root:not([data-theme="light"]) .list-group-item-action:hover,
+    :root:not([data-theme="light"]) .list-group-item-action:focus {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+    }
+}
+
+/* --- M. Accordion --- */
+[data-theme="dark"] .accordion-button {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .accordion-button:not(.collapsed) {
+    background-color: var(--color-brand-subtle) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .accordion-button::after {
+    filter: invert(1) brightness(2);
+}
+[data-theme="dark"] .accordion-body {
+    background-color: var(--color-bg) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .accordion-item {
+    border-color: var(--color-border) !important;
+    background-color: var(--color-bg) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .accordion-button {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .accordion-button:not(.collapsed) {
+        background-color: var(--color-brand-subtle) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .accordion-button::after {
+        filter: invert(1) brightness(2);
+    }
+    :root:not([data-theme="light"]) .accordion-body {
+        background-color: var(--color-bg) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .accordion-item {
+        border-color: var(--color-border) !important;
+        background-color: var(--color-bg) !important;
+    }
+}
+
+/* --- N. Nav Tabs --- */
+[data-theme="dark"] .nav-tabs {
+    border-bottom-color: var(--color-border) !important;
+}
+[data-theme="dark"] .nav-tabs .nav-link {
+    color: var(--color-text-muted) !important;
+}
+[data-theme="dark"] .nav-tabs .nav-link:hover,
+[data-theme="dark"] .nav-tabs .nav-link:focus {
+    border-color: var(--color-border) var(--color-border) transparent !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .nav-tabs .nav-link.active {
+    background-color: var(--color-bg) !important;
+    color: var(--color-text) !important;
+    border-color: var(--color-border) var(--color-border) var(--color-bg) !important;
+}
+[data-theme="dark"] .nav-pills .nav-link {
+    color: var(--color-text-muted) !important;
+}
+[data-theme="dark"] .nav-pills .nav-link.active {
+    background-color: var(--color-brand) !important;
+    color: var(--color-text-inverse) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .nav-tabs {
+        border-bottom-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .nav-tabs .nav-link {
+        color: var(--color-text-muted) !important;
+    }
+    :root:not([data-theme="light"]) .nav-tabs .nav-link:hover,
+    :root:not([data-theme="light"]) .nav-tabs .nav-link:focus {
+        border-color: var(--color-border) var(--color-border) transparent !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .nav-tabs .nav-link.active {
+        background-color: var(--color-bg) !important;
+        color: var(--color-text) !important;
+        border-color: var(--color-border) var(--color-border) var(--color-bg) !important;
+    }
+    :root:not([data-theme="light"]) .nav-pills .nav-link {
+        color: var(--color-text-muted) !important;
+    }
+    :root:not([data-theme="light"]) .nav-pills .nav-link.active {
+        background-color: var(--color-brand) !important;
+        color: var(--color-text-inverse) !important;
+    }
+}
+
+/* --- O. Miscellaneous --- */
+[data-theme="dark"] .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+[data-theme="dark"] .border {
+    border-color: var(--color-border) !important;
+}
+[data-theme="dark"] .border-top {
+    border-top-color: var(--color-border) !important;
+}
+[data-theme="dark"] .border-bottom {
+    border-bottom-color: var(--color-border) !important;
+}
+[data-theme="dark"] .border-start {
+    border-left-color: var(--color-border) !important;
+}
+[data-theme="dark"] .border-end {
+    border-right-color: var(--color-border) !important;
+}
+[data-theme="dark"] hr {
+    color: var(--color-border) !important;
+    border-color: var(--color-border) !important;
+}
+[data-theme="dark"] .offcanvas {
+    background-color: var(--color-bg-elevated) !important;
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .toast {
+    background-color: var(--color-bg-elevated) !important;
+    color: var(--color-text) !important;
+    border-color: var(--color-border) !important;
+}
+[data-theme="dark"] .toast-header {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+    border-bottom-color: var(--color-border) !important;
+}
+[data-theme="dark"] .popover {
+    background-color: var(--color-bg-elevated) !important;
+    border-color: var(--color-border) !important;
+}
+[data-theme="dark"] .popover-header {
+    background-color: var(--color-bg-subtle) !important;
+    color: var(--color-text) !important;
+    border-bottom-color: var(--color-border) !important;
+}
+[data-theme="dark"] .popover-body {
+    color: var(--color-text) !important;
+}
+[data-theme="dark"] .tooltip-inner {
+    background-color: var(--color-bg-header) !important;
+    color: var(--color-text-inverse) !important;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+    :root:not([data-theme="light"]) .border {
+        border-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .border-top {
+        border-top-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .border-bottom {
+        border-bottom-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .border-start {
+        border-left-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .border-end {
+        border-right-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) hr {
+        color: var(--color-border) !important;
+        border-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .offcanvas {
+        background-color: var(--color-bg-elevated) !important;
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .toast {
+        background-color: var(--color-bg-elevated) !important;
+        color: var(--color-text) !important;
+        border-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .toast-header {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+        border-bottom-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .popover {
+        background-color: var(--color-bg-elevated) !important;
+        border-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .popover-header {
+        background-color: var(--color-bg-subtle) !important;
+        color: var(--color-text) !important;
+        border-bottom-color: var(--color-border) !important;
+    }
+    :root:not([data-theme="light"]) .popover-body {
+        color: var(--color-text) !important;
+    }
+    :root:not([data-theme="light"]) .tooltip-inner {
+        background-color: var(--color-bg-header) !important;
+        color: var(--color-text-inverse) !important;
+    }
+}
+
+/* === Combobox (member search) === */
+.combobox-wrapper {
+    position: relative;
+}
+
+.combobox-listbox {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1050;
+    max-height: 260px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border, var(--bs-border-color));
+    border-top: none;
+    border-radius: 0 0 var(--bs-border-radius) var(--bs-border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.combobox-option {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.combobox-option:last-child {
+    border-bottom: none;
+}
+
+.combobox-option:hover,
+.combobox-option.active {
+    background: var(--color-bg-subtle);
+}
+
+.combobox-option-name {
+    font-weight: 500;
+    color: var(--color-text, var(--bs-body-color));
+}
+
+.combobox-option-email {
+    font-size: 0.85em;
+    color: var(--color-text-muted, var(--bs-secondary-color));
+}
+
+.combobox-option mark {
+    background: rgba(var(--bs-primary-rgb), 0.2);
+    color: inherit;
+    padding: 0;
+    border-radius: 2px;
+}
+
+.combobox-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border, var(--bs-border-color));
+    border-radius: 1rem;
+    font-size: 0.85rem;
+    color: var(--color-text, var(--bs-body-color));
+    margin-bottom: 0.25rem;
+}
+
+.combobox-chip-clear {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 1.1rem;
+    line-height: 1;
+    color: var(--color-text-muted, var(--bs-secondary-color));
+    cursor: pointer;
+    opacity: 0.7;
+}
+
+.combobox-chip-clear:hover {
+    opacity: 1;
+}
+
+.combobox-hint {
+    margin-top: 0.25rem;
+}
+
+.combobox-no-results {
+    padding: 0.75rem;
+    text-align: center;
+    color: var(--color-text-muted, var(--bs-secondary-color));
+    font-style: italic;
+}

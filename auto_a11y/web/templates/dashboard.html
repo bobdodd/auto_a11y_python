@@ -4,6 +4,26 @@
 
 {% block content %}
 <div class="container-fluid">
+    {% if not has_projects %}
+    {# Welcome dashboard for users with no project access #}
+    <h1 class="mb-4">{{ _('Hello, %(name)s!', name=current_user.name_display) }}</h1>
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8 col-lg-6">
+            <div class="card text-center">
+                <div class="card-body py-5">
+                    <i class="bi bi-person-check display-1 text-primary mb-3" aria-hidden="true"></i>
+                    <h2 class="card-title">{{ _('Welcome to Auto A11y') }}</h2>
+                    <p class="card-text text-muted">
+                        {{ _('Your account has been created. An administrator will grant you access to projects shortly.') }}
+                    </p>
+                    <p class="card-text text-muted">
+                        {{ _('Once you have been added to a project, you will be able to view reports and results here.') }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
     <h1 class="mb-4">{{ _('Dashboard') }}</h1>
 
     <!-- Statistics Cards -->
@@ -196,5 +216,6 @@
             </section>
         </div>
     </div>
+    {% endif %}
 </div>
 {% endblock %}

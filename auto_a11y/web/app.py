@@ -259,6 +259,14 @@ def create_app(config):
                 return jsonify({'error': 'Authentication required'}), 401
             return redirect(url_for('auth.login', next=request.url))
 
+    # Template context processor - make user_has_projects available in all templates
+    @app.context_processor
+    def inject_user_has_projects():
+        if current_user.is_authenticated and not current_user.is_admin():
+            projects = app.db.get_projects_for_user(str(current_user.get_id()))
+            return {'user_has_projects': len(projects) > 0}
+        return {'user_has_projects': True}
+
     # Custom Jinja filters
     @app.template_filter('error_code_only')
     def error_code_only(violation_id):
@@ -345,32 +353,64 @@ def create_app(config):
     @login_required
     def dashboard():
         """Main dashboard"""
-        # Get only the latest test results for each page
-        pages = list(app.db.pages.find({'status': 'tested'}))
+        # Non-admin users only see stats for projects they are members of
+        if current_user.is_admin():
+            user_projects = app.db.get_projects()
+        else:
+            user_projects = app.db.get_projects_for_user(str(current_user.get_id()))
+
+        # If user has no project access, show welcome page
+        if not user_projects and not current_user.is_admin():
+            return render_template('dashboard.html', stats=None, config=app.app_config,
+                                   has_projects=False)
+
+        # Collect project IDs to scope the stats query
+        project_ids = [p.id for p in user_projects]
+
+        # Get pages belonging to user's projects
+        if current_user.is_admin():
+            pages = list(app.db.pages.find({'status': 'tested'}))
+            total_pages = app.db.pages.count_documents({})
+            tested_pages = app.db.pages.count_documents({'status': 'tested'})
+        else:
+            # Get website IDs for user's projects
+            website_ids = []
+            for pid in project_ids:
+                for w in app.db.get_websites(pid):
+                    website_ids.append(w.id)
+            if website_ids:
+                pages = list(app.db.pages.find({
+                    'website_id': {'$in': website_ids},
+                    'status': 'tested'
+                }))
+                total_pages = app.db.pages.count_documents({'website_id': {'$in': website_ids}})
+                tested_pages = app.db.pages.count_documents({
+                    'website_id': {'$in': website_ids},
+                    'status': 'tested'
+                })
+            else:
+                pages = []
+                total_pages = 0
+                tested_pages = 0
+
         total_violations = 0
         total_warnings = 0
         total_info = 0
         total_discovery = 0
-        
+
         for page in pages:
-            # Get the latest test result for this page
-            # Note: page_id is stored as string in test_results
             latest_result = app.db.test_results.find_one(
                 {'page_id': str(page['_id'])},
                 sort=[('created_at', -1)]
             )
-            
+
             if latest_result:
-                # For existing data, we need to categorize from violations array
-                # New data will have separate arrays
                 if 'info' in latest_result and 'discovery' in latest_result:
-                    # New format with separate arrays
                     total_violations += len(latest_result.get('violations', []))
                     total_warnings += len(latest_result.get('warnings', []))
                     total_info += len(latest_result.get('info', []))
                     total_discovery += len(latest_result.get('discovery', []))
                 else:
-                    # Old format - categorize based on ID patterns
                     for item in latest_result.get('violations', []):
                         item_id = item.get('id', '')
                         if '_Err' in item_id:
@@ -382,22 +422,20 @@ def create_app(config):
                         elif '_Disco' in item_id:
                             total_discovery += 1
                         else:
-                            total_violations += 1  # Default to violations
-                    
-                    # Also count items in warnings array
+                            total_violations += 1
                     total_warnings += len(latest_result.get('warnings', []))
-        
+
         stats = {
-            'projects': len(app.db.get_projects()),
-            'total_pages': app.db.pages.count_documents({}),
-            'tested_pages': app.db.pages.count_documents({'status': 'tested'}),
+            'projects': len(user_projects),
+            'total_pages': total_pages,
+            'tested_pages': tested_pages,
             'total_violations': total_violations,
             'total_warnings': total_warnings,
             'total_info': total_info,
             'total_discovery': total_discovery,
-            'total_test_results': app.db.test_results.count_documents({})
         }
-        return render_template('dashboard.html', stats=stats, config=app.app_config)
+        return render_template('dashboard.html', stats=stats, config=app.app_config,
+                               has_projects=True)
     
     @app.route('/health')
     def health():

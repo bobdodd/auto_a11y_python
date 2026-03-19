@@ -378,8 +378,15 @@ def complete_microsoft_auth(auth_request, redirect_uri):
 
 def _google_flow(redirect_uri):
     """Create a Google OAuth2 flow."""
+    import os
     from google_auth_oauthlib.flow import Flow
     config = current_app.app_config
+    # Allow http:// redirect URIs in local development (debug mode only)
+    if current_app.debug:
+        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    # Google returns fully-qualified scope URLs that differ from the
+    # shorthand names we request; accept the changed scopes.
+    os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
     return Flow.from_client_config(
         {
             'web': {
@@ -399,6 +406,9 @@ def get_google_auth_url(redirect_uri):
     flow = _google_flow(redirect_uri)
     auth_url, state = flow.authorization_url(prompt='select_account')
     session['google_oauth_state'] = state
+    # PKCE: the library generates a code_verifier automatically;
+    # persist it so the callback flow can send it with the token request.
+    session['google_code_verifier'] = flow.code_verifier
     return auth_url
 
 
@@ -411,8 +421,11 @@ def complete_google_auth(auth_request, redirect_uri):
     if state is None:
         return None
 
+    code_verifier = session.pop('google_code_verifier', None)
+
     try:
         flow = _google_flow(redirect_uri)
+        flow.code_verifier = code_verifier
         flow.fetch_token(authorization_response=auth_request.url)
     except Exception:
         logger.warning('Google SSO token exchange failed', exc_info=True)

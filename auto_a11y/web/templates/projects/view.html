@@ -405,10 +405,26 @@
             <div id="add-member-form" class="mb-3" style="display:none;">
                 <div class="row g-2 align-items-end">
                     <div class="col-md-5">
-                        <label for="new-member-user" class="form-label">{{ _('User') }}</label>
-                        <select id="new-member-user" class="form-select form-select-sm">
-                            <option value="">{{ _('Select a user...') }}</option>
-                        </select>
+                        <label for="member-search-input" class="form-label">{{ _('User') }}</label>
+                        <div class="combobox-wrapper" id="member-combobox">
+                            <div id="member-chip" class="combobox-chip" style="display:none;">
+                                <span id="member-chip-text"></span>
+                                <button type="button" class="combobox-chip-clear" aria-label="{{ _('Clear selection') }}" onclick="clearMemberSelection()">&times;</button>
+                            </div>
+                            <input type="text" id="member-search-input"
+                                   class="form-control form-control-sm"
+                                   role="combobox"
+                                   aria-expanded="false"
+                                   aria-controls="member-search-listbox"
+                                   aria-activedescendant=""
+                                   aria-autocomplete="list"
+                                   autocomplete="off"
+                                   placeholder="{{ _('Search by email or name...') }}" />
+                            <div class="combobox-hint text-muted small" id="member-search-hint">{{ _('Type at least 2 characters to search') }}</div>
+                            <ul id="member-search-listbox" class="combobox-listbox" role="listbox" hidden></ul>
+                            <div id="member-search-live" aria-live="polite" class="visually-hidden"></div>
+                            <input type="hidden" id="new-member-user" value="" />
+                        </div>
                     </div>
                     <div class="col-md-4">
                         <label for="new-member-role" class="form-label">{{ _('Role') }}</label>
@@ -657,15 +673,8 @@ async function loadMembers() {
             document.getElementById('no-members-msg').style.display = '';
         }
 
-        // Populate available users dropdown
-        const sel = document.getElementById('new-member-user');
-        sel.innerHTML = '<option value="">Select a user...</option>';
-        data.available_users.forEach(u => {
-            const opt = document.createElement('option');
-            opt.value = u.user_id;
-            opt.textContent = u.display_name || u.email;
-            sel.appendChild(opt);
-        });
+        // Reset combobox state
+        clearMemberSelection();
 
         document.getElementById('add-member-form').style.display = '';
     } catch (e) {
@@ -710,7 +719,216 @@ async function removeMember(userId) {
     loadMembers();
 }
 
-document.addEventListener('DOMContentLoaded', loadMembers);
+// --- Member search combobox ---
+let memberSearchTimeout = null;
+let memberActiveIndex = -1;
+let memberSearchResults = [];
+
+function onMemberSearchInput() {
+    const input = document.getElementById('member-search-input');
+    const q = input.value.trim();
+    const hint = document.getElementById('member-search-hint');
+
+    clearTimeout(memberSearchTimeout);
+    memberActiveIndex = -1;
+
+    if (q.length < 2) {
+        closeMemberListbox();
+        hint.style.display = '';
+        return;
+    }
+
+    hint.style.display = 'none';
+    memberSearchTimeout = setTimeout(() => {
+        showMemberSearching();
+        fetchMemberSearch(q);
+    }, 300);
+}
+
+function showMemberSearching() {
+    const listbox = document.getElementById('member-search-listbox');
+    const input = document.getElementById('member-search-input');
+    listbox.innerHTML = '<li class="combobox-no-results" role="option" aria-disabled="true">{{ _("Searching...") }}</li>';
+    listbox.hidden = false;
+    input.setAttribute('aria-expanded', 'true');
+}
+
+async function fetchMemberSearch(q) {
+    const params = new URLSearchParams({q, exclude_project: PROJECT_ID, limit: '10'});
+    try {
+        const resp = await fetch(`/members/api/search-users?${params}`);
+        if (!resp.ok) return;
+        const data = await resp.json();
+        memberSearchResults = data.users;
+        renderMemberResults(data.users, q);
+    } catch (e) {
+        console.error('Member search failed:', e);
+    }
+}
+
+function renderMemberResults(users, query) {
+    const listbox = document.getElementById('member-search-listbox');
+    const input = document.getElementById('member-search-input');
+    const liveRegion = document.getElementById('member-search-live');
+
+    listbox.innerHTML = '';
+    memberActiveIndex = -1;
+
+    if (users.length === 0) {
+        listbox.innerHTML = '<li class="combobox-no-results" role="option" aria-disabled="true">{{ _("No users found") }}</li>';
+        listbox.hidden = false;
+        input.setAttribute('aria-expanded', 'true');
+        liveRegion.textContent = '{{ _("No users found") }}';
+        return;
+    }
+
+    const terms = query.trim().toLowerCase().split(/\s+/);
+
+    users.forEach((u, i) => {
+        const li = document.createElement('li');
+        li.className = 'combobox-option';
+        li.id = `member-opt-${i}`;
+        li.setAttribute('role', 'option');
+        li.onclick = () => selectMember(u);
+
+        const nameText = u.display_name || '';
+        const emailText = u.email;
+
+        li.innerHTML = nameText
+            ? `<div class="combobox-option-name">${highlightTerms(nameText, terms)}</div>
+               <div class="combobox-option-email">${highlightTerms(emailText, terms)}</div>`
+            : `<div class="combobox-option-name">${highlightTerms(emailText, terms)}</div>`;
+        listbox.appendChild(li);
+    });
+
+    listbox.hidden = false;
+    input.setAttribute('aria-expanded', 'true');
+    liveRegion.textContent = users.length + ' {{ _("users found") }}';
+}
+
+function highlightTerms(text, terms) {
+    if (!text) return '';
+    let result = escapeHtml(text);
+    terms.forEach(term => {
+        if (!term) return;
+        const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`(${escapedTerm})`, 'gi');
+        result = result.replace(regex, '<mark>$1</mark>');
+    });
+    return result;
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function onMemberSearchKeyDown(e) {
+    const listbox = document.getElementById('member-search-listbox');
+    if (listbox.hidden) return;
+
+    const options = listbox.querySelectorAll('.combobox-option:not([aria-disabled])');
+    if (options.length === 0) return;
+
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        memberActiveIndex = Math.min(memberActiveIndex + 1, options.length - 1);
+        updateMemberActiveOption(options);
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        memberActiveIndex = Math.max(memberActiveIndex - 1, 0);
+        updateMemberActiveOption(options);
+    } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (memberActiveIndex >= 0 && memberActiveIndex < memberSearchResults.length) {
+            selectMember(memberSearchResults[memberActiveIndex]);
+        }
+    } else if (e.key === 'Escape') {
+        e.preventDefault();
+        closeMemberListbox();
+        document.getElementById('member-search-input').value = '';
+    } else if (e.key === 'Tab') {
+        closeMemberListbox();
+        // Don't preventDefault — let focus move naturally
+    }
+}
+
+function updateMemberActiveOption(options) {
+    const input = document.getElementById('member-search-input');
+    options.forEach((opt, i) => {
+        opt.classList.toggle('active', i === memberActiveIndex);
+    });
+    if (memberActiveIndex >= 0 && options[memberActiveIndex]) {
+        input.setAttribute('aria-activedescendant', options[memberActiveIndex].id);
+        options[memberActiveIndex].scrollIntoView({block: 'nearest'});
+    }
+}
+
+function selectMember(user) {
+    const hidden = document.getElementById('new-member-user');
+    const input = document.getElementById('member-search-input');
+    const chip = document.getElementById('member-chip');
+    const chipText = document.getElementById('member-chip-text');
+
+    hidden.value = user.user_id;
+    const displayText = user.display_name
+        ? `${user.display_name} (${user.email})`
+        : user.email;
+    chipText.textContent = displayText;
+
+    chip.style.display = '';
+    input.style.display = 'none';
+    document.getElementById('member-search-hint').style.display = 'none';
+    closeMemberListbox();
+}
+
+function clearMemberSelection() {
+    const hidden = document.getElementById('new-member-user');
+    const input = document.getElementById('member-search-input');
+    const chip = document.getElementById('member-chip');
+    const hint = document.getElementById('member-search-hint');
+
+    if (hidden) hidden.value = '';
+    if (input) {
+        input.value = '';
+        input.style.display = '';
+    }
+    if (chip) chip.style.display = 'none';
+    if (hint) hint.style.display = '';
+    closeMemberListbox();
+    memberSearchResults = [];
+}
+
+function closeMemberListbox() {
+    const listbox = document.getElementById('member-search-listbox');
+    const input = document.getElementById('member-search-input');
+    if (listbox) {
+        listbox.hidden = true;
+        listbox.innerHTML = '';
+    }
+    if (input) {
+        input.setAttribute('aria-expanded', 'false');
+        input.setAttribute('aria-activedescendant', '');
+    }
+    memberActiveIndex = -1;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadMembers();
+    const searchInput = document.getElementById('member-search-input');
+    if (searchInput) {
+        searchInput.addEventListener('input', onMemberSearchInput);
+        searchInput.addEventListener('keydown', onMemberSearchKeyDown);
+    }
+    // Close combobox on outside click
+    document.addEventListener('click', (e) => {
+        const wrapper = document.getElementById('member-combobox');
+        if (wrapper && !wrapper.contains(e.target)) {
+            closeMemberListbox();
+        }
+    });
+});
 </script>
 {% endif %}
 <script>

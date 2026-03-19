@@ -26,18 +26,8 @@ def list_project_members(project_id):
             'display_name': user.display_name if user else None,
         })
 
-    # Get all users for the "add member" dropdown (exclude current members)
-    member_ids = {m.user_id for m in project.members}
-    all_users = current_app.db.get_app_users()
-    available_users = [
-        {'user_id': str(u.get_id()), 'email': u.email, 'display_name': u.display_name}
-        for u in all_users
-        if str(u.get_id()) not in member_ids
-    ]
-
     return jsonify({
         'members': members,
-        'available_users': available_users,
         'roles': [r.value for r in UserRole],
     })
 
@@ -118,6 +108,46 @@ def remove_project_member(project_id, user_id):
 
     current_app.db.remove_project_member(project_id, user_id)
     return jsonify({'success': True})
+
+
+@members_bp.route('/members/api/search-users', methods=['GET'])
+def search_users():
+    """Search app users by email or display name for member autocomplete."""
+    q = request.args.get('q', '').strip()
+    if len(q) < 2:
+        return jsonify({'users': []})
+
+    exclude_project = request.args.get('exclude_project', '').strip()
+    try:
+        limit = min(int(request.args.get('limit', 10)), 20)
+    except (ValueError, TypeError):
+        limit = 10
+
+    exclude_ids = []
+    if exclude_project:
+        try:
+            project = current_app.db.get_project(exclude_project)
+            if project:
+                exclude_ids = [m.user_id for m in project.members]
+        except Exception:
+            pass  # Invalid project ID — ignore exclusion filter
+
+    users = current_app.db.search_app_users(
+        query=q,
+        exclude_user_ids=exclude_ids if exclude_ids else None,
+        limit=limit
+    )
+
+    return jsonify({
+        'users': [
+            {
+                'user_id': str(u.get_id()),
+                'email': u.email,
+                'display_name': u.display_name,
+            }
+            for u in users
+        ]
+    })
 
 
 # --- Website member overrides ---

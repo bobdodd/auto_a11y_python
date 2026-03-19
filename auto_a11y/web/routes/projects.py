@@ -19,9 +19,12 @@ projects_bp = Blueprint('projects', __name__)
 @projects_bp.route('/api/list')
 @login_required
 def api_list_projects():
-    """API endpoint to list all projects"""
+    """API endpoint to list projects the current user can access"""
     try:
-        projects = current_app.db.get_all_projects()
+        if current_user.is_admin():
+            projects = current_app.db.get_all_projects()
+        else:
+            projects = current_app.db.get_projects_for_user(str(current_user.get_id()))
         return jsonify({
             'success': True,
             'projects': [
@@ -39,6 +42,7 @@ def api_list_projects():
 
 @projects_bp.route('/api/<project_id>/websites')
 @login_required
+@project_role_required(UserRole.ADMIN, UserRole.AUDITOR, UserRole.CLIENT)
 def api_project_websites(project_id):
     """API endpoint to list websites in a project"""
     try:

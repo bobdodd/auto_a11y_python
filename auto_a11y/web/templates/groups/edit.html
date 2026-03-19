@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}{{ (_('Edit Group') if group else _('Create Group')) }} - {{ _('Auto A11y') }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-2">
+    <h1 class="mb-0">
+        <i class="bi bi-shield-lock" aria-hidden="true"></i>
+        {{ _('Edit Group') if group else _('Create Group') }}
+    </h1>
+    <a href="{{ url_for('groups.list_groups') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ _('Back to Groups') }}
+    </a>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <form method="POST">
+            <fieldset class="mb-4">
+                <legend class="h5">{{ _('Group Details') }}</legend>
+                <div class="mb-3">
+                    <label for="name" class="form-label">{{ _('Name') }} <span class="text-danger" aria-hidden="true">*</span></label>
+                    <input type="text" class="form-control" id="name" name="name"
+                           value="{{ group.name if group else '' }}" required maxlength="100"
+                           aria-required="true">
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">{{ _('Description') }}</label>
+                    <input type="text" class="form-control" id="description" name="description"
+                           value="{{ group.description if group else '' }}" maxlength="255">
+                </div>
+            </fieldset>
+
+            <fieldset class="mb-4">
+                <legend class="h5">{{ _('Permissions') }}</legend>
+                <p class="text-muted">{{ _('Each level includes all lower levels: Read < Update < Create < Delete') }}</p>
+
+                <div class="table-responsive">
+                    <table class="table" aria-label="{{ _('Resource permission levels') }}">
+                        <caption class="visually-hidden">{{ _('Set the permission level for each resource') }}</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ _('Resource') }}</th>
+                                <th scope="col">{{ _('Level') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for resource in resource_nouns %}
+                            <tr>
+                                <td>
+                                    <label for="perm_{{ resource }}" class="form-label mb-0">
+                                        {{ resource | replace('_', ' ') | title }}
+                                    </label>
+                                </td>
+                                <td>
+                                    <select class="form-select form-select-sm" id="perm_{{ resource }}" name="perm_{{ resource }}" style="max-width: 200px;">
+                                        {% for level in permission_levels %}
+                                        <option value="{{ level }}"
+                                                {% if group and group.permissions.get(resource, 'none') == level %}selected{% endif %}
+                                                {% if not group and level == 'none' %}selected{% endif %}>
+                                            {{ level | title }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </fieldset>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg" aria-hidden="true"></i>
+                    {{ _('Update Group') if group else _('Create Group') }}
+                </button>
+                <a href="{{ url_for('groups.list_groups') }}" class="btn btn-secondary">
+                    {{ _('Cancel') }}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

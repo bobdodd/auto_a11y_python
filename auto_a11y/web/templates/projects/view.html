@@ -385,6 +385,65 @@
             {% endif %}
         </div>
     </section>
+
+    {% if is_project_admin %}
+    <!-- Members -->
+    <section class="card" aria-labelledby="members-heading" id="members-section">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0" id="members-heading">
+                <i class="bi bi-people" aria-hidden="true"></i> {{ _('Members') }}
+            </h2>
+        </div>
+        <div class="card-body">
+            <div id="members-loading" class="text-center py-3">
+                <div class="spinner-border spinner-border-sm text-primary" role="status">
+                    <span class="visually-hidden">{{ _('Loading...') }}</span>
+                </div>
+            </div>
+
+            <!-- Add Member Form -->
+            <div id="add-member-form" class="mb-3" style="display:none;">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-5">
+                        <label for="new-member-user" class="form-label">{{ _('User') }}</label>
+                        <select id="new-member-user" class="form-select form-select-sm">
+                            <option value="">{{ _('Select a user...') }}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="new-member-role" class="form-label">{{ _('Role') }}</label>
+                        <select id="new-member-role" class="form-select form-select-sm">
+                            <option value="admin">Admin</option>
+                            <option value="auditor">Auditor</option>
+                            <option value="client" selected>Client</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-sm btn-primary w-100" onclick="addMember()">
+                            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ _('Add') }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Members Table -->
+            <div class="table-responsive">
+                <table class="table table-hover" id="members-table" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>{{ _('User') }}</th>
+                            <th>{{ _('Role') }}</th>
+                            <th class="text-end">{{ _('Actions') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="members-tbody"></tbody>
+                </table>
+            </div>
+
+            <p id="no-members-msg" class="text-muted" style="display:none;">{{ _('No members assigned yet.') }}</p>
+        </div>
+    </section>
+    {% endif %}
 </div>
 
 <!-- Add Website Modal -->
@@ -557,6 +616,103 @@
 {% endblock %}
 
 {% block extra_js %}
+{% if is_project_admin %}
+<script>
+const PROJECT_ID = '{{ project.id }}';
+
+async function loadMembers() {
+    try {
+        const resp = await fetch(`/projects/${PROJECT_ID}/members`);
+        const data = await resp.json();
+        if (!resp.ok) { console.error(data.error); return; }
+
+        document.getElementById('members-loading').style.display = 'none';
+
+        // Populate members table
+        const tbody = document.getElementById('members-tbody');
+        tbody.innerHTML = '';
+
+        if (data.members.length > 0) {
+            document.getElementById('members-table').style.display = '';
+            document.getElementById('no-members-msg').style.display = 'none';
+            data.members.forEach(m => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${m.display_name || m.email}</td>
+                    <td>
+                        <select class="form-select form-select-sm" style="width:auto;display:inline-block;"
+                                onchange="updateMemberRole('${m.user_id}', this.value)">
+                            ${data.roles.map(r => `<option value="${r}" ${r === m.role ? 'selected' : ''}>${r}</option>`).join('')}
+                        </select>
+                    </td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-outline-danger" onclick="removeMember('${m.user_id}')">
+                            <i class="bi bi-trash" aria-hidden="true"></i>
+                        </button>
+                    </td>`;
+                tbody.appendChild(tr);
+            });
+        } else {
+            document.getElementById('members-table').style.display = 'none';
+            document.getElementById('no-members-msg').style.display = '';
+        }
+
+        // Populate available users dropdown
+        const sel = document.getElementById('new-member-user');
+        sel.innerHTML = '<option value="">Select a user...</option>';
+        data.available_users.forEach(u => {
+            const opt = document.createElement('option');
+            opt.value = u.user_id;
+            opt.textContent = u.display_name || u.email;
+            sel.appendChild(opt);
+        });
+
+        document.getElementById('add-member-form').style.display = '';
+    } catch (e) {
+        console.error('Failed to load members:', e);
+    }
+}
+
+async function addMember() {
+    const userId = document.getElementById('new-member-user').value;
+    const role = document.getElementById('new-member-role').value;
+    if (!userId) return;
+    await fetch(`/projects/${PROJECT_ID}/members`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({user_id: userId, role: role})
+    });
+    loadMembers();
+}
+
+async function updateMemberRole(userId, newRole) {
+    const resp = await fetch(`/projects/${PROJECT_ID}/members/${userId}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({role: newRole})
+    });
+    if (!resp.ok) {
+        const data = await resp.json();
+        alert(data.error || 'Failed to update role');
+        loadMembers();
+    }
+}
+
+async function removeMember(userId) {
+    if (!confirm('Remove this member from the project?')) return;
+    const resp = await fetch(`/projects/${PROJECT_ID}/members/${userId}`, {
+        method: 'DELETE'
+    });
+    if (!resp.ok) {
+        const data = await resp.json();
+        alert(data.error || 'Failed to remove member');
+    }
+    loadMembers();
+}
+
+document.addEventListener('DOMContentLoaded', loadMembers);
+</script>
+{% endif %}
 <script>
 let statusPollingIntervals = {};
 let websitesBeingTested = new Set();

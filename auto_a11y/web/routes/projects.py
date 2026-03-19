@@ -5,8 +5,11 @@ Project management routes
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app
 from flask_babel import gettext as _, lazy_gettext
 from flask_login import login_required
+from flask import g
 from auto_a11y.models import Project, ProjectStatus, ProjectType
-from auto_a11y.web.routes.auth import auditor_required
+from auto_a11y.models.app_user import UserRole
+from auto_a11y.web.routes.auth import auditor_required, project_role_required, get_effective_role
+from flask_login import current_user
 import logging
 
 logger = logging.getLogger(__name__)
@@ -206,11 +209,17 @@ def list_projects():
     """List all projects"""
     status_filter = request.args.get('status')
     
-    if status_filter:
-        status = ProjectStatus(status_filter)
-        projects = current_app.db.get_projects(status=status)
+    if current_user.is_admin():
+        if status_filter:
+            status = ProjectStatus(status_filter)
+            projects = current_app.db.get_projects(status=status)
+        else:
+            projects = current_app.db.get_projects()
     else:
-        projects = current_app.db.get_projects()
+        projects = current_app.db.get_projects_for_user(str(current_user.get_id()))
+        if status_filter:
+            status = ProjectStatus(status_filter)
+            projects = [p for p in projects if p.status == status]
     
     return render_template('projects/list.html', projects=projects)
 
@@ -319,6 +328,10 @@ def create_project():
         )
         
         project_id = current_app.db.create_project(project)
+        # Auto-add creator as project admin
+        current_app.db.add_project_member(
+            project_id, str(current_user.get_id()), UserRole.ADMIN
+        )
         flash(f'Project "{name}" created successfully', 'success')
         
         return redirect(url_for('projects.view_project', project_id=project_id))
@@ -464,6 +477,7 @@ def create_project():
 
 
 @projects_bp.route('/<project_id>')
+@project_role_required(UserRole.ADMIN, UserRole.AUDITOR, UserRole.CLIENT)
 def view_project(project_id):
     """View project details"""
     project = current_app.db.get_project(project_id)
@@ -495,6 +509,10 @@ def view_project(project_id):
     discovered_pages_cursor = current_app.db.discovered_pages.find({'project_id': project_id}).sort('created_at', -1)
     discovered_pages = list(discovered_pages_cursor)
 
+    is_project_admin = current_user.is_admin() or (
+        hasattr(g, 'effective_role') and g.effective_role == UserRole.ADMIN
+    )
+
     return render_template('projects/view.html',
                          project=project,
                          websites=websites,
@@ -502,7 +520,8 @@ def view_project(project_id):
                          website_stats=website_stats,
                          project_users=project_users,
                          recordings=recordings,
-                         discovered_pages=discovered_pages)
+                         discovered_pages=discovered_pages,
+                         is_project_admin=is_project_admin)
 
 
 @projects_bp.route('/<project_id>/edit', methods=['GET', 'POST'])
@@ -686,6 +705,7 @@ def delete_project(project_id):
 
 
 @projects_bp.route('/<project_id>/add-website', methods=['POST'])
+@project_role_required(UserRole.ADMIN, UserRole.AUDITOR)
 def add_website(project_id):
     """Add website to project"""
     from auto_a11y.models import Website, ScrapingConfig
@@ -795,6 +815,7 @@ def test_project(project_id):
 
 
 @projects_bp.route('/<project_id>/report', methods=['GET', 'POST'])
+@project_role_required(UserRole.ADMIN, UserRole.AUDITOR, UserRole.CLIENT)
 def generate_project_report(project_id):
     """Generate accessibility report for entire project"""
     from auto_a11y.reporting.project_report import ProjectReport

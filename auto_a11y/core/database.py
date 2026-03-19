@@ -61,6 +61,7 @@ class Database:
         self.app_users: Collection = self.db.app_users  # Application users for authentication
         self.test_schedules: Collection = self.db.test_schedules  # Scheduled test configurations
         self.share_tokens: Collection = self.db.share_tokens  # Public share tokens
+        self.groups: Collection = self.db['groups']  # Permission groups
 
         # Create indexes
         self._create_indexes()
@@ -265,16 +266,15 @@ class Database:
 
     # Project member operations
 
-    def add_project_member(self, project_id: str, user_id: str, role) -> bool:
-        """Add or update a member on a project."""
-        # Remove existing entry if present, then add new one
+    def add_project_member(self, project_id: str, user_id: str, group_ids: list) -> bool:
+        """Add or update a member on a project with given group IDs."""
         self.projects.update_one(
             {"_id": ObjectId(project_id)},
             {"$pull": {"members": {"user_id": user_id}}}
         )
         result = self.projects.update_one(
             {"_id": ObjectId(project_id)},
-            {"$push": {"members": {"user_id": user_id, "role": role.value}}}
+            {"$push": {"members": {"user_id": user_id, "group_ids": [str(g) for g in group_ids]}}}
         )
         return result.modified_count > 0
 
@@ -286,41 +286,11 @@ class Database:
         )
         return result.modified_count > 0
 
-    def update_project_member_role(self, project_id: str, user_id: str, role) -> bool:
-        """Change a member's role on a project."""
+    def update_project_member_groups(self, project_id: str, user_id: str, group_ids: list) -> bool:
+        """Update a member's group assignments on a project."""
         result = self.projects.update_one(
             {"_id": ObjectId(project_id), "members.user_id": user_id},
-            {"$set": {"members.$.role": role.value}}
-        )
-        return result.modified_count > 0
-
-    # Website member operations
-
-    def add_website_member(self, website_id: str, user_id: str, role) -> bool:
-        """Add or update a member override on a website."""
-        self.websites.update_one(
-            {"_id": ObjectId(website_id)},
-            {"$pull": {"members": {"user_id": user_id}}}
-        )
-        result = self.websites.update_one(
-            {"_id": ObjectId(website_id)},
-            {"$push": {"members": {"user_id": user_id, "role": role.value}}}
-        )
-        return result.modified_count > 0
-
-    def remove_website_member(self, website_id: str, user_id: str) -> bool:
-        """Remove a member override from a website."""
-        result = self.websites.update_one(
-            {"_id": ObjectId(website_id)},
-            {"$pull": {"members": {"user_id": user_id}}}
-        )
-        return result.modified_count > 0
-
-    def update_website_member_role(self, website_id: str, user_id: str, role) -> bool:
-        """Change a member's override role on a website."""
-        result = self.websites.update_one(
-            {"_id": ObjectId(website_id), "members.user_id": user_id},
-            {"$set": {"members.$.role": role.value}}
+            {"$set": {"members.$.group_ids": [str(g) for g in group_ids]}}
         )
         return result.modified_count > 0
 
@@ -2570,6 +2540,70 @@ class Database:
     def app_user_exists(self, email: str) -> bool:
         """Check if an app user exists by email"""
         return self.app_users.count_documents({"email": email.lower()}) > 0
+
+    # ==========================================
+    # Permission Group operations
+    # ==========================================
+
+    def create_group(self, group) -> str:
+        """Create a permission group. Returns inserted ID as string."""
+        result = self.groups.insert_one(group.to_dict())
+        return str(result.inserted_id)
+
+    def get_group(self, group_id: str):
+        """Get a single group by ID."""
+        from auto_a11y.models.permission_group import PermissionGroup
+        doc = self.groups.find_one({"_id": ObjectId(group_id)})
+        return PermissionGroup.from_dict(doc) if doc else None
+
+    def get_group_by_name(self, name: str):
+        """Get a group by its name."""
+        from auto_a11y.models.permission_group import PermissionGroup
+        doc = self.groups.find_one({"name": name})
+        return PermissionGroup.from_dict(doc) if doc else None
+
+    def get_all_groups(self):
+        """Get all permission groups."""
+        from auto_a11y.models.permission_group import PermissionGroup
+        return [PermissionGroup.from_dict(doc) for doc in self.groups.find()]
+
+    def get_groups_by_ids(self, group_ids):
+        """Get multiple groups by their IDs. Silently skips missing IDs."""
+        from auto_a11y.models.permission_group import PermissionGroup
+        if not group_ids:
+            return []
+        oids = []
+        for gid in group_ids:
+            try:
+                oids.append(ObjectId(gid))
+            except Exception:
+                continue
+        docs = self.groups.find({"_id": {"$in": oids}})
+        return [PermissionGroup.from_dict(doc) for doc in docs]
+
+    def update_group(self, group) -> bool:
+        """Update an existing group."""
+        from datetime import datetime
+        group.updated_at = datetime.now()
+        result = self.groups.replace_one(
+            {"_id": group._id},
+            group.to_dict()
+        )
+        return result.modified_count > 0
+
+    def delete_group(self, group_id: str) -> bool:
+        """Delete a non-system group."""
+        result = self.groups.delete_one({
+            "_id": ObjectId(group_id),
+            "is_system": {"$ne": True}
+        })
+        return result.deleted_count > 0
+
+    def count_group_members(self, group_id: str) -> int:
+        """Count how many project memberships reference this group."""
+        return self.projects.count_documents({
+            "members.group_ids": str(group_id)
+        })
 
     # ==========================================
     # Test Schedule Methods (Scheduled Testing)

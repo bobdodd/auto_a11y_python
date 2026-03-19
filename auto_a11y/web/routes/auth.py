@@ -14,6 +14,7 @@ from itsdangerous import URLSafeSerializer, BadSignature
 from werkzeug.security import generate_password_hash
 
 from auto_a11y.models import AppUser, UserRole
+from auto_a11y.core.permissions import permission_required
 
 logger = logging.getLogger(__name__)
 
@@ -21,58 +22,50 @@ auth_bp = Blueprint('auth', __name__)
 
 
 def role_required(*roles):
-    """
-    Decorator to require specific roles for a route.
-    
-    Usage:
-        @role_required(UserRole.ADMIN)
-        @role_required(UserRole.ADMIN, UserRole.AUDITOR)
-    """
+    """Legacy decorator -- now checks is_superadmin for admin, otherwise passes."""
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             if not current_user.is_authenticated:
                 flash(_('Please log in to access this page.'), 'warning')
                 return redirect(url_for('auth.login', next=request.url))
-            
-            if current_user.role not in roles:
-                flash(_('You do not have permission to access this page.'), 'danger')
-                return redirect(url_for('index'))
-            
-            return f(*args, **kwargs)
+            if getattr(current_user, 'is_superadmin', False):
+                return f(*args, **kwargs)
+            flash(_('You do not have permission to access this page.'), 'danger')
+            return redirect(url_for('index'))
         return decorated_function
     return decorator
 
 
 def admin_required(f):
-    """Decorator requiring admin role"""
+    """Legacy decorator -- requires superadmin."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated:
             flash(_('Please log in to access this page.'), 'warning')
             return redirect(url_for('auth.login', next=request.url))
-        
-        if not current_user.is_admin():
+        if not getattr(current_user, 'is_superadmin', False):
             flash(_('Administrator access required.'), 'danger')
             return redirect(url_for('index'))
-        
         return f(*args, **kwargs)
     return decorated_function
 
 
 def auditor_required(f):
-    """Decorator requiring auditor or admin role"""
+    """Legacy decorator -- requires superadmin or projects:create permission."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated:
             flash(_('Please log in to access this page.'), 'warning')
             return redirect(url_for('auth.login', next=request.url))
-        
-        if not (current_user.is_admin() or current_user.is_auditor()):
-            flash(_('Auditor access required.'), 'danger')
-            return redirect(url_for('index'))
-        
-        return f(*args, **kwargs)
+        if getattr(current_user, 'is_superadmin', False):
+            return f(*args, **kwargs)
+        # For non-superadmins, check if they have projects:create (auditor-level)
+        from auto_a11y.core.permissions import user_has_global_permission
+        if user_has_global_permission(current_user, 'projects', 'create'):
+            return f(*args, **kwargs)
+        flash(_('Auditor access required.'), 'danger')
+        return redirect(url_for('index'))
     return decorated_function
 
 
@@ -86,18 +79,13 @@ def _get_db():
 
 
 def get_effective_role(user, request_obj=None, project_id=None, website_id=None, page_id=None):
-    """Return the user's effective role for the given resource context.
-
-    Resolution order:
-    1. Global admin -> UserRole.ADMIN
-    2. page_id -> resolve to website_id
-    3. website_id -> check website members, then fall to project
-    4. project_id -> check project members
-    5. None -> no access
+    """Legacy function -- returns UserRole for backward compat.
+    Used by templates to determine is_project_admin etc.
     """
-    if user.is_admin():
+    if getattr(user, 'is_superadmin', False):
         return UserRole.ADMIN
 
+    from auto_a11y.core.permissions import user_has_permission
     db = _get_db()
 
     # Resolve page to website
@@ -107,37 +95,27 @@ def get_effective_role(user, request_obj=None, project_id=None, website_id=None,
             return None
         website_id = page.website_id
 
-    # Resolve website to project, check website override
-    if website_id:
+    if website_id and not project_id:
         website = db.get_website(website_id)
         if not website:
             return None
-        user_id = str(user.get_id())
-        for member in getattr(website, 'members', []):
-            if member.user_id == user_id:
-                return member.role
-        # Fall through to project
         project_id = website.project_id
 
-    if project_id:
-        project = db.get_project(project_id)
-        if not project:
-            return None
-        user_id = str(user.get_id())
-        for member in getattr(project, 'members', []):
-            if member.user_id == user_id:
-                return member.role
+    if not project_id:
+        return None
 
-    return None  # No access
+    # Map permission levels to legacy roles
+    if user_has_permission(user, project_id, 'project_members', 'delete'):
+        return UserRole.ADMIN
+    if user_has_permission(user, project_id, 'test_results', 'create'):
+        return UserRole.AUDITOR
+    if user_has_permission(user, project_id, 'projects', 'read'):
+        return UserRole.CLIENT
+    return None
 
 
 def project_role_required(*roles):
-    """Decorator: requires user to have one of the given roles on the project/website.
-
-    Extracts project_id, website_id, or page_id from route kwargs.
-    Caches resolved role on g.effective_role.
-    Global admins bypass all checks.
-    """
+    """Legacy decorator -- checks group permissions instead of roles."""
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
@@ -147,8 +125,7 @@ def project_role_required(*roles):
                 flash('Please log in to access this page.', 'warning')
                 return redirect(url_for('auth.login', next=request.url))
 
-            # Global admins bypass
-            if current_user.is_admin():
+            if getattr(current_user, 'is_superadmin', False):
                 g.effective_role = UserRole.ADMIN
                 return f(*args, **kwargs)
 
@@ -173,11 +150,7 @@ def project_role_required(*roles):
 
 
 def project_admin_required(f):
-    """Decorator: requires project-level ADMIN (ignores website overrides).
-
-    Used for membership management routes where a project admin should
-    retain management access even with a website-level override.
-    """
+    """Legacy decorator -- checks project_members:delete permission."""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.is_authenticated:
@@ -186,29 +159,14 @@ def project_admin_required(f):
             flash('Please log in to access this page.', 'warning')
             return redirect(url_for('auth.login', next=request.url))
 
-        if current_user.is_admin():
+        if getattr(current_user, 'is_superadmin', False):
             return f(*args, **kwargs)
 
-        db = _get_db()
-        project_id = kwargs.get('project_id')
-        website_id = kwargs.get('website_id')
+        from auto_a11y.core.permissions import user_has_permission, _resolve_project_id
+        project_id = _resolve_project_id(**kwargs)
 
-        if website_id and not project_id:
-            website = db.get_website(website_id)
-            if website:
-                project_id = website.project_id
-
-        if not project_id:
-            abort(403)
-
-        project = db.get_project(project_id)
-        if not project:
-            abort(404)
-
-        user_id = str(current_user.get_id())
-        for member in getattr(project, 'members', []):
-            if member.user_id == user_id and member.role == UserRole.ADMIN:
-                return f(*args, **kwargs)
+        if project_id and user_has_permission(current_user, project_id, 'project_members', 'delete'):
+            return f(*args, **kwargs)
 
         if request.is_json:
             return jsonify({'error': 'Project admin access required'}), 403
@@ -591,14 +549,16 @@ def register():
             return render_template('auth/register.html', is_first_user=is_first_user)
         
         role = UserRole.ADMIN if is_first_user else UserRole.CLIENT
-        
+
         user = AppUser.create(
             email=email,
             password=password,
             role=role,
             display_name=display_name or None
         )
-        
+        if is_first_user:
+            user.is_superadmin = True
+
         try:
             current_app.db.create_app_user(user)
             
@@ -653,89 +613,78 @@ def profile():
 
 
 @auth_bp.route('/users')
-@admin_required
+@permission_required('users', 'read')
 def user_list():
-    """List all users (admin only)"""
+    """List all users"""
     users = current_app.db.get_app_users()
     return render_template('auth/user_list.html', users=users)
 
 
 @auth_bp.route('/users/create', methods=['GET', 'POST'])
-@admin_required
+@permission_required('users', 'create')
 def user_create():
-    """Create a new user (admin only)"""
+    """Create a new user"""
     if request.method == 'POST':
         email = request.form.get('email', '').strip().lower()
         password = request.form.get('password', '')
         display_name = request.form.get('display_name', '').strip()
-        role = request.form.get('role', 'client')
-        
+
         errors = []
-        
+
         if not email or '@' not in email:
             errors.append(_('Please enter a valid email address.'))
-        
+
         if not password or len(password) < 8:
             errors.append(_('Password must be at least 8 characters.'))
-        
+
         if current_app.db.app_user_exists(email):
             errors.append(_('An account with this email already exists.'))
-        
-        try:
-            user_role = UserRole(role)
-        except ValueError:
-            errors.append(_('Invalid role selected.'))
-            user_role = UserRole.CLIENT
-        
+
         if errors:
             for error in errors:
                 flash(error, 'danger')
-            return render_template('auth/user_create.html', roles=UserRole)
-        
+            return render_template('auth/user_create.html')
+
         user = AppUser.create(
             email=email,
             password=password,
-            role=user_role,
+            role=UserRole.CLIENT,
             display_name=display_name or None
         )
         user.is_verified = True
-        
+
         try:
             current_app.db.create_app_user(user)
             flash(_('User created successfully.'), 'success')
             return redirect(url_for('auth.user_list'))
         except ValueError as e:
             flash(str(e), 'danger')
-        
-    return render_template('auth/user_create.html', roles=UserRole)
+
+    return render_template('auth/user_create.html')
 
 
 @auth_bp.route('/users/<user_id>/edit', methods=['GET', 'POST'])
-@admin_required
+@permission_required('users', 'update')
 def user_edit(user_id):
-    """Edit a user (admin only)"""
+    """Edit a user"""
     user = current_app.db.get_app_user(user_id)
     if not user:
         flash(_('User not found.'), 'danger')
         return redirect(url_for('auth.user_list'))
-    
+
     if request.method == 'POST':
         action = request.form.get('action')
-        
+
         if action == 'update':
             user.display_name = request.form.get('display_name', '').strip() or None
-            
-            new_role = request.form.get('role', 'client')
-            try:
-                user.role = UserRole(new_role)
-            except ValueError:
-                pass
-            
             user.is_active = request.form.get('is_active') == 'on'
+            # Only superadmins can toggle superadmin
+            if getattr(current_user, 'is_superadmin', False):
+                user.is_superadmin = request.form.get('is_superadmin') == 'on'
             user.update_timestamp()
             current_app.db.update_app_user(user)
             flash(_('User updated successfully.'), 'success')
-        
+
         elif action == 'reset_password':
             new_password = request.form.get('new_password', '')
             if len(new_password) < 8:
@@ -747,23 +696,36 @@ def user_edit(user_id):
                 user.update_timestamp()
                 current_app.db.update_app_user(user)
                 flash(_('Password reset successfully.'), 'success')
-        
+
         elif action == 'unlock':
             user.failed_login_count = 0
             user.locked_until = None
             user.update_timestamp()
             current_app.db.update_app_user(user)
             flash(_('Account unlocked.'), 'success')
-        
+
         return redirect(url_for('auth.user_edit', user_id=user_id))
-    
-    return render_template('auth/user_edit.html', user=user, roles=UserRole)
+
+    # Build project membership data for display
+    user_projects = []
+    projects = current_app.db.get_projects_for_user(user_id)
+    all_groups = current_app.db.get_all_groups()
+    group_map = {g.id: g.name for g in all_groups}
+    for p in projects:
+        member = next((m for m in p.members if m.user_id == user_id), None)
+        if member:
+            group_names = [group_map.get(gid, '?') for gid in member.group_ids]
+            user_projects.append({
+                'id': p.id, 'name': p.name, 'group_names': group_names
+            })
+
+    return render_template('auth/user_edit.html', user=user, user_projects=user_projects)
 
 
 @auth_bp.route('/users/<user_id>/delete', methods=['POST'])
-@admin_required
+@permission_required('users', 'delete')
 def user_delete(user_id):
-    """Delete a user (admin only)"""
+    """Delete a user"""
     if current_user.id == user_id:
         flash(_('You cannot delete your own account.'), 'danger')
         return redirect(url_for('auth.user_list'))

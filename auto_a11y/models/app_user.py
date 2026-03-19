@@ -37,6 +37,8 @@ class AppUser:
     sso_provider: Optional[str] = None   # e.g., 'microsoft'
     sso_id: Optional[str] = None         # Microsoft object ID (oid)
 
+    is_superadmin: bool = False
+
     created_at: datetime = field(default_factory=datetime.now)
     updated_at: datetime = field(default_factory=datetime.now)
 
@@ -145,6 +147,7 @@ class AppUser:
             'locked_until': self.locked_until,
             'sso_provider': self.sso_provider,
             'sso_id': self.sso_id,
+            'is_superadmin': self.is_superadmin,
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
@@ -172,6 +175,7 @@ class AppUser:
             locked_until=data.get('locked_until'),
             sso_provider=data.get('sso_provider'),
             sso_id=data.get('sso_id'),
+            is_superadmin=data.get('is_superadmin', False),
             created_at=data.get('created_at', datetime.now()),
             updated_at=data.get('updated_at', datetime.now()),
             _id=data.get('_id')

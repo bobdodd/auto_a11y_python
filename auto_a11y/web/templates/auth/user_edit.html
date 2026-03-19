@@ -22,18 +22,18 @@
                             <label for="display_name" class="form-label">{{ _('Display Name') }}</label>
                             <input type="text" class="form-control" id="display_name" name="display_name" value="{{ user.display_name or '' }}">
                         </div>
-                        <div class="mb-3">
-                            <label for="role" class="form-label">{{ _('Role') }}</label>
-                            <select class="form-select" id="role" name="role">
-                                <option value="client" {% if user.role.value == 'client' %}selected{% endif %}>{{ _('Client') }}</option>
-                                <option value="auditor" {% if user.role.value == 'auditor' %}selected{% endif %}>{{ _('Auditor') }}</option>
-                                <option value="admin" {% if user.role.value == 'admin' %}selected{% endif %}>{{ _('Admin') }}</option>
-                            </select>
-                        </div>
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="is_active" name="is_active" {% if user.is_active %}checked{% endif %}>
                             <label class="form-check-label" for="is_active">{{ _('Active') }}</label>
                         </div>
+                        {% if is_superadmin %}
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="is_superadmin" name="is_superadmin"
+                                   {% if user.is_superadmin %}checked{% endif %}>
+                            <label class="form-check-label" for="is_superadmin">{{ _('Superadmin') }}</label>
+                            <div class="form-text">{{ _('Superadmins bypass all permission checks and have full access to everything.') }}</div>
+                        </div>
+                        {% endif %}
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-check-lg" aria-hidden="true"></i> {{ _('Save Changes') }}
@@ -109,6 +109,44 @@
             </div>
         </div>
         {% endif %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow mt-4">
+            <div class="card-header">
+                <h2 class="h5 mb-0"><i class="bi bi-folder" aria-hidden="true"></i> {{ _('Project Memberships') }}</h2>
+            </div>
+            <div class="card-body">
+                {% if user_projects %}
+                <div class="table-responsive">
+                    <table class="table table-sm" aria-label="{{ _('Project memberships for this user') }}">
+                        <thead>
+                            <tr>
+                                <th scope="col">{{ _('Project') }}</th>
+                                <th scope="col">{{ _('Groups') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in user_projects %}
+                            <tr>
+                                <td><a href="{{ url_for('projects.view_project', project_id=p.id) }}">{{ p.name }}</a></td>
+                                <td>
+                                    {% for gname in p.group_names %}
+                                    <span class="badge bg-secondary">{{ gname }}</span>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">{{ _('This user is not a member of any projects.') }}</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

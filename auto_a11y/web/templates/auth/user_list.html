@@ -15,12 +15,11 @@
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-hover" aria-label="{{ _('User list') }}">
-                <caption class="visually-hidden">{{ _('List of users with roles and status') }}</caption>
+                <caption class="visually-hidden">{{ _('List of users with status') }}</caption>
                 <thead>
                     <tr>
                         <th scope="col">{{ _('Email') }}</th>
                         <th scope="col">{{ _('Display Name') }}</th>
-                        <th scope="col">{{ _('Role') }}</th>
                         <th scope="col">{{ _('Status') }}</th>
                         <th scope="col">{{ _('Last Login') }}</th>
                         <th scope="col">{{ _('Actions') }}</th>
@@ -32,15 +31,9 @@
                         <td>{{ user.email }}</td>
                         <td>{{ user.display_name or '-' }}</td>
                         <td>
-                            {% if user.role.value == 'admin' %}
-                            <span class="badge bg-danger">{{ _('Admin') }}</span>
-                            {% elif user.role.value == 'auditor' %}
-                            <span class="badge bg-primary">{{ _('Auditor') }}</span>
-                            {% else %}
-                            <span class="badge bg-secondary">{{ _('Client') }}</span>
+                            {% if user.is_superadmin %}
+                            <span class="badge bg-danger">{{ _('Superadmin') }}</span>
                             {% endif %}
-                        </td>
-                        <td>
                             {% if not user.is_active %}
                             <span class="badge bg-secondary">{{ _('Inactive') }}</span>
                             {% elif user.is_locked() %}
@@ -65,7 +58,7 @@
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="6" class="text-center text-muted">{{ _('No users found.') }}</td>
+                        <td colspan="5" class="text-center text-muted">{{ _('No users found.') }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -85,12 +78,8 @@
                     <small class="text-muted">{{ user.email }}</small>
                 </div>
                 <div class="d-flex gap-1">
-                    {% if user.role.value == 'admin' %}
-                    <span class="badge bg-danger">{{ _('Admin') }}</span>
-                    {% elif user.role.value == 'auditor' %}
-                    <span class="badge bg-primary">{{ _('Auditor') }}</span>
-                    {% else %}
-                    <span class="badge bg-secondary">{{ _('Client') }}</span>
+                    {% if user.is_superadmin %}
+                    <span class="badge bg-danger">{{ _('Superadmin') }}</span>
                     {% endif %}
                 </div>
             </div>

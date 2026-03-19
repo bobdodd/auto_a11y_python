@@ -44,7 +44,7 @@
                             <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ _('Dashboard') }}
                         </a>
                     </li>
-                    {% if current_user.is_authenticated and (current_user.is_admin() or user_has_projects) %}
+                    {% if current_user.is_authenticated and (is_superadmin or user_has_projects) %}
                     <!-- Projects - standalone -->
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('projects.list_projects') }}" {% if request.endpoint and request.endpoint.startswith('projects.') %}aria-current="page"{% endif %}>
@@ -108,7 +108,7 @@
                             <li><a class="dropdown-item" href="{{ url_for('help') }}">
                                 <i class="bi bi-question-circle" aria-hidden="true"></i> {{ _('Help') }}
                             </a></li>
-                            {% if current_user.is_authenticated and (current_user.is_admin() or user_has_projects) %}
+                            {% if current_user.is_authenticated and (is_superadmin or user_has_projects) %}
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('testing.configure_testing') }}">
                                 <i class="bi bi-sliders" aria-hidden="true"></i> {{ _('Configuration') }}
@@ -125,16 +125,23 @@
                             <i class="bi bi-person-circle" aria-hidden="true"></i> {{ current_user.name_display }}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            {% if is_superadmin %}
                             <li><span class="dropdown-item-text text-muted small">
-                                {% if current_user.role.value == 'admin' %}{{ _('Admin') }}{% elif current_user.role.value == 'auditor' %}{{ _('Auditor') }}{% else %}{{ _('Client') }}{% endif %}
+                                {{ _('Superadmin') }}
                             </span></li>
+                            {% endif %}
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('auth.profile') }}">
                                 <i class="bi bi-person" aria-hidden="true"></i> {{ _('Profile') }}
                             </a></li>
-                            {% if current_user.is_admin() %}
+                            {% if user_can('users', 'read') %}
                             <li><a class="dropdown-item" href="{{ url_for('auth.user_list') }}">
                                 <i class="bi bi-people" aria-hidden="true"></i> {{ _('User Management') }}
+                            </a></li>
+                            {% endif %}
+                            {% if user_can('groups', 'read') %}
+                            <li><a class="dropdown-item" href="{{ url_for('groups.list_groups') }}">
+                                <i class="bi bi-shield-lock" aria-hidden="true"></i> {{ _('Groups') }}
                             </a></li>
                             {% endif %}
                             <li><hr class="dropdown-divider"></li>

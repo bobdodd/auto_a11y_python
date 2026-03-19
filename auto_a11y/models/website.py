@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 from bson import ObjectId
+from auto_a11y.models.project_member import ProjectMember
 
 
 @dataclass
@@ -52,6 +53,7 @@ class Website:
     page_count: int = 0
     scraping_config: ScrapingConfig = field(default_factory=ScrapingConfig)
     discovery_history: List[Dict[str, Any]] = field(default_factory=list)  # Track all discovery attempts
+    members: list = field(default_factory=list)  # List[ProjectMember]
     _id: Optional[ObjectId] = None
     
     @property
@@ -76,6 +78,7 @@ class Website:
             'page_count': self.page_count,
             'scraping_config': self.scraping_config.to_dict()
         }
+        data['members'] = [m.to_dict() for m in self.members]
         if self._id:
             data['_id'] = self._id
         return data
@@ -83,6 +86,9 @@ class Website:
     @classmethod
     def from_dict(cls, data: dict) -> 'Website':
         """Create from MongoDB document"""
+        members_data = data.get('members', [])
+        members = [ProjectMember.from_dict(m) for m in members_data]
+
         return cls(
             project_id=data['project_id'],
             url=data['url'],
@@ -93,5 +99,6 @@ class Website:
             page_count=data.get('page_count', 0),
             scraping_config=ScrapingConfig.from_dict(data.get('scraping_config', {})),
             discovery_history=data.get('discovery_history', []),
+            members=members,
             _id=data.get('_id')
         )

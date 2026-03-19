@@ -29,6 +29,7 @@ from .schedule import (
     ScheduleTestConfig, PresetConfig
 )
 from .share_token import ShareToken, TokenScope
+from .project_member import ProjectMember
 
 __all__ = [
     'Project', 'ProjectStatus', 'ProjectType', 'LivedExperienceTester', 'TestSupervisor',
@@ -51,5 +52,6 @@ __all__ = [
     'AppUser', 'UserRole',
     'TestSchedule', 'ScheduleType', 'AITestMode', 'ScheduleRunStatus',
     'ScheduleTestConfig', 'PresetConfig',
-    'ShareToken', 'TokenScope'
+    'ShareToken', 'TokenScope',
+    'ProjectMember'
 ]

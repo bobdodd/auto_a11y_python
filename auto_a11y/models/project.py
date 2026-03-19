@@ -7,6 +7,7 @@ from datetime import datetime
 from typing import List, Optional, Dict, Any
 from enum import Enum
 from bson import ObjectId
+from auto_a11y.models.project_member import ProjectMember
 
 
 class ProjectStatus(Enum):
@@ -146,6 +147,8 @@ class Project:
     config: Dict[str, Any] = field(default_factory=dict)
     tags: List[str] = field(default_factory=list)
 
+    members: list = field(default_factory=list)  # List[ProjectMember]
+
     _id: Optional[ObjectId] = None
     
     @property
@@ -189,6 +192,7 @@ class Project:
             'config': self.config,
             'tags': self.tags
         }
+        data['members'] = [m.to_dict() for m in self.members]
         if self._id:
             data['_id'] = self._id
         return data
@@ -210,6 +214,9 @@ class Project:
         supervisors_data = data.get('test_supervisors', [])
         supervisors = [TestSupervisor.from_dict(s) for s in supervisors_data]
 
+        members_data = data.get('members', [])
+        members = [ProjectMember.from_dict(m) for m in members_data]
+
         return cls(
             name=data['name'],
             description=data.get('description'),
@@ -226,6 +233,7 @@ class Project:
             created_at=data.get('created_at', datetime.now()),
             updated_at=data.get('updated_at', datetime.now()),
             config=data.get('config', {}),
+            members=members,
             tags=data.get('tags', []),
             _id=data.get('_id')
         )

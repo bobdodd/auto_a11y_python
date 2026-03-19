@@ -134,7 +134,7 @@ def _resolve_project_id(**kwargs):
     recording_id = kwargs.get('recording_id')
     if recording_id:
         recording = db.get_recording(recording_id)
-        return recording.get('project_id') if recording else None
+        return recording.project_id if recording else None
 
     return None
 

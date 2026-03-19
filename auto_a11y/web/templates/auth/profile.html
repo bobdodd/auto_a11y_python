@@ -22,10 +22,12 @@
                             <label for="display_name" class="form-label">{{ _('Display Name') }}</label>
                             <input type="text" class="form-control" id="display_name" name="display_name" value="{{ current_user.display_name or '' }}">
                         </div>
+                        {% if is_superadmin %}
                         <div class="mb-3">
-                            <label class="form-label">{{ _('Role') }}</label>
-                            <input type="text" class="form-control" value="{{ current_user.role.value|title }}" disabled>
+                            <label class="form-label">{{ _('Status') }}</label>
+                            <input type="text" class="form-control" value="Superadmin" disabled>
                         </div>
+                        {% endif %}
                         <div class="mb-3">
                             <label class="form-label">{{ _('Member Since') }}</label>
                             <input type="text" class="form-control" value="{{ current_user.created_at.strftime('%Y-%m-%d') }}" disabled>

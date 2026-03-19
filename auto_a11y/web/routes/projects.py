@@ -517,6 +517,8 @@ def view_project(project_id):
         hasattr(g, 'effective_role') and g.effective_role == UserRole.ADMIN
     )
 
+    all_groups = current_app.db.get_all_groups()
+
     return render_template('projects/view.html',
                          project=project,
                          websites=websites,
@@ -525,7 +527,8 @@ def view_project(project_id):
                          project_users=project_users,
                          recordings=recordings,
                          discovered_pages=discovered_pages,
-                         is_project_admin=is_project_admin)
+                         is_project_admin=is_project_admin,
+                         all_groups=all_groups)
 
 
 @projects_bp.route('/<project_id>/edit', methods=['GET', 'POST'])

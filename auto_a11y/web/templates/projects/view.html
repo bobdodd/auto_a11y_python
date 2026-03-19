@@ -427,12 +427,16 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <label for="new-member-role" class="form-label">{{ _('Role') }}</label>
-                        <select id="new-member-role" class="form-select form-select-sm">
-                            <option value="admin">Admin</option>
-                            <option value="auditor">Auditor</option>
-                            <option value="client" selected>Client</option>
-                        </select>
+                        <fieldset>
+                            <legend class="form-label mb-1" style="font-size: inherit;">{{ _('Groups') }}</legend>
+                            {% for group in all_groups %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input new-member-group" type="checkbox"
+                                       id="new-member-group-{{ group.id }}" name="group_ids" value="{{ group.id }}">
+                                <label class="form-check-label" for="new-member-group-{{ group.id }}">{{ group.name }}</label>
+                            </div>
+                            {% endfor %}
+                        </fieldset>
                     </div>
                     <div class="col-md-3">
                         <button type="button" class="btn btn-sm btn-primary w-100" onclick="addMember()">
@@ -448,7 +452,7 @@
                     <thead>
                         <tr>
                             <th>{{ _('User') }}</th>
-                            <th>{{ _('Role') }}</th>
+                            <th>{{ _('Groups') }}</th>
                             <th class="text-end">{{ _('Actions') }}</th>
                         </tr>
                     </thead>
@@ -636,6 +640,8 @@
 <script>
 const PROJECT_ID = '{{ project.id }}';
 
+let availableGroups = [];
+
 async function loadMembers() {
     try {
         const resp = await fetch(`/projects/${PROJECT_ID}/members`);
@@ -643,6 +649,9 @@ async function loadMembers() {
         if (!resp.ok) { console.error(data.error); return; }
 
         document.getElementById('members-loading').style.display = 'none';
+
+        // Store available groups for use in inline editing
+        availableGroups = data.available_groups || [];
 
         // Populate members table
         const tbody = document.getElementById('members-tbody');
@@ -653,14 +662,23 @@ async function loadMembers() {
             document.getElementById('no-members-msg').style.display = 'none';
             data.members.forEach(m => {
                 const tr = document.createElement('tr');
+                const memberGroupIds = m.groups.map(g => g.id);
+                const groupBadges = m.groups.map(g =>
+                    `<span class="badge bg-secondary">${escapeHtml(g.name)}</span>`
+                ).join(' ');
+                const groupCheckboxes = availableGroups.map(g => {
+                    const checked = memberGroupIds.includes(g.id) ? 'checked' : '';
+                    return `<div class="form-check form-check-inline">
+                        <input class="form-check-input member-group-cb" type="checkbox"
+                               value="${g.id}" ${checked}
+                               data-user-id="${m.user_id}"
+                               onchange="updateMemberGroups('${m.user_id}')">
+                        <label class="form-check-label">${escapeHtml(g.name)}</label>
+                    </div>`;
+                }).join('');
                 tr.innerHTML = `
-                    <td>${m.display_name || m.email}</td>
-                    <td>
-                        <select class="form-select form-select-sm" style="width:auto;display:inline-block;"
-                                onchange="updateMemberRole('${m.user_id}', this.value)">
-                            ${data.roles.map(r => `<option value="${r}" ${r === m.role ? 'selected' : ''}>${r}</option>`).join('')}
-                        </select>
-                    </td>
+                    <td>${escapeHtml(m.display_name || m.email)}</td>
+                    <td>${groupCheckboxes}</td>
                     <td class="text-end">
                         <button class="btn btn-sm btn-outline-danger" onclick="removeMember('${m.user_id}')">
                             <i class="bi bi-trash" aria-hidden="true"></i>
@@ -675,6 +693,8 @@ async function loadMembers() {
 
         // Reset combobox state
         clearMemberSelection();
+        // Reset group checkboxes in the add form
+        document.querySelectorAll('.new-member-group').forEach(cb => cb.checked = false);
 
         document.getElementById('add-member-form').style.display = '';
     } catch (e) {
@@ -684,25 +704,36 @@ async function loadMembers() {
 
 async function addMember() {
     const userId = document.getElementById('new-member-user').value;
-    const role = document.getElementById('new-member-role').value;
     if (!userId) return;
+    const groupIds = Array.from(document.querySelectorAll('.new-member-group:checked')).map(cb => cb.value);
+    if (groupIds.length === 0) {
+        alert('{{ _("Please select at least one group.") }}');
+        return;
+    }
     await fetch(`/projects/${PROJECT_ID}/members`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({user_id: userId, role: role})
+        body: JSON.stringify({user_id: userId, group_ids: groupIds})
     });
     loadMembers();
 }
 
-async function updateMemberRole(userId, newRole) {
+async function updateMemberGroups(userId) {
+    const checkboxes = document.querySelectorAll(`.member-group-cb[data-user-id="${userId}"]`);
+    const groupIds = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+    if (groupIds.length === 0) {
+        alert('{{ _("At least one group is required.") }}');
+        loadMembers(); // Reset checkboxes
+        return;
+    }
     const resp = await fetch(`/projects/${PROJECT_ID}/members/${userId}`, {
         method: 'PUT',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({role: newRole})
+        body: JSON.stringify({group_ids: groupIds})
     });
     if (!resp.ok) {
         const data = await resp.json();
-        alert(data.error || 'Failed to update role');
+        alert(data.error || 'Failed to update groups');
         loadMembers();
     }
 }

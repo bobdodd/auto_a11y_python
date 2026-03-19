@@ -1,33 +1,32 @@
-"""Project/website membership for per-resource access control.
+"""Project membership for per-resource access control.
 
 Note: This is distinct from ProjectUser/WebsiteUser which store test
 credentials for sites under test. ProjectMember controls which platform
-users can see/manage a project or website.
+users can see/manage a project.
 """
-from dataclasses import dataclass
-from auto_a11y.models.app_user import UserRole
+from dataclasses import dataclass, field
+from typing import List
+from bson import ObjectId
 
 
 @dataclass
 class ProjectMember:
-    """A user's role on a specific project or website."""
-    user_id: str      # AppUser._id as string
-    role: UserRole    # ADMIN, AUDITOR, or CLIENT
+    """A user's group memberships on a specific project."""
+    user_id: str          # AppUser._id as string
+    group_ids: List[str] = field(default_factory=list)  # PermissionGroup._id as strings
 
     def to_dict(self) -> dict:
         return {
             "user_id": self.user_id,
-            "role": self.role.value,
+            "group_ids": [str(gid) for gid in self.group_ids],
         }
 
     @classmethod
     def from_dict(cls, data: dict) -> "ProjectMember":
-        role_str = data.get("role", "client")
-        try:
-            role = UserRole(role_str)
-        except ValueError:
-            role = UserRole.CLIENT
+        # Handle old format with 'role' field (pre-migration)
+        if 'role' in data and 'group_ids' not in data:
+            return cls(user_id=data["user_id"], group_ids=[])
         return cls(
             user_id=data["user_id"],
-            role=role,
+            group_ids=[str(gid) for gid in data.get("group_ids", [])],
         )

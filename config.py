@@ -46,6 +46,10 @@ class Config:
     CLAUDE_USE_THINKING: bool = os.getenv('CLAUDE_USE_THINKING', 'True').lower() == 'true'
     
     # Browser Automation (Playwright)
+    # BROWSER_MODE: "local" = run Chromium on this machine (default),
+    #               "remote" = defer to a remote worker,
+    #               "disabled" = no browser testing at all
+    BROWSER_MODE: str = os.getenv('BROWSER_MODE', 'local')
     BROWSER_HEADLESS: bool = os.getenv('BROWSER_HEADLESS', 'True').lower() == 'true'
     BROWSER_TIMEOUT: int = int(os.getenv('BROWSER_TIMEOUT', 30000))
     BROWSER_VIEWPORT_WIDTH: int = int(os.getenv('BROWSER_VIEWPORT_WIDTH', 1920))

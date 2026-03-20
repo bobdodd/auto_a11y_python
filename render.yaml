@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: auto-a11y
+    runtime: python
+    plan: standard
+    buildCommand: ./render-build.sh
+    startCommand: gunicorn --config gunicorn.conf.py wsgi:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.3"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: MONGODB_URI
+        sync: false   # set manually in Render dashboard
+      - key: DATABASE_NAME
+        value: auto_a11y
+      - key: CLAUDE_API_KEY
+        sync: false   # set manually in Render dashboard
+      - key: RUN_AI_ANALYSIS
+        value: "True"
+      - key: BROWSER_MODE
+        value: remote  # default to remote on Render; change to local if needed
+      - key: BROWSER_HEADLESS
+        value: "True"

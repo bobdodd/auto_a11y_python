@@ -4,14 +4,12 @@ Authentication routes for user login, logout, and registration
 
 import hashlib
 import logging
-import secrets
 
 from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app, session, g, abort, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_babel import _
 from functools import wraps
 from itsdangerous import URLSafeSerializer, BadSignature
-from werkzeug.security import generate_password_hash
 
 from auto_a11y.models import AppUser, UserRole
 from auto_a11y.core.permissions import permission_required
@@ -419,9 +417,10 @@ def complete_google_auth(auth_request, redirect_uri):
 # Shared SSO user management
 # ------------------------------------------------------------------
 
-def find_or_create_sso_user(claims):
+def find_sso_user(claims):
     """
-    Look up AppUser by email; create one if not found.
+    Look up AppUser by email.  Returns None if the email is not in
+    the database — callers should redirect to the contact-us page.
     For existing users that haven't used SSO before, link their
     sso_provider/sso_id fields.
     """
@@ -429,18 +428,9 @@ def find_or_create_sso_user(claims):
     user = db.get_app_user_by_email(claims['email'])
 
     if user is None:
-        user = AppUser(
-            email=claims['email'],
-            password_hash=generate_password_hash(secrets.token_hex(32)),
-            role=UserRole.CLIENT,
-            display_name=claims.get('name') or None,
-            is_active=True,
-            sso_provider=claims['provider'],
-            sso_id=claims['provider_id'],
-        )
-        db.create_app_user(user)
-        logger.info('Created SSO user (%s): %s', claims['provider'], user.email)
-        return user
+        logger.info('SSO login attempt with unknown email (%s): %s',
+                     claims['provider'], claims['email'])
+        return None
 
     # Link SSO if not already set
     if not user.sso_provider:
@@ -450,6 +440,12 @@ def find_or_create_sso_user(claims):
         logger.info('Linked %s SSO to existing user: %s', claims['provider'], user.email)
 
     return user
+
+
+@auth_bp.route('/contact')
+def contact():
+    """Contact us page — shown when an SSO user has no account."""
+    return render_template('auth/contact.html')
 
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
@@ -734,7 +730,12 @@ def user_delete(user_id):
     if not user:
         flash(_('User not found.'), 'danger')
         return redirect(url_for('auth.user_list'))
-    
+
+    # Remove user from all project memberships before deleting
+    projects = current_app.db.get_projects_for_user(user_id)
+    for project in projects:
+        current_app.db.remove_project_member(project.id, user_id)
+
     current_app.db.delete_app_user(user_id)
     flash(_('User deleted successfully.'), 'success')
     return redirect(url_for('auth.user_list'))
@@ -767,7 +768,11 @@ def microsoft_callback():
         flash(_('Microsoft sign-in failed. Please try again.'), 'danger')
         return redirect(url_for('auth.login'))
 
-    user = find_or_create_sso_user(claims)
+    user = find_sso_user(claims)
+
+    if user is None:
+        flash(_('No account found for that email. Please contact us to request access.'), 'warning')
+        return redirect(url_for('auth.contact'))
 
     if not user.is_active:
         flash(_('Your account has been deactivated.'), 'danger')
@@ -806,7 +811,11 @@ def google_callback():
         flash(_('Google sign-in failed. Please try again.'), 'danger')
         return redirect(url_for('auth.login'))
 
-    user = find_or_create_sso_user(claims)
+    user = find_sso_user(claims)
+
+    if user is None:
+        flash(_('No account found for that email. Please contact us to request access.'), 'warning')
+        return redirect(url_for('auth.contact'))
 
     if not user.is_active:
         flash(_('Your account has been deactivated.'), 'danger')

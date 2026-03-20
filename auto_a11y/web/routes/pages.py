@@ -319,6 +319,12 @@ def test_page(page_id):
     from auto_a11y.core.task_runner import task_runner
     import asyncio
 
+    browser_mode = getattr(current_app.app_config, 'BROWSER_MODE', 'local')
+    if browser_mode == 'disabled':
+        return jsonify({'error': 'Browser testing is disabled on this server.'}), 503
+    if browser_mode == 'remote':
+        return jsonify({'error': 'This server is configured for remote browser testing only. Submit tests via the remote worker.'}), 503
+
     page = current_app.db.get_page(page_id)
     if not page:
         return jsonify({'error': 'Page not found'}), 404

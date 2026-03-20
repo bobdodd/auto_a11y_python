@@ -291,9 +291,13 @@ class TestingJob:
             skip_completion: If True, don't mark job as completed (for multi-user testing)
         """
         from auto_a11y.testing import TestRunner
-        
+
         logger.info(f"TestingJob.run started for job {self.job_id}")
-        
+
+        browser_mode = browser_config.get('BROWSER_MODE', 'local')
+        if browser_mode in ('disabled', 'remote'):
+            raise RuntimeError(f"Browser testing unavailable (BROWSER_MODE={browser_mode})")
+
         try:
             # Get website
             website = database.get_website(self.website_id)
